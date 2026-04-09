@@ -47,8 +47,13 @@ async function readLocalLocationSlugMap(): Promise<LocationSlugMap> {
 }
 
 async function writeLocalLocationSlugMap(slugMap: LocationSlugMap) {
-  await fs.mkdir(path.dirname(LOCATION_SLUGS_PATH), { recursive: true })
-  await fs.writeFile(LOCATION_SLUGS_PATH, `${JSON.stringify(slugMap, null, 2)}\n`, 'utf8')
+  try {
+    await fs.mkdir(path.dirname(LOCATION_SLUGS_PATH), { recursive: true })
+    await fs.writeFile(LOCATION_SLUGS_PATH, `${JSON.stringify(slugMap, null, 2)}\n`, 'utf8')
+  } catch (error: any) {
+    if (error?.code === 'EROFS' || error?.code === 'EPERM') return
+    throw error
+  }
 }
 
 async function readStorageLocationSlugMap(): Promise<LocationSlugMap | null> {
@@ -91,7 +96,9 @@ async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
 export async function readLocationSlugMap(): Promise<LocationSlugMap> {
   const storageMap = await readStorageLocationSlugMap()
   if (storageMap) {
-    await writeLocalLocationSlugMap(storageMap)
+    try {
+      await writeLocalLocationSlugMap(storageMap)
+    } catch {}
     return storageMap
   }
 
@@ -111,7 +118,9 @@ export async function saveLocationSlugForId(id: number | string, slug: string) {
   if (normalized) slugMap[key] = normalized
   else delete slugMap[key]
 
-  await writeLocalLocationSlugMap(slugMap)
+  try {
+    await writeLocalLocationSlugMap(slugMap)
+  } catch {}
   await writeStorageLocationSlugMap(slugMap)
 
   return normalized
@@ -122,3 +131,4 @@ export async function buildCanonicalLocationPath(name: string, id: number | stri
   const base = customSlug || slugifyLocationName(name) || 'spot'
   return `/spot/${base}-${id}`
 }
+

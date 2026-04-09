@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs/promises'
+﻿import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
@@ -121,7 +121,12 @@ async function readLocalGuides() {
 }
 
 async function writeLocalGuides(guides: TravelGuide[]) {
-  await writeFile(guidesFilePath, JSON.stringify(guides, null, 2), 'utf8')
+  try {
+    await writeFile(guidesFilePath, JSON.stringify(guides, null, 2), 'utf8')
+  } catch (error: any) {
+    if (error?.code === 'EROFS' || error?.code === 'EPERM') return
+    throw error
+  }
 }
 
 async function readStorageGuides() {
@@ -232,7 +237,9 @@ function sortGuides(guides: TravelGuide[]) {
 export async function readGuides() {
   const storageGuides = await readStorageGuides()
   if (storageGuides) {
-    await writeLocalGuides(storageGuides)
+    try {
+      await writeLocalGuides(storageGuides)
+    } catch {}
     return sortGuides(storageGuides)
   }
 
@@ -246,6 +253,9 @@ export async function readGuideBySlug(slug: string) {
 
 export async function saveGuides(guides: TravelGuide[]) {
   const normalized = guides.map(normalizeGuidePayload)
-  await writeLocalGuides(normalized)
+  try {
+    await writeLocalGuides(normalized)
+  } catch {}
   await writeStorageGuides(normalized)
 }
+
