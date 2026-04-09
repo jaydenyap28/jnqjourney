@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
@@ -397,10 +397,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
     const regionName = String(matchingSpot?.regions?.name || '').trim()
     const regionCn = String(matchingSpot?.regions?.name_cn || '').trim()
     const stopName = String(stop.name || '').trim()
-    const routeSecondaryLabel =
-      regionName && regionName.toLowerCase() !== stopName.toLowerCase() && regionName.toLowerCase() !== regionCn.toLowerCase()
-        ? regionName
-        : ''
+    const primaryLabel = regionCn || stopName
+    const normalizedPrimary = normalizeText(primaryLabel)
+    const routeSecondaryLabel = regionName && normalizeText(regionName) !== normalizedPrimary ? regionName : ''
 
     return {
       ...stop,
@@ -418,8 +417,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
           : typeof mappedSpot?.longitude === 'number'
             ? mappedSpot.longitude
             : matchingSpot?.longitude ?? null,
-      markerLabel: stop.name,
-      regionLabel: routeSecondaryLabel || regionCn || regionName || stop.name,
+      markerLabel: primaryLabel,
+      primaryLabel,
+      regionLabel: routeSecondaryLabel || primaryLabel,
       secondaryLabel: routeSecondaryLabel,
       href:
         matchingSpot?.regions?.id && matchingSpot.regions?.name
@@ -509,22 +509,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
             String(spot.name_cn || '').trim().toLowerCase() === stayName
           )
         }) ||
-        allGuideSpots.find((spot) => {
-          if (!stayRawName || spot.category !== 'accommodation') return false
-          const sameRegion = orderedSpots.some((daySpot) => daySpot.region_id && daySpot.region_id === spot.region_id)
-          if (!sameRegion) return false
-          const stayNormalized = normalizeText(stayRawName)
-          return (
-            normalizeText(spot.name).includes(stayNormalized) ||
-            normalizeText(spot.name_cn).includes(stayNormalized) ||
-            stayNormalized.includes(normalizeText(spot.name)) ||
-            stayNormalized.includes(normalizeText(spot.name_cn))
-          )
-        }) ||
-        allGuideSpots.find((spot) => {
-          if (spot.category !== 'accommodation') return false
-          return orderedSpots.some((daySpot) => daySpot.region_id && daySpot.region_id === spot.region_id)
-        }) ||
         null,
       orderedSpotIds: orderedSpots.map((spot) => spot.id),
       displaySpots: orderedSpots.filter((spot) => spot.category !== 'accommodation'),
@@ -543,7 +527,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
     return [
       {
         id: index + 1,
-        label: stop.name,
+        label: stop.primaryLabel || stop.name,
         stopLabel: stop.stopLabel || `D${index + 1}`,
         latitude: Number(latitude),
         longitude: Number(longitude),
@@ -807,18 +791,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
                               hideHeader
                             />
                           </div>
-                        ) : day.stay && day.primaryRegionId ? (
-                          <div className="mt-5">
-                            <AffiliateCard
-                              regionId={day.primaryRegionId}
-                              category="accommodation"
-                              limit={2}
-                              title={'\u5f53\u5730\u4f4f\u5bbf\u9884\u8ba2'}
-                              className="bg-white/5"
-                              compact
-                            />
-                          </div>
+
                         ) : null}
+
 
                         {day.videoUrl && getYouTubeID(day.videoUrl) ? (
                           <div className="mt-5 rounded-[26px] border border-red-400/15 bg-red-500/10 p-4 md:p-5">
@@ -914,7 +889,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                           {stop.stopLabel || index + 1}
                         </div>
                       <div className="flex-1 rounded-[20px] border border-white/10 bg-black/20 px-4 py-3 text-sm text-white">
-                        <div className="font-medium text-white">{stop.name}</div>
+                        <div className="font-medium text-white">{stop.primaryLabel || stop.name}</div>
                         {stop.secondaryLabel ? (
                           <div className="mt-1 text-xs uppercase tracking-[0.2em] text-white/45">{stop.secondaryLabel}</div>
                         ) : null}
@@ -943,18 +918,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 className="bg-white/5"
                 hideHeader
               />
-            ) : affiliateRegions.length ? (
-              <div className="space-y-4">
-                {affiliateRegions.map((stop) => (
-                  <AffiliateCard
-                    key={`${stop.name}-${stop.regionId}`}
-                    regionId={stop.regionId || undefined}
-                    title={`${stop.name} \u9884\u8ba2\u63a8\u8350`}
-                    className="bg-white/5"
-                    hideHeader
-                  />
-                ))}
-              </div>
             ) : null}
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
               <p className="section-kicker text-xs text-amber-300/80">{'Next Step / \u7ee7\u7eed\u63a2\u7d22'}</p>

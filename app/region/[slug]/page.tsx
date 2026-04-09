@@ -2,7 +2,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Compass, MapPinned, Route, Sparkles } from 'lucide-react'
+import { ArrowLeft, Compass, MapPinned, Route } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import { Badge } from '@/components/ui/badge'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -86,20 +86,6 @@ export default async function RegionPage({ params }: PageProps) {
                 {region.country ? <Badge className="border border-white/10 bg-white/10 text-white">{region.country}</Badge> : null}
                 <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">{locations.length} 个地点</Badge>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">Start Here</p>
-                  <p className="mt-2 text-sm text-white">先看这个地区的点，再回首页继续发现其他国家与路线。</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">Travel Route</p>
-                  <p className="mt-2 text-sm text-white">如果你是从 YouTube 进来的，可以继续接完整游记看路线。</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">More Discovery</p>
-                  <p className="mt-2 text-sm text-white">地图首页会继续带你找其他地区、景点和预订资讯。</p>
-                </div>
-              </div>
             </div>
             <div className="flex flex-wrap gap-2">
               <Link href="/" className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-sm text-amber-100 transition hover:bg-amber-400/15">
@@ -107,7 +93,7 @@ export default async function RegionPage({ params }: PageProps) {
                 回首页看地图
               </Link>
               <Link href="/guide" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">
-                <Sparkles className="h-4 w-4" />
+                <Route className="h-4 w-4" />
                 看完整游记
               </Link>
               <Link href="/region" className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">

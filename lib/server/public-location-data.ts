@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 
@@ -188,12 +188,18 @@ export async function fetchTopRegions(limit = 80) {
   const { data, error } = await supabase
     .from('regions')
     .select('id,name,name_cn,country,description,image_url,parent_id')
-    .is('parent_id', null)
     .order('name', { ascending: true })
     .limit(limit)
 
   if (error || !data) return []
-  return data as Array<RegionRecord & { parent_id?: number | null }>
+  const rows = data as Array<RegionRecord & { parent_id?: number | null }>
+  const parentIds = new Set(
+    rows
+      .map((region) => region.parent_id)
+      .filter((value): value is number => typeof value === 'number')
+  )
+
+  return rows.filter((region) => !parentIds.has(region.id))
 }
 
 export async function fetchAllLocationsForSitemap() {
