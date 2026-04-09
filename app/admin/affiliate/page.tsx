@@ -63,6 +63,15 @@ interface AffiliateLink {
   } | null
 }
 
+interface AffiliateLinkGroup {
+  key: string
+  primary: AffiliateLink
+  rows: AffiliateLink[]
+  associationLabels: string[]
+  clicks: number
+  conversions: number
+}
+
 interface BasicLocation {
   id: number
   name: string
@@ -105,6 +114,18 @@ function getRegionPathLabel(region?: BasicRegion | BasicLocation['regions'] | nu
   }
 
   return parts.filter(Boolean).join(' / ')
+}
+
+function getAffiliateAssociationLabel(link: AffiliateLink) {
+  if (link.locations?.name || link.locations?.name_cn) {
+    return link.locations?.name_cn || link.locations?.name || ''
+  }
+
+  if (link.regions?.name) {
+    return link.regions?.country ? `${link.regions.country} / ${link.regions.name}` : link.regions.name
+  }
+
+  return '全站通用'
 }
 
 function AffiliatePageContent() {
@@ -246,6 +267,45 @@ function AffiliatePageContent() {
     })
   }, [filterProvider, filterType, links, linksSearch])
 
+  const groupedLinks = useMemo<AffiliateLinkGroup[]>(() => {
+    const groups = new Map<string, AffiliateLinkGroup>()
+
+    for (const link of filteredLinks) {
+      const key = [
+        link.provider,
+        link.link_type,
+        String(link.title || '').trim(),
+        String(link.description || '').trim(),
+        String(link.url || '').trim(),
+        String(link.region_id || ''),
+      ].join('::')
+
+      const existing = groups.get(key)
+      const associationLabel = getAffiliateAssociationLabel(link)
+
+      if (!existing) {
+        groups.set(key, {
+          key,
+          primary: link,
+          rows: [link],
+          associationLabels: associationLabel ? [associationLabel] : [],
+          clicks: Number(link.clicks || 0),
+          conversions: Number(link.conversions || 0),
+        })
+        continue
+      }
+
+      existing.rows.push(link)
+      existing.clicks += Number(link.clicks || 0)
+      existing.conversions += Number(link.conversions || 0)
+      if (associationLabel && !existing.associationLabels.includes(associationLabel)) {
+        existing.associationLabels.push(associationLabel)
+      }
+    }
+
+    return Array.from(groups.values())
+  }, [filteredLinks])
+
   const locationAffiliateCounts = useMemo(() => {
     return links.reduce<Record<number, number>>((accumulator, link) => {
       if (typeof link.location_id === 'number') {
@@ -281,8 +341,8 @@ function AffiliatePageContent() {
     })
   }, [regionSearch, regions])
 
-  const totalClicks = filteredLinks.reduce((sum, link) => sum + Number(link.clicks || 0), 0)
-  const totalConversions = filteredLinks.reduce((sum, link) => sum + Number(link.conversions || 0), 0)
+  const totalClicks = groupedLinks.reduce((sum, link) => sum + link.clicks, 0)
+  const totalConversions = groupedLinks.reduce((sum, link) => sum + link.conversions, 0)
 
   const handleToggleLocationSelection = (locationId: string, checked: boolean) => {
     setSelectedLocationIds((prev) =>
@@ -727,12 +787,12 @@ function AffiliatePageContent() {
             <CardContent>
               {loading ? (
                 <div className="py-8 text-center">正在载入...</div>
-              ) : filteredLinks.length === 0 ? (
+              ) : groupedLinks.length === 0 ? (
                 <div className="py-8 text-center text-gray-500">还没有联盟链接。</div>
               ) : (
                 <>
                   <div className="mb-4 text-sm text-gray-600">
-                    共 {filteredLinks.length} 条，累计点击 {totalClicks}，累计转化 {totalConversions}
+                    共 {groupedLinks.length} 条联盟内容，累计点击 {totalClicks}，累计转化 {totalConversions}
                   </div>
 
                   <div className="overflow-hidden rounded-lg border">
@@ -740,7 +800,7 @@ function AffiliatePageContent() {
                       <TableHeader>
                         <TableRow>
                           <TableHead>平台 / 类型</TableHead>
-                          <TableHead>展示位置</TableHead>
+                          <TableHead>关联展示位置</TableHead>
                           <TableHead>标题</TableHead>
                           <TableHead>点击 / 转化</TableHead>
                           <TableHead>佣金</TableHead>
@@ -749,17 +809,13 @@ function AffiliatePageContent() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {filteredLinks.map((link) => {
+                        {groupedLinks.map((group) => {
+                          const link = group.primary
                           const provider = PROVIDERS.find((item) => item.id === link.provider)
                           const linkType = LINK_TYPES.find((item) => item.id === link.link_type)
-                          const association = link.locations
-                            ? `景点：${link.locations.name}`
-                            : link.regions
-                              ? `地区：${link.regions.name}`
-                              : '全站通用'
 
                           return (
-                            <TableRow key={link.id}>
+                            <TableRow key={group.key}>
                               <TableCell>
                                 <div className="flex flex-col gap-1">
                                   <Badge className={`w-fit ${provider?.color || 'bg-gray-100 text-gray-800'}`}>
@@ -768,15 +824,26 @@ function AffiliatePageContent() {
                                   <span className="text-xs text-gray-500">{linkType?.name || link.link_type}</span>
                                 </div>
                               </TableCell>
-                              <TableCell className="max-w-[220px] truncate" title={association}>
-                                {association}
+                              <TableCell className="max-w-[260px]">
+                                <div className="flex flex-wrap gap-1.5">
+                                  {group.associationLabels.slice(0, 4).map((label) => (
+                                    <span key={label} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-700">
+                                      {label}
+                                    </span>
+                                  ))}
+                                  {group.associationLabels.length > 4 ? (
+                                    <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
+                                      +{group.associationLabels.length - 4}
+                                    </span>
+                                  ) : null}
+                                </div>
                               </TableCell>
                               <TableCell className="max-w-[220px] truncate" title={link.title || link.url}>
                                 {link.title || '(未填写标题)'}
                               </TableCell>
                               <TableCell className="text-sm">
-                                <div>点击: {link.clicks || 0}</div>
-                                <div>转化: {link.conversions || 0}</div>
+                                <div>点击: {group.clicks}</div>
+                                <div>转化: {group.conversions}</div>
                               </TableCell>
                               <TableCell>{link.commission_rate || 0}%</TableCell>
                               <TableCell>

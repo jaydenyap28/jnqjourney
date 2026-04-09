@@ -330,7 +330,6 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
   const spotDescription = useMemo(() => getSpotDescription(location), [location])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
-  const shouldShowPriceSnapshot = hasPriceSnapshot && location.category !== 'accommodation'
   const mediaFallbackImage = location.image_url || validImages[0] || '/placeholder-image.jpg'
   const formattedMealBudget = useMemo(() => {
     if (!priceInfo.mealBudget) return null
@@ -359,6 +358,15 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
   const showMealPricing = isFoodSpot && Boolean(formattedMealBudget)
   const showCustomPricing = isAttractionSpot && Array.isArray(priceInfo.customItems) && priceInfo.customItems.length > 0
   const showPriceInfoImages = Array.isArray(priceInfo.infoImages) && priceInfo.infoImages.length > 0
+  const shouldShowPriceSnapshot =
+    hasPriceSnapshot &&
+    location.category !== 'accommodation' &&
+    (showAdmissionPricing ||
+      showMealPricing ||
+      showParkingPricing ||
+      showCustomPricing ||
+      showPriceInfoImages ||
+      Boolean(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt))
 
   const socialLinks = [
     { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube', color: 'bg-red-600' },
@@ -807,17 +815,6 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="space-y-4">
-            {!isDrawer ? (
-              <AffiliateCard
-                locationId={location.id}
-                regionId={location.regions?.id}
-                category={location.category}
-                title={affiliateTitle}
-                description={affiliateDescription}
-                showDisclosure={false}
-              />
-            ) : null}
-
             {shouldShowPriceSnapshot ? (
               <div className="overflow-hidden rounded-[32px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
@@ -1125,6 +1122,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 showDisclosure={false}
               />
             ) : null}
+
           </div>
         </div>
 
