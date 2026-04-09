@@ -1,9 +1,9 @@
 ﻿import type { MetadataRoute } from 'next'
 
-import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { absoluteUrl } from '@/lib/site'
 import { readGuides } from '@/lib/server/guides-store'
+import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readPublishedNotes } from '@/lib/server/notes-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 
@@ -22,12 +22,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/notes'), changeFrequency: 'weekly', priority: 0.7 },
   ]
 
-  const spotRoutes: MetadataRoute.Sitemap = locations.map((location) => ({
-    url: absoluteUrl(buildLocationPath(location.name, location.id)),
-    lastModified: location.updated_at || undefined,
-    changeFrequency: 'weekly',
-    priority: 0.7,
-  }))
+  const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
+    locations.map(async (location) => ({
+      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id)),
+      lastModified: location.updated_at || undefined,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    }))
+  )
 
   const regionRoutes: MetadataRoute.Sitemap = regions.map((region) => ({
     url: absoluteUrl(buildRegionPath(region.name, region.id)),

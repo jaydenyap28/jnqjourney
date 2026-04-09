@@ -712,6 +712,30 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
           </div>
         </div>
 
+        {location.address ? (
+          <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+            <div className="rounded-lg bg-sky-400/15 p-2">
+              <MapPin className="h-5 w-5 text-sky-300" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h4 className="text-sm font-bold uppercase tracking-wider text-sky-100">Address / 地址</h4>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white hover:bg-white/10"
+                  onClick={() => handleCopy(location.address || '', 'address')}
+                >
+                  <Copy className="mr-1.5 h-3.5 w-3.5" />
+                  {copiedField === 'address' ? '地址已复制' : '复制地址'}
+                </Button>
+              </div>
+              <p className="text-sm leading-6 text-gray-200">{location.address}</p>
+            </div>
+          </div>
+        ) : null}
+
         {location.opening_hours ? (
           <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
             <div className="rounded-lg bg-amber-400/20 p-2">

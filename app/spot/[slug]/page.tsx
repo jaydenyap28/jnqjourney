@@ -1,8 +1,8 @@
-﻿import { notFound } from 'next/navigation'
+﻿import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import SiteFooter from '@/components/SiteFooter'
 import SpotContent from '@/components/SpotContent'
-import { buildLocationPath } from '@/lib/location-routing'
+import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { absoluteUrl } from '@/lib/site'
 
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     location.review ||
     `${readableName} 的${categoryLabel}资料、地图位置、图片和导航信息。`
 
-  const canonicalPath = buildLocationPath(location.name, location.id)
+  const canonicalPath = await buildCanonicalLocationPath(location.name, location.id)
   const coverImage = location.image_url || location.images?.[0] || null
 
   return {
@@ -64,8 +64,12 @@ export default async function SpotPage({ params }: PageProps) {
     notFound()
   }
 
+  const canonicalPath = await buildCanonicalLocationPath(location.name, location.id)
+  if (params.slug !== canonicalPath.replace('/spot/', '')) {
+    redirect(canonicalPath)
+  }
+
   const relatedLocations = await fetchRelatedLocations(location, 6)
-  const canonicalPath = buildLocationPath(location.name, location.id)
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': location.category === 'food' ? 'Restaurant' : location.category === 'accommodation' ? 'Hotel' : 'TouristAttraction',

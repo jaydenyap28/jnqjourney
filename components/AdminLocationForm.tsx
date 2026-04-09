@@ -53,6 +53,7 @@ interface StructuredOpeningHours {
 interface LocationFormData {
   name: string
   name_cn: string // Renamed from name_en
+  custom_slug: string
   category: string 
   address: string
   latitude: string
@@ -122,6 +123,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const [formData, setFormData] = useState<LocationFormData>({
     name: '',
     name_cn: '',
+    custom_slug: '',
     category: 'attraction', // Default to attraction
     address: '',
     latitude: '',
@@ -174,6 +176,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const isFoodCategory = formData.category === 'food'
   const shouldShowPriceReference = formData.category !== 'accommodation'
   const [priceImageInput, setPriceImageInput] = useState('')
+  const [loadingCustomSlug, setLoadingCustomSlug] = useState(false)
 
   // Helper for array input
   const [imageInput, setImageInput] = useState('')
@@ -1225,8 +1228,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       setFormData({
         name: initialData.name || '',
         name_cn: initialData.name_cn || '',
+        custom_slug: '',
         category: initialData.category || 'attraction',
-        address: '', // Address is not stored in DB, strictly for search
+        address: initialData.address || '',
         latitude: initialData.latitude?.toString() || '',
         longitude: initialData.longitude?.toString() || '',
         region_id: initialData.region_id ? initialData.region_id.toString() : 'null',
@@ -1294,6 +1298,25 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       }
     }
   }, [initialData, regions])
+
+  useEffect(() => {
+    const loadCustomSlug = async () => {
+      if (!initialData?.id) return
+      setLoadingCustomSlug(true)
+      try {
+        const response = await adminFetch(`/api/admin/location-slugs?id=${initialData.id}`)
+        if (!response.ok) return
+        const result = await response.json()
+        setFormData((prev) => ({ ...prev, custom_slug: String(result?.slug || '') }))
+      } catch (error) {
+        console.error('Error loading custom slug:', error)
+      } finally {
+        setLoadingCustomSlug(false)
+      }
+    }
+
+    void loadCustomSlug()
+  }, [initialData?.id])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -1475,13 +1498,13 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           .from('locations')
           .update(data)
           .eq('id', initialData.id)
-          .select('updated_at')
+          .select('id, updated_at')
           .single()
       } else {
         return await supabase
           .from('locations')
           .insert([data])
-          .select('updated_at')
+          .select('id, updated_at')
           .single()
       }
     }
@@ -1533,6 +1556,19 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
 
       if (error) throw error
 
+      if (savedRecord?.id) {
+        const slugResponse = await adminFetch('/api/admin/location-slugs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: savedRecord.id, slug: formData.custom_slug }),
+        })
+
+        if (!slugResponse.ok) {
+          const slugPayload = await slugResponse.json().catch(() => ({}))
+          throw new Error(slugPayload?.error || '保存自定义 slug 失败')
+        }
+      }
+
       setLastUpdatedAt(savedRecord?.updated_at || new Date().toISOString())
       setMessage(mode === 'edit' ? '更新成功！' : '发布成功！')
       
@@ -1544,6 +1580,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         setFormData({
           name: '',
           name_cn: '',
+          custom_slug: '',
           category: 'attraction',
           address: '',
           latitude: '',
@@ -1671,6 +1708,20 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                   placeholder="例如：古来传统豆花"
                 />
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="custom_slug">自定义网址 slug</Label>
+              <Input
+                id="custom_slug"
+                name="custom_slug"
+                value={formData.custom_slug}
+                onChange={handleChange}
+                placeholder="例如：guangzhou-tower 或 广州塔"
+              />
+              <p className="text-xs text-gray-500">
+                {loadingCustomSlug ? '正在读取目前的 slug...' : '留空会自动用目前名称生成。旧链接仍可打开，并会跳转到新的 canonical 网址。'}
+              </p>
             </div>
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
