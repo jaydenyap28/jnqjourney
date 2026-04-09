@@ -1,0 +1,117 @@
+[
+  {
+    "name": "Ningle Terrace",
+    "name_cn": "精灵露台",
+    "category": "attraction",
+    "address": "Ningle Terrace, Nakagoryo, Furano, Hokkaido 076-0013, Japan",
+    "latitude": 43.3234308,
+    "longitude": 142.3563389,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "北海道富良野很有代表性的森林木屋步道景点，适合傍晚到夜晚散步拍照。这一条是根据你提供的视频章节整理出来的草稿景点，后续你可以再补封面、影片和完整介绍。",
+    "tags": [
+      "manual-video-import",
+      "furano",
+      "shopping-village"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "Cafe Mori no Tokei",
+    "name_cn": "珈琲 森の時計",
+    "category": "food",
+    "address": "Shin Furano Prince Hotel Grounds, Nakagoryo, Furano, Hokkaido 076-8511, Japan",
+    "latitude": 43.323113,
+    "longitude": 142.3650161,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "富良野知名的森林系咖啡馆，适合当作富良野行程里的休息点。这一条先按视频章节建立成草稿，后面你可以再补营业时间、照片和影片。",
+    "tags": [
+      "manual-video-import",
+      "furano",
+      "cafe"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "Shirahige Falls",
+    "name_cn": "白须瀑布",
+    "category": "attraction",
+    "address": "Shirogane, Biei, Kamikawa District, Hokkaido 071-0235, Japan",
+    "latitude": 43.4745828,
+    "longitude": 142.6391874,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "美瑛非常热门的自然景点之一，适合与青池、美瑛一带行程一起安排。这一条根据视频章节先建立成草稿景点，后面你可以再补图和详细玩法。",
+    "tags": [
+      "manual-video-import",
+      "biei",
+      "waterfall"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "Densetsu no Sutadonya Sapporo Ekimae",
+    "name_cn": "伝説のすた丼屋 札幌駅前店",
+    "category": "food",
+    "address": "Kita 3 Nishi 3, Chuo Ward, Sapporo, Hokkaido, Japan",
+    "latitude": 43.0655751,
+    "longitude": 141.3520874,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "札幌车站前一带的人气丼饭店，适合当作札幌市区觅食点。这一条先按视频章节建立成草稿，后面你可以再补你自己的实拍图和推荐吃法。",
+    "tags": [
+      "manual-video-import",
+      "sapporo",
+      "food"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "Tanukikoji Shopping Street",
+    "name_cn": "狸小路",
+    "category": "attraction",
+    "address": "Tanukikoji Shopping Street, Chuo Ward, Sapporo, Hokkaido, Japan",
+    "latitude": 43.0569761,
+    "longitude": 141.3505831,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "札幌很经典的商店街，适合安排逛街、觅食和夜晚散步。这一条根据你给的视频章节先建立成草稿景点，后面你可以再补购物和美食重点。",
+    "tags": [
+      "manual-video-import",
+      "sapporo",
+      "shopping"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  }
+]

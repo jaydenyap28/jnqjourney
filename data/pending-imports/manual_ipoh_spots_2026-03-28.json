@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Ong Kee Restaurant",
+    "name_cn": "安记芽菜鸡沙河粉",
+    "category": "food",
+    "address": "Ong Kee Restaurant, Jalan Yau Tet Shin, 30300 Ipoh, Perak, Malaysia",
+    "latitude": 4.5938544,
+    "longitude": 101.08398,
+    "google_maps_url": "https://maps.app.goo.gl/M9sgLD8f3DVhAbbR6",
+    "description": "怡保很有人气的芽菜鸡与沙河粉老店，适合当作怡保美食页草稿。",
+    "tags": ["manual-map-import", "ipoh", "food"]
+  },
+  {
+    "name": "Nam Thean Tong Temple",
+    "name_cn": "南天洞",
+    "category": "attraction",
+    "address": "Persiaran Pinggir Rapat 3, Gunung Rapat, 31350 Ipoh, Perak, Malaysia",
+    "latitude": 4.5654913,
+    "longitude": 101.1148073,
+    "google_maps_url": "https://maps.app.goo.gl/M9kdozuYDob8jtX77",
+    "description": "怡保洞穴寺庙路线里的热门景点之一，适合和附近洞穴庙宇一起安排。",
+    "tags": ["manual-map-import", "ipoh", "temple"]
+  },
+  {
+    "name": "Ling Sen Tong Temple",
+    "name_cn": "灵仙岩",
+    "category": "attraction",
+    "address": "Jalan Sultan Nazrin Shah, Gunung Rapat, 31350 Ipoh, Perak, Malaysia",
+    "latitude": 4.566301,
+    "longitude": 101.1140801,
+    "google_maps_url": "https://maps.app.goo.gl/WNRpnMKx6ABUUtat9",
+    "description": "怡保很有代表性的洞穴寺庙景点，适合洞穴寺庙半日游路线。",
+    "tags": ["manual-map-import", "ipoh", "temple"]
+  },
+  {
+    "name": "Perak Guanyin Cave",
+    "name_cn": "霹雳观音洞",
+    "category": "attraction",
+    "address": "Perak Guanyin Cave, Gunung Rapat, 31350 Ipoh, Perak, Malaysia",
+    "latitude": 4.5585583,
+    "longitude": 101.1134066,
+    "google_maps_url": "https://maps.app.goo.gl/u6h8Azzu7Sr5wxu2A",
+    "description": "怡保洞穴景点路线里的重要一站，适合和 Gunung Rapat 一带景点一起整理。",
+    "tags": ["manual-map-import", "ipoh", "cave-temple"]
+  },
+  {
+    "name": "Kin Loong Valley Chang Jiang White Coffee",
+    "name_cn": "Kin Loong Valley Chang Jiang White Coffee",
+    "category": "food",
+    "address": "Persiaran Pinggir Rapat 3, Gunung Rapat, 31350 Ipoh, Perak, Malaysia",
+    "latitude": 4.5598666,
+    "longitude": 101.1177074,
+    "google_maps_url": "https://maps.app.goo.gl/JS6YbA2vSZJY4vMp9",
+    "description": "怡保白咖啡路线可收录的餐饮点，适合后续补咖啡与早餐内容。",
+    "tags": ["manual-map-import", "ipoh", "coffee"]
+  },
+  {
+    "name": "Da Seng Ngan Temple",
+    "name_cn": "大圣岩庙",
+    "category": "attraction",
+    "address": "Da Seng Ngan Temple, Gunung Rapat, 31350 Ipoh, Perak, Malaysia",
+    "latitude": 4.5583092,
+    "longitude": 101.1158178,
+    "google_maps_url": "https://maps.app.goo.gl/uT5YDgXPa6QRCM9D8",
+    "description": "怡保洞穴寺庙路线中的另一处重点景点，适合作为洞穴寺庙系列内容页。",
+    "tags": ["manual-map-import", "ipoh", "temple"]
+  },
+  {
+    "name": "M Roof Hotel",
+    "name_cn": "M Roof Hotel",
+    "category": "accommodation",
+    "address": "M Roof Hotel, Taman Ipoh, 31400 Ipoh, Perak, Malaysia",
+    "latitude": 4.6121689,
+    "longitude": 101.105175,
+    "google_maps_url": "https://maps.app.goo.gl/2SGe8edsBV354Uzy7",
+    "description": "怡保住宿草稿点，适合后续挂 Trip.com / Agoda / Booking 等联盟链接。",
+    "tags": ["manual-map-import", "ipoh", "hotel", "affiliate-priority"]
+  },
+  {
+    "name": "Ipoh Tuck Kee Restaurant",
+    "name_cn": "Ipoh Tuck Kee Restaurant",
+    "category": "food",
+    "address": "Ipoh Tuck Kee Restaurant, Jalan Yau Tet Shin, 30300 Ipoh, Perak, Malaysia",
+    "latitude": 4.5938981,
+    "longitude": 101.0845054,
+    "google_maps_url": "https://maps.app.goo.gl/ngrhuag3J8mpM8Xg8",
+    "description": "怡保老城区美食路线可收录的经典餐厅草稿点。",
+    "tags": ["manual-map-import", "ipoh", "food"]
+  },
+  {
+    "name": "Yee Fatt Curry Mee",
+    "name_cn": "怡发咖喱面",
+    "category": "food",
+    "address": "Yee Fatt Curry Mee, Ipoh, Perak, Malaysia",
+    "latitude": 4.5861241,
+    "longitude": 101.0846044,
+    "google_maps_url": "https://maps.app.goo.gl/wDvQWbrPTuAn27HSA",
+    "description": "怡保咖喱面路线可收录的餐饮草稿点，后续可再补招牌推荐。",
+    "tags": ["manual-map-import", "ipoh", "food"]
+  },
+  {
+    "name": "Concubine Lane",
+    "name_cn": "二奶巷",
+    "category": "attraction",
+    "address": "Lorong Panglima, 30000 Ipoh, Perak, Malaysia",
+    "latitude": 4.5964329,
+    "longitude": 101.0775998,
+    "google_maps_url": "https://maps.app.goo.gl/CaAUy19sWn741V1g7",
+    "description": "怡保老城区很有代表性的街巷景点，适合和老街、咖啡馆、美食一起整理。",
+    "tags": ["manual-map-import", "ipoh", "old-town"]
+  }
+]

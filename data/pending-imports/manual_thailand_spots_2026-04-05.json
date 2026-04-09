@@ -1,0 +1,114 @@
+[
+  {
+    "id": 589,
+    "name": "Jodd Fairs",
+    "name_cn": null,
+    "category": "food",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 590,
+    "name": "Khao San Road",
+    "name_cn": "考山路",
+    "category": "attraction",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 591,
+    "name": "Kope Hya Tai Kee",
+    "name_cn": "邢泰记",
+    "category": "food",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 592,
+    "name": "Siam Paragon",
+    "name_cn": "暹罗百丽宫",
+    "category": "shopping",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 593,
+    "name": "Siam Square One",
+    "name_cn": "暹罗广场一号",
+    "category": "shopping",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 594,
+    "name": "Siam Center",
+    "name_cn": "暹罗中心",
+    "category": "shopping",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 595,
+    "name": "ICONSIAM",
+    "name_cn": null,
+    "category": "shopping",
+    "region_name": "Bangkok",
+    "country": "Thailand"
+  },
+  {
+    "id": 596,
+    "name": "Bang Bao Pier",
+    "name_cn": "邦宝码头",
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 597,
+    "name": "Rasta View",
+    "name_cn": null,
+    "category": "food",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 598,
+    "name": "Lonely Beach",
+    "name_cn": null,
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 599,
+    "name": "Kai Bae View Point",
+    "name_cn": "Kai Bae观景台",
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 600,
+    "name": "Kai Bae Beach",
+    "name_cn": "Kai Bae海滩",
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 601,
+    "name": "Khlong Phlu Waterfall",
+    "name_cn": "空仆瀑布",
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  },
+  {
+    "id": 602,
+    "name": "White Sand Beach",
+    "name_cn": "白沙滩",
+    "category": "attraction",
+    "region_name": "Koh Chang",
+    "country": "Thailand"
+  }
+]

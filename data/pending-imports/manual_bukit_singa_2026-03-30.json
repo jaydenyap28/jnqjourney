@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Bukit Singa",
+    "name_cn": null,
+    "category": "attraction",
+    "address": "Bukit Singa, Marang, Terengganu, Malaysia",
+    "latitude": 5.2309163,
+    "longitude": 103.2676139,
+    "region_name": "Marang",
+    "country": "Malaysia",
+    "description": "Terengganu 海边一带可安排的观景点，适合和 Marang 附近海景路线一起整理。",
+    "tags": ["manual-map-import", "terengganu", "marang", "viewpoint"]
+  }
+]

@@ -1,0 +1,114 @@
+[
+  {
+    "id": 575,
+    "name": "Semporna",
+    "name_cn": "仙本那镇",
+    "category": "attraction",
+    "region_name": "Semporna",
+    "country": "Malaysia"
+  },
+  {
+    "id": 576,
+    "name": "Sipadan Kapalai Dive Resort",
+    "name_cn": "卡帕莱度假村",
+    "category": "accommodation",
+    "region_name": "Semporna",
+    "country": "Malaysia"
+  },
+  {
+    "id": 577,
+    "name": "Kapalai",
+    "name_cn": "卡帕莱",
+    "category": "attraction",
+    "region_name": "Semporna",
+    "country": "Malaysia"
+  },
+  {
+    "id": 578,
+    "name": "Pasar Malam KK",
+    "name_cn": "亚庇夜市",
+    "category": "food",
+    "region_name": "Kota Kinabalu",
+    "country": "Malaysia"
+  },
+  {
+    "id": 579,
+    "name": "Sinalau Bakas",
+    "name_cn": null,
+    "category": "food",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 580,
+    "name": "Pekan Nabalu",
+    "name_cn": "纳巴鲁小镇",
+    "category": "attraction",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 581,
+    "name": "89 Station",
+    "name_cn": null,
+    "category": "food",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 582,
+    "name": "Kinabalu Park",
+    "name_cn": "神山公园",
+    "category": "attraction",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 583,
+    "name": "Desa Dairy Farm",
+    "name_cn": "迪沙奶牛牧场",
+    "category": "attraction",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 584,
+    "name": "Poring Hot Spring",
+    "name_cn": "波令温泉",
+    "category": "attraction",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 585,
+    "name": "Sosodikon Hill",
+    "name_cn": "索索迪孔山",
+    "category": "attraction",
+    "region_name": "Kundasang",
+    "country": "Malaysia"
+  },
+  {
+    "id": 586,
+    "name": "Yee Fung Laksa",
+    "name_cn": "怡丰叻沙",
+    "category": "food",
+    "region_name": "Kota Kinabalu",
+    "country": "Malaysia"
+  },
+  {
+    "id": 587,
+    "name": "Tanjung Aru Beach",
+    "name_cn": "丹绒亚路海滩",
+    "category": "attraction",
+    "region_name": "Kota Kinabalu",
+    "country": "Malaysia"
+  },
+  {
+    "id": 588,
+    "name": "Stanton Hotel",
+    "name_cn": null,
+    "category": "accommodation",
+    "region_name": "Kota Kinabalu",
+    "country": "Malaysia"
+  }
+]

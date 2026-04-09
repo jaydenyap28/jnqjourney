@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Susukino",
+    "name_cn": "薄野",
+    "category": "attraction",
+    "address": "Susukino, Sapporo, Hokkaido, Japan",
+    "latitude": 43.0553655,
+    "longitude": 141.3534063,
+    "region_name": "Sapporo",
+    "country": "Japan",
+    "description": "札幌夜生活和美食最有代表性的区域，适合和狸小路、札幌站周边一起整理成市区路线。",
+    "tags": ["manual-map-import", "japan", "sapporo", "nightlife"]
+  },
+  {
+    "name": "Sapporo Clock Tower",
+    "name_cn": "札幌时计台",
+    "category": "attraction",
+    "address": "Sapporo Clock Tower, Chuo-ku, Sapporo, Hokkaido, Japan",
+    "latitude": 43.0625537,
+    "longitude": 141.3536448,
+    "region_name": "Sapporo",
+    "country": "Japan",
+    "description": "札幌市区很有代表性的历史地标景点，适合和札幌站、大通公园、市区步行路线一起整理。",
+    "tags": ["manual-map-import", "japan", "sapporo", "landmark"]
+  },
+  {
+    "name": "Yukemuri Shokudo Shirogane",
+    "name_cn": "湯けむり食堂しろがね",
+    "category": "food",
+    "address": "Ginzan Onsen, Obanazawa, Yamagata, Japan",
+    "latitude": 38.5704194,
+    "longitude": 140.5300687,
+    "region_name": "Obanazawa",
+    "country": "Japan",
+    "description": "银山温泉街可一起收录的餐食点，适合搭配温泉街、足汤和住宿内容一起整理。",
+    "tags": ["manual-map-import", "japan", "yamagata", "ginzan-onsen", "food"]
+  },
+  {
+    "name": "Warashiyu Footbath",
+    "name_cn": "和乐足汤",
+    "category": "attraction",
+    "address": "Ginzan Onsen, Obanazawa, Yamagata, Japan",
+    "latitude": 38.5704194,
+    "longitude": 140.5300687,
+    "region_name": "Obanazawa",
+    "country": "Japan",
+    "description": "银山温泉入口附近很受欢迎的免费足汤点，适合和温泉街散步路线一起整理。",
+    "tags": ["manual-map-import", "japan", "yamagata", "ginzan-onsen", "footbath"]
+  }
+]

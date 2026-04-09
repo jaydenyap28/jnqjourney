@@ -1,0 +1,75 @@
+[
+  {
+    "name": "Biei Shrine",
+    "name_cn": "美瑛神社",
+    "category": "attraction",
+    "address": "4-1-1 Higashimachi, Biei, Kamikawa District, Hokkaido 071-0213, Japan",
+    "latitude": 43.5834654,
+    "longitude": 142.4736818,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "美瑛一带的重要参拜景点之一，适合与美瑛市区和自然景点一起安排行程。这一条先建立成草稿，后续你可以再补实拍图、影片和更完整的介绍。",
+    "tags": [
+      "manual-video-import",
+      "biei",
+      "shrine",
+      "needs-map-review"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "Hotel Lavenir Biei",
+    "name_cn": "Hotel Lavenir Biei",
+    "category": "attraction",
+    "address": "1 Chome-9-21 Motomachi, Biei, Kamikawa District, Hokkaido 071-0208, Japan",
+    "latitude": 43.5909601,
+    "longitude": 142.4612251,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "美瑛站附近的住宿点，适合作为美瑛行程的落脚酒店。这一条先按住宿草稿建立，后续你可以再补照片、住宿体验和联盟订房链接。",
+    "tags": [
+      "manual-video-import",
+      "biei",
+      "hotel",
+      "affiliate-priority",
+      "needs-map-review"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  },
+  {
+    "name": "HOTEL FORZA SAPPORO STATION",
+    "name_cn": "HOTEL FORZA SAPPORO STATION",
+    "category": "attraction",
+    "address": "1-1 Kita 3 Nishi 2, Chuo Ward, Sapporo, Hokkaido 060-0003, Japan",
+    "latitude": 43.0654198,
+    "longitude": 141.3528598,
+    "region_name": "Hokkaido",
+    "country": "Japan",
+    "video_url": null,
+    "facebook_video_url": null,
+    "image_url": null,
+    "images": [],
+    "description": "札幌站前一带的住宿点，适合作为札幌市区行程的据点。这一条先按住宿草稿建立，后续你可以再补住宿体验、照片和订房联盟链接。",
+    "tags": [
+      "manual-video-import",
+      "sapporo",
+      "hotel",
+      "affiliate-priority"
+    ],
+    "visit_date": null,
+    "opening_hours": null,
+    "status": "active"
+  }
+]

@@ -1,0 +1,332 @@
+import { readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+
+const filePath = path.join(process.cwd(), 'data', 'guides.json')
+const raw = await readFile(filePath, 'utf8')
+const guides = JSON.parse(raw.replace(/^\uFEFF/, ''))
+
+function patchGuide(slug, patch) {
+  const index = guides.findIndex((guide) => guide.slug === slug)
+  if (index < 0) {
+    throw new Error(`Guide not found: ${slug}`)
+  }
+  guides[index] = {
+    ...guides[index],
+    ...patch,
+  }
+}
+
+patchGuide('malaysia-east-coast-route3-10d9n', {
+  title: '马来西亚东海岸三号公路 10天9夜自驾游',
+  shortTitle: '东海岸三号公路 10天9夜',
+  tagline:
+    '从关丹一路往北到登嘉楼和吉兰丹，沿着海岸线慢慢开，把海滩、小镇、瀑布、博物馆和寺庙串成一趟完整的东海岸自驾游。',
+  summary: '',
+  duration: '10 Days / 9 Nights',
+  budget: '',
+  travelStyle: '自驾游',
+  route: [
+    {
+      stopLabel: 'D1-D3',
+      name: '关丹',
+      summary: '先用关丹与林明把东海岸节奏打开，海边、公路、瀑布和小镇都集中在这一段。',
+      mapSpotName: 'Pantai Hiburan',
+      latitude: 3.805,
+      longitude: 103.325,
+    },
+    {
+      stopLabel: 'D4-D7',
+      name: '登嘉楼',
+      summary: '中段沿着海线继续往北，收进海滩、棉花岛、博物馆和城市海滨。',
+      mapSpotName: 'Pantai Teluk Bidara',
+      latitude: 4.815,
+      longitude: 103.422,
+    },
+    {
+      stopLabel: 'D8-D10',
+      name: '吉兰丹',
+      summary: '最后转进哥打巴鲁，把佛寺、牧场、海边和文化感更强的画面收尾。',
+      mapSpotName: '郑和坊',
+      latitude: 6.13,
+      longitude: 102.24,
+    },
+  ],
+  budgetItems: [
+    { label: '油费', amount: 'RM322.36' },
+    { label: '住宿', amount: 'RM1434.79' },
+    { label: '吃喝', amount: 'RM558.93' },
+    { label: '其他花费与活动', amount: 'RM704.05' },
+  ],
+  days: [
+    {
+      dayLabel: 'Day 1',
+      title: '柔佛沿海公路自驾到关丹',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['兴楼云冰大桥', 'Pantai Hiburan', 'Pantai Saujana Biru', '天乐咖啡店', 'Pantai Lagenda', 'Jambatan Cherok Paloh', '888 Food Court', '关丹艺术街'],
+      videoUrl: 'https://youtu.be/FsqHMUQNiGg',
+      stay: 'Imperium Residence Kuantan',
+      stayRangeStart: 1,
+      stayRangeEnd: 2,
+    },
+    {
+      dayLabel: 'Day 2',
+      title: '关丹瀑布与海边',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['Sungai Pandan Waterfall', 'Mohd Chan Restaurant', 'Pantai Teluk Cempedak', 'Loteng Cafe Telok Cempedak', 'Pantai Pelindung', 'Ms Elliot at Hock Bee', '关丹河畔公园'],
+      videoUrl: 'https://youtu.be/FsqHMUQNiGg',
+      stay: 'Imperium Residence Kuantan',
+      stayRangeStart: 1,
+      stayRangeEnd: 2,
+    },
+    {
+      dayLabel: 'Day 3',
+      title: '林明与洞窟路线',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['联兴海南茶室', 'Gua Charas', '家传食谱林明面', '彩虹吊桥', '林明吊桥', '林明博物馆', 'Kolong Pahat 3', 'Pasir Puteri', '林明天后宫', '顺风饭店'],
+      videoUrl: 'https://youtu.be/YNIlX31VnLk',
+      stay: 'Riverside Palm Inn',
+      stayRangeStart: 3,
+      stayRangeEnd: 3,
+    },
+    {
+      dayLabel: 'Day 4',
+      title: '彩虹瀑布转登嘉楼',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['Sunrise Hill', '林明彩虹瀑布', 'Ombok Cherating Surf Cafe', 'Pantai Teluk Mak Nik (Monica Bay)', 'Steven’s Coffee House'],
+      videoUrl: 'https://youtu.be/YNIlX31VnLk',
+      stay: 'Riverine Garden Hotel',
+      stayRangeStart: 4,
+      stayRangeEnd: 4,
+    },
+    {
+      dayLabel: 'Day 5',
+      title: '登嘉楼最美沿海公路',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['文荣茶餐室', 'Pantai Teluk Kalong', 'Pantai Penunjuk Kijal', 'Old Cruise Ship Jetty Kijal', 'Pantai Kemasik', '邝九二咖啡店', 'Terowong Bukit Tebuk', 'Pantai Teluk Bidara', 'Pantai Batu Pelanduk', 'Pantai Jambu Bongkok', 'Tengku Tengah Zaharah Mosque', '登嘉楼唐人街', '海龟巷', '炭烧瓦煲鸡'],
+      videoUrl: 'https://youtu.be/o1fSGXwgYE4',
+      stay: 'DJ Citi Plaza Hotel & Suites',
+      stayRangeStart: 5,
+      stayRangeEnd: 6,
+    },
+    {
+      dayLabel: 'Day 6',
+      title: '登嘉楼市区景点',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['水晶清真寺', 'Zahon Cafe', 'Terengganu State Museum', 'Mayang Mall'],
+      videoUrl: 'https://youtu.be/YNIlX31VnLk',
+      stay: 'DJ Citi Plaza Hotel & Suites',
+      stayRangeStart: 5,
+      stayRangeEnd: 6,
+    },
+    {
+      dayLabel: 'Day 7',
+      title: 'Pulau Kapas 棉花岛一日游',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['Pulau Kapas', 'Bukit Singa', 'Marang Wave Breaker', 'Pesisir Payang', 'Jambatan Angkat Kuala Terengganu'],
+      videoUrl: 'https://youtu.be/o1fSGXwgYE4',
+    },
+    {
+      dayLabel: 'Day 8',
+      title: '吉兰丹乡野景点',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['SRZ Ternak (Ladang Tenusu Jeram Mengaji)', 'Jeram Mengaji', 'KTMB Guillemard Bridge', '北京清真寺', 'Selera Tepi Sungai', 'Wat Uttamaram', 'Senok Beach', 'Hattori Coffee'],
+      videoUrl: 'https://youtu.be/-XuE9aRPBvo',
+      stay: 'Renai Hotel Kota Bharu',
+      stayRangeStart: 8,
+      stayRangeEnd: 9,
+    },
+    {
+      dayLabel: 'Day 9',
+      title: '吉兰丹佛寺路线',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['Bukit Keluang', 'Masjid Lapan Kubah', 'Wat Phothivihan', '坐佛寺', '立佛寺', '龙船寺', 'Pantai Mek Mas', '郑和坊'],
+      videoUrl: 'https://youtu.be/-XuE9aRPBvo',
+      stay: 'Renai Hotel Kota Bharu',
+      stayRangeStart: 8,
+      stayRangeEnd: 9,
+    },
+    {
+      dayLabel: 'Day 10',
+      title: '哥打巴鲁收尾',
+      summary: '',
+      highlights: [],
+      linkedSpots: ['双龙寺'],
+      videoUrl: 'https://youtu.be/-XuE9aRPBvo',
+    },
+  ],
+  featuredSpotNames: ['Pantai Hiburan', 'Sungai Pandan Waterfall', 'Gua Charas', 'Pantai Teluk Bidara', 'Wat Phothivihan', '郑和坊'],
+  sortDate: '2025-05-20',
+})
+
+patchGuide('japan-hokkaido-yamagata-tokyo-10d9n', {
+  title: '日本北海道、山形、东京 10天9夜自由行',
+  shortTitle: '日本 10天9夜',
+  tagline:
+    '从北海道一路玩到山形，再接东京与富士山周边，把雪景、温泉、老街、美食和城市夜景串成一趟完整的冬季自由行。',
+  summary: '',
+  duration: '10 Days / 9 Nights',
+  budget: '',
+  travelStyle: '自由行',
+  route: [
+    {
+      stopLabel: 'D1-D5',
+      name: '北海道',
+      summary: '先从富良野、美瑛、札幌、小樽到登别与函馆，把北海道冬季经典路线走完整。',
+      mapSpotName: 'Ningle Terrace',
+      latitude: 43.3406,
+      longitude: 142.3831,
+    },
+    {
+      stopLabel: 'D6-D7',
+      name: '山形',
+      summary: '中段转进银山温泉与藏王树冰，把最有冬季感的温泉和雪景收入路线里。',
+      mapSpotName: 'Ginzan Onsen Street',
+      latitude: 38.5705,
+      longitude: 140.5305,
+    },
+    {
+      stopLabel: 'D8-D10',
+      name: '东京与富士山',
+      summary: '最后用东京市区与富士山周边收尾，节奏会从雪景慢慢切回城市自由行。',
+      mapSpotName: 'Arakurayama Sengen Park',
+      latitude: 35.5013,
+      longitude: 138.8077,
+    },
+  ],
+  budgetItems: [
+    { label: '机票 / JR / 国内交通', amount: 'TBC', note: '北海道、山形、东京之间的主要移动。' },
+    { label: '住宿', amount: 'TBC', note: '美瑛、札幌、登别、函馆、银山温泉与东京住宿可分开记录。' },
+    { label: '当地交通', amount: 'TBC', note: 'JR、巴士、地铁与景区接驳。' },
+    { label: '门票 / 体验', amount: 'TBC', note: '树冰缆车、乐园与景区项目。' },
+    { label: '吃喝', amount: 'TBC', note: '拉面、甜点、早市和沿路餐饮。' },
+  ],
+  days: [
+    { dayLabel: 'Day 1', title: '富良野与美瑛', summary: '', highlights: [], linkedSpots: ['Ningle Terrace', 'Cafe Mori no Tokei'], videoUrl: 'https://youtu.be/Ytl3kZ7jAbk', stay: 'Hotel Lavenir Biei', stayRangeStart: 1, stayRangeEnd: 1 },
+    { dayLabel: 'Day 2', title: '美瑛转札幌', summary: '', highlights: [], linkedSpots: ['Biei Shrine', 'Shirahige Falls', '伝説のすた丼屋 札幌駅前店', '薄野', '狸小路'], videoUrl: 'https://youtu.be/cq3dP8tYxpk', stay: 'Hotel Forza Sapporo Station', stayRangeStart: 2, stayRangeEnd: 3 },
+    { dayLabel: 'Day 3', title: '小樽老街与运河', summary: '', highlights: [], linkedSpots: ['住吉神社', '一番拉面', '八音盒博物馆', 'LeTao小樽洋菓子铺', '小樽堺町通商店街', '小樽运河'], videoUrl: 'https://youtu.be/e3q5MVEF-yk', stay: 'Hotel Forza Sapporo Station', stayRangeStart: 2, stayRangeEnd: 3 },
+    { dayLabel: 'Day 4', title: '登别温泉路线', summary: '', highlights: [], linkedSpots: ['大汤沼川天然足汤', '泉源公园', '阎魔殿', '登别地狱谷'], videoUrl: 'https://youtu.be/VBECrngYvIc', stay: 'Noboribetsu Sekisuitei', stayRangeStart: 4, stayRangeEnd: 4 },
+    { dayLabel: 'Day 5', title: '函馆港口与夜景', summary: '', highlights: [], linkedSpots: ['幸运小丑汉堡', '八幡坂', '函馆山夜景', '金森红砖仓库'], videoUrl: 'https://youtu.be/kSIb2dv0UAQ', stay: 'FlexStay Inn Hotel', stayRangeStart: 5, stayRangeEnd: 5 },
+    { dayLabel: 'Day 6', title: '银山温泉', summary: '', highlights: [], linkedSpots: ['和乐足汤', '银山温泉街'], videoUrl: 'https://youtu.be/X373Zu9ac3U', stay: 'Takimikan', stayRangeStart: 6, stayRangeEnd: 6 },
+    { dayLabel: 'Day 7', title: '藏王树冰', summary: '', highlights: [], linkedSpots: ['藏王树冰'], videoUrl: 'https://youtu.be/gMlH0QVRZMM', stay: 'Henn na Hotel Tokyo Nishikasai', stayRangeStart: 7, stayRangeEnd: 10 },
+    { dayLabel: 'Day 8', title: '东京迪士尼海洋', summary: '', highlights: [], linkedSpots: ['东京迪士尼海洋'], videoUrl: 'https://youtu.be/vScTGJzFrPI', stay: 'Henn na Hotel Tokyo Nishikasai', stayRangeStart: 7, stayRangeEnd: 10 },
+    { dayLabel: 'Day 9', title: '富士山周边一日', summary: '', highlights: [], linkedSpots: ['Arakurayama Sengen Park', '金鸟居', 'Oshino Hakkai', '山中湖平野の浜', '歌舞伎町'], videoUrl: 'https://youtu.be/r8-ezkj1Eks', stay: 'Henn na Hotel Tokyo Nishikasai', stayRangeStart: 7, stayRangeEnd: 10 },
+    { dayLabel: 'Day 10', title: '东京市区收尾', summary: '', highlights: [], linkedSpots: ['浅草寺', 'Shibuya Sky'], videoUrl: 'https://youtu.be/unb-o4oxBlg', stay: 'Henn na Hotel Tokyo Nishikasai', stayRangeStart: 7, stayRangeEnd: 10 },
+  ],
+  featuredSpotNames: ['Ningle Terrace', 'Shirahige Falls', '小樽运河', '登别地狱谷', '函馆山夜景', 'Arakurayama Sengen Park'],
+  sortDate: '2024-01-24',
+})
+
+patchGuide('china-harbin-xuegu-changbai-beijing-11d10n', {
+  title: '中国东北 11天10夜自由行',
+  shortTitle: '东北 11天10夜',
+  tagline: '从哈尔滨出发，走进雪谷、长白山，再用北京收尾，把冬季雪景与城市经典串成完整路线。',
+  summary: '这篇游记会按哈尔滨、雪谷、长白山、北京四段主线来走，路线地图也只保留这四个主要区域。',
+  duration: '11 Days / 10 Nights',
+  budget: '',
+  travelStyle: '自由行',
+  route: [
+    { stopLabel: 'D1-D2', name: '哈尔滨', summary: '先用中央大街、冰雪大世界和老城氛围把东北冬天打开。', mapSpotName: '中央大街', latitude: 45.7743, longitude: 126.6296 },
+    { stopLabel: 'D3-D4', name: '雪谷', summary: '接着进入雪谷与羊草山，体验更完整的雪地路线。', mapSpotName: '雪谷', latitude: 44.3880450599042, longitude: 128.124383465718 },
+    { stopLabel: 'D5-D7', name: '长白山', summary: '中段转入长白山，以景区、温泉与雪地体验为主。', mapSpotName: '长白山北坡景区', latitude: 42.0581, longitude: 128.0602 },
+    { stopLabel: 'D8-D11', name: '北京', summary: '最后用北京的经典景点与城市段落收尾。', mapSpotName: '前门大街', latitude: 39.8940131340641, longitude: 116.393376514878 },
+  ],
+  highlightTags: ['雪景', '城市散步', '温泉', '冬季旅行', '老街', '雪地活动'],
+  budgetItems: [
+    { label: '机票 / 高铁', amount: 'TBC', note: '北京、哈尔滨与长白山之间的跨城交通。' },
+    { label: '住宿', amount: 'TBC', note: '哈尔滨、雪谷、长白山三段住宿可分别记录。' },
+    { label: '当地交通', amount: 'TBC', note: '机场接送、包车、打车和雪地接驳。' },
+    { label: '门票 / 体验', amount: 'TBC', note: '冰雪大世界、长白山与雪地活动。' },
+    { label: '吃喝', amount: 'TBC', note: '东北烧烤、早市和景区餐饮。' },
+  ],
+  days: [
+    { dayLabel: 'Day 1', title: '哈尔滨老城', summary: '', highlights: [], linkedSpots: ['中华巴洛克', '松花江铁路大桥', '防洪纪念塔', '中央大街', '圣索菲亚教堂'], videoUrl: 'https://youtu.be/C4FwuoTwu-Y', stay: '哈尔滨汉庭酒店', stayRangeStart: 1, stayRangeEnd: 2 },
+    { dayLabel: 'Day 2', title: '哈尔滨冰雪线', summary: '', highlights: [], linkedSpots: ['红专街早市', '冰雪大世界', '音乐长廊', '民谣集烧烤酒馆'], videoUrl: 'https://youtu.be/C4FwuoTwu-Y', stay: '哈尔滨汉庭酒店', stayRangeStart: 1, stayRangeEnd: 2 },
+    { dayLabel: 'Day 3', title: '雪谷', summary: '', highlights: [], linkedSpots: ['雪谷'], videoUrl: 'https://youtu.be/LEC8GSvQu2o', stay: '雪谷丁子涵时尚家庭旅馆', stayRangeStart: 3, stayRangeEnd: 4 },
+    { dayLabel: 'Day 4', title: '羊草山穿越', summary: '', highlights: [], linkedSpots: ['羊草山', '中国雪乡'], videoUrl: 'https://youtu.be/LEC8GSvQu2o', stay: '雪谷丁子涵时尚家庭旅馆', stayRangeStart: 3, stayRangeEnd: 4 },
+    { dayLabel: 'Day 5', title: '长白山镇上', summary: '', highlights: [], linkedSpots: ['山顺烤肉', '恩都里', '云顶天宫'], videoUrl: 'https://youtu.be/703jrkOwtb0', stay: '栖溪小院', stayRangeStart: 5, stayRangeEnd: 7 },
+    { dayLabel: 'Day 6', title: '长白山北坡', summary: '', highlights: [], linkedSpots: ['长白山北坡景区', '蓝景聚龙温泉'], videoUrl: 'https://youtu.be/703jrkOwtb0', stay: '栖溪小院', stayRangeStart: 5, stayRangeEnd: 7 },
+    { dayLabel: 'Day 7', title: '长白山体验线', summary: '', highlights: [], linkedSpots: ['西坡雾凇漂流', '雪绒花雪乐园'], videoUrl: 'https://youtu.be/703jrkOwtb0', stay: '栖溪小院', stayRangeStart: 5, stayRangeEnd: 7 },
+    { dayLabel: 'Day 8', title: '北京经典线', summary: '', highlights: [], linkedSpots: ['前门大街'], videoUrl: 'https://youtu.be/RsxorBCejcU' },
+    { dayLabel: 'Day 9', title: '北京环球', summary: '', highlights: [], linkedSpots: ['北京环球'], videoUrl: 'https://youtu.be/RsxorBCejcU' },
+    { dayLabel: 'Day 10', title: '老街与城景', summary: '', highlights: [], linkedSpots: ['故宫博物院', '烟袋斜街', '中国中央电视台总部大楼'], videoUrl: 'https://youtu.be/RsxorBCejcU' },
+    { dayLabel: 'Day 11', title: '慕田峪长城', summary: '', highlights: [], linkedSpots: ['慕田峪长城'], videoUrl: 'https://youtu.be/RsxorBCejcU' },
+  ],
+  featuredSpotNames: ['中央大街', '冰雪大世界', '雪谷', '长白山北坡景区', '故宫博物院', '慕田峪长城'],
+  sortDate: '2025-01-06',
+})
+
+patchGuide('china-guangzhou-8d7n', {
+  title: '广州 8天7夜自由行',
+  shortTitle: '广州 8天7夜',
+  tagline: '把老城区、荔湾西关、番禺园林和珠江新城排成一趟节奏舒服的广州路线。',
+  summary: '这篇广州游记按你最新的打卡日期整理成 8 天版本，适合继续补每天的影片、交通和预算。',
+  duration: '8 Days / 7 Nights',
+  budget: '',
+  travelStyle: '自由行',
+  route: [
+    { stopLabel: 'D1-D2', name: '广州老城', summary: '先用老城步行线把北京路、大佛寺、教堂和东山口串起来。', mapSpotName: '北京路步行街', latitude: 23.125, longitude: 113.268 },
+    { stopLabel: 'D3-D4', name: '荔湾西关', summary: '中段转进永庆坊、上下九和西关街区。', mapSpotName: '永庆坊', latitude: 23.117, longitude: 113.235 },
+    { stopLabel: 'D5-D6', name: '番禺与白云', summary: '园林古镇与花园、商圈安排在这一段。', mapSpotName: '宝墨园', latitude: 22.89, longitude: 113.288 },
+    { stopLabel: 'D7-D8', name: '珠江新城与天河', summary: '最后用广州塔、黄埔古港与天河商圈收尾。', mapSpotName: '广州塔', latitude: 23.106, longitude: 113.324 },
+  ],
+  budgetItems: [
+    { label: '住宿', amount: 'TBC' },
+    { label: '交通', amount: 'TBC' },
+    { label: '吃喝', amount: 'TBC' },
+    { label: '门票 / 体验', amount: 'TBC' },
+  ],
+  days: [
+    { dayLabel: 'Day 1', title: '广州经典老城', summary: '', highlights: [], linkedSpots: ['西华路美食街', '流花湖公园', '农讲所', '北京路步行街', '大佛古寺', '石室圣心大教堂'] },
+    { dayLabel: 'Day 2', title: '东山口与太古仓', summary: '', highlights: [], linkedSpots: ['东山口', '太古仓码头'] },
+    { dayLabel: 'Day 3', title: '文化馆与永庆坊', summary: '', highlights: [], linkedSpots: ['广州市文化馆新馆', '永庆坊'] },
+    { dayLabel: 'Day 4', title: '上下九与西坊大院', summary: '', highlights: [], linkedSpots: ['上下九步行街', '西坊大院'] },
+    { dayLabel: 'Day 5', title: '番禺园林线', summary: '', highlights: [], linkedSpots: ['宝墨园', '沙湾古镇'] },
+    { dayLabel: 'Day 6', title: '白云与商圈', summary: '', highlights: [], linkedSpots: ['云台花园', '时尚天河'] },
+    { dayLabel: 'Day 7', title: '广州塔与珠江边', summary: '', highlights: [], linkedSpots: ['广州塔', '黄埔古港', '海心沙'] },
+    { dayLabel: 'Day 8', title: '天河商圈收尾', summary: '', highlights: [], linkedSpots: ['太古汇', '正佳广场', '天环广场', '佳兆业广场'] },
+  ],
+  sortDate: '2023-05-17',
+})
+
+patchGuide('china-dali-shangri-la-lijiang-11d10n', {
+  title: '中国云南 11天10夜自由行',
+  shortTitle: '云南 11天10夜',
+  tagline: '从大理出发，接着走进香格里拉高原，最后回到丽江看雪山、蓝月谷和古城风景。',
+  summary: '这是一条适合第一次玩云南的 11 天 10 夜自由行路线，把大理、香格里拉、丽江三段主线整理成一篇完整游记。',
+  duration: '11 Days / 10 Nights',
+  budget: '',
+  travelStyle: '自由行',
+  route: [
+    { stopLabel: 'D1-D3', name: '大理', summary: '先用洱海、古城和古镇把节奏放慢。', mapSpotName: '大理古城' },
+    { stopLabel: 'D4-D7', name: '香格里拉', summary: '中段进入高原古城、湖区与峡谷，把整趟行程拉出层次。', mapSpotName: '独克宗古城' },
+    { stopLabel: 'D8-D11', name: '丽江', summary: '最后回到雪山、蓝月谷和古城群，把风景与拍照点一次收齐。', mapSpotName: '丽江古城' },
+  ],
+  highlightTags: ['大理古城', '喜洲古镇', '双廊古镇', '独克宗古城', '虎跳峡', '牦牛坪', '蓝月谷', '白沙古镇', '丽江古城'],
+  days: [
+    { dayLabel: 'Day 1', title: '大理古城周边', summary: '', highlights: [], linkedSpots: ['凤阳茶室', '凤阳邑', '大理古城', '南诏十二时辰'], videoUrl: 'https://youtu.be/dLzPWits1_A', stay: '大理极浦水景花园别墅别漾店', stayRangeStart: 1, stayRangeEnd: 2 },
+    { dayLabel: 'Day 2', title: '洱海西线', summary: '', highlights: [], linkedSpots: ['龙龛码头', '才村', '磻溪村S湾', '望田咖啡', '喜洲古镇'], videoUrl: 'https://youtu.be/-X8Z96Fperw', stay: '大理极浦水景花园别墅别漾店', stayRangeStart: 1, stayRangeEnd: 2 },
+    { dayLabel: 'Day 3', title: '洱海东线', summary: '', highlights: [], linkedSpots: ['双廊古镇', '杨丽萍太阳宫'], videoUrl: 'https://youtu.be/moFmzVvZOxI', stay: '大理心悦雅集海景客栈', stayRangeStart: 3, stayRangeEnd: 3 },
+    { dayLabel: 'Day 4', title: '独克宗古城', summary: '', highlights: [], linkedSpots: ['独克宗古城', '龟山公园', '月光广场'], videoUrl: 'https://youtu.be/_2ffIRevFnY', stay: '爱慕唯色客栈', stayRangeStart: 4, stayRangeEnd: 7 },
+    { dayLabel: 'Day 5', title: '普达措国家公园', summary: '', highlights: [], linkedSpots: ['普达措国家公园'], videoUrl: 'https://youtu.be/mJUwSP6M36g', stay: '爱慕唯色客栈', stayRangeStart: 4, stayRangeEnd: 7 },
+    { dayLabel: 'Day 6', title: '巴拉格宗', summary: '', highlights: [], linkedSpots: ['香巴拉佛塔', '回音壁'], videoUrl: 'https://youtu.be/gwl99_Mw3GU', stay: '爱慕唯色客栈', stayRangeStart: 4, stayRangeEnd: 7 },
+    { dayLabel: 'Day 7', title: '白水台与虎跳峡', summary: '', highlights: [], linkedSpots: ['白水台', '虎跳峡', '束河古镇'], videoUrl: 'https://youtu.be/gwl99_Mw3GU', stay: '爱慕唯色客栈', stayRangeStart: 4, stayRangeEnd: 7 },
+    { dayLabel: 'Day 8', title: '束河与听花谷', summary: '', highlights: [], linkedSpots: ['听花谷', '荒野之国', '汤佳米云味土鸡米线', '束河古镇'], videoUrl: 'https://youtu.be/9PxFRfuwnak', stay: '柠檬客栈', stayRangeStart: 8, stayRangeEnd: 8 },
+    { dayLabel: 'Day 9', title: '白沙与丽江古城', summary: '', highlights: [], linkedSpots: ['玉柱擎天', '玉湖村', '白沙古镇', '丽江古城', '龙女湖'], videoUrl: 'https://youtu.be/V1f3qUVdPiE', stay: '丽江真美观景客栈', stayRangeStart: 9, stayRangeEnd: 9 },
+    { dayLabel: 'Day 10', title: '沙溪古镇', summary: '', highlights: [], linkedSpots: ['沙溪古镇', '玉津桥', '先锋书院', '半山咖啡'], videoUrl: 'https://youtu.be/dLzPWits1_A' },
+    { dayLabel: 'Day 11', title: '玉龙雪山', summary: '', highlights: [], linkedSpots: ['牦牛坪', '蓝月谷'], videoUrl: 'https://youtu.be/Y6y7htaT9kM', stay: '丽江真美观景客栈', stayRangeStart: 11, stayRangeEnd: 11 },
+  ],
+  featuredSpotNames: ['大理古城', '喜洲古镇', '双廊古镇', '独克宗古城', '虎跳峡', '牦牛坪', '蓝月谷', '白沙古镇', '丽江古城'],
+  sortDate: '2024-06-09',
+})
+
+await writeFile(filePath, `${JSON.stringify(guides, null, 2)}\n`, 'utf8')
+console.log(`Updated ${guides.length} guides`)

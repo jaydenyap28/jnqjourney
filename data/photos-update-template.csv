@@ -1,0 +1,11 @@
+name,region_name,image_url,images,country
+Senso-ji Temple,Tokyo,https://example.com/sensoji-cover.jpg,https://example.com/sensoji1.jpg|https://example.com/sensoji2.jpg|https://example.com/sensoji3.jpg,Japan
+Shibuya Sky,Tokyo,https://example.com/shibuyasky-cover.jpg,https://example.com/shibuyasky1.jpg|https://example.com/shibuyasky2.jpg,Japan
+Mount Hakodate Night View,Hakodate,https://example.com/hakodate-cover.jpg,https://example.com/hakodate1.jpg|https://example.com/hakodate2.jpg|https://example.com/hakodate3.jpg,Japan
+Tokyo Disneyland,Urayasu,https://example.com/disneyland-cover.jpg,https://example.com/disneyland1.jpg|https://example.com/disneyland2.jpg,Japan
+Arakurayama Sengen Park,Fujiyoshida,https://example.com/arakurayama-cover.jpg,https://example.com/arakurayama1.jpg|https://example.com/arakurayama2.jpg,Japan
+Oshino Hakkai,Oshino,https://example.com/oshino-cover.jpg,https://example.com/oshino1.jpg|https://example.com/oshino2.jpg,Japan
+Zao Tree Ice,Yamagata City,https://example.com/zao-cover.jpg,https://example.com/zao1.jpg|https://example.com/zao2.jpg,Japan
+Ginzan Onsen Street,Obanazawa,https://example.com/ginzan-cover.jpg,https://example.com/ginzan1.jpg|https://example.com/ginzan2.jpg,Japan
+Noboribetsu Jigokudani,Noboribetsu,https://example.com/jigokudani-cover.jpg,https://example.com/jigokudani1.jpg|https://example.com/jigokudani2.jpg,Japan
+Kanemori Red Brick Warehouse,Hakodate,https://example.com/kanemori-cover.jpg,https://example.com/kanemori1.jpg|https://example.com/kanemori2.jpg,Japan

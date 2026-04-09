@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Fairy Cave",
+    "name_cn": "仙洞",
+    "category": "attraction",
+    "address": "Fairy Cave, Jalan Bengkayang-Perbatasan Malaysia, Bau, Sarawak, Malaysia",
+    "latitude": 1.3816802,
+    "longitude": 110.1175201,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋周边很受欢迎的石灰岩洞穴景点，适合和石洞、Bengoh Dam 等近郊路线一起安排。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "cave"]
+  },
+  {
+    "name": "Bengoh Dam",
+    "name_cn": "Bengoh Dam",
+    "category": "attraction",
+    "address": "Empangan Bengoh, Kuching Division, Sarawak, Malaysia",
+    "latitude": 1.2420953,
+    "longitude": 110.2418985,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋近郊很热门的自然路线起点，适合后续补瀑布、划船和一日游相关内容。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "nature"]
+  },
+  {
+    "name": "Kuching Waterfront",
+    "name_cn": "古晋河滨公园",
+    "category": "attraction",
+    "address": "Kuching Waterfront, Kuching, Sarawak, Malaysia",
+    "latitude": 1.5604548,
+    "longitude": 110.342304,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋市区最有代表性的河滨步道景点，适合和老街、博物馆、夜景路线一起整理。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "waterfront"]
+  },
+  {
+    "name": "Sarawak Cultural Village",
+    "name_cn": "砂拉越文化村",
+    "category": "attraction",
+    "address": "Sarawak Cultural Village, Pantai Damai, Santubong, Sarawak, Malaysia",
+    "latitude": 1.74971,
+    "longitude": 110.31698,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "砂拉越很经典的文化体验景点，适合和 Santubong 一带海边与度假村路线一起整理。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "culture"]
+  },
+  {
+    "name": "Malaysia-China Friendship Park",
+    "name_cn": "马中友谊公园",
+    "category": "attraction",
+    "address": "Malaysia-China Friendship Park, Kuching, Sarawak, Malaysia",
+    "latitude": 1.515679,
+    "longitude": 110.3659784,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋市区里很适合散步和拍照的城市公园，也适合安排亲子与夜间散步内容。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "park"]
+  },
+  {
+    "name": "101 Premier Foodcourt",
+    "name_cn": "101 Premier Foodcourt",
+    "category": "food",
+    "address": "Premier 101 Commercial Centre, Kuching, Sarawak, Malaysia",
+    "latitude": 1.5160368,
+    "longitude": 110.3540262,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋很常被安排进在地美食路线的 food court，后续可继续补招牌档口与推荐餐点。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "food"]
+  },
+  {
+    "name": "Borneo Cultures Museum",
+    "name_cn": "婆罗洲文化博物馆",
+    "category": "attraction",
+    "address": "Borneo Cultures Museum, Jalan Tun Abang Haji Openg, Kuching, Sarawak, Malaysia",
+    "latitude": 1.5554949,
+    "longitude": 110.3423299,
+    "region_name": "Kuching",
+    "country": "Malaysia",
+    "description": "古晋市区很重要的博物馆景点，适合和河滨、公园、老城路线一起安排成半日或一日游。",
+    "tags": ["manual-map-import", "sarawak", "kuching", "museum"]
+  }
+]

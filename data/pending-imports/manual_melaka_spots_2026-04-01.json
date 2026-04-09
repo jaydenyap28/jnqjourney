@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Machap Baru",
+    "name_cn": null,
+    "category": "attraction",
+    "address": "Jalan Machap Baru / Ayer Pasir, Kampung Machap Lama, 76100 Alor Gajah, Melaka, Malaysia",
+    "latitude": 2.3829852,
+    "longitude": 102.3309052,
+    "region_name": "Melaka",
+    "country": "Malaysia",
+    "google_maps_url": "https://maps.app.goo.gl/7zCcv4vAgkHxyT659",
+    "description": "马六甲 Alor Gajah 一带可顺路安排的地方景点，适合和周边乡镇路线一起整理。",
+    "tags": ["manual-map-import", "melaka", "alor-gajah", "town"]
+  },
+  {
+    "name": "Machap Umboo",
+    "name_cn": null,
+    "category": "attraction",
+    "address": "Kampung Permai, 78000 Alor Gajah, Melaka, Malaysia",
+    "latitude": 2.3836373,
+    "longitude": 102.2776792,
+    "region_name": "Melaka",
+    "country": "Malaysia",
+    "google_maps_url": "https://maps.app.goo.gl/fLwe7BmMjxz7ofLJA",
+    "description": "马六甲 Alor Gajah 一带可纳入路线的地方点位，后续可再补图与介绍。",
+    "tags": ["manual-map-import", "melaka", "alor-gajah", "village"]
+  },
+  {
+    "name": "士兰道青龙宫",
+    "name_cn": "士兰道青龙宫",
+    "category": "attraction",
+    "address": "青龙宫, Taman Selandar Indah, Selandar, Jasin, Melaka, 77500, Malaysia",
+    "latitude": 2.3887264,
+    "longitude": 102.3778676,
+    "region_name": "Melaka",
+    "country": "Malaysia",
+    "description": "马六甲 Selandar 一带的庙宇景点，适合节庆打卡与地方文化路线整理。",
+    "tags": ["manual-map-import", "melaka", "jasin", "temple"]
+  }
+]
