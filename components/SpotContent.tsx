@@ -716,7 +716,6 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 <span>{new Date(location.visit_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}</span>
               </div>
             ) : null}
-            {location.address ? <div className="rounded-md border border-white/10 bg-white/5 px-2 py-1 text-xs text-gray-300">{location.address}</div> : null}
           </div>
         </div>
 
@@ -1018,6 +1017,17 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
           </div>
 
           <div className="space-y-4">
+            {!isDrawer ? (
+              <AffiliateCard
+                locationId={location.id}
+                regionId={location.regions?.id}
+                category={location.category}
+                title={affiliateTitle}
+                description={affiliateDescription}
+                showDisclosure={false}
+              />
+            ) : null}
+
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">{isDrawer ? 'Quick Actions' : 'Navigation Maps'}</p>
               <div className="mt-4 grid gap-3">
@@ -1111,17 +1121,6 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 </a>
               </div>
             </div>
-
-            {!isDrawer ? (
-              <AffiliateCard
-                locationId={location.id}
-                regionId={location.regions?.id}
-                category={location.category}
-                title={affiliateTitle}
-                description={affiliateDescription}
-                showDisclosure={false}
-              />
-            ) : null}
 
           </div>
         </div>
