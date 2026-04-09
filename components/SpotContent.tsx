@@ -454,10 +454,10 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
     location.category === 'accommodation'
       ? '住宿预订'
       : location.category === 'food'
-        ? '周边预订'
+        ? 'Nearby Booking / 周边预订'
         : '预订推荐'
   const affiliateDescription = hasPriceSnapshot
-    ? '先看参考花费，再对照 Trip.com / Klook / 酒店平台当前价。'
+    ? ''
     : '票价、住宿和体验价会按日期浮动，建议直接打开预订页看最新价。'
 
   const handleNavigateGoogle = () => {
@@ -1136,3 +1136,4 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
     </div>
   )
 }
+

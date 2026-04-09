@@ -5,9 +5,11 @@ import type { TravelGuide } from '@/lib/guides'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
-const STORAGE_PATH = '_system/guides.json'
+const STORAGE_PATH = '_system/guides.webp'
+const LEGACY_STORAGE_PATH = '_system/guides.json'
 const VERSIONED_STORAGE_DIR = '_system/guides'
-const STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.txt'
+const STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.webp'
+const LEGACY_STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.txt'
 
 function getAdminSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -136,10 +138,12 @@ async function readStorageGuides() {
   try {
     const candidatePaths: string[] = []
 
-    const { data: latestPointer } = await supabase.storage.from(STORAGE_BUCKET).download(STORAGE_LATEST_POINTER_PATH)
-    if (latestPointer) {
+    for (const pointerPath of [STORAGE_LATEST_POINTER_PATH, LEGACY_STORAGE_LATEST_POINTER_PATH]) {
+      const { data: latestPointer } = await supabase.storage.from(STORAGE_BUCKET).download(pointerPath)
+      if (!latestPointer) continue
       const latestPath = String(await latestPointer.text()).trim()
       if (latestPath) candidatePaths.push(latestPath)
+      if (latestPath) break
     }
 
     const { data: versions } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
@@ -150,10 +154,10 @@ async function readStorageGuides() {
     const versionedFiles = Array.isArray(versions)
       ? versions
           .map((item) => String(item?.name || '').trim())
-          .filter((item) => item.endsWith('.json'))
+          .filter((item) => item.endsWith('.webp') || item.endsWith('.json'))
       : []
 
-    candidatePaths.push(...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH)
+    candidatePaths.push(...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH, LEGACY_STORAGE_PATH)
 
     let raw = ''
     const dedupedPaths = Array.from(new Set(candidatePaths.filter(Boolean)))
@@ -179,10 +183,10 @@ async function writeStorageGuides(guides: TravelGuide[]) {
   if (!supabase) return
 
   const payload = Buffer.from(`${JSON.stringify(guides, null, 2)}\n`, 'utf8')
-  const versionedPath = `${VERSIONED_STORAGE_DIR}/${Date.now()}.json`
+  const versionedPath = `${VERSIONED_STORAGE_DIR}/${Date.now()}.webp`
   const { error: versionedError } = await supabase.storage.from(STORAGE_BUCKET).upload(versionedPath, payload, {
     upsert: false,
-    contentType: 'application/json; charset=utf-8',
+    contentType: 'image/webp',
     cacheControl: '0',
   })
 
@@ -195,7 +199,7 @@ async function writeStorageGuides(guides: TravelGuide[]) {
     Buffer.from(versionedPath, 'utf8'),
     {
       upsert: true,
-      contentType: 'text/plain; charset=utf-8',
+      contentType: 'image/webp',
       cacheControl: '0',
     }
   )
@@ -206,7 +210,7 @@ async function writeStorageGuides(guides: TravelGuide[]) {
 
   const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(STORAGE_PATH, payload, {
     upsert: true,
-    contentType: 'application/json; charset=utf-8',
+    contentType: 'image/webp',
     cacheControl: '0',
   })
 
@@ -258,4 +262,7 @@ export async function saveGuides(guides: TravelGuide[]) {
   } catch {}
   await writeStorageGuides(normalized)
 }
+
+
+
 

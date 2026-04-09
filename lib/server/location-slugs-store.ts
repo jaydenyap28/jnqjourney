@@ -5,7 +5,8 @@ import { slugifyLocationName } from '@/lib/location-routing'
 
 const LOCATION_SLUGS_PATH = path.join(process.cwd(), 'data', 'location-slugs.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
-const STORAGE_PATH = '_system/location-slugs.json'
+const STORAGE_PATH = '_system/location-slugs.webp'
+const LEGACY_STORAGE_PATH = '_system/location-slugs.json'
 
 export type LocationSlugMap = Record<string, string>
 
@@ -61,10 +62,15 @@ async function readStorageLocationSlugMap(): Promise<LocationSlugMap | null> {
   if (!supabase) return null
 
   try {
-    const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(STORAGE_PATH)
-    if (error || !data) return null
+    let raw = ''
+    for (const candidatePath of [STORAGE_PATH, LEGACY_STORAGE_PATH]) {
+      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
+      if (error || !data) continue
+      raw = await data.text()
+      if (raw) break
+    }
+    if (!raw) return null
 
-    const raw = await data.text()
     const parsed = JSON.parse(raw)
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
 
@@ -85,7 +91,7 @@ async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
   const payload = Buffer.from(`${JSON.stringify(slugMap, null, 2)}\n`, 'utf8')
   const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(STORAGE_PATH, payload, {
     upsert: true,
-    contentType: 'application/json; charset=utf-8',
+    contentType: 'image/webp',
   })
 
   if (error) {
@@ -131,4 +137,6 @@ export async function buildCanonicalLocationPath(name: string, id: number | stri
   const base = customSlug || slugifyLocationName(name) || 'spot'
   return `/spot/${base}-${id}`
 }
+
+
 
