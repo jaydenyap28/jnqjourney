@@ -39,7 +39,10 @@ export async function POST(request: Request) {
     }
 
     await saveGuides(guides)
-    return NextResponse.json({ guide: payload })
+    const savedGuides = await readGuides()
+    const savedGuide =
+      savedGuides.find((item) => item.slug === payload.slug || (previousSlug && item.slug === previousSlug)) || payload
+    return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString() })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存攻略失败。' }, { status: 500 })
   }
@@ -64,6 +67,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: error?.message || '删除攻略失败。' }, { status: 500 })
   }
 }
+
 
 
 

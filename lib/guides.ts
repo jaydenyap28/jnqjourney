@@ -1,6 +1,7 @@
 export interface GuideBudgetItem {
   label: string
   amount: string
+  currency?: string
   note?: string
 }
 

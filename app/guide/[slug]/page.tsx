@@ -636,7 +636,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     className="rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-3.5 md:rounded-[26px] md:p-5"
                   >
                     <p className="text-sm text-white/58">{item.label || 'Budget Item / 预算项'}</p>
-                    <p className="mt-2 text-2xl font-semibold text-white md:text-[1.9rem]">{item.amount}</p>
+                    <p className="mt-2 text-2xl font-semibold text-white md:text-[1.9rem]">
+                      {[item.currency, item.amount].filter(Boolean).join(' ')}
+                    </p>
                     {item.note ? <p className="mt-3 text-sm leading-6 text-gray-300">{item.note}</p> : null}
                   </div>
                 ))}

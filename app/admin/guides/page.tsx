@@ -27,6 +27,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 
+const GUIDE_BUDGET_CURRENCIES = ['RM', 'CNY', 'JPY', 'THB', 'IDR', 'USD']
+
 interface RegionOption {
   id: number
   name: string
@@ -195,6 +197,12 @@ function compactSearchText(value?: string | null) {
   return normalizeSearchText(value).replace(/[^\p{L}\p{N}]+/gu, '')
 }
 
+function stripBudgetCurrency(value: string) {
+  return String(value || '')
+    .replace(/^(rm|cny|jpy|thb|idr|usd|rmb|myr|¥|￥|\$)\s*/i, '')
+    .trim()
+}
+
 function matchesSearchQuery(parts: Array<string | null | undefined>, query: string) {
   const rawQuery = normalizeSearchText(query)
   if (!rawQuery) return true
@@ -298,6 +306,7 @@ export default function AdminGuidesPage() {
   const [saving, setSaving] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
+  const [messageTone, setMessageTone] = useState<'neutral' | 'success' | 'error'>('neutral')
   const [selectedSlug, setSelectedSlug] = useState('')
   const [originalSlug, setOriginalSlug] = useState('')
   const [form, setForm] = useState<TravelGuide>(EMPTY_GUIDE)
@@ -676,6 +685,7 @@ function removeDay(index: number) {
       {
         label: '',
         amount: '',
+        currency: 'RM',
         note: '',
       },
     ])
@@ -743,10 +753,12 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
     const nextDays = buildGuideDaysFromVisitDates(locations, form.route.map((stop) => stop.name))
     if (!nextDays.length) {
       setMessage('No dated spots matched the current route yet.')
+      setMessageTone('error')
       return
     }
     updateField('days', nextDays)
     setMessage('Rebuilt day plans from visit dates.')
+    setMessageTone('success')
   }
 
   async function saveGuide() {
@@ -787,11 +799,13 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
 
     if (!payload.title.trim()) {
       setMessage('Guide title is required.')
+      setMessageTone('error')
       return
     }
 
     if (!payload.slug) {
       setMessage('Could not build a slug for this guide.')
+      setMessageTone('error')
       return
     }
 
@@ -807,11 +821,26 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'Failed to save guide.')
 
+      if (result?.guide) {
+        setForm(result.guide)
+        setOriginalSlug(result.guide.slug || '')
+        setSelectedSlug(result.guide.slug || '')
+        setGuides((prev) => {
+          const next = [...prev]
+          const existingIndex = next.findIndex((item) => item.slug === result.guide.slug || item.slug === originalSlug)
+          if (existingIndex >= 0) next[existingIndex] = result.guide
+          else next.unshift(result.guide)
+          return next
+        })
+      }
+
       await loadData(result.guide.slug)
-      setMessage('Guide saved.')
+      setMessage(`Saved successfully at ${new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}.`)
+      setMessageTone('success')
     } catch (error: any) {
       console.error(error)
       setMessage(error?.message || 'Failed to save guide.')
+      setMessageTone('error')
     } finally {
       setSaving(false)
     }
@@ -834,9 +863,11 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
 
       await loadData()
       setMessage('Guide deleted.')
+      setMessageTone('success')
     } catch (error: any) {
       console.error(error)
       setMessage(error?.message || 'Failed to delete guide.')
+      setMessageTone('error')
     } finally {
       setDeleting(false)
     }
@@ -875,7 +906,19 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
           </div>
         </div>
 
-        {message ? <div className="rounded-2xl border border-white/10 bg-slate-950/72 px-4 py-3 text-sm text-slate-200 backdrop-blur-xl">{message}</div> : null}
+        {message ? (
+          <div
+            className={`rounded-2xl px-4 py-3 text-sm backdrop-blur-xl ${
+              messageTone === 'success'
+                ? 'border border-emerald-300/20 bg-emerald-500/10 text-emerald-100'
+                : messageTone === 'error'
+                  ? 'border border-rose-300/20 bg-rose-500/10 text-rose-100'
+                  : 'border border-white/10 bg-slate-950/72 text-slate-200'
+            }`}
+          >
+            {message}
+          </div>
+        ) : null}
 
         <div className="grid gap-6 xl:grid-cols-[320px_minmax(0,1fr)]">
           <Card className="border-white/10 bg-slate-950/78 shadow-[0_18px_48px_rgba(2,6,23,0.48)] backdrop-blur-xl">
@@ -1191,7 +1234,24 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                         </div>
                         <div className="space-y-2">
                           <Label>Amount</Label>
-                          <Input value={item.amount} onChange={(e) => updateBudgetItem(index, { amount: e.target.value })} placeholder="RM 1,200 / CNY 350 / TBC" />
+                          <div className="grid grid-cols-[96px_minmax(0,1fr)] gap-2">
+                            <select
+                              value={item.currency || 'RM'}
+                              onChange={(e) => updateBudgetItem(index, { currency: e.target.value })}
+                              className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900"
+                            >
+                              {GUIDE_BUDGET_CURRENCIES.map((currency) => (
+                                <option key={currency} value={currency}>
+                                  {currency}
+                                </option>
+                              ))}
+                            </select>
+                            <Input
+                              value={item.amount}
+                              onChange={(e) => updateBudgetItem(index, { amount: stripBudgetCurrency(e.target.value) })}
+                              placeholder="1200 / 350 / TBC"
+                            />
+                          </div>
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <Label>Note</Label>

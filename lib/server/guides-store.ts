@@ -79,6 +79,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
           .map((item: any) => ({
             label: String(item?.label || '').trim(),
             amount: String(item?.amount || '').trim(),
+            currency: String(item?.currency || '').trim() || undefined,
             note: String(item?.note || '').trim() || undefined,
           }))
           .filter((item: any) => item.amount)
@@ -262,6 +263,7 @@ export async function saveGuides(guides: TravelGuide[]) {
   } catch {}
   await writeStorageGuides(normalized)
 }
+
 
 
 
