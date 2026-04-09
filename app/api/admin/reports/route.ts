@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 
@@ -44,15 +44,29 @@ function formatDayKey(value?: string | null) {
   return date.toISOString().slice(0, 10)
 }
 
+function parseDateRange(request: Request) {
+  const url = new URL(request.url)
+  const toInput = url.searchParams.get('to')
+  const fromInput = url.searchParams.get('from')
+
+  const to = toInput ? new Date(`${toInput}T23:59:59.999Z`) : new Date()
+  if (Number.isNaN(to.getTime())) return null
+
+  const from = fromInput ? new Date(`${fromInput}T00:00:00.000Z`) : new Date(to)
+  if (!fromInput) from.setDate(from.getDate() - 29)
+  if (Number.isNaN(from.getTime())) return null
+  if (from > to) return null
+
+  return { from, to }
+}
+
 function buildDailyTraffic(rows: PageViewRow[]) {
   const bucket = new Map<string, { pageViews: number; sessions: Set<string> }>()
 
   for (const row of rows) {
     const key = formatDayKey(row.viewed_at)
     if (!key) continue
-    if (!bucket.has(key)) {
-      bucket.set(key, { pageViews: 0, sessions: new Set() })
-    }
+    if (!bucket.has(key)) bucket.set(key, { pageViews: 0, sessions: new Set() })
     const current = bucket.get(key)!
     current.pageViews += 1
     if (row.session_id) current.sessions.add(String(row.session_id))
@@ -60,7 +74,6 @@ function buildDailyTraffic(rows: PageViewRow[]) {
 
   return Array.from(bucket.entries())
     .sort((left, right) => right[0].localeCompare(left[0]))
-    .slice(0, 30)
     .map(([date, stats]) => ({
       date,
       pageViews: stats.pageViews,
@@ -76,9 +89,7 @@ function buildTopContent(rows: PageViewRow[], type: 'guide' | 'spot') {
     const slug = String(row.content_slug || '').trim()
     if (!slug) continue
 
-    if (!bucket.has(slug)) {
-      bucket.set(slug, { slug, views: 0, visitors: new Set() })
-    }
+    if (!bucket.has(slug)) bucket.set(slug, { slug, views: 0, visitors: new Set() })
 
     const current = bucket.get(slug)!
     current.views += 1
@@ -96,17 +107,7 @@ function buildTopContent(rows: PageViewRow[], type: 'guide' | 'spot') {
 }
 
 function buildTopAffiliateClicks(rows: AffiliateClickRow[]) {
-  const bucket = new Map<
-    number,
-    {
-      id: number
-      title: string
-      provider: string
-      type: string
-      target: string
-      clicks: number
-    }
-  >()
+  const bucket = new Map<number, { id: number; title: string; provider: string; type: string; target: string; clicks: number }>()
 
   for (const row of rows) {
     const id = Number(row.affiliate_link_id || row.affiliate_links?.id || 0)
@@ -147,12 +148,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: '缺少 Supabase 环境变量，无法读取报表。' }, { status: 500 })
   }
 
-  const now = new Date()
-  const pageViewSince = new Date(now)
-  pageViewSince.setDate(pageViewSince.getDate() - 30)
-
-  const affiliateSince = new Date(now)
-  affiliateSince.setDate(affiliateSince.getDate() - 30)
+  const range = parseDateRange(request)
+  if (!range) {
+    return NextResponse.json({ error: '日期范围无效。' }, { status: 400 })
+  }
 
   let pageViews: PageViewRow[] = []
   let pageViewErrorMessage: string | null = null
@@ -160,15 +159,13 @@ export async function GET(request: Request) {
   const pageViewsResult = await supabase
     .from('page_views')
     .select('path, content_type, content_slug, session_id, viewed_at')
-    .gte('viewed_at', pageViewSince.toISOString())
+    .gte('viewed_at', range.from.toISOString())
+    .lte('viewed_at', range.to.toISOString())
     .order('viewed_at', { ascending: false })
-    .limit(5000)
+    .limit(10000)
 
-  if (pageViewsResult.error) {
-    pageViewErrorMessage = pageViewsResult.error.message
-  } else {
-    pageViews = (pageViewsResult.data || []) as PageViewRow[]
-  }
+  if (pageViewsResult.error) pageViewErrorMessage = pageViewsResult.error.message
+  else pageViews = (pageViewsResult.data || []) as PageViewRow[]
 
   const affiliateClicksResult = await supabase
     .from('affiliate_clicks')
@@ -190,13 +187,14 @@ export async function GET(request: Request) {
         )
       )
     `)
-    .gte('clicked_at', affiliateSince.toISOString())
+    .gte('clicked_at', range.from.toISOString())
+    .lte('clicked_at', range.to.toISOString())
     .order('clicked_at', { ascending: false })
-    .limit(5000)
+    .limit(10000)
 
   const affiliateClickRows = affiliateClicksResult.error ? [] : ((affiliateClicksResult.data || []) as AffiliateClickRow[])
-
-  const latestDay = buildDailyTraffic(pageViews)[0] || null
+  const dailyTraffic = buildDailyTraffic(pageViews)
+  const latestDay = dailyTraffic[0] || null
   const totalVisitors = new Set(pageViews.map((row) => String(row.session_id || '')).filter(Boolean)).size
 
   return NextResponse.json({
@@ -206,7 +204,11 @@ export async function GET(request: Request) {
       affiliateClicks: affiliateClickRows.length,
       latestDay,
     },
-    dailyTraffic: buildDailyTraffic(pageViews),
+    range: {
+      from: range.from.toISOString().slice(0, 10),
+      to: range.to.toISOString().slice(0, 10),
+    },
+    dailyTraffic,
     topGuides: buildTopContent(pageViews, 'guide'),
     topSpots: buildTopContent(pageViews, 'spot'),
     topAffiliateClicks: buildTopAffiliateClicks(affiliateClickRows),
@@ -214,3 +216,4 @@ export async function GET(request: Request) {
     pageViewsError: pageViewErrorMessage,
   })
 }
+

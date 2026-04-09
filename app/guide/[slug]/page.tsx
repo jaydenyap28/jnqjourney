@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
@@ -570,9 +570,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
 
       <section className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
+        <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-12">
           <div
-            className={`overflow-hidden rounded-[42px] border border-white/10 p-6 shadow-[0_36px_120px_rgba(0,0,0,0.32)] md:p-10 ${guide.coverAccent}`}
+            className={`overflow-hidden rounded-[34px] border border-white/10 p-4 shadow-[0_36px_120px_rgba(0,0,0,0.32)] md:rounded-[42px] md:p-10 ${guide.coverAccent}`}
             style={
               guide.coverImage
                 ? {
@@ -583,13 +583,13 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 : undefined
             }
           >
-            <div className="relative z-10 space-y-6">
+            <div className="relative z-10 space-y-4 md:space-y-6">
                 <div className="space-y-4">
                   <p className="section-kicker text-xs text-amber-100/80">{'Travel Guide / \u6e38\u8bb0'}</p>
-                  <h1 className="font-display max-w-4xl text-[3.2rem] leading-[0.94] text-white md:text-[5.4rem]">
+                  <h1 className="font-display max-w-4xl text-[2.35rem] leading-[0.96] text-white md:text-[5.4rem]">
                     {guide.title}
                   </h1>
-                  <p className="max-w-3xl text-base leading-8 text-white/82 md:text-xl md:leading-9">{guide.tagline}</p>
+                  <p className="max-w-3xl text-sm leading-7 text-white/82 md:text-xl md:leading-9">{guide.tagline}</p>
                   <p className="max-w-3xl text-sm leading-7 text-white/66 md:text-base md:leading-8">{guide.summary}</p>
                 </div>
             </div>
@@ -597,9 +597,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-14">
-        <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start">
-          <div className="space-y-12">
+      <section className="mx-auto max-w-7xl px-4 py-7 md:px-8 md:py-14">
+        <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start">
+          <div className="space-y-8 md:space-y-12">
             {routeMapPoints.length ? (
               <section className="space-y-5">
                 <div>
@@ -623,7 +623,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 <p className="section-kicker text-xs text-amber-300/80">{'Budget / \u9884\u7b97'}</p>
                 <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">{'\u9884\u7b97\u62c6\u89e3'}</h2>
               </div>
-              <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {guide.budget ? (
                   <div className="rounded-[26px] border border-amber-300/20 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))] p-5">
                     <p className="text-sm text-amber-100/70">Budget / 总预算</p>
@@ -653,16 +653,16 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 {(datedDayPlans.length ? datedDayPlans : []).map((day) => (
                   <div
                     key={`${day.date}-${day.dayNumber}`}
-                    className="overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_24px_70px_rgba(0,0,0,0.18)]"
+                    className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_24px_70px_rgba(0,0,0,0.18)] md:rounded-[32px]"
                   >
                     <div className="grid gap-0 lg:grid-cols-[190px_minmax(0,1fr)]">
-                      <div className="border-b border-white/10 bg-black/20 px-5 py-6 lg:border-b-0 lg:border-r">
+                      <div className="border-b border-white/10 bg-black/20 px-4 py-4 lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
                         <p className="section-kicker text-xs text-amber-300/80">{`Day ${day.dayNumber}`}</p>
                         <p className="mt-4 text-3xl font-semibold text-white">{String(day.dayNumber).padStart(2, '0')}</p>
                         <p className="mt-3 text-sm text-white/60">{day.formattedDate || '\u65c5\u884c\u65e5'}</p>
                       </div>
-                      <div className="px-5 py-6 md:px-6 md:py-7">
-                        <h3 className="text-[1.8rem] font-semibold leading-tight text-white">{day.title}</h3>
+                      <div className="px-4 py-4 md:px-6 md:py-7">
+                        <h3 className="text-[1.25rem] font-semibold leading-tight text-white md:text-[1.8rem]">{day.title}</h3>
                         {shouldShowDaySummary(day.summary) ? <p className="mt-3 text-sm leading-7 text-gray-300">{day.summary}</p> : null}
                         <div className="mt-4 flex flex-wrap gap-2">
                           {day.highlights.map((highlight) => (
@@ -673,7 +673,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                         </div>
 
                         {day.displaySpots.length || day.unresolvedSpotNames.length ? (
-                          <div className="mt-6 rounded-[26px] border border-amber-400/15 bg-black/20 p-4 md:p-5">
+                          <div className="mt-4 rounded-[22px] border border-amber-400/15 bg-black/20 p-3 md:mt-6 md:rounded-[26px] md:p-5">
                             <div className="flex items-end justify-between gap-4">
                               <div>
                                 <p className="text-xs uppercase tracking-[0.24em] text-amber-200/75">{'\u5f53\u5929\u76f8\u5173\u5730\u70b9'}</p>
@@ -682,7 +682,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                 {day.displaySpots.length + day.unresolvedSpotNames.length} {'\u4e2a\u5730\u70b9'}
                               </span>
                             </div>
-                            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
+                            <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
                               {day.displaySpots.map((spot) => {
                                 const orderIndex = day.orderedSpotIds.indexOf(spot.id)
 
@@ -690,7 +690,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                   <Link
                                     key={spot.id}
                                     href={buildLocationPath(spot.name, spot.id)}
-                                    className="group overflow-hidden rounded-[24px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
+                                    className="group overflow-hidden rounded-[18px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:rounded-[24px]"
                                   >
                                     <div className="relative aspect-[16/10] overflow-hidden bg-black/20">
                                       <FallbackImage
@@ -712,7 +712,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                         ) : null}
                                       </div>
                                     </div>
-                                    <div className="space-y-2 p-4">
+                                    <div className="space-y-1.5 p-3 md:space-y-2 md:p-4">
                                       <div className="font-medium text-white">{spot.name_cn || spot.name}</div>
                                       <div className="text-xs text-white/55">
                                         {spot.regions?.name_cn || spot.regions?.name || 'Yunnan'}
@@ -736,9 +736,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
                           </div>
                         ) : null}
 
-                        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+                        <div className="mt-4 grid gap-3 lg:grid-cols-2">
                           {day.transport ? (
-                            <div className="rounded-[24px] border border-white/10 bg-black/20 p-5 md:min-h-[220px]">
+                            <div className="rounded-[20px] border border-white/10 bg-black/20 p-4 md:min-h-[220px] md:rounded-[24px] md:p-5">
                               <p className="text-xs uppercase tracking-[0.22em] text-white/45">{'\u4ea4\u901a'}</p>
                               <p className="mt-3 text-sm leading-7 text-white">{day.transport}</p>
                               {day.transportPrice ? <p className="mt-3 text-sm font-medium text-amber-200">{day.transportPrice}</p> : null}
@@ -747,7 +747,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                         </div>
 
                         {day.staySpot || day.stay ? (
-                          <div className="mt-5 rounded-[26px] border border-sky-400/15 bg-sky-500/10 p-4 md:p-5">
+                          <div className="mt-4 rounded-[22px] border border-sky-400/15 bg-sky-500/10 p-3.5 md:mt-5 md:rounded-[26px] md:p-5">
                             <div className="flex items-end justify-between gap-4">
                               <div>
                                 <p className="text-xs uppercase tracking-[0.24em] text-sky-200/80">{'\u5f53\u65e5\u4f4f\u5bbf'}</p>
@@ -756,9 +756,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
                             {day.staySpot ? (
                               <Link
                                 href={buildLocationPath(day.staySpot.name, day.staySpot.id)}
-                                className="group mt-4 grid overflow-hidden rounded-[24px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:grid-cols-[120px_minmax(0,1fr)]"
+                                className="group mt-3 grid overflow-hidden rounded-[18px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:mt-4 md:rounded-[24px] md:grid-cols-[120px_minmax(0,1fr)]"
                               >
-                                <div className="relative min-h-[108px] overflow-hidden bg-black/20">
+                                <div className="relative min-h-[84px] overflow-hidden bg-black/20 md:min-h-[108px]">
                                   <FallbackImage
                                     src={getSpotCover(day.staySpot)}
                                     alt={day.staySpot.name}
@@ -771,7 +771,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                     {'\u4f4f\u5bbf'}
                                   </div>
                                 </div>
-                                <div className="flex min-w-0 flex-col justify-center space-y-2 p-4">
+                                <div className="flex min-w-0 flex-col justify-center space-y-1 p-3 md:space-y-2 md:p-4">
                                   <div className="font-medium text-white">{day.staySpot.name_cn || day.staySpot.name}</div>
                                   <div className="text-xs text-white/55">
                                     {day.staySpot.regions?.name_cn || day.staySpot.regions?.name || 'Yunnan'}
@@ -780,12 +780,12 @@ export default async function GuideDetailPage({ params }: PageProps) {
                               </Link>
                             ) : null}
                             {day.stayNote ? (
-                              <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm leading-7 text-white/82">
+                              <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm leading-6 text-white/82 md:mt-4 md:px-4 md:py-3 md:leading-7">
                                 {day.stayNote}
                               </div>
                             ) : null}
                             {day.stay && !day.staySpot ? (
-                              <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm leading-7 text-white/82">
+                              <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-3 text-sm leading-6 text-white/82 md:mt-4 md:p-4 md:leading-7">
                                 {day.stay}
                               </div>
                             ) : null}
@@ -976,6 +976,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
+
+
 
 
 

@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import { ArrowLeft, Compass, MapPinned, Route, Sparkles } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import { Badge } from '@/components/ui/badge'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -56,34 +57,68 @@ export default async function RegionPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
-      <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-12">
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 md:p-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
+        <div className="mb-5 flex flex-wrap items-center gap-2 text-sm text-white/70 md:mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 transition hover:bg-white/10">
+            <ArrowLeft className="h-4 w-4" />
+            回到首页地图
+          </Link>
+          <Link href="/guide" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 transition hover:bg-white/10">
+            <Route className="h-4 w-4" />
+            看完整游记
+          </Link>
+          <Link href="/region" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 transition hover:bg-white/10">
+            <Compass className="h-4 w-4" />
+            看所有地区
+          </Link>
+        </div>
+
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-5 md:p-8">
           <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">Region Hub</p>
           <div className="mt-4 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
               <h1 className="text-3xl font-bold text-white md:text-5xl">{region.name}</h1>
               {region.name_cn ? <p className="mt-2 text-lg text-gray-400 md:text-2xl">{region.name_cn}</p> : null}
               <p className="mt-4 text-sm leading-7 text-gray-300">
-                {region.description || `${readableName} 的景点、美食、住宿和旅行灵感都会持续沉淀在这里，后续也适合承接攻略、联盟推荐和自媒体导流。`}
+                {region.description || `${readableName} 的景点、美食、住宿和旅行灵感都会持续沉淀在这里，也适合承接影片流量、联盟推荐和完整游记导流。`}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {region.country ? <Badge className="border border-white/10 bg-white/10 text-white">{region.country}</Badge> : null}
                 <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">{locations.length} 个地点</Badge>
               </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">Start Here</p>
+                  <p className="mt-2 text-sm text-white">先看这个地区的点，再回首页继续发现其他国家与路线。</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">Travel Route</p>
+                  <p className="mt-2 text-sm text-white">如果你是从 YouTube 进来的，可以继续接完整游记看路线。</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">More Discovery</p>
+                  <p className="mt-2 text-sm text-white">地图首页会继续带你找其他地区、景点和预订资讯。</p>
+                </div>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Link href="/region" className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">
-                查看所有区域
+              <Link href="/" className="inline-flex items-center justify-center gap-2 rounded-full border border-amber-300/20 bg-amber-400/10 px-4 py-2 text-sm text-amber-100 transition hover:bg-amber-400/15">
+                <MapPinned className="h-4 w-4" />
+                回首页看地图
               </Link>
-              <Link href="/" className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">
-                返回地图首页
+              <Link href="/guide" className="inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">
+                <Sparkles className="h-4 w-4" />
+                看完整游记
+              </Link>
+              <Link href="/region" className="inline-flex items-center justify-center rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white transition hover:bg-white/10">
+                查看所有地区
               </Link>
             </div>
           </div>
         </div>
 
         {locations.length > 0 ? (
-          <section className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {locations.map((location) => {
               const coverImage = location.image_url || location.images?.[0] || '/placeholder-image.jpg'
               return (
@@ -129,3 +164,4 @@ export default async function RegionPage({ params }: PageProps) {
     </main>
   )
 }
+
