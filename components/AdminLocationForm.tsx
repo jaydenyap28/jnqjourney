@@ -41,6 +41,13 @@ const COUNTRY_CURRENCY: Record<string, string> = {
   Indonesia: 'IDR',
 }
 
+const COUNTRY_SECONDARY_CURRENCY: Record<string, string> = {
+  China: 'RM',
+  Japan: 'RM',
+  Thailand: 'RM',
+  Indonesia: 'RM',
+}
+
 interface StructuredOpeningHours {
   isUnknown: boolean
   open: string
@@ -227,11 +234,15 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const addPriceCustomItem = () => {
     setStructuredPriceInfo((prev) => ({
       ...prev,
-      customItems: [...prev.customItems, { label: '', labelEn: '', value: '', note: '' }],
+      customItems: [...prev.customItems, { label: '', labelEn: '', value: '', valueSecondary: '', note: '' }],
     }))
   }
 
-  const updatePriceCustomItem = (index: number, field: 'label' | 'labelEn' | 'value' | 'note', value: string) => {
+  const updatePriceCustomItem = (
+    index: number,
+    field: 'label' | 'labelEn' | 'value' | 'valueSecondary' | 'note',
+    value: string
+  ) => {
     setStructuredPriceInfo((prev) => ({
       ...prev,
       customItems: prev.customItems.map((item, itemIndex) => (itemIndex === index ? { ...item, [field]: value } : item)),
@@ -1437,15 +1448,25 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     const region = regions.find((item) => String(item.id) === formData.region_id)
     const country = getRegionCountry(region, regions)
     const suggestedCurrency = COUNTRY_CURRENCY[String(country || '').trim()]
+    const suggestedSecondaryCurrency = COUNTRY_SECONDARY_CURRENCY[String(country || '').trim()]
 
     if (!suggestedCurrency) return
 
     setStructuredPriceInfo((prev) => {
       if (prev.currency && prev.currency !== suggestedCurrency) return prev
-      if (prev.currency === suggestedCurrency) return prev
+      if (
+        prev.currency === suggestedCurrency &&
+        (prev.secondaryCurrency === suggestedSecondaryCurrency || (!prev.secondaryCurrency && !suggestedSecondaryCurrency))
+      ) {
+        return prev
+      }
       return {
         ...prev,
         currency: suggestedCurrency,
+        secondaryCurrency:
+          prev.secondaryCurrency && prev.secondaryCurrency !== suggestedSecondaryCurrency
+            ? prev.secondaryCurrency
+            : (suggestedSecondaryCurrency || prev.secondaryCurrency),
         mealPartySize: prev.mealPartySize || 2,
       }
     })
@@ -2032,7 +2053,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             <h3 className="font-semibold text-gray-700">花费参考</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <div className="space-y-2">
-                <Label htmlFor="priceCurrency">币种</Label>
+                <Label htmlFor="priceCurrency">主要币种</Label>
                 <Select
                   value={structuredPriceInfo.currency || '__none__'}
                   onValueChange={(value) =>
@@ -2052,6 +2073,29 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                     <SelectItem value="USD">USD</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="secondaryPriceCurrency">第二币种</Label>
+                <Select
+                  value={structuredPriceInfo.secondaryCurrency || '__none__'}
+                  onValueChange={(value) =>
+                    setStructuredPriceInfo((prev) => ({ ...prev, secondaryCurrency: value === '__none__' ? '' : value }))
+                  }
+                >
+                  <SelectTrigger id="secondaryPriceCurrency">
+                    <SelectValue placeholder="不显示第二币种" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">不显示第二币种</SelectItem>
+                    <SelectItem value="RM">RM</SelectItem>
+                    <SelectItem value="CNY">CNY</SelectItem>
+                    <SelectItem value="JPY">JPY</SelectItem>
+                    <SelectItem value="THB">THB</SelectItem>
+                    <SelectItem value="IDR">IDR</SelectItem>
+                    <SelectItem value="USD">USD</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-slate-500">中国、日本这类海外地点可同时补一个 RM 给马来西亚旅客参考。</p>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="priceCheckedAt">最后核对日期</Label>
@@ -2091,12 +2135,30 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="priceLocalAdultSecondary">本地成人票第二币种</Label>
+                        <Input
+                          id="priceLocalAdultSecondary"
+                          value={structuredPriceInfo.admissionLocalAdultSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionLocalAdultSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 2`}
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="priceLocalChild">本地小孩票</Label>
                         <Input
                           id="priceLocalChild"
                           value={structuredPriceInfo.admissionLocalChild}
                           onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionLocalChild: e.target.value }))}
                           placeholder="例如 2"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceLocalChildSecondary">本地小孩票第二币种</Label>
+                        <Input
+                          id="priceLocalChildSecondary"
+                          value={structuredPriceInfo.admissionLocalChildSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionLocalChildSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 1`}
                         />
                       </div>
                       <div className="space-y-2">
@@ -2109,12 +2171,30 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="priceForeignAdultSecondary">外国成人票第二币种</Label>
+                        <Input
+                          id="priceForeignAdultSecondary"
+                          value={structuredPriceInfo.admissionForeignAdultSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionForeignAdultSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 6`}
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="priceForeignChild">外国小孩票</Label>
                         <Input
                           id="priceForeignChild"
                           value={structuredPriceInfo.admissionForeignChild}
                           onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionForeignChild: e.target.value }))}
                           placeholder="例如 5"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceForeignChildSecondary">外国小孩票第二币种</Label>
+                        <Input
+                          id="priceForeignChildSecondary"
+                          value={structuredPriceInfo.admissionForeignChildSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionForeignChildSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 3`}
                         />
                       </div>
                       <div className="space-y-2">
@@ -2127,12 +2207,30 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="priceAdultSecondary">通用成人票第二币种</Label>
+                        <Input
+                          id="priceAdultSecondary"
+                          value={structuredPriceInfo.admissionAdultSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionAdultSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 38`}
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="priceChild">通用儿童票</Label>
                         <Input
                           id="priceChild"
                           value={structuredPriceInfo.admissionChild}
                           onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionChild: e.target.value }))}
                           placeholder="例如 60 / 学生优惠"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceChildSecondary">通用儿童票第二币种</Label>
+                        <Input
+                          id="priceChildSecondary"
+                          value={structuredPriceInfo.admissionChildSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, admissionChildSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 20`}
                         />
                       </div>
                       <div className="space-y-2">
@@ -2145,12 +2243,30 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="priceParkingSecondary">停车费第二币种</Label>
+                        <Input
+                          id="priceParkingSecondary"
+                          value={structuredPriceInfo.parkingBudgetSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, parkingBudgetSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 2`}
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="priceTransport">交通参考</Label>
                         <Input
                           id="priceTransport"
                           value={structuredPriceInfo.transportBudget}
                           onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, transportBudget: e.target.value }))}
                           placeholder="例如 往返车费约 20"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceTransportSecondary">交通参考第二币种</Label>
+                        <Input
+                          id="priceTransportSecondary"
+                          value={structuredPriceInfo.transportBudgetSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, transportBudgetSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 12`}
                         />
                       </div>
                       <div className="flex items-end md:col-span-2 xl:col-span-4">
@@ -2180,6 +2296,16 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         <p className="text-xs text-slate-500">
                           默认会按 {structuredPriceInfo.mealPartySize || 2} 人份自动换算成人均显示。
                         </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceMealSecondary">吃喝参考第二币种</Label>
+                        <Input
+                          id="priceMealSecondary"
+                          value={structuredPriceInfo.mealBudgetSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, mealBudgetSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 12`}
+                        />
+                        <p className="text-xs text-slate-500">会一起跟着人均换算并在前台双币展示。</p>
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="priceMealPartySize">吃喝人数</Label>
@@ -2220,7 +2346,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       <div className="space-y-3">
                         {structuredPriceInfo.customItems.map((item, index) => (
                           <div key={`price-custom-${index}`} className="rounded-xl border border-slate-200 bg-white p-4">
-                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
                               <div className="space-y-2">
                                 <Label>中文标题</Label>
                                 <Input
@@ -2243,6 +2369,14 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                                   value={item.value}
                                   onChange={(e) => updatePriceCustomItem(index, 'value', e.target.value)}
                                   placeholder="例如 RM40 adult / RM20 child"
+                                />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>第二币种 / Secondary</Label>
+                                <Input
+                                  value={item.valueSecondary}
+                                  onChange={(e) => updatePriceCustomItem(index, 'valueSecondary', e.target.value)}
+                                  placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 12 / ${structuredPriceInfo.secondaryCurrency || 'RM'} 6`}
                                 />
                               </div>
                               <div className="space-y-2">

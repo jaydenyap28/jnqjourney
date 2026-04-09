@@ -213,6 +213,16 @@ function formatBudgetLabel(value: string, currency?: string) {
   return currency ? `${currency} ${raw}` : raw
 }
 
+function buildDualBudgetLabel(primaryValue: string, primaryCurrency?: string, secondaryValue?: string, secondaryCurrency?: string) {
+  const primary = formatBudgetLabel(primaryValue, primaryCurrency)
+  const secondary = formatBudgetLabel(String(secondaryValue || ''), secondaryCurrency)
+
+  return {
+    primary,
+    secondary: secondary && secondary !== primary ? secondary : '',
+  }
+}
+
 function extractFirstNumericAmount(value: string) {
   const match = String(value || '')
     .replace(/,/g, '')
@@ -334,21 +344,45 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
   const formattedMealBudget = useMemo(() => {
     if (!priceInfo.mealBudget) return null
 
-    const totalLabel = formatBudgetLabel(priceInfo.mealBudget, priceInfo.currency)
+    const totalBudget = buildDualBudgetLabel(
+      priceInfo.mealBudget,
+      priceInfo.currency,
+      priceInfo.mealBudgetSecondary,
+      priceInfo.secondaryCurrency
+    )
+    const totalLabel = totalBudget.primary
     const baseAmount = extractFirstNumericAmount(stripLeadingCurrency(priceInfo.mealBudget, priceInfo.currency))
+    const secondaryAmount = extractFirstNumericAmount(stripLeadingCurrency(priceInfo.mealBudgetSecondary, priceInfo.secondaryCurrency))
 
     if (!baseAmount || (priceInfo.mealPartySize || 1) <= 1) {
-      return { primary: totalLabel, secondary: '' }
+      return {
+        primary: totalBudget.primary,
+        secondary: totalBudget.secondary,
+        perPersonPrimary: '',
+        perPersonSecondary: '',
+      }
     }
 
     const perPerson = baseAmount / priceInfo.mealPartySize
     const perPersonLabel = formatBudgetLabel(formatCompactAmount(perPerson), priceInfo.currency)
+    const secondaryPerPersonLabel =
+      secondaryAmount && (priceInfo.mealPartySize || 1) > 1
+        ? formatBudgetLabel(formatCompactAmount(secondaryAmount / priceInfo.mealPartySize), priceInfo.secondaryCurrency)
+        : ''
 
     return {
       primary: `${priceInfo.mealPartySize}人约 ${totalLabel}`,
-      secondary: `人均 ${perPersonLabel}`,
+      secondary: totalBudget.secondary ? `${priceInfo.mealPartySize}人约 ${totalBudget.secondary}` : '',
+      perPersonPrimary: `人均 ${perPersonLabel}`,
+      perPersonSecondary: secondaryPerPersonLabel ? `Per pax ${secondaryPerPersonLabel}` : '',
     }
-  }, [priceInfo.currency, priceInfo.mealBudget, priceInfo.mealPartySize])
+  }, [
+    priceInfo.currency,
+    priceInfo.mealBudget,
+    priceInfo.mealBudgetSecondary,
+    priceInfo.mealPartySize,
+    priceInfo.secondaryCurrency,
+  ])
   const hasTieredAdmission =
     Boolean(priceInfo.admissionLocalAdult || priceInfo.admissionLocalChild || priceInfo.admissionForeignAdult || priceInfo.admissionForeignChild)
   const isFoodSpot = location.category === 'food'
@@ -838,37 +872,79 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                         {priceInfo.admissionLocalAdult ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Local Adult / 本地成人</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency, priceInfo.admissionLocalAdultSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency, priceInfo.admissionLocalAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency, priceInfo.admissionLocalAdultSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.admissionLocalChild ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Local Child / 本地小孩</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency, priceInfo.admissionLocalChildSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency, priceInfo.admissionLocalChildSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency, priceInfo.admissionLocalChildSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.admissionForeignAdult ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Foreign Adult / 外国成人</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency, priceInfo.admissionForeignAdultSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency, priceInfo.admissionForeignAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency, priceInfo.admissionForeignAdultSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.admissionForeignChild ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Foreign Child / 外国小孩</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency, priceInfo.admissionForeignChildSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency, priceInfo.admissionForeignChildSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency, priceInfo.admissionForeignChildSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.admissionAdult ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Adult / 成人</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionAdult, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionAdult, priceInfo.currency, priceInfo.admissionAdultSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionAdult, priceInfo.currency, priceInfo.admissionAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionAdult, priceInfo.currency, priceInfo.admissionAdultSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.admissionChild ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Child / 儿童</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.admissionChild, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.admissionChild, priceInfo.currency, priceInfo.admissionChildSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.admissionChild, priceInfo.currency, priceInfo.admissionChildSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.admissionChild, priceInfo.currency, priceInfo.admissionChildSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                         {priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? (
@@ -890,8 +966,20 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                         </div>
                         {formattedMealBudget?.secondary ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Per Person / 人均</span>
+                            <span className="text-gray-400">Estimated Total / 第二币种</span>
                             <span className="text-right font-medium text-amber-100">{formattedMealBudget.secondary}</span>
+                          </div>
+                        ) : null}
+                        {formattedMealBudget?.perPersonPrimary ? (
+                          <div className="flex items-start justify-between gap-4">
+                            <span className="text-gray-400">Per Person / 人均</span>
+                            <span className="text-right font-medium text-white">{formattedMealBudget.perPersonPrimary}</span>
+                          </div>
+                        ) : null}
+                        {formattedMealBudget?.perPersonSecondary ? (
+                          <div className="flex items-start justify-between gap-4">
+                            <span className="text-gray-400">Per Person / 第二币种人均</span>
+                            <span className="text-right font-medium text-amber-100">{formattedMealBudget.perPersonSecondary}</span>
                           </div>
                         ) : null}
                       </div>
@@ -905,7 +993,14 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                         {showParkingPricing ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Parking / 停车费</span>
-                            <span className="text-right font-medium text-white">{formatBudgetLabel(priceInfo.parkingBudget, priceInfo.currency)}</span>
+                            <span className="text-right font-medium text-white">
+                              {buildDualBudgetLabel(priceInfo.parkingBudget, priceInfo.currency, priceInfo.parkingBudgetSecondary, priceInfo.secondaryCurrency).primary}
+                              {buildDualBudgetLabel(priceInfo.parkingBudget, priceInfo.currency, priceInfo.parkingBudgetSecondary, priceInfo.secondaryCurrency).secondary ? (
+                                <span className="mt-1 block text-xs font-normal text-amber-100">
+                                  {buildDualBudgetLabel(priceInfo.parkingBudget, priceInfo.currency, priceInfo.parkingBudgetSecondary, priceInfo.secondaryCurrency).secondary}
+                                </span>
+                              ) : null}
+                            </span>
                           </div>
                         ) : null}
                       </div>
@@ -925,7 +1020,12 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                                   <div className="mt-1 text-xs uppercase tracking-[0.16em] text-white/45">{item.labelEn}</div>
                                 ) : null}
                               </div>
-                              {item.value ? <div className="text-right font-semibold text-amber-100">{item.value}</div> : null}
+                              {item.value || item.valueSecondary ? (
+                                <div className="text-right font-semibold text-amber-100">
+                                  {item.value ? <div>{item.value}</div> : null}
+                                  {item.valueSecondary ? <div className="mt-1 text-xs font-normal text-white/70">{item.valueSecondary}</div> : null}
+                                </div>
+                              ) : null}
                             </div>
                             {item.note ? <p className="mt-3 text-sm leading-6 text-gray-300">{item.note}</p> : null}
                           </div>

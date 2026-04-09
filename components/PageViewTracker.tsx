@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 function getSessionId() {
   if (typeof window === 'undefined') return ''
@@ -44,14 +43,21 @@ export default function PageViewTracker() {
 
     const { contentType, contentSlug } = deriveContentMeta(pathname)
 
-    void supabase.from('page_views').insert({
-      path: pathname,
-      content_type: contentType,
-      content_slug: contentSlug,
-      session_id: sessionId,
-      referrer: typeof document !== 'undefined' ? document.referrer : '',
-      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-    })
+    void fetch('/api/page-view', {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        path: pathname,
+        contentType,
+        contentSlug,
+        sessionId,
+        referrer: typeof document !== 'undefined' ? document.referrer : '',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+      }),
+    }).catch(() => null)
   }, [pathname])
 
   return null
