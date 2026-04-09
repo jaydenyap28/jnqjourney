@@ -23,6 +23,7 @@ export interface RegionRecord {
   country?: string | null
   description?: string | null
   image_url?: string | null
+  parent_id?: number | null
 }
 
 export interface PublicLocationRecord extends LocationSummary {
@@ -128,7 +129,7 @@ export async function fetchRegionBySlug(slug: string) {
   const supabase = createPublicSupabaseClient()
   const { data, error } = await supabase
     .from('regions')
-    .select('id,name,name_cn,country,description,image_url')
+    .select('id,name,name_cn,country,description,image_url,parent_id')
     .eq('id', regionId)
     .single()
 
@@ -138,6 +139,26 @@ export async function fetchRegionBySlug(slug: string) {
 
 export async function fetchLocationsByRegion(regionId: number, limit = 60) {
   const supabase = createPublicSupabaseClient()
+  const { data: regionRows } = await supabase
+    .from('regions')
+    .select('id,parent_id')
+    .order('id', { ascending: true })
+
+  const regionIds = new Set<number>([regionId])
+  const queue = [regionId]
+  const allRegions = (regionRows || []) as Array<{ id: number; parent_id?: number | null }>
+
+  while (queue.length) {
+    const current = queue.shift()
+    if (!current) continue
+    for (const region of allRegions) {
+      if (region.parent_id === current && !regionIds.has(region.id)) {
+        regionIds.add(region.id)
+        queue.push(region.id)
+      }
+    }
+  }
+
   const { data, error } = await supabase
     .from('locations')
     .select(`
@@ -154,7 +175,7 @@ export async function fetchLocationsByRegion(regionId: number, limit = 60) {
       tags,
       visit_date
     `)
-    .eq('region_id', regionId)
+    .in('region_id', [...regionIds])
     .order('id', { ascending: false })
     .limit(limit)
 
@@ -197,4 +218,5 @@ export async function fetchAllRegionsForSitemap() {
   if (error || !data) return []
   return data as Array<{ id: number; name: string; updated_at?: string | null; parent_id?: number | null }>
 }
+
 

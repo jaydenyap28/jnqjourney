@@ -645,11 +645,11 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
       ) : null}
 
       {validImages.length > 0 ? (
-        <div className="group relative h-[42vh] min-h-[250px] w-full max-h-[560px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
+        <div className="group relative h-[31vh] min-h-[196px] w-full max-h-[500px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
           <div className="absolute inset-0 z-0">
             <FallbackImage src={validImages[currentImageIndex]} alt="background blur" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
           </div>
-          <div className="relative z-10 h-full w-full p-0.5 transition-transform duration-500 ease-out md:p-4">
+          <div className="relative z-10 h-full w-full p-0 transition-transform duration-500 ease-out md:p-4">
             <FallbackImage
               src={validImages[currentImageIndex]}
               alt={location.name}
@@ -699,7 +699,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
         </div>
       ) : null}
 
-      <div className="space-y-5 bg-black/80 px-4 py-5 text-white md:space-y-6 md:px-6 md:py-6">
+      <div className="space-y-4 bg-black/80 px-3 py-4 text-white md:space-y-6 md:px-6 md:py-6">
         <div className="flex flex-col gap-3.5 md:gap-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col">
@@ -754,7 +754,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
         </div>
 
         {location.address ? (
-          <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+          <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md md:gap-3 md:p-4">
             <div className="rounded-lg bg-sky-400/15 p-2">
               <MapPin className="h-5 w-5 text-sky-300" />
             </div>
@@ -778,7 +778,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
         ) : null}
 
         {location.opening_hours ? (
-          <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
+          <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md md:gap-3 md:p-4">
             <div className="rounded-lg bg-amber-400/20 p-2">
               <Clock className="h-5 w-5 text-amber-400" />
             </div>
@@ -846,10 +846,10 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
           </div>
         ) : null}
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6">
           <div className="space-y-4">
             {shouldShowPriceSnapshot ? (
-              <div className="overflow-hidden rounded-[32px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:p-7">
+              <div className="overflow-hidden rounded-[24px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3.5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:rounded-[32px] md:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-200/80">Price Guide / 花费参考</p>
@@ -864,9 +864,9 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                   ) : null}
                 </div>
 
-                <div className={`mt-5 grid gap-4 ${isFoodSpot ? 'md:grid-cols-1 xl:grid-cols-2' : 'md:grid-cols-2 xl:grid-cols-4'}`}>
+                <div className={`mt-4 grid gap-2.5 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-2 xl:grid-cols-4'}`}>
                   {showAdmissionPricing ? (
-                    <div className="rounded-[24px] border border-white/10 bg-black/20 p-4">
+                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Admission / 门票</p>
                       <div className="mt-4 space-y-3 text-sm">
                         {priceInfo.admissionLocalAdult ? (
@@ -957,7 +957,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                   ) : null}
 
                   {showMealPricing ? (
-                    <div className="rounded-[24px] border border-white/10 bg-black/20 p-4">
+                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Meals / 吃喝参考</p>
                       <div className="mt-4 space-y-3 text-sm">
                         <div className="flex items-start justify-between gap-4">
@@ -987,7 +987,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                   ) : null}
 
                   {showParkingPricing ? (
-                    <div className="rounded-[24px] border border-white/10 bg-black/20 p-4">
+                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Parking / 停车费</p>
                       <div className="mt-4 space-y-3 text-sm">
                         {showParkingPricing ? (
@@ -1008,7 +1008,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                   ) : null}
 
                   {showCustomPricing ? (
-                    <div className="rounded-[24px] border border-white/10 bg-black/20 p-4 md:col-span-2 xl:col-span-2">
+                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:col-span-2 md:rounded-[24px] md:p-4 xl:col-span-2">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Extra Cost Notes / 补充费用资讯</p>
                       <div className="mt-4 grid gap-3 md:grid-cols-2">
                         {priceInfo.customItems.map((item, index) => (
@@ -1036,9 +1036,9 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 </div>
 
                 {showPriceInfoImages ? (
-                  <div className="mt-5 rounded-[24px] border border-white/10 bg-black/15 p-4">
+                  <div className="mt-4 rounded-[20px] border border-white/10 bg-black/15 p-3 md:mt-5 md:rounded-[24px] md:p-4">
                     <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Price Board / 现场价目图</p>
-                    <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="mt-4 grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                       {priceInfo.infoImages.map((url, index) => (
                         <a
                           key={`${url}-${index}`}
@@ -1083,11 +1083,11 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 景点资讯
               </h3>
               {spotDescription ? (
-                <div className="rounded-xl border border-white/10 bg-white/5 p-6 shadow-inner backdrop-blur-md">
+                <div className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-inner backdrop-blur-md md:p-6">
                   <div className="whitespace-pre-line text-lg leading-relaxed text-gray-200">{spotDescription}</div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-8 text-center">
+                <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-5 text-center md:p-8">
                   <p className="italic text-gray-400">这条景点目前还没有整理好的介绍内容。</p>
                 </div>
               )}
@@ -1107,7 +1107,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                     </Link>
                   ) : null}
                 </div>
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                   {relatedLocations.map((item) => (
                     <RelatedLocationCard key={item.id} location={item} />
                   ))}
