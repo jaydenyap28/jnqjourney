@@ -1,8 +1,23 @@
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
+import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
+const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
+const STORAGE_PATH = '_system/guides.json'
+const VERSIONED_STORAGE_DIR = '_system/guides'
+
+function getAdminSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceRoleKey) return null
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+}
 
 function normalizeStringArray(value: unknown) {
   if (!Array.isArray(value)) return []
@@ -93,33 +108,112 @@ export function normalizeGuidePayload(value: any): TravelGuide {
   }
 }
 
-export async function readGuides() {
+async function readLocalGuides() {
   try {
     const raw = await readFile(guidesFilePath, 'utf8')
     const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
     if (!Array.isArray(parsed)) return []
-    return parsed
-      .map(normalizeGuidePayload)
-      .filter((guide) => guide.slug && guide.title)
-      .sort((left, right) => {
-        const leftDate = left.sortDate ? Date.parse(left.sortDate) : NaN
-        const rightDate = right.sortDate ? Date.parse(right.sortDate) : NaN
-        const leftHasDate = Number.isFinite(leftDate)
-        const rightHasDate = Number.isFinite(rightDate)
-
-        if (leftHasDate && rightHasDate && leftDate !== rightDate) {
-          return rightDate - leftDate
-        }
-
-        if (leftHasDate !== rightHasDate) {
-          return leftHasDate ? -1 : 1
-        }
-
-        return 0
-      })
+    return parsed.map(normalizeGuidePayload).filter((guide) => guide.slug && guide.title)
   } catch {
     return []
   }
+}
+
+async function writeLocalGuides(guides: TravelGuide[]) {
+  await writeFile(guidesFilePath, JSON.stringify(guides, null, 2), 'utf8')
+}
+
+async function readStorageGuides() {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) return null
+
+  try {
+    const { data: versions, error: listError } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
+      limit: 20,
+      sortBy: { column: 'name', order: 'desc' },
+    })
+
+    const versionedFiles = Array.isArray(versions)
+      ? versions
+          .map((item) => String(item?.name || '').trim())
+          .filter((item) => item.endsWith('.json'))
+      : []
+
+    const candidatePaths = [...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH]
+    if (listError && !candidatePaths.length) return null
+
+    let raw = ''
+    for (const candidatePath of candidatePaths) {
+      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
+      if (error || !data) continue
+      raw = await data.text()
+      if (raw) break
+    }
+
+    if (!raw) return null
+    const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.map(normalizeGuidePayload).filter((guide) => guide.slug && guide.title)
+  } catch {
+    return null
+  }
+}
+
+async function writeStorageGuides(guides: TravelGuide[]) {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) return
+
+  const payload = Buffer.from(`${JSON.stringify(guides, null, 2)}\n`, 'utf8')
+  const versionedPath = `${VERSIONED_STORAGE_DIR}/${Date.now()}.json`
+  const { error: versionedError } = await supabase.storage.from(STORAGE_BUCKET).upload(versionedPath, payload, {
+    upsert: false,
+    contentType: 'application/json; charset=utf-8',
+    cacheControl: '0',
+  })
+
+  if (versionedError) {
+    throw new Error(versionedError.message || 'Failed to persist versioned guides to storage.')
+  }
+
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(STORAGE_PATH, payload, {
+    upsert: true,
+    contentType: 'application/json; charset=utf-8',
+    cacheControl: '0',
+  })
+
+  if (error) {
+    throw new Error(error.message || 'Failed to persist guides to storage.')
+  }
+}
+
+function sortGuides(guides: TravelGuide[]) {
+  return [...guides].sort((left, right) => {
+    const leftDate = left.sortDate ? Date.parse(left.sortDate) : NaN
+    const rightDate = right.sortDate ? Date.parse(right.sortDate) : NaN
+    const leftHasDate = Number.isFinite(leftDate)
+    const rightHasDate = Number.isFinite(rightDate)
+
+    if (leftHasDate && rightHasDate && leftDate !== rightDate) {
+      return rightDate - leftDate
+    }
+
+    if (leftHasDate !== rightHasDate) {
+      return leftHasDate ? -1 : 1
+    }
+
+    return 0
+  })
+}
+
+export async function readGuides() {
+  const storageGuides = await readStorageGuides()
+  if (storageGuides) {
+    await writeLocalGuides(storageGuides)
+    return sortGuides(storageGuides)
+  }
+
+  return sortGuides(await readLocalGuides())
 }
 
 export async function readGuideBySlug(slug: string) {
@@ -129,5 +223,8 @@ export async function readGuideBySlug(slug: string) {
 
 export async function saveGuides(guides: TravelGuide[]) {
   const normalized = guides.map(normalizeGuidePayload)
-  await writeFile(guidesFilePath, JSON.stringify(normalized, null, 2), 'utf8')
+  await writeLocalGuides(normalized)
+  await writeStorageGuides(normalized)
 }
+
+
