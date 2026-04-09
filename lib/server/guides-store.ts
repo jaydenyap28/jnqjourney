@@ -7,6 +7,7 @@ const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
 const STORAGE_PATH = '_system/guides.json'
 const VERSIONED_STORAGE_DIR = '_system/guides'
+const STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.txt'
 
 function getAdminSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -128,7 +129,15 @@ async function readStorageGuides() {
   if (!supabase) return null
 
   try {
-    const { data: versions, error: listError } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
+    const candidatePaths: string[] = []
+
+    const { data: latestPointer } = await supabase.storage.from(STORAGE_BUCKET).download(STORAGE_LATEST_POINTER_PATH)
+    if (latestPointer) {
+      const latestPath = String(await latestPointer.text()).trim()
+      if (latestPath) candidatePaths.push(latestPath)
+    }
+
+    const { data: versions } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
       limit: 20,
       sortBy: { column: 'name', order: 'desc' },
     })
@@ -139,11 +148,11 @@ async function readStorageGuides() {
           .filter((item) => item.endsWith('.json'))
       : []
 
-    const candidatePaths = [...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH]
-    if (listError && !candidatePaths.length) return null
+    candidatePaths.push(...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH)
 
     let raw = ''
-    for (const candidatePath of candidatePaths) {
+    const dedupedPaths = Array.from(new Set(candidatePaths.filter(Boolean)))
+    for (const candidatePath of dedupedPaths) {
       const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
       if (error || !data) continue
       raw = await data.text()
@@ -174,6 +183,20 @@ async function writeStorageGuides(guides: TravelGuide[]) {
 
   if (versionedError) {
     throw new Error(versionedError.message || 'Failed to persist versioned guides to storage.')
+  }
+
+  const { error: latestPointerError } = await supabase.storage.from(STORAGE_BUCKET).upload(
+    STORAGE_LATEST_POINTER_PATH,
+    Buffer.from(versionedPath, 'utf8'),
+    {
+      upsert: true,
+      contentType: 'text/plain; charset=utf-8',
+      cacheControl: '0',
+    }
+  )
+
+  if (latestPointerError) {
+    throw new Error(latestPointerError.message || 'Failed to persist latest guides pointer.')
   }
 
   const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(STORAGE_PATH, payload, {
@@ -226,5 +249,3 @@ export async function saveGuides(guides: TravelGuide[]) {
   await writeLocalGuides(normalized)
   await writeStorageGuides(normalized)
 }
-
-
