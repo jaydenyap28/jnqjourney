@@ -17,16 +17,18 @@ import BottomFloatingDock from '@/components/BottomFloatingDock'
 import SiteFooter from '@/components/SiteFooter'
 import type { TravelGuide } from '@/lib/guides'
 import FallbackImage from '@/components/FallbackImage'
+import { getRegionCountry } from '@/lib/region-utils'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 
 interface Region {
-  id?: number
+  id: number
   name: string
   name_cn?: string
   country?: string
   description?: string
   image_url?: string
   code?: string
+  parent_id?: number | null
 }
 
 interface Location {
@@ -385,6 +387,7 @@ export default function Home() {
   const mapRef = useRef<MapRef>(null)
 
   const [locations, setLocations] = useState<Location[]>([])
+  const [regions, setRegions] = useState<Region[]>([])
   const [filteredLocations, setFilteredLocations] = useState<Location[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [flyToLocation, setFlyToLocation] = useState<{
@@ -395,18 +398,29 @@ export default function Home() {
 
   useEffect(() => {
     const fetchLocations = async () => {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('*, regions (id, name, name_cn, country, description, image_url, code)')
-        .order('id', { ascending: false })
+      const [{ data: locationData, error: locationError }, { data: regionData, error: regionError }] = await Promise.all([
+        supabase
+          .from('locations')
+          .select('*, regions (id, name, name_cn, country, description, image_url, code, parent_id)')
+          .order('id', { ascending: false }),
+        supabase
+          .from('regions')
+          .select('id, name, name_cn, country, description, image_url, code, parent_id')
+          .order('id', { ascending: true }),
+      ])
 
-      if (error) {
-        console.error('Error fetching locations:', error)
+      if (locationError) {
+        console.error('Error fetching locations:', locationError)
         return
       }
 
-      setLocations(data || [])
-      setFilteredLocations(data || [])
+      if (regionError) {
+        console.error('Error fetching regions:', regionError)
+      }
+
+      setRegions((regionData || []) as Region[])
+      setLocations(locationData || [])
+      setFilteredLocations(locationData || [])
     }
 
     fetchLocations()
@@ -478,7 +492,9 @@ export default function Home() {
 
       for (const location of visibleLocations) {
         const region = location.regions
-        if (!region?.id || !region.name || region.country !== 'Malaysia') continue
+        if (!region?.id || !region.name) continue
+        const regionCountry = getRegionCountry(region, regions)
+        if (regionCountry !== 'Malaysia') continue
 
         const pinned = parseRegionCodeTokens(region.code).has('home-malaysia')
         const existing = regionMap.get(region.id)
@@ -499,7 +515,7 @@ export default function Home() {
           id: region.id,
           name: region.name,
           name_cn: region.name_cn,
-          country: region.country,
+          country: regionCountry || region.country,
           count: 1,
           coverImage: region.image_url || undefined,
           sampleText: region.description || undefined,
@@ -516,7 +532,7 @@ export default function Home() {
           return left.name.localeCompare(right.name)
         })
     },
-    [visibleLocations]
+    [regions, visibleLocations]
   )
 
   const globalRegions = useMemo(
@@ -525,7 +541,9 @@ export default function Home() {
 
       for (const location of visibleLocations) {
         const region = location.regions
-        if (!region?.id || !region.name || region.country === 'Malaysia') continue
+        if (!region?.id || !region.name) continue
+        const regionCountry = getRegionCountry(region, regions)
+        if (regionCountry === 'Malaysia') continue
 
         const pinned = parseRegionCodeTokens(region.code).has('home-global')
         const existing = regionMap.get(region.id)
@@ -546,7 +564,7 @@ export default function Home() {
           id: region.id,
           name: region.name,
           name_cn: region.name_cn,
-          country: region.country,
+          country: regionCountry || region.country,
           count: 1,
           coverImage: region.image_url || undefined,
           sampleText: region.description || undefined,
@@ -563,7 +581,7 @@ export default function Home() {
           return left.name.localeCompare(right.name)
         })
     },
-    [visibleLocations]
+    [regions, visibleLocations]
   )
 
   const topTags = useMemo(() => {

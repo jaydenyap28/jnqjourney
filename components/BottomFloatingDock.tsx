@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { MapPin, ArrowRight } from 'lucide-react'
-import { Card } from '@/components/ui/card'
 import React, { useEffect, useRef, useState } from 'react'
+import { MapPin, ArrowRight } from 'lucide-react'
+
+import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { buildLocationPath } from '@/lib/location-routing'
 import FallbackImage from '@/components/FallbackImage'
@@ -141,13 +142,13 @@ export default function BottomFloatingDock({
   }
 
   return (
-    <div className="pointer-events-none absolute bottom-3 left-0 z-40 w-full md:bottom-10">
+    <div className="pointer-events-none absolute bottom-2 left-0 z-40 w-full md:bottom-10">
       <div className="pointer-events-auto w-full overflow-x-auto">
         <div className="flex flex-col items-center">
-          <div className="w-full max-w-fit px-2 md:px-6">
+          <div className="w-full max-w-fit px-1.5 md:px-6">
             <div
               ref={scrollContainerRef}
-              className="scrollbar-hide flex cursor-grab gap-2.5 overflow-x-auto snap-x px-1 pb-2 active:cursor-grabbing md:gap-4 md:px-2 md:pb-4"
+              className="scrollbar-hide flex cursor-grab gap-2 overflow-x-auto snap-x px-1 pb-1.5 active:cursor-grabbing md:gap-4 md:px-2 md:pb-4"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               onMouseDown={handleMouseDown}
               onMouseLeave={handleMouseLeave}
@@ -155,7 +156,7 @@ export default function BottomFloatingDock({
               onMouseMove={handleMouseMove}
             >
               {locations.length === 0 ? (
-                <div className="px-4 py-5 text-xs italic text-white/55 md:py-8 md:text-sm">
+                <div className="px-4 py-4 text-xs italic text-white/55 md:py-8 md:text-sm">
                   No matching spots yet. Try another search / 目前没有结果，试试别的关键词。
                 </div>
               ) : (
@@ -182,7 +183,7 @@ export default function BottomFloatingDock({
                     >
                       <Card
                         className={cn(
-                          'group relative h-[124px] w-[208px] cursor-pointer overflow-hidden rounded-[20px] border border-white/10 bg-black/20 shadow-xl backdrop-blur-sm transition-all duration-300 md:h-[170px] md:w-[300px] md:rounded-xl',
+                          'group relative h-[106px] w-[176px] cursor-pointer overflow-hidden rounded-[18px] border border-white/10 bg-black/20 shadow-xl backdrop-blur-sm transition-all duration-300 md:h-[170px] md:w-[300px] md:rounded-xl',
                           index === focusedIndex
                             ? 'z-10 scale-[1.02] ring-2 ring-amber-400 bg-black/40 md:scale-105'
                             : 'hover:-translate-y-2'
@@ -205,7 +206,7 @@ export default function BottomFloatingDock({
                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                         </div>
 
-                        <div className="absolute bottom-0 left-0 w-full p-2.5 text-white md:p-4">
+                        <div className="absolute bottom-0 left-0 w-full p-2 text-white md:p-4">
                           <div
                             className={cn(
                               'mb-1 flex items-center gap-1 text-[10px] font-medium text-amber-200 transition-all duration-300 md:text-xs',
@@ -219,26 +220,24 @@ export default function BottomFloatingDock({
                           </div>
                           <h4
                             className={cn(
-                              'line-clamp-1 text-[15px] font-bold leading-tight transition-colors md:text-lg',
+                              'line-clamp-1 text-[13px] font-bold leading-tight transition-colors md:text-lg',
                               index === focusedIndex ? 'text-amber-200' : 'group-hover:text-amber-200'
                             )}
                           >
                             {title.primary}
                           </h4>
                           {title.secondary ? (
-                            <p className="mt-0.5 line-clamp-1 text-[10px] text-white/75 md:mt-1 md:text-xs">{title.secondary}</p>
+                            <p className="mt-0.5 line-clamp-1 text-[9px] text-white/75 md:mt-1 md:text-xs">{title.secondary}</p>
                           ) : null}
-                          <p className="mt-0.5 line-clamp-1 text-[10px] text-white/70 md:mt-1 md:text-xs">
+                          <p className="mt-0.5 line-clamp-1 text-[9px] text-white/70 md:mt-1 md:text-xs">
                             {location.review || location.description || getCategoryLabel(location.category)}
                           </p>
-                          <div className="mt-2 flex items-center justify-end md:mt-3 md:justify-between">
-                            <span className="hidden text-[11px] text-white/60 md:block">
-                              Tap card to open the full spot page
-                            </span>
+                          <div className="mt-1.5 flex items-center justify-end md:mt-3 md:justify-between">
+                            <span className="hidden text-[11px] text-white/60 md:block">Tap card to open the full spot page</span>
                             <Link
                               href={buildLocationPath(location.name, location.id)}
                               onClick={(event) => event.stopPropagation()}
-                              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-[10px] text-white/90 transition hover:bg-white/20 md:px-2.5 md:text-[11px]"
+                              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-[9px] text-white/90 transition hover:bg-white/20 md:px-2.5 md:text-[11px]"
                             >
                               View spot
                               <ArrowRight className="h-3 w-3" />
