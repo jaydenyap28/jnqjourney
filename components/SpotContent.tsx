@@ -603,11 +603,11 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
       ) : null}
 
       {validImages.length > 0 ? (
-        <div className="group relative h-[50vh] min-h-[320px] w-full max-h-[560px] overflow-hidden rounded-t-2xl bg-neutral-900">
+        <div className="group relative h-[42vh] min-h-[250px] w-full max-h-[560px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
           <div className="absolute inset-0 z-0">
             <FallbackImage src={validImages[currentImageIndex]} alt="background blur" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
           </div>
-          <div className="relative z-10 h-full w-full p-1 transition-transform duration-500 ease-out md:p-4">
+          <div className="relative z-10 h-full w-full p-0.5 transition-transform duration-500 ease-out md:p-4">
             <FallbackImage
               src={validImages[currentImageIndex]}
               alt={location.name}
@@ -625,20 +625,20 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
           </div>
 
           {isDrawer && onClose ? (
-            <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-4 top-4 z-20 rounded-full bg-black/40 text-white backdrop-blur-sm hover:bg-black/60">
+            <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-3 top-3 z-20 h-9 w-9 rounded-full bg-black/40 text-white backdrop-blur-sm hover:bg-black/60 md:right-4 md:top-4">
               <X className="h-5 w-5" />
             </Button>
           ) : null}
 
           {validImages.length > 1 ? (
             <>
-              <button onClick={(event) => { event.stopPropagation(); prevImage() }} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white opacity-0 backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-black/50">
-                <ChevronLeft className="h-8 w-8" />
+              <button onClick={(event) => { event.stopPropagation(); prevImage() }} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/30 p-1.5 text-white opacity-100 backdrop-blur-sm transition-all hover:bg-black/50 md:p-2 md:opacity-0 md:group-hover:opacity-100">
+                <ChevronLeft className="h-5 w-5 md:h-8 md:w-8" />
               </button>
-              <button onClick={(event) => { event.stopPropagation(); nextImage() }} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/20 p-2 text-white opacity-0 backdrop-blur-sm transition-all group-hover:opacity-100 hover:bg-black/50">
-                <ChevronRight className="h-8 w-8" />
+              <button onClick={(event) => { event.stopPropagation(); nextImage() }} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/30 p-1.5 text-white opacity-100 backdrop-blur-sm transition-all hover:bg-black/50 md:p-2 md:opacity-0 md:group-hover:opacity-100">
+                <ChevronRight className="h-5 w-5 md:h-8 md:w-8" />
               </button>
-              <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-full bg-black/20 px-3 py-1 backdrop-blur-sm">
+              <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 rounded-full bg-black/30 px-2.5 py-1 backdrop-blur-sm md:bottom-4 md:gap-2 md:px-3">
                 {validImages.map((_, index) => (
                   <div key={index} className={`h-1.5 rounded-full transition-all duration-300 ${index === currentImageIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`} />
                 ))}
@@ -657,17 +657,17 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
         </div>
       ) : null}
 
-      <div className="space-y-6 bg-black/80 px-6 py-6 text-white">
-        <div className="flex flex-col gap-4">
+      <div className="space-y-5 bg-black/80 px-4 py-5 text-white md:space-y-6 md:px-6 md:py-6">
+        <div className="flex flex-col gap-3.5 md:gap-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col">
-              {isDrawer ? <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">{location.name}</h2> : null}
-              {location.name_cn ? <span className="mt-1 text-xl font-semibold text-gray-400 md:text-2xl">{location.name_cn}</span> : null}
+              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl">{location.name}</h2> : null}
+              {location.name_cn ? <span className="mt-1 text-lg font-semibold text-gray-400 md:text-2xl">{location.name_cn}</span> : null}
               {(location.regions?.name || location.regions?.country) ? (
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-400">
+                <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-gray-400 md:mt-3 md:text-sm">
                   <span>{[location.regions?.country, location.regions?.name].filter(Boolean).join(' / ')}</span>
                   {regionPath ? (
-                    <Link href={regionPath} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/90 transition hover:bg-white/10">
+                    <Link href={regionPath} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/90 transition hover:bg-white/10 md:px-3 md:text-xs">
                       View region
                       <ExternalLink className="h-3 w-3" />
                     </Link>
@@ -675,9 +675,9 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 </div>
               ) : null}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
               {location.category ? (
-                <Badge className={`border px-3 py-1 text-sm uppercase tracking-wider shadow-sm ${
+                <Badge className={`border px-2.5 py-1 text-[11px] uppercase tracking-wider shadow-sm md:px-3 md:text-sm ${
                   location.category === 'food'
                     ? 'border-orange-500/30 bg-orange-500/20 text-orange-200'
                     : location.category === 'accommodation'
@@ -687,7 +687,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                   {location.category === 'food' ? 'Food' : location.category === 'accommodation' ? 'Stay' : 'Spot'}
                 </Badge>
               ) : null}
-              {visibleTags[0] ? <Badge className="border border-white/20 bg-white/10 px-3 py-1 text-sm text-white shadow-sm">{visibleTags[0]}</Badge> : null}
+              {visibleTags[0] ? <Badge className="border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] text-white shadow-sm md:px-3 md:text-sm">{visibleTags[0]}</Badge> : null}
             </div>
           </div>
 

@@ -626,7 +626,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {guide.budget ? (
                   <div className="rounded-[26px] border border-amber-300/20 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))] p-5">
-                    <p className="text-sm text-amber-100/70">Budget / ???</p>
+                    <p className="text-sm text-amber-100/70">Budget / 总预算</p>
                     <p className="mt-2 text-3xl font-semibold text-white md:text-[2.1rem]">{guide.budget}</p>
                   </div>
                 ) : null}

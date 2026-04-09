@@ -22,7 +22,7 @@ import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type TravelGuide } from '@/lib
 import FallbackImage from '@/components/FallbackImage'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -582,10 +582,10 @@ export default function AdminGuidesPage() {
   }
 
   function toggleGuideAffiliateLink(linkId: number) {
-    const current = form.featuredAffiliateLinkIds || []
+    const current = form.sidebarAffiliateLinkIds || []
     const exists = current.includes(linkId)
     updateField(
-      'featuredAffiliateLinkIds',
+      'sidebarAffiliateLinkIds',
       exists ? current.filter((id) => id !== linkId) : [...current, linkId]
     )
   }
@@ -1067,6 +1067,93 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
             </Card>
 
             <Card className="border-slate-200 bg-white shadow-sm">
+              <CardHeader>
+                <CardTitle>Right Sidebar Affiliate Links</CardTitle>
+                <CardDescription>
+                  这里选中的链接会显示在游记右侧，适合放酒店、门票、一日游或交通预订。
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {selectedAffiliateLinks.length ? (
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {selectedAffiliateLinks.map((link) => (
+                      <button
+                        key={link.id}
+                        type="button"
+                        onClick={() => toggleGuideAffiliateLink(link.id)}
+                        className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-left"
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <div className="font-medium text-slate-900">
+                              {link.title || `${link.provider} / ${link.link_type}`}
+                            </div>
+                            <div className="mt-1 text-xs text-slate-500">
+                              {link.locations?.name_cn || link.locations?.name || link.regions?.name_cn || link.regions?.name || 'Guide sidebar'}
+                            </div>
+                          </div>
+                          <span className="rounded-full border border-amber-200 bg-white px-3 py-1 text-[11px] font-medium text-amber-700">
+                            Selected
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">
+                    No sidebar affiliate links selected yet.
+                  </div>
+                )}
+
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                  <Input
+                    value={affiliateSearch}
+                    onChange={(e) => setAffiliateSearch(e.target.value)}
+                    placeholder="Search affiliate links, stays, spots, or regions"
+                    className="pl-9"
+                  />
+                </div>
+
+                <div className="grid max-h-80 gap-3 overflow-y-auto rounded-2xl border border-slate-200 p-3 md:grid-cols-2">
+                  {filteredAffiliateLinks.map((link) => {
+                    const checked = selectedAffiliateLinkIds.includes(link.id)
+                    return (
+                      <button
+                        key={link.id}
+                        type="button"
+                        onClick={() => toggleGuideAffiliateLink(link.id)}
+                        className={`rounded-2xl border px-4 py-3 text-left transition ${
+                          checked ? 'border-sky-300 bg-sky-50' : 'border-slate-200 bg-white hover:border-slate-300'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <div className="font-medium text-slate-900">{link.title || `${link.provider} / ${link.link_type}`}</div>
+                            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-500">
+                              {link.provider} / {link.link_type}
+                            </div>
+                          </div>
+                          {checked ? (
+                            <span className="rounded-full border border-sky-200 bg-white px-2.5 py-1 text-[10px] font-medium text-sky-700">
+                              Added
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="mt-2 text-xs text-slate-500">
+                          {link.locations?.name_cn || link.locations?.name || link.regions?.name_cn || link.regions?.name || 'General'}
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
+                  你在这里勾选哪些链接，游记右手边就只展示这些，不会再混入默认自动推荐。
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0">
                 <CardTitle>Budget Breakdown</CardTitle>
                 <Button type="button" size="sm" variant="outline" onClick={addBudgetItem}>
@@ -1077,7 +1164,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
               <CardContent className="space-y-4">
                 {form.budget ? (
                   <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
-                    ?????????????????<span className="ml-2 font-semibold">{form.budget}</span>
+                    当前总预算会显示在前台预算拆解最上方。<span className="ml-2 font-semibold">{form.budget}</span>
                   </div>
                 ) : null}
                 {form.budgetItems.length ? (
@@ -1100,7 +1187,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                       <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
                           <Label>Label</Label>
-                          <Input value={item.label} onChange={(e) => updateBudgetItem(index, { label: e.target.value })} placeholder="鏈虹エ / 浣忓 / 闂ㄧエ / 鍚冨枬" />
+                          <Input value={item.label} onChange={(e) => updateBudgetItem(index, { label: e.target.value })} placeholder="机票 / 住宿 / 门票 / 吃喝" />
                         </div>
                         <div className="space-y-2">
                           <Label>Amount</Label>
@@ -1108,7 +1195,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                         </div>
                         <div className="space-y-2 md:col-span-2">
                           <Label>Note</Label>
-                          <Input value={item.note || ''} onChange={(e) => updateBudgetItem(index, { note: e.target.value })} placeholder="琛ュ厖璇存槑锛屼緥濡傚弻浜烘埧鍧囧垎鍚庣殑浜哄潎璐圭敤" />
+                          <Input value={item.note || ''} onChange={(e) => updateBudgetItem(index, { note: e.target.value })} placeholder="补充说明，例如双人房均分后的人均费用" />
                         </div>
                       </div>
                     </div>
@@ -1562,90 +1649,6 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 </div>
                 <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
                   Linked spots feed guide cards, day plans, route helpers, and guide-to-spot navigation on the public site.
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-200 bg-white shadow-sm">
-              <CardHeader>
-                <CardTitle>Right Sidebar Affiliate Links</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {selectedAffiliateLinks.length ? (
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {selectedAffiliateLinks.map((link) => (
-                      <button
-                        key={link.id}
-                        type="button"
-                        onClick={() => toggleGuideAffiliateLink(link.id)}
-                        className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-left"
-                      >
-                        <div className="flex items-center justify-between gap-3">
-                          <div>
-                            <div className="font-medium text-slate-900">
-                              {link.title || `${link.provider} / ${link.link_type}`}
-                            </div>
-                            <div className="mt-1 text-xs text-slate-500">
-                              {link.locations?.name_cn || link.locations?.name || link.regions?.name_cn || link.regions?.name || 'Route sidebar'}
-                            </div>
-                          </div>
-                          <span className="rounded-full border border-amber-200 bg-white px-3 py-1 text-[11px] font-medium text-amber-700">
-                            Selected
-                          </span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">
-                    No sidebar affiliate links selected yet.
-                  </div>
-                )}
-
-                <div className="relative">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <Input
-                    value={affiliateSearch}
-                    onChange={(e) => setAffiliateSearch(e.target.value)}
-                    placeholder="Search affiliate links, stays, spots, or regions"
-                    className="pl-9"
-                  />
-                </div>
-
-                <div className="grid max-h-80 gap-3 overflow-y-auto rounded-2xl border border-slate-200 p-3 md:grid-cols-2">
-                  {filteredAffiliateLinks.map((link) => {
-                    const checked = selectedAffiliateLinkIds.includes(link.id)
-                    return (
-                      <button
-                        key={link.id}
-                        type="button"
-                        onClick={() => toggleGuideAffiliateLink(link.id)}
-                        className={`rounded-2xl border px-4 py-3 text-left transition ${
-                          checked ? 'border-sky-300 bg-sky-50' : 'border-slate-200 bg-white hover:border-slate-300'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div>
-                            <div className="font-medium text-slate-900">{link.title || `${link.provider} / ${link.link_type}`}</div>
-                            <div className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-500">
-                              {link.provider} / {link.link_type}
-                            </div>
-                          </div>
-                          {checked ? (
-                            <span className="rounded-full border border-sky-200 bg-white px-2.5 py-1 text-[10px] font-medium text-sky-700">
-                              Added
-                            </span>
-                          ) : null}
-                        </div>
-                        <div className="mt-2 text-xs text-slate-500">
-                          {link.locations?.name_cn || link.locations?.name || link.regions?.name_cn || link.regions?.name || 'General'}
-                        </div>
-                      </button>
-                    )
-                  })}
-                </div>
-                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
-                  ????????????????????????????????????????????
                 </div>
               </CardContent>
             </Card>
