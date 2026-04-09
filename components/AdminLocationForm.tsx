@@ -1717,10 +1717,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                 name="custom_slug"
                 value={formData.custom_slug}
                 onChange={handleChange}
-                placeholder="例如：guangzhou-tower 或 广州塔"
+                placeholder="例如：guangzhou-tower 或 lao-xi-zi"
               />
               <p className="text-xs text-gray-500">
-                {loadingCustomSlug ? '正在读取目前的 slug...' : '留空会自动用目前名称生成。旧链接仍可打开，并会跳转到新的 canonical 网址。'}
+                {loadingCustomSlug ? '正在读取目前的 slug...' : '建议填写英文或拼音 slug。留空会自动生成安全网址；旧链接仍可打开，并会跳转到新的 canonical 网址。'}
               </p>
             </div>
 

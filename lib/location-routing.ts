@@ -3,12 +3,12 @@ export function slugifyLocationName(value: string) {
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
 
 export function buildLocationSlug(name: string, id: number | string) {
-  const base = slugifyLocationName(name) || 'location'
+  const base = slugifyLocationName(name) || 'spot'
   return `${base}-${id}`
 }
 

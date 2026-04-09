@@ -15,7 +15,7 @@ export function normalizeLocationSlug(value: string) {
     .toLowerCase()
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
 
@@ -119,6 +119,6 @@ export async function saveLocationSlugForId(id: number | string, slug: string) {
 
 export async function buildCanonicalLocationPath(name: string, id: number | string) {
   const customSlug = await readLocationSlugForId(id)
-  const base = customSlug || slugifyLocationName(name) || 'location'
+  const base = customSlug || slugifyLocationName(name) || 'spot'
   return `/spot/${base}-${id}`
 }
