@@ -2472,6 +2472,20 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                 这里建议写“参考价”而不是死价格。门票、酒店、体验项目都可能因日期、节假日和平台活动浮动。
               </p>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="klookWidgetCode">Klook Dynamic Widget HTML</Label>
+              <Textarea
+                id="klookWidgetCode"
+                value={structuredPriceInfo.klookWidgetCode}
+                onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, klookWidgetCode: e.target.value }))}
+                placeholder={`<ins class="klk-aff-widget" data-adid="..." data-prod="dynamic_widget"><a href="//www.klook.com/">Klook.com</a></ins>\n<script type="text/javascript">\n(function(){ ... })()\n</script>`}
+                rows={8}
+              />
+              <p className="text-xs text-gray-500">
+                可直接贴 Klook 提供的整段 widget code。保存后会显示在景点详情页预订推荐区域上方。
+              </p>
+            </div>
           </div>
 
           <div className="space-y-4 border-b pb-4">

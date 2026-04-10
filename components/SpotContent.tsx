@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
+import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -341,6 +342,7 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
   const mediaFallbackImage = location.image_url || validImages[0] || '/placeholder-image.jpg'
+  const spotKlookWidgetCode = String(priceInfo.klookWidgetCode || '').trim()
   const formattedMealBudget = useMemo(() => {
     if (!priceInfo.mealBudget) return null
 
@@ -1117,6 +1119,14 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
           </div>
 
           <div className="space-y-4">
+            {!isDrawer && spotKlookWidgetCode ? (
+              <KlookWidgetEmbed
+                code={spotKlookWidgetCode}
+                title={location.category === 'accommodation' ? 'Stay Booking Widget' : 'Spot Booking Widget'}
+                description={'Live widget for this location'}
+                className="bg-white/5"
+              />
+            ) : null}
             {!isDrawer ? (
               <AffiliateCard
                 locationId={location.id}

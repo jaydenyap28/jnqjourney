@@ -1193,6 +1193,20 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-600">
                   你在这里勾选哪些链接，游记右手边就只展示这些，不会再混入默认自动推荐。
                 </div>
+
+                <div className="space-y-2 rounded-2xl border border-emerald-200 bg-emerald-50/70 p-4">
+                  <Label htmlFor="guideKlookWidgetCode">Klook Dynamic Widget HTML</Label>
+                  <Textarea
+                    id="guideKlookWidgetCode"
+                    rows={8}
+                    value={form.klookWidgetCode || ''}
+                    onChange={(e) => updateField('klookWidgetCode', e.target.value)}
+                    placeholder={`<ins class="klk-aff-widget" data-adid="..." data-prod="dynamic_widget"><a href="//www.klook.com/">Klook.com</a></ins>\n<script type="text/javascript">\n(function(){ ... })()\n</script>`}
+                  />
+                  <p className="text-xs text-slate-600">
+                    这里可以直接贴整段 Klook widget code。保存后会显示在这篇游记右侧栏联盟链接上方。
+                  </p>
+                </div>
               </CardContent>
             </Card>
 

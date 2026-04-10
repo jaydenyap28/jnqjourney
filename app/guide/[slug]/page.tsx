@@ -7,6 +7,7 @@ import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import AffiliateCard from '@/components/AffiliateCard'
+import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import { readGuideBySlug } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -453,6 +454,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const selectedAffiliateLinks = await fetchGuideAffiliateLinks(guide.featuredAffiliateLinkIds || [])
   const selectedSidebarLinks = await fetchGuideAffiliateLinks(guide.sidebarAffiliateLinkIds || guide.featuredAffiliateLinkIds || [])
   const selectedSidebarAffiliateIds = selectedSidebarLinks.map((link) => link.id)
+  const guideKlookWidgetCode = String(guide.klookWidgetCode || '').trim()
 
 
   const datedDayPlans = guide.days.map((day, index) => {
@@ -876,6 +878,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
           </div>
 
           <aside className="space-y-5 xl:sticky xl:top-24">
+            {guideKlookWidgetCode ? (
+              <KlookWidgetEmbed
+                code={guideKlookWidgetCode}
+                title={'Klook Booking Widget'}
+                description={'Live widget for this route'}
+                className="bg-white/5"
+              />
+            ) : null}
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
               <p className="section-kicker text-xs text-amber-300/80">{'Route / \u8def\u7ebf'}</p>
               <h3 className="mt-3 text-2xl font-semibold text-white">{'\u8def\u7ebf\u603b\u89c8'}</h3>
@@ -938,7 +948,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
 
 
 
