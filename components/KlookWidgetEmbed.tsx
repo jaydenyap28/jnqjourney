@@ -7,6 +7,7 @@ interface KlookWidgetEmbedProps {
   title?: string
   description?: string
   className?: string
+  variant?: 'card' | 'banner'
 }
 
 function normalizeWidgetCode(code: string) {
@@ -18,6 +19,7 @@ export default function KlookWidgetEmbed({
   title = 'Klook Dynamic Widget',
   description = 'Live Klook widget',
   className = '',
+  variant = 'card',
 }: KlookWidgetEmbedProps) {
   const widgetCode = useMemo(() => normalizeWidgetCode(code), [code])
   const widgetId = useId().replace(/:/g, '')
@@ -50,17 +52,27 @@ export default function KlookWidgetEmbed({
 
   if (!widgetCode) return null
 
+  const isBanner = variant === 'banner'
+
   return (
     <section className={className}>
-      <div className="overflow-hidden rounded-[24px] border border-emerald-300/18 bg-[linear-gradient(145deg,rgba(16,185,129,0.12),rgba(255,255,255,0.04))] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.2)] md:rounded-[28px] md:p-5">
-        <div className="mb-4">
-          <p className="text-xs uppercase tracking-[0.25em] text-emerald-200/80">Klook Widget</p>
-          <h3 className="mt-2 text-xl font-semibold text-white">{title}</h3>
-          <p className="mt-1 text-sm text-white/65">{description}</p>
+      <div
+        className={`overflow-hidden border border-emerald-300/18 bg-[linear-gradient(145deg,rgba(16,185,129,0.12),rgba(255,255,255,0.04))] shadow-[0_24px_80px_rgba(0,0,0,0.2)] ${
+          isBanner ? 'rounded-[22px] p-3 md:rounded-[26px] md:p-4' : 'rounded-[24px] p-4 md:rounded-[28px] md:p-5'
+        }`}
+      >
+        <div className={isBanner ? 'mb-3 flex flex-wrap items-end justify-between gap-3' : 'mb-4'}>
+          <div>
+            <p className="text-xs uppercase tracking-[0.25em] text-emerald-200/80">Klook Widget</p>
+            <h3 className={`mt-2 font-semibold text-white ${isBanner ? 'text-lg md:text-xl' : 'text-xl'}`}>{title}</h3>
+            <p className={`mt-1 text-white/65 ${isBanner ? 'text-xs md:text-sm' : 'text-sm'}`}>{description}</p>
+          </div>
         </div>
         <div
           id={widgetId}
-          className="klook-widget-shell overflow-hidden rounded-[20px] bg-white/95 p-2 text-slate-900"
+          className={`klook-widget-shell overflow-hidden bg-white/95 text-slate-900 ${
+            isBanner ? 'rounded-[18px] p-1.5 md:p-2' : 'rounded-[20px] p-2'
+          }`}
         />
       </div>
     </section>

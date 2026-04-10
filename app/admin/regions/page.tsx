@@ -130,7 +130,7 @@ export default function RegionsPage() {
     try {
       await Promise.all([fetchRegions(), fetchLocations()])
     } catch (error: any) {
-      setErrorMsg(error.message || '加载地区数据失败。')
+      setErrorMsg(error.message || 'Failed to load region data.')
     } finally {
       setLoading(false)
     }
@@ -224,7 +224,7 @@ export default function RegionsPage() {
 
   async function handleSave() {
     if (!formData.name.trim()) {
-      setErrorMsg('请先填写地区名称。')
+      setErrorMsg('Please enter a region name first.')
       return
     }
 
@@ -250,28 +250,28 @@ export default function RegionsPage() {
       if (result.error) throw result.error
 
       await fetchRegions()
-      setSuccessMsg(editingId ? '地区已更新。' : '地区已新增。')
+      setSuccessMsg(editingId ? 'Region updated.' : 'Region created.')
       setIsDialogOpen(false)
       setEditingId(null)
       setFormData(EMPTY_FORM)
     } catch (error: any) {
-      setErrorMsg(error.message || '保存地区失败。')
+      setErrorMsg(error.message || 'Failed to save region.')
     } finally {
       setSaving(false)
     }
   }
 
   async function handleDelete(region: Region) {
-    const confirmed = window.confirm(`确认删除地区「${region.name_cn || region.name}」吗？`)
+    const confirmed = window.confirm(`Delete region "${region.name_cn || region.name}"?`)
     if (!confirmed) return
 
     const { error } = await supabase.from('regions').delete().eq('id', region.id)
     if (error) {
-      setErrorMsg(error.message || '删除地区失败。')
+      setErrorMsg(error.message || 'Failed to delete region.')
       return
     }
 
-    setSuccessMsg(`已删除地区「${region.name_cn || region.name}」。`)
+    setSuccessMsg(`Deleted "${region.name_cn || region.name}".`)
     setRegions((prev) => prev.filter((item) => item.id !== region.id))
   }
 
@@ -288,13 +288,13 @@ export default function RegionsPage() {
       form.append('files', file)
       const response = await adminFetch('/api/admin/upload-image', { method: 'POST', body: form })
       const result = await response.json()
-      if (!response.ok) throw new Error(result.error || '上传地区封面失败。')
+      if (!response.ok) throw new Error(result.error || 'Failed to upload region cover.')
       const url = result.files?.[0]?.url
-      if (!url) throw new Error('上传成功，但没有返回图片链接。')
+      if (!url) throw new Error('Upload succeeded but no image URL was returned.')
       setFormData((prev) => ({ ...prev, image_url: url }))
-      setSuccessMsg('地区封面已上传。')
+      setSuccessMsg('Region cover uploaded.')
     } catch (error: any) {
-      setErrorMsg(error.message || '上传地区封面失败。')
+      setErrorMsg(error.message || 'Failed to upload region cover.')
     } finally {
       setUploading(false)
       if (uploadRef.current) uploadRef.current.value = ''
@@ -318,14 +318,14 @@ export default function RegionsPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-semibold">地区管理</h1>
-              <p className="text-sm text-slate-400">整理国家、州属、城市与地区封面。</p>
+              <h1 className="text-2xl font-semibold">Region Management</h1>
+              <p className="text-sm text-slate-400">Manage countries, states, cities, descriptions, and cover images.</p>
             </div>
           </div>
 
           <Button onClick={openAdd} className="bg-amber-400 text-slate-950 hover:bg-amber-300">
             <Plus className="mr-2 h-4 w-4" />
-            新增地区
+            Add region
           </Button>
         </div>
 
@@ -334,26 +334,26 @@ export default function RegionsPage() {
 
         <div className="grid gap-4 md:grid-cols-3">
           <Card className="border-white/10 bg-white/5 text-white">
-            <CardHeader><CardTitle className="text-sm text-slate-400">国家数量</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm text-slate-400">Countries</CardTitle></CardHeader>
             <CardContent><div className="text-3xl font-semibold">{summary.countries}</div></CardContent>
           </Card>
           <Card className="border-white/10 bg-white/5 text-white">
-            <CardHeader><CardTitle className="text-sm text-slate-400">一级地区</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm text-slate-400">Top-level regions</CardTitle></CardHeader>
             <CardContent><div className="text-3xl font-semibold">{summary.topLevel}</div></CardContent>
           </Card>
           <Card className="border-white/10 bg-white/5 text-white">
-            <CardHeader><CardTitle className="text-sm text-slate-400">子地区</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-sm text-slate-400">Child regions</CardTitle></CardHeader>
             <CardContent><div className="text-3xl font-semibold">{summary.nested}</div></CardContent>
           </Card>
         </div>
 
         <Card className="border-white/10 bg-white/5 text-white">
           <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <CardTitle>地区列表</CardTitle>
+            <CardTitle>Region list</CardTitle>
             <div className="flex flex-col gap-3 md:flex-row">
               <div className="relative">
                 <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="搜索地区名称" className="border-white/10 bg-slate-900 pl-9 text-white md:w-72" />
+                <Input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search regions" className="border-white/10 bg-slate-900 pl-9 text-white md:w-72" />
               </div>
               <Select value={filterCountry} onValueChange={setFilterCountry}>
                 <SelectTrigger className="border-white/10 bg-slate-900 text-white md:w-56"><SelectValue /></SelectTrigger>
@@ -365,16 +365,16 @@ export default function RegionsPage() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="flex items-center gap-2 py-10 text-slate-400"><Loader2 className="h-4 w-4 animate-spin" />载入地区中...</div>
+              <div className="flex items-center gap-2 py-10 text-slate-400"><Loader2 className="h-4 w-4 animate-spin" />Loading regions...</div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow className="border-white/10 hover:bg-transparent">
-                    <TableHead className="text-slate-400">封面</TableHead>
-                    <TableHead className="text-slate-400">地区</TableHead>
-                    <TableHead className="text-slate-400">国家</TableHead>
-                    <TableHead className="text-slate-400">代码</TableHead>
-                    <TableHead className="text-right text-slate-400">操作</TableHead>
+                    <TableHead className="text-slate-400">Cover</TableHead>
+                    <TableHead className="text-slate-400">Region</TableHead>
+                    <TableHead className="text-slate-400">Country</TableHead>
+                    <TableHead className="text-slate-400">Code</TableHead>
+                    <TableHead className="text-right text-slate-400">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -408,15 +408,15 @@ export default function RegionsPage() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-h-[92vh] overflow-y-auto border-white/10 bg-slate-950 text-white sm:max-w-5xl">
             <DialogHeader>
-              <DialogTitle>{editingId ? '编辑地区' : '新增地区'}</DialogTitle>
-              <DialogDescription className="text-slate-400">可直接上传地区封面，或从该地区景点里选图。</DialogDescription>
+              <DialogTitle>{editingId ? 'Edit region' : 'Add region'}</DialogTitle>
+              <DialogDescription className="text-slate-400">Upload a region cover directly, or pick one from spots inside this region.</DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
               <div className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label>国家</Label>
+                    <Label>Country</Label>
                     <Select value={formData.country} onValueChange={(value) => setFormData((prev) => ({ ...prev, country: value, parent_id: 'null' }))}>
                       <SelectTrigger className="border-white/10 bg-slate-900 text-white"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -427,11 +427,11 @@ export default function RegionsPage() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>父级地区</Label>
+                    <Label>Parent region</Label>
                     <Select value={formData.parent_id} onValueChange={(value) => setFormData((prev) => ({ ...prev, parent_id: value }))}>
-                      <SelectTrigger className="border-white/10 bg-slate-900 text-white"><SelectValue placeholder="不指定" /></SelectTrigger>
+                      <SelectTrigger className="border-white/10 bg-slate-900 text-white"><SelectValue placeholder="No parent" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="null">不指定</SelectItem>
+                        <SelectItem value="null">No parent</SelectItem>
                         {parentOptions.map((region) => <SelectItem key={region.id} value={String(region.id)}>{regionLabel(region, regions)}</SelectItem>)}
                       </SelectContent>
                     </Select>
@@ -439,25 +439,25 @@ export default function RegionsPage() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2"><Label>英文名称</Label><Input value={formData.name} onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
-                  <div className="space-y-2"><Label>中文名称</Label><Input value={formData.name_cn} onChange={(e) => setFormData((prev) => ({ ...prev, name_cn: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
+                  <div className="space-y-2"><Label>English name</Label><Input value={formData.name} onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
+                  <div className="space-y-2"><Label>Chinese name</Label><Input value={formData.name_cn} onChange={(e) => setFormData((prev) => ({ ...prev, name_cn: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2"><Label>地区代码</Label><Input value={formData.code} onChange={(e) => setFormData((prev) => ({ ...prev, code: e.target.value }))} placeholder="例如 home-malaysia" className="border-white/10 bg-slate-900 text-white" /></div>
-                  <div className="space-y-2"><Label>封面链接</Label><Input value={formData.image_url} onChange={(e) => setFormData((prev) => ({ ...prev, image_url: e.target.value }))} placeholder="https://..." className="border-white/10 bg-slate-900 text-white" /></div>
+                  <div className="space-y-2"><Label>Region code</Label><Input value={formData.code} onChange={(e) => setFormData((prev) => ({ ...prev, code: e.target.value }))} placeholder="For example: home-malaysia" className="border-white/10 bg-slate-900 text-white" /></div>
+                  <div className="space-y-2"><Label>Cover image URL</Label><Input value={formData.image_url} onChange={(e) => setFormData((prev) => ({ ...prev, image_url: e.target.value }))} placeholder="https://..." className="border-white/10 bg-slate-900 text-white" /></div>
                 </div>
 
-                <div className="space-y-2"><Label>地区描述</Label><Textarea rows={4} value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
+                <div className="space-y-2"><Label>Region description</Label><Textarea rows={4} value={formData.description} onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))} className="border-white/10 bg-slate-900 text-white" /></div>
 
                 <Card className="border-white/10 bg-white/5 text-white">
-                  <CardHeader><CardTitle className="text-base">从该地区景点里选图</CardTitle></CardHeader>
+                  <CardHeader><CardTitle className="text-base">Pick a cover from spot photos</CardTitle></CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex flex-wrap gap-2">
-                      <Button type="button" size="sm" variant={includeChildren ? 'outline' : 'default'} onClick={() => setIncludeChildren(false)}>只看当前地区</Button>
-                      <Button type="button" size="sm" variant={includeChildren ? 'default' : 'outline'} onClick={() => setIncludeChildren(true)}>包含子地区景点</Button>
+                      <Button type="button" size="sm" variant={includeChildren ? 'outline' : 'default'} onClick={() => setIncludeChildren(false)}>Current region only</Button>
+                      <Button type="button" size="sm" variant={includeChildren ? 'default' : 'outline'} onClick={() => setIncludeChildren(true)}>Include child-region spots</Button>
                     </div>
-                    <Input value={candidateSearch} onChange={(e) => setCandidateSearch(e.target.value)} placeholder="搜索景点名字" className="border-white/10 bg-slate-900 text-white" />
+                    <Input value={candidateSearch} onChange={(e) => setCandidateSearch(e.target.value)} placeholder="Search spots" className="border-white/10 bg-slate-900 text-white" />
                     <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                       {candidateImages.map((item) => {
                         const selected = formData.image_url === item.cover
@@ -467,7 +467,7 @@ export default function RegionsPage() {
                             <div className="space-y-1 p-3">
                               <div className="text-sm font-medium">{item.name_cn || item.name}</div>
                               <div className="text-xs text-slate-400">{item.name}</div>
-                              {selected ? <div className="inline-flex items-center gap-1 text-xs text-amber-300"><Check className="h-3 w-3" />当前已选</div> : null}
+                              {selected ? <div className="inline-flex items-center gap-1 text-xs text-amber-300"><Check className="h-3 w-3" />Selected cover</div> : null}
                             </div>
                           </button>
                         )
@@ -480,16 +480,16 @@ export default function RegionsPage() {
               <div className="space-y-4">
                 <Card className="overflow-hidden border-white/10 bg-white/5 text-white">
                   <div className="relative aspect-[4/3] bg-slate-900">
-                    <FallbackImage src={formData.image_url} alt={formData.name || '地区封面预览'} fill className="object-cover" />
+                    <FallbackImage src={formData.image_url} alt={formData.name || 'Region cover preview'} fill className="object-cover" />
                   </div>
                   <CardContent className="space-y-3 p-4">
                     <div>
-                      <div className="text-lg font-semibold">{formData.name_cn || formData.name || '地区封面预览'}</div>
-                      <div className="text-sm text-slate-400">{formData.name || '上传或选择一张代表这一区域的图片'}</div>
+                      <div className="text-lg font-semibold">{formData.name_cn || formData.name || 'Region cover preview'}</div>
+                      <div className="text-sm text-slate-400">{formData.name || 'Upload a cover or choose one that best represents this region.'}</div>
                     </div>
                     <Button type="button" onClick={() => uploadRef.current?.click()} disabled={uploading} className="w-full bg-amber-400 text-slate-950 hover:bg-amber-300">
                       {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UploadCloud className="mr-2 h-4 w-4" />}
-                      上传地区封面
+                      Upload region cover
                     </Button>
                     <input ref={uploadRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleUpload(e.target.files)} />
                   </CardContent>
@@ -498,10 +498,10 @@ export default function RegionsPage() {
             </div>
 
             <DialogFooter>
-              <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10" onClick={() => setIsDialogOpen(false)}>取消</Button>
+              <Button variant="outline" className="border-white/10 bg-white/5 text-white hover:bg-white/10" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
               <Button onClick={handleSave} disabled={saving} className="bg-amber-400 text-slate-950 hover:bg-amber-300">
                 {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                {editingId ? '保存修改' : '新增地区'}
+                {editingId ? 'Save changes' : 'Create region'}
               </Button>
             </DialogFooter>
           </DialogContent>
