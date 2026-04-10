@@ -1,4 +1,4 @@
-﻿import { readFile, writeFile } from 'fs/promises'
+import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
@@ -107,6 +107,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     featuredSpotNames: normalizeStringArray(value?.featuredSpotNames),
     featuredAffiliateLinkIds: normalizeNumberArray(value?.featuredAffiliateLinkIds),
     sidebarAffiliateLinkIds: normalizeNumberArray(value?.sidebarAffiliateLinkIds),
+    klookWidgetCode: String(value?.klookWidgetCode || '').trim() || undefined,
     videoUrl: String(value?.videoUrl || '').trim() || undefined,
     facebookUrl: String(value?.facebookUrl || '').trim() || undefined,
   }
@@ -262,6 +263,7 @@ export async function saveGuides(guides: TravelGuide[]) {
     await writeLocalGuides(normalized)
   } catch {}
   await writeStorageGuides(normalized)
+  return normalized
 }
 
 

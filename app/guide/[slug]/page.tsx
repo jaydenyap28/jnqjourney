@@ -326,17 +326,15 @@ function shouldShowDaySummary(summary?: string | null) {
 function resolveStaySpotByName(stayName: string, allSpots: LinkedSpot[]) {
   const normalized = normalizeText(stayName)
   if (!normalized) return null
-  for (const spot of allSpots) {
+
+  const accommodationSpots = allSpots.filter((spot) => String(spot.category || '').toLowerCase() === 'accommodation')
+
+  for (const spot of accommodationSpots) {
     const name = normalizeText(spot.name)
     const nameCn = normalizeText(spot.name_cn)
     if (name === normalized || nameCn === normalized) return spot
   }
-  for (const spot of allSpots) {
-    const name = normalizeText(spot.name)
-    const nameCn = normalizeText(spot.name_cn)
-    if ((name && name.includes(normalized)) || (nameCn && nameCn.includes(normalized))) return spot
-    if ((normalized && normalized.includes(name)) || (normalized && normalized.includes(nameCn))) return spot
-  }
+
   return null
 }
 
@@ -456,6 +454,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const selectedSidebarLinks = await fetchGuideAffiliateLinks(guide.sidebarAffiliateLinkIds || guide.featuredAffiliateLinkIds || [])
   const selectedSidebarAffiliateIds = selectedSidebarLinks.map((link) => link.id)
 
+
   const datedDayPlans = guide.days.map((day, index) => {
     const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
     const staySource = resolveStaySource(guide.days, dayNumber)
@@ -501,7 +500,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
       unresolvedSpotNames,
       staySpot:
         (stayName ? spotMap.get(stayName) || null : null) ||
-        resolveStaySpotByName(stayRawName, allGuideSpots) ||
         orderedSpots.find((spot) => {
           if (!stayName) return false
           return (
@@ -736,7 +734,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                           <div className="mt-3 rounded-[20px] border border-sky-400/15 bg-sky-500/10 p-3 md:mt-5 md:rounded-[26px] md:p-5">
                             <div className="flex items-end justify-between gap-4">
                               <div>
-                                <p className="text-xs uppercase tracking-[0.24em] text-sky-200/80">{'\u5f53\u65e5\u4f4f\u5bbf'}</p>
+                                <p className="text-xs uppercase tracking-[0.24em] text-sky-200/80">{'\u5f53\u65e5\u4f4f\u5bbf'}</p>
                               </div>
                             </div>
                             {day.staySpot ? (
@@ -817,7 +815,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                             <AffiliateCard
                               regionId={day.primaryRegionId}
                               limit={2}
-                              title={'\u4ea4\u901a\u4e0e\u9884\u8ba2\u63a8\u8350'}
+                              title={'\u4ea4\u901a\u4e0e\u9884\u8ba2\u63a8\u8350'}
                               className="bg-white/5"
                             />
                           </div>
@@ -909,7 +907,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 })}
               </div>
             </div>
-
             {selectedSidebarAffiliateIds.length ? (
               <AffiliateCard
                 linkIds={selectedSidebarAffiliateIds}

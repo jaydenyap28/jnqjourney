@@ -1,4 +1,4 @@
-﻿import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
 import { normalizeGuidePayload, readGuides, saveGuides } from '@/lib/server/guides-store'
 
@@ -38,8 +38,7 @@ export async function POST(request: Request) {
       guides.unshift(payload)
     }
 
-    await saveGuides(guides)
-    const savedGuides = await readGuides()
+    const savedGuides = await saveGuides(guides)
     const savedGuide =
       savedGuides.find((item) => item.slug === payload.slug || (previousSlug && item.slug === previousSlug)) || payload
     return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString() })

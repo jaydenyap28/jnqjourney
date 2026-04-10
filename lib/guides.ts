@@ -52,6 +52,7 @@ export interface TravelGuide {
   featuredSpotNames?: string[]
   featuredAffiliateLinkIds?: number[]
   sidebarAffiliateLinkIds?: number[]
+  klookWidgetCode?: string
   videoUrl?: string
   facebookUrl?: string
 }
@@ -81,6 +82,7 @@ export const EMPTY_GUIDE: TravelGuide = {
   featuredSpotNames: [],
   featuredAffiliateLinkIds: [],
   sidebarAffiliateLinkIds: [],
+  klookWidgetCode: '',
   videoUrl: '',
   facebookUrl: '',
 }

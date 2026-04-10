@@ -31,6 +31,7 @@ export interface StructuredPriceInfo {
   transportBudgetSecondary: string
   customItems: StructuredPriceCustomItem[]
   infoImages: string[]
+  klookWidgetCode: string
   priceSource: string
   lastCheckedAt: string
   notes: string
@@ -62,6 +63,7 @@ export function createDefaultPriceInfo(): StructuredPriceInfo {
     transportBudgetSecondary: '',
     customItems: [],
     infoImages: [],
+    klookWidgetCode: '',
     priceSource: '',
     lastCheckedAt: '',
     notes: '',
@@ -127,6 +129,7 @@ export function parsePriceInfo(value: unknown): StructuredPriceInfo {
     infoImages: Array.isArray((source as any).infoImages)
       ? (source as any).infoImages.map((item: any) => String(item || '').trim()).filter(Boolean)
       : [],
+    klookWidgetCode: String((source as any).klookWidgetCode || '').trim(),
     priceSource: String(source.priceSource || '').trim(),
     lastCheckedAt: String(source.lastCheckedAt || '').trim(),
     notes: String(source.notes || '').trim(),
@@ -162,6 +165,7 @@ export function hasPriceInfo(value: StructuredPriceInfo) {
       value.transportBudgetSecondary ||
       value.customItems.length ||
       value.infoImages.length ||
+      value.klookWidgetCode ||
       value.priceSource ||
       value.lastCheckedAt ||
       value.notes
