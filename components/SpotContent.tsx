@@ -6,6 +6,7 @@ import Link from 'next/link'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
+import { getSpotDescription } from '@/lib/content-display'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -135,72 +136,6 @@ function isEmbeddableFacebookVideoUrl(url?: string | null) {
 function isProbablyFacebookVideoUrl(url?: string | null) {
   if (!url) return false
   return /facebook\.com|fb\.watch\//i.test(url)
-}
-
-function looksLikeStructuredOpeningHours(value: string) {
-  try {
-    const parsed = JSON.parse(value)
-    return Boolean(
-      parsed &&
-        typeof parsed === 'object' &&
-        ('open' in parsed || 'close' in parsed || 'closedDays' in parsed || 'is24Hours' in parsed)
-    )
-  } catch {
-    return false
-  }
-}
-
-function normalizeComparableText(value?: string | null) {
-  return String(value || '')
-    .trim()
-    .replace(/\s+/g, ' ')
-    .toLowerCase()
-}
-
-function looksLikeOpeningHoursText(value: string, openingHours?: string | null) {
-  const trimmed = value.trim()
-  if (!trimmed) return false
-
-  if (looksLikeStructuredOpeningHours(trimmed)) return true
-
-  const normalizedValue = normalizeComparableText(trimmed)
-  const normalizedHours = normalizeComparableText(openingHours)
-
-  if (normalizedHours && normalizedValue === normalizedHours) return true
-
-  let signalCount = 0
-
-  if (/(opening hours|business hours|daily hours|open 24 hours|closed on)/i.test(trimmed)) {
-    signalCount += 1
-  }
-
-  if (/\b(mon|tue|wed|thu|fri|sat|sun)\b/i.test(trimmed) && /\b\d{1,2}(:\d{2})?\s?(am|pm)\b/i.test(trimmed)) {
-    signalCount += 1
-  }
-
-  if (/\b\d{1,2}:\d{2}\s*[-~to]{1,3}\s*\d{1,2}:\d{2}\b/i.test(trimmed)) {
-    signalCount += 1
-  }
-
-  if (/^\s*(sun|mon|tue|wed|thu|fri|sat)\s*[:?-]/im.test(trimmed)) {
-    signalCount += 1
-  }
-
-  return signalCount >= 2 && trimmed.length <= 500
-}
-
-function getSpotDescription(location: Pick<Location, 'description' | 'review' | 'opening_hours'>) {
-  const candidates = [location.description, location.review]
-    .map((item) => String(item || '').trim())
-    .filter(Boolean)
-
-  for (const candidate of candidates) {
-    if (!looksLikeOpeningHoursText(candidate, location.opening_hours)) {
-      return candidate
-    }
-  }
-
-  return ''
 }
 
 function stripLeadingCurrency(value: string, currency?: string) {

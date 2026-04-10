@@ -17,6 +17,7 @@ import BottomFloatingDock from '@/components/BottomFloatingDock'
 import SiteFooter from '@/components/SiteFooter'
 import type { TravelGuide } from '@/lib/guides'
 import FallbackImage from '@/components/FallbackImage'
+import { getDisplayTitle, getGuideDisplayPair, getSpotDescription } from '@/lib/content-display'
 import { getRegionCountry } from '@/lib/region-utils'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 
@@ -89,14 +90,6 @@ function getCategoryLabel(category?: string) {
   }
 }
 
-function getDisplayTitle(name: string, nameCn?: string) {
-  if (nameCn && nameCn.trim() && nameCn.trim() !== name.trim()) {
-    return { primary: name, secondary: nameCn }
-  }
-
-  return { primary: name, secondary: '' }
-}
-
 function parseRegionCodeTokens(code?: string) {
   return new Set(
     String(code || '')
@@ -129,17 +122,6 @@ function getGuideRouteSummary(guide: TravelGuide, limit = 3) {
     .map((stop) => stop.name)
     .filter(Boolean)
     .slice(0, limit)
-}
-
-function getGuideDisplayPair(guide: TravelGuide) {
-  const shortTitle = String(guide.shortTitle || '').trim()
-  const title = String(guide.title || '').trim()
-
-  if (!title) return { primary: shortTitle, secondary: '' }
-  if (!shortTitle) return { primary: title, secondary: '' }
-  if (shortTitle === title) return { primary: shortTitle, secondary: '' }
-
-  return { primary: shortTitle, secondary: title }
 }
 
 function GuideShowcase() {
@@ -209,7 +191,7 @@ function GuideShowcase() {
                   )}
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.04)_0%,rgba(0,0,0,0.14)_40%,rgba(0,0,0,0.86)_100%)]" />
                   <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
-                    <p className="section-kicker text-[10px] text-amber-100/82">{'\u6e38\u8bb0\u653b\u7565'}</p>
+                    <p className="section-kicker text-[10px] text-amber-100/82">Travel Guide / 游记攻略</p>
                     <h3 className="font-editorial-title mt-2 text-[2rem] leading-[0.94] text-white md:mt-3 md:text-5xl">
                       {title.primary}
                     </h3>
@@ -238,7 +220,7 @@ function GuideShowcase() {
 
                   {route.length ? (
                     <div className="rounded-[18px] border border-white/10 bg-black/30 p-3 md:rounded-[22px] md:p-4">
-                      <p className="section-kicker text-[10px] text-amber-200/75">{'\u8fd9\u8d9f\u8def\u7ebf'}</p>
+                      <p className="section-kicker text-[10px] text-amber-200/75">Route Highlights / 这趟路线</p>
                       <div className="mt-2.5 flex flex-wrap gap-1.5 md:mt-3 md:gap-2">
                         {route.map((stop) => (
                           <span
@@ -253,7 +235,7 @@ function GuideShowcase() {
                   ) : null}
 
                   <div className="inline-flex items-center gap-2 text-[13px] font-medium text-white/88 md:text-sm">
-                    {'\u6253\u5f00\u6e38\u8bb0'}
+                    {'Open guide / 打开游记'}
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -321,7 +303,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
         </div>
 
         <p className="line-clamp-2 text-[13px] leading-5 text-gray-300 md:line-clamp-3 md:text-sm md:leading-6">
-          {location.description || location.review || '\u6253\u5f00\u8fd9\u4e2a\u666f\u70b9\u9875\uff0c\u67e5\u770b\u7167\u7247\u3001\u5730\u56fe\u3001\u5f71\u7247\u548c\u65c5\u884c\u7b14\u8bb0\u3002'}
+          {getSpotDescription(location) || 'Open this spot page for photos, maps, videos, and travel notes.'}
         </p>
 
         <div className="flex justify-end">
@@ -329,7 +311,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
             href={buildLocationPath(location.name, location.id)}
             className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-50"
           >
-            {'\u67e5\u770b\u666f\u70b9'}
+            {'View spot / 查看景点'}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -370,12 +352,12 @@ function RegionCard({ region }: { region: RegionHighlight }) {
               ) : null}
             </div>
           <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">
-            {region.count} {'\u4e2a\u5730\u70b9'}
+          {region.count} spots
           </Badge>
         </div>
 
         <p className="line-clamp-3 text-sm leading-6 text-gray-300">
-          {region.sampleText || `${region.name_cn || region.name} \u4e00\u5e26\u7684\u666f\u70b9\u3001\u7f8e\u98df\u3001\u4f4f\u5bbf\u548c\u8def\u7ebf\u7075\u611f\u3002`}
+          {region.sampleText || `Spot ideas, food stops, stays, and route notes around ${region.name}.`}
         </p>
       </div>
     </Link>
@@ -624,13 +606,13 @@ export default function Home() {
           <section id="guides" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">{'\u5b8c\u6574\u6e38\u8bb0\u653b\u7565'}</h2>
+                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">Travel Guides / 完整游记攻略</h2>
               </div>
               <Link
                 href="/guide"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
               >
-                {'\u67e5\u770b\u5168\u90e8\u6e38\u8bb0'}
+                {'View all guides / 查看全部游记'}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -640,13 +622,13 @@ export default function Home() {
           <section id="malaysia" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">{'\u8d70\u904d\u9a6c\u6765\u897f\u4e9a'}</h2>
+                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">Explore Malaysia / 走遍马来西亚</h2>
               </div>
               <Link
                 href="/region/malaysia"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
               >
-                {'\u67e5\u770b\u9a6c\u6765\u897f\u4e9a\u6240\u6709\u5730\u533a'}
+                {'View all Malaysia regions / 查看马来西亚所有地区'}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -662,7 +644,7 @@ export default function Home() {
           <section id="global" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">{'\u6d77\u5916\u57ce\u5e02\u4e0e\u5730\u533a'}</h2>
+                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">Global Destinations / 海外城市与地区</h2>
               </div>
             </div>
             {globalRegions.length > 0 ? (
@@ -677,8 +659,8 @@ export default function Home() {
           {topTags.length > 0 ? (
             <section className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5">
               <div>
-                <p className="section-kicker text-xs text-amber-300/80">{'\u5feb\u901f\u7b5b\u9009'}</p>
-                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl">{'\u70ed\u95e8\u6807\u7b7e'}</h2>
+                <p className="section-kicker text-xs text-amber-300/80">Quick Filters / 快速筛选</p>
+                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl">Popular Tags / 热门标签</h2>
               </div>
               <div className="flex flex-wrap gap-2.5 md:gap-3">
                 {topTags.map(([tag, count], index) => {
@@ -707,8 +689,8 @@ export default function Home() {
           <section id="latest" className="space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="section-kicker text-xs text-amber-300/80">{'\u6700\u65b0\u6253\u5361'}</p>
-                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl">{'\u6700\u8fd1\u66f4\u65b0'}</h2>
+                <p className="section-kicker text-xs text-amber-300/80">Recently Added / 最新打卡</p>
+                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl">Latest Updates / 最近更新</h2>
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-4">
