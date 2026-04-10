@@ -74,6 +74,12 @@ interface SpotContentProps {
   mode?: 'drawer' | 'page'
   onClose?: () => void
   relatedLocations?: RelatedLocation[]
+  externalKlookWidgets?: Array<{
+    id: string
+    title: string
+    description?: string
+    htmlCode: string
+  }>
 }
 
 function getYouTubeID(url: string) {
@@ -303,7 +309,13 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
   )
 }
 
-export default function SpotContent({ location, mode = 'drawer', onClose, relatedLocations = [] }: SpotContentProps) {
+export default function SpotContent({
+  location,
+  mode = 'drawer',
+  onClose,
+  relatedLocations = [],
+  externalKlookWidgets = [],
+}: SpotContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
   const [facebookEmbedFailed, setFacebookEmbedFailed] = useState(false)
@@ -1127,6 +1139,17 @@ export default function SpotContent({ location, mode = 'drawer', onClose, relate
                 className="bg-white/5"
               />
             ) : null}
+            {!isDrawer
+              ? externalKlookWidgets.map((widget) => (
+                  <KlookWidgetEmbed
+                    key={widget.id}
+                    code={widget.htmlCode}
+                    title={widget.title}
+                    description={widget.description || 'Live Klook widget for this location'}
+                    className="bg-white/5"
+                  />
+                ))
+              : null}
             {!isDrawer ? (
               <AffiliateCard
                 locationId={location.id}

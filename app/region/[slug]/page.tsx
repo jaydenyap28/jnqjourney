@@ -4,10 +4,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft, Compass, MapPinned, Route } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
+import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import { Badge } from '@/components/ui/badge'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { fetchLocationsByRegion, fetchRegionBySlug } from '@/lib/server/public-location-data'
+import { getActiveKlookWidgetsForTargets } from '@/lib/server/klook-widgets-store'
 import { absoluteUrl } from '@/lib/site'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 
@@ -53,6 +55,7 @@ export default async function RegionPage({ params }: PageProps) {
   }
 
   const locations = await fetchLocationsByRegion(region.id, 60)
+  const klookWidgets = await getActiveKlookWidgetsForTargets({ regionId: region.id })
   const readableName = region.name_cn ? `${region.name_cn} / ${region.name}` : region.name
 
   return (
@@ -102,6 +105,27 @@ export default async function RegionPage({ params }: PageProps) {
             </div>
           </div>
         </div>
+
+        {klookWidgets.length ? (
+          <section className="mt-6 space-y-4">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-emerald-300/75">Klook Booking</p>
+                <h2 className="mt-2 text-2xl font-semibold text-white md:text-3xl">Book this region</h2>
+              </div>
+            </div>
+            <div className="grid gap-4 xl:grid-cols-2">
+              {klookWidgets.map((widget) => (
+                <KlookWidgetEmbed
+                  key={widget.id}
+                  code={widget.htmlCode}
+                  title={widget.title}
+                  description={widget.description || 'Live Klook widget for this region'}
+                />
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         {locations.length > 0 ? (
           <section className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

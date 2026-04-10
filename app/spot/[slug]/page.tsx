@@ -4,6 +4,7 @@ import SiteFooter from '@/components/SiteFooter'
 import SpotContent from '@/components/SpotContent'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
+import { getActiveKlookWidgetsForTargets } from '@/lib/server/klook-widgets-store'
 import { absoluteUrl } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
@@ -70,6 +71,10 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   const relatedLocations = await fetchRelatedLocations(location, 6)
+  const klookWidgets = await getActiveKlookWidgetsForTargets({
+    locationId: location.id,
+    regionId: location.region_id,
+  })
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': location.category === 'food' ? 'Restaurant' : location.category === 'accommodation' ? 'Hotel' : 'TouristAttraction',
@@ -92,7 +97,7 @@ export default async function SpotPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.15),transparent_22%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <SpotContent location={location} mode="page" relatedLocations={relatedLocations} />
+      <SpotContent location={location} mode="page" relatedLocations={relatedLocations} externalKlookWidgets={klookWidgets} />
       <SiteFooter />
     </main>
   )

@@ -21,6 +21,7 @@ interface AffiliateCardProps {
   className?: string
   compact?: boolean
   hideHeader?: boolean
+  singleColumn?: boolean
 }
 
 interface AffiliateLink {
@@ -84,25 +85,25 @@ const PROVIDER_NAMES: Record<string, string> = {
 }
 
 const LINK_TYPE_NAMES: Record<string, string> = {
-  hotel: '酒店',
-  ticket: '门票',
-  tour: '一日游 / 行程',
-  transport: '交通',
-  food: '美食',
-  insurance: '保险',
-  sim: '上网卡',
-  others: '推荐',
+  hotel: 'Hotel',
+  ticket: 'Tickets',
+  tour: 'Tours',
+  transport: 'Transport',
+  food: 'Food',
+  insurance: 'Insurance',
+  sim: 'SIM / eSIM',
+  others: 'Recommendation',
 }
 
 const LINK_TYPE_ACTIONS: Record<string, string> = {
-  hotel: '查看住宿',
-  ticket: '立即预订',
-  tour: '查看行程',
-  transport: '查看交通',
-  food: '查看推荐',
-  insurance: '查看保险',
-  sim: '查看上网卡',
-  others: '打开链接',
+  hotel: 'View Stay',
+  ticket: 'Book Now',
+  tour: 'View Tour',
+  transport: 'View Transport',
+  food: 'View Offer',
+  insurance: 'View Insurance',
+  sim: 'View SIM',
+  others: 'Open Link',
 }
 
 const PROVIDER_ACCENTS: Record<string, string> = {
@@ -184,6 +185,7 @@ export default function AffiliateCard({
   className = '',
   compact = false,
   hideHeader = false,
+  singleColumn = false,
 }: AffiliateCardProps) {
   const [links, setLinks] = useState<AffiliateLink[]>([])
   const [loading, setLoading] = useState(true)
@@ -231,7 +233,9 @@ export default function AffiliateCard({
       regions: Array.isArray(link.regions) ? link.regions[0] || null : link.regions || null,
     })) as AffiliateLink[]
 
-    const deduped = Array.from(new Map(normalizedLinks.map((link) => [link.url, link])).values())
+    const deduped = linkIds?.length
+      ? normalizedLinks
+      : Array.from(new Map(normalizedLinks.map((link) => [link.url, link])).values())
 
     if (linkIds?.length) {
       const order = new Map(linkIds.map((id, index) => [id, index]))
@@ -317,10 +321,11 @@ export default function AffiliateCard({
   }
 
   const gridClassName = useMemo(() => {
+    if (singleColumn) return 'grid-cols-1'
     if (links.length === 1) return 'grid-cols-1'
     if (links.length === 2) return 'grid-cols-1 xl:grid-cols-2'
     return 'grid-cols-1 md:grid-cols-2'
-  }, [links.length])
+  }, [links.length, singleColumn])
 
   if (loading) {
     return (
@@ -444,7 +449,7 @@ export default function AffiliateCard({
 
                 <div className="mt-6 flex items-end justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="text-[11px] uppercase tracking-[0.25em] text-white/45">来源</p>
+                    <p className="text-[11px] uppercase tracking-[0.25em] text-white/45">Source</p>
                     <p className="mt-1 line-clamp-1 text-sm text-white/75">{hostname}</p>
                   </div>
 
@@ -464,7 +469,8 @@ export default function AffiliateCard({
       </CardContent>
       {showDisclosure ? (
         <CardFooter className="border-t border-white/10 pt-4 text-xs leading-6 text-white/45">
-          这些为联盟链接。你通过这些链接预订时，我们可能获得少量佣金，但不会增加你的购买成本。        </CardFooter>
+          These are affiliate links. We may earn a small commission if you book through them, at no extra cost to you.
+        </CardFooter>
       ) : null}
     </Card>
   )

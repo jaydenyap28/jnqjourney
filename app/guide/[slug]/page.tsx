@@ -568,6 +568,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
             }
           >
             <div className="relative z-10 space-y-4 md:space-y-6">
+              <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
                 <div className="space-y-4">
                   <p className="section-kicker text-xs text-amber-100/80">{'Travel Guide / \u6e38\u8bb0'}</p>
                   <h1 className="font-display max-w-4xl text-[2.35rem] leading-[0.96] text-white md:text-[5.4rem]">
@@ -576,6 +577,39 @@ export default async function GuideDetailPage({ params }: PageProps) {
                   <p className="max-w-3xl text-sm leading-7 text-white/82 md:text-xl md:leading-9">{guide.tagline}</p>
                   <p className="max-w-3xl text-sm leading-7 text-white/66 md:text-base md:leading-8">{guide.summary}</p>
                 </div>
+
+                <div className="rounded-[26px] border border-white/10 bg-black/20 p-4 backdrop-blur-md md:p-5">
+                  <p className="section-kicker text-xs text-amber-300/80">{'Route / 路线'}</p>
+                  <h3 className="mt-3 text-2xl font-semibold text-white">{'路线总览'}</h3>
+                  <div className="mt-4 space-y-3">
+                    {routeRegions.map((stop, index) => {
+                      const content = (
+                        <>
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-white">
+                            {stop.stopLabel || index + 1}
+                          </div>
+                          <div className="flex-1 rounded-[18px] border border-white/10 bg-black/20 px-4 py-3 text-sm text-white">
+                            <div className="font-medium text-white">{stop.primaryLabel || stop.name}</div>
+                            {stop.secondaryLabel ? (
+                              <div className="mt-1 text-xs uppercase tracking-[0.2em] text-white/45">{stop.secondaryLabel}</div>
+                            ) : null}
+                          </div>
+                        </>
+                      )
+
+                      return stop.href ? (
+                        <Link key={stop.name} href={stop.href} className="flex items-center gap-3 transition hover:translate-x-1">
+                          {content}
+                        </Link>
+                      ) : (
+                        <div key={stop.name} className="flex items-center gap-3">
+                          {content}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -886,37 +920,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 className="bg-white/5"
               />
             ) : null}
-            <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
-              <p className="section-kicker text-xs text-amber-300/80">{'Route / \u8def\u7ebf'}</p>
-              <h3 className="mt-3 text-2xl font-semibold text-white">{'\u8def\u7ebf\u603b\u89c8'}</h3>
-              <div className="mt-4 space-y-3">
-                {routeRegions.map((stop, index) => {
-                  const content = (
-                    <>
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-white">
-                          {stop.stopLabel || index + 1}
-                        </div>
-                      <div className="flex-1 rounded-[20px] border border-white/10 bg-black/20 px-4 py-3 text-sm text-white">
-                        <div className="font-medium text-white">{stop.primaryLabel || stop.name}</div>
-                        {stop.secondaryLabel ? (
-                          <div className="mt-1 text-xs uppercase tracking-[0.2em] text-white/45">{stop.secondaryLabel}</div>
-                        ) : null}
-                      </div>
-                    </>
-                  )
-
-                  return stop.href ? (
-                    <Link key={stop.name} href={stop.href} className="flex items-center gap-3 transition hover:translate-x-1">
-                      {content}
-                    </Link>
-                  ) : (
-                    <div key={stop.name} className="flex items-center gap-3">
-                      {content}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
             {selectedSidebarAffiliateIds.length ? (
               <AffiliateCard
                 linkIds={selectedSidebarAffiliateIds}
@@ -924,6 +927,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 title={'\u8def\u7ebf\u9884\u8ba2\u7cbe\u9009'}
                 className="bg-white/5"
                 hideHeader
+                singleColumn
               />
             ) : null}
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
@@ -948,7 +952,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
 
 
 

@@ -481,6 +481,7 @@ export default function AdminDashboard() {
             <Link href="/admin/reports"><Button variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"><CalendarDays className="mr-2 h-4 w-4" />数据报表</Button></Link>
             <Link href="/admin/affiliate"><Button variant="outline" className="border-sky-200 bg-sky-50 text-sky-900 hover:bg-sky-100"><Link2 className="mr-2 h-4 w-4" />联盟管理</Button></Link>
             <Link href="/admin/facebook-albums"><Button variant="outline" className="border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100"><ImagePlus className="mr-2 h-4 w-4" />Facebook 相册导入</Button></Link>
+            <Link href="/admin/klook-widgets"><Button variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"><Link2 className="mr-2 h-4 w-4" />Klook Widgets</Button></Link>
             <Link href="/admin/add"><Button className="bg-orange-500 text-white hover:bg-orange-600"><Plus className="mr-2 h-4 w-4" />录入新景点</Button></Link>
           </div>
         </div>
