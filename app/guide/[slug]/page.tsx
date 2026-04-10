@@ -278,6 +278,13 @@ function formatVisitDate(value: string) {
   }).format(date)
 }
 
+function formatGuideMoney(value?: string | null, fallbackCurrency = 'RM') {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  if (/^(rm|cny|jpy|thb|idr|usd|rmb|¥|￥|\$)/i.test(text)) return text
+  return `${fallbackCurrency} ${text}`
+}
+
 function spotTypeLabel(category?: string | null) {
   if (category === 'food') return '\u7f8e\u98df'
   if (category === 'accommodation') return '\u4f4f\u5bbf'
@@ -635,7 +642,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 {guide.budget ? (
                   <div className="rounded-[20px] border border-amber-300/20 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))] p-3.5 md:rounded-[26px] md:p-5">
                     <p className="text-sm text-amber-100/70">Budget / 总预算</p>
-                    <p className="mt-2 text-3xl font-semibold text-white md:text-[2.1rem]">{guide.budget}</p>
+                    <p className="mt-2 text-3xl font-semibold text-white md:text-[2.1rem]">{formatGuideMoney(guide.budget)}</p>
                   </div>
                 ) : null}
                 {guide.budgetItems.map((item, index) => (
@@ -645,7 +652,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                   >
                     <p className="text-sm text-white/58">{item.label || 'Budget Item / 预算项'}</p>
                     <p className="mt-2 text-2xl font-semibold text-white md:text-[1.9rem]">
-                      {[item.currency, item.amount].filter(Boolean).join(' ')}
+                      {item.currency ? [item.currency, item.amount].filter(Boolean).join(' ') : formatGuideMoney(item.amount)}
                     </p>
                     {item.note ? <p className="mt-3 text-sm leading-6 text-gray-300">{item.note}</p> : null}
                   </div>
@@ -942,8 +949,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
-
 
 
 

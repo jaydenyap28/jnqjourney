@@ -9,6 +9,8 @@ export interface StructuredPriceCustomItem {
 export interface StructuredPriceInfo {
   currency: string
   secondaryCurrency: string
+  accommodationBudget: string
+  accommodationBudgetSecondary: string
   isFree: boolean
   admissionLocalAdult: string
   admissionLocalAdultSecondary: string
@@ -41,6 +43,8 @@ export function createDefaultPriceInfo(): StructuredPriceInfo {
   return {
     currency: '',
     secondaryCurrency: '',
+    accommodationBudget: '',
+    accommodationBudgetSecondary: '',
     isFree: false,
     admissionLocalAdult: '',
     admissionLocalAdultSecondary: '',
@@ -97,6 +101,8 @@ export function parsePriceInfo(value: unknown): StructuredPriceInfo {
   return {
     currency: String(source.currency || '').trim(),
     secondaryCurrency: String((source as any).secondaryCurrency || '').trim(),
+    accommodationBudget: String((source as any).accommodationBudget || '').trim(),
+    accommodationBudgetSecondary: String((source as any).accommodationBudgetSecondary || '').trim(),
     isFree: Boolean(source.isFree),
     admissionLocalAdult: String((source as any).admissionLocalAdult || '').trim(),
     admissionLocalAdultSecondary: String((source as any).admissionLocalAdultSecondary || '').trim(),
@@ -153,6 +159,8 @@ export function hasPriceInfo(value: StructuredPriceInfo) {
       value.admissionForeignChildSecondary ||
       value.currency ||
       value.secondaryCurrency ||
+      value.accommodationBudget ||
+      value.accommodationBudgetSecondary ||
       value.admissionAdult ||
       value.admissionAdultSecondary ||
       value.admissionChild ||

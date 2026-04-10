@@ -181,7 +181,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const coverFocus = parseImageFocus(formData.image_url || '')
   const isAttractionCategory = formData.category === 'attraction'
   const isFoodCategory = formData.category === 'food'
-  const shouldShowPriceReference = formData.category !== 'accommodation'
+  const shouldShowPriceReference = true
   const [priceImageInput, setPriceImageInput] = useState('')
   const [loadingCustomSlug, setLoadingCustomSlug] = useState(false)
 
@@ -2169,9 +2169,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             </div>
 
             {shouldShowPriceReference ? (
+              <>
               <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
                 <p className="text-xs uppercase tracking-[0.22em] text-slate-500">
-                  {isAttractionCategory ? '景点 / Attraction pricing' : '美食 / Food budget'}
+                  {isAttractionCategory ? '景点 / Attraction pricing' : isFoodCategory ? '美食 / Food budget' : '住宿 / Stay pricing'}
                 </p>
                 <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                   {isAttractionCategory ? (
@@ -2379,6 +2380,31 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       </div>
                     </>
                   ) : null}
+
+                  {formData.category === 'accommodation' ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceStay">住宿价格</Label>
+                        <Input
+                          id="priceStay"
+                          value={structuredPriceInfo.accommodationBudget}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, accommodationBudget: e.target.value }))}
+                          placeholder="例如 220"
+                        />
+                        <p className="text-xs text-slate-500">填你住到的大约价格，前台会自动整理成参考房价区间。</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceStaySecondary">住宿价格第二币种</Label>
+                        <Input
+                          id="priceStaySecondary"
+                          value={structuredPriceInfo.accommodationBudgetSecondary}
+                          onChange={(e) => setStructuredPriceInfo((prev) => ({ ...prev, accommodationBudgetSecondary: e.target.value }))}
+                          placeholder={`例如 ${structuredPriceInfo.secondaryCurrency || 'RM'} 150`}
+                        />
+                        <p className="text-xs text-slate-500">可选，适合补 RM 或当地币做双币展示。</p>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
 
                 {isAttractionCategory ? (
@@ -2492,12 +2518,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                   </div>
                 ) : null}
               </div>
-            ) : (
-              <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-500">
-                住宿类不需要填写门票、吃喝或交通花费，前台会以联盟链接与住宿详情为主。
-              </div>
-            )}
-
             <div className="grid grid-cols-1 gap-4">
               <div className="flex items-end">
                 <p className="text-xs text-gray-500">
@@ -2505,7 +2525,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                     ? '景点如果要区分本地人与外国人，可优先填写四种门票；停车费也会同步显示到前台。'
                     : isFoodCategory
                       ? '美食类会自动把总价换算成人均展示，更适合游客快速判断预算。'
-                      : '住宿类这里先不需要填写花费参考。'}
+                      : '住宿类会自动把你的输入整理成参考房价区间，更适合游客阅读和 SEO。'}
                 </p>
               </div>
             </div>
@@ -2537,6 +2557,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                 可直接贴 Klook 提供的整段 widget code。保存后会显示在景点详情页预订推荐区域上方。
               </p>
             </div>
+              </>
+            ) : null}
           </div>
 
           <div className="space-y-4 border-b pb-4">

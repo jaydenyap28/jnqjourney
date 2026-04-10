@@ -176,6 +176,52 @@ function formatCompactAmount(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, '')
 }
 
+function extractNumericBudget(value?: string | null) {
+  const normalized = String(value || '')
+    .replace(/,/g, '')
+    .match(/(\d+(?:\.\d+)?)/)
+  return normalized ? Number(normalized[1]) : null
+}
+
+function buildAccommodationRangeLabel(value?: string | null, currency?: string) {
+  const amount = extractNumericBudget(value)
+  if (!amount) return ''
+
+  const lower = Math.max(0, Math.floor(amount / 50) * 50)
+  const upper = Math.ceil((amount * 1.55) / 50) * 50
+  const unit = currency || ''
+
+  if (!lower || !upper) return formatBudgetLabel(String(amount), unit)
+  return `${unit ? `${unit}` : ''}${unit ? '' : ''}${lower} - ${unit ? `${unit}` : ''}${upper}`
+}
+
+function getPriceHeading(category?: string | null) {
+  if (category === 'food') return 'Food Budget'
+  if (category === 'accommodation') return 'Stay Price Guide'
+  return 'Entry & Spend'
+}
+
+function getPriceCurrencyLabel(primary?: string, secondary?: string) {
+  const parts = [primary, secondary].map((item) => String(item || '').trim()).filter(Boolean)
+  return parts.length ? parts.join(' / ') : 'Local Currency'
+}
+
+function hasVisibleOpeningHours(value?: string | null) {
+  const raw = String(value || '').trim()
+  if (!raw) return false
+
+  try {
+    const parsed = JSON.parse(raw)
+    if (parsed && typeof parsed === 'object' && 'isUnknown' in parsed) {
+      return !Boolean((parsed as { isUnknown?: boolean }).isUnknown)
+    }
+  } catch {
+    // ignore
+  }
+
+  return !/^no information$/i.test(raw)
+}
+
 function TikTokIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -340,17 +386,28 @@ export default function SpotContent({
   const showAdmissionPricing = isAttractionSpot && (hasTieredAdmission || priceInfo.admissionAdult || priceInfo.admissionChild || priceInfo.isFree)
   const showParkingPricing = isAttractionSpot && Boolean(priceInfo.parkingBudget)
   const showMealPricing = isFoodSpot && Boolean(formattedMealBudget)
+  const showStayPricing = location.category === 'accommodation' && Boolean(priceInfo.accommodationBudget)
   const showCustomPricing = isAttractionSpot && Array.isArray(priceInfo.customItems) && priceInfo.customItems.length > 0
   const showPriceInfoImages = Array.isArray(priceInfo.infoImages) && priceInfo.infoImages.length > 0
+  const stayPriceRange = useMemo(
+    () => buildAccommodationRangeLabel(priceInfo.accommodationBudget, priceInfo.currency),
+    [priceInfo.accommodationBudget, priceInfo.currency]
+  )
+  const stayPriceRangeSecondary = useMemo(
+    () => buildAccommodationRangeLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency),
+    [priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency]
+  )
   const shouldShowPriceSnapshot =
     hasPriceSnapshot &&
-    location.category !== 'accommodation' &&
     (showAdmissionPricing ||
       showMealPricing ||
+      showStayPricing ||
       showParkingPricing ||
       showCustomPricing ||
       showPriceInfoImages ||
       Boolean(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt))
+  const priceHeading = getPriceHeading(location.category)
+  const priceCurrencyLabel = getPriceCurrencyLabel(priceInfo.currency, priceInfo.secondaryCurrency)
 
   const socialLinks = [
     { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube', color: 'bg-red-600' },
@@ -494,7 +551,7 @@ export default function SpotContent({
       ) : null}
 
       {(hasYoutubeLink || hasFacebookLink) ? (
-        <section className={`mb-4 grid gap-4 ${hasYoutubeLink && hasFacebookLink ? 'md:grid-cols-2' : 'grid-cols-1 max-w-3xl'}`}>
+        <section className={`mb-4 grid gap-4 ${hasYoutubeLink && hasFacebookLink ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
           {hasYoutubeLink ? (
             <div className="overflow-hidden rounded-3xl border border-red-500/20 bg-black/85 shadow-[0_24px_70px_-40px_rgba(239,68,68,0.5)]">
               <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
@@ -727,7 +784,7 @@ export default function SpotContent({
           </div>
         ) : null}
 
-        {location.opening_hours ? (
+        {hasVisibleOpeningHours(location.opening_hours) ? (
           <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md md:gap-3 md:p-4">
             <div className="rounded-lg bg-amber-400/20 p-2">
               <Clock className="h-5 w-5 text-amber-400" />
@@ -803,9 +860,17 @@ export default function SpotContent({
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-200/80">Price Guide</p>
-                    <h3 className="mt-2 text-2xl font-semibold text-white md:text-[1.95rem]">
-                      {isFoodSpot ? 'Food Budget' : 'Entry & Spend'}
-                    </h3>
+                    <h3 className="mt-2 text-2xl font-semibold text-white md:text-[1.95rem]">{priceHeading}</h3>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-100">
+                        Currency: {priceCurrencyLabel}
+                      </span>
+                      {location.category === 'accommodation' ? (
+                        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/75">
+                          Estimated room rate
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
                   {priceInfo.isFree ? (
                     <Badge className="border border-emerald-400/30 bg-emerald-500/15 px-3 py-1 text-emerald-100">
@@ -814,9 +879,38 @@ export default function SpotContent({
                   ) : null}
                 </div>
 
-                <div className={`mt-4 grid gap-2.5 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-2 xl:grid-cols-4'}`}>
-                  {showAdmissionPricing ? (
+                <div className={`mt-4 grid gap-2.5 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : location.category === 'accommodation' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-2 xl:grid-cols-4'}`}>
+                  {showStayPricing ? (
                     <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Room Rate / 参考房价</p>
+                      <div className="mt-4 space-y-3 text-sm">
+                        <div className="flex items-start justify-between gap-4">
+                          <span className="text-gray-400">Estimated range</span>
+                          <span className="text-right font-medium text-white">{stayPriceRange || formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency)}</span>
+                        </div>
+                        {stayPriceRangeSecondary || priceInfo.accommodationBudgetSecondary ? (
+                          <div className="flex items-start justify-between gap-4">
+                            <span className="text-gray-400">Second currency</span>
+                            <span className="text-right font-medium text-amber-100">
+                              {stayPriceRangeSecondary || formatBudgetLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency)}
+                            </span>
+                          </div>
+                        ) : null}
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-200">
+                          Reference room rate: {stayPriceRange || formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency)}
+                          {stayPriceRangeSecondary || priceInfo.accommodationBudgetSecondary ? (
+                            <span className="block mt-1 text-amber-100">
+                              {stayPriceRangeSecondary || formatBudgetLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency)}
+                            </span>
+                          ) : null}
+                          <span className="mt-1 block text-xs text-white/60">Rates may vary by season and booking date.</span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {showAdmissionPricing ? (
+                    <div className={`rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4 ${priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? 'xl:col-span-2' : ''}`}>
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Admission / 门票</p>
                       <div className="mt-4 space-y-3 text-sm">
                         {priceInfo.admissionLocalAdult ? (
