@@ -188,6 +188,57 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   // Helper for array input
   const [imageInput, setImageInput] = useState('')
 
+  const extractFilenameFromUrl = (urlString: string, fallbackPrefix: string) => {
+    try {
+      const pathname = new URL(urlString).pathname
+      const lastSegment = pathname.split('/').filter(Boolean).pop() || ''
+      const cleaned = lastSegment.split('?')[0].trim()
+      return cleaned || `${fallbackPrefix}-${Date.now()}`
+    } catch {
+      return `${fallbackPrefix}-${Date.now()}`
+    }
+  }
+
+  const handleDownloadImage = async (url: string, fallbackPrefix: string) => {
+    try {
+      const { data } = await supabase.auth.getSession()
+      const token = data.session?.access_token
+
+      if (!token) {
+        setMessage('Error: 请先重新登录后台，再下载图片。')
+        return
+      }
+
+      const filename = extractFilenameFromUrl(url, fallbackPrefix)
+      const response = await fetch(
+        `/api/admin/download-image?url=${encodeURIComponent(url)}&filename=${encodeURIComponent(filename)}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => null)
+        throw new Error(result?.error || '下载失败')
+      }
+
+      const blob = await response.blob()
+      const objectUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.download = filename
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(objectUrl)
+      setMessage(`已开始下载图片：${filename}`)
+    } catch (error: any) {
+      setMessage(`Error: ${error?.message || '下载图片失败'}`)
+    }
+  }
+
   const normalizeSuggestedTag = (tag: string) => {
     const normalized = String(tag || '').trim().toLowerCase()
 
@@ -2705,6 +2756,16 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                     <div className="relative h-44 overflow-hidden rounded-lg border bg-white">
                       <FallbackImage src={formData.image_url} alt="Cover preview" fill className="object-cover" />
                     </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDownloadImage(formData.image_url, `cover-${formData.custom_slug || formData.name || 'spot'}`)}
+                      >
+                        下载封面图
+                      </Button>
+                    </div>
                     <div className="rounded-lg border border-slate-200 bg-white p-4">
                       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                         <div>
@@ -2860,6 +2921,15 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                             disabled={index === formData.images.length - 1}
                           >
                             <ArrowDown className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            className="h-8 bg-white/90 px-2 text-[11px] hover:bg-white"
+                            onClick={() => handleDownloadImage(url, `gallery-${formData.custom_slug || formData.name || 'spot'}-${index + 1}`)}
+                          >
+                            下载
                           </Button>
                         </div>
                       </div>
