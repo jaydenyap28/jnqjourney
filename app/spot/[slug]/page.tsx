@@ -5,6 +5,7 @@ import SpotContent from '@/components/SpotContent'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getActiveKlookWidgetsForTargets } from '@/lib/server/klook-widgets-store'
+import { readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
@@ -14,6 +15,13 @@ interface PageProps {
   params: {
     slug: string
   }
+}
+
+function normalizeGuideMatch(value?: string | null) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '')
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -75,6 +83,34 @@ export default async function SpotPage({ params }: PageProps) {
     locationId: location.id,
     regionId: location.region_id,
   })
+  const allGuides = await readGuides()
+  const locationNames = new Set([
+    normalizeGuideMatch(location.name),
+    normalizeGuideMatch(location.name_cn),
+  ].filter(Boolean))
+  const relatedGuides = allGuides
+    .filter((guide) => {
+      const guideNames = new Set(
+        [
+          ...guide.route.map((item) => item.mapSpotName || item.name),
+          ...(guide.featuredSpotNames || []),
+          ...guide.days.flatMap((day) => day.linkedSpots || []),
+        ]
+          .map(normalizeGuideMatch)
+          .filter(Boolean)
+      )
+      for (const name of locationNames) {
+        if (guideNames.has(name)) return true
+      }
+      return false
+    })
+    .slice(0, 3)
+    .map((guide) => ({
+      slug: guide.slug,
+      title: guide.title,
+      shortTitle: guide.shortTitle,
+      duration: guide.duration,
+    }))
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': location.category === 'food' ? 'Restaurant' : location.category === 'accommodation' ? 'Hotel' : 'TouristAttraction',
@@ -97,7 +133,13 @@ export default async function SpotPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.15),transparent_22%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <SpotContent location={location} mode="page" relatedLocations={relatedLocations} externalKlookWidgets={klookWidgets} />
+      <SpotContent
+        location={location}
+        mode="page"
+        relatedLocations={relatedLocations}
+        externalKlookWidgets={klookWidgets}
+        relatedGuides={relatedGuides}
+      />
       <SiteFooter />
     </main>
   )

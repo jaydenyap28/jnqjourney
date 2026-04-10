@@ -661,25 +661,22 @@ export default async function GuideDetailPage({ params }: PageProps) {
             </section>
 
             <section className="space-y-5">
-                <div>
-                  <p className="section-kicker text-xs text-amber-300/80">{'Daily Plan / \u6bcf\u65e5\u5b89\u6392'}</p>
-                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.8rem]">{'\u6bcf\u65e5\u5b89\u6392'}</h2>
-                </div>
-
               <div className="space-y-4">
                 {(datedDayPlans.length ? datedDayPlans : []).map((day) => (
                   <div
                     key={`${day.date}-${day.dayNumber}`}
                     className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_24px_70px_rgba(0,0,0,0.18)] md:rounded-[32px]"
                   >
-                    <div className="grid grid-cols-[74px_minmax(0,1fr)] gap-0 lg:grid-cols-[190px_minmax(0,1fr)]">
-                      <div className="border-r border-white/10 bg-black/20 px-3 py-3 lg:border-b-0 lg:border-r lg:px-5 lg:py-6">
-                        <p className="section-kicker text-xs text-amber-300/80">{`Day ${day.dayNumber}`}</p>
-                        <p className="mt-2 text-2xl font-semibold text-white md:mt-4 md:text-3xl">{String(day.dayNumber).padStart(2, '0')}</p>
-                        <p className="mt-2 text-[11px] leading-4 text-white/60 md:mt-3 md:text-sm">{day.formattedDate || '\u65c5\u884c\u65e5'}</p>
-                      </div>
-                      <div className="px-4 py-4 md:px-6 md:py-7">
-                        <h3 className="text-[1.25rem] font-semibold leading-tight text-white md:text-[1.8rem]">{day.title}</h3>
+                    <div className="px-4 py-4 md:px-6 md:py-7">
+                        <div className="flex flex-col items-center gap-3 text-center md:flex-row md:items-end md:justify-between md:text-left">
+                          <div>
+                            <p className="section-kicker text-xs text-amber-300/80">{`Day ${day.dayNumber}`}</p>
+                            <h3 className="mt-2 text-[1.5rem] font-semibold leading-tight text-white md:text-[2rem]">{day.title}</h3>
+                          </div>
+                          <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/60 md:text-xs">
+                            {day.formattedDate || 'Travel Day'}
+                          </div>
+                        </div>
                         {shouldShowDaySummary(day.summary) ? <p className="mt-3 text-sm leading-7 text-gray-300">{day.summary}</p> : null}
                         <div className="mt-4 flex flex-wrap gap-2">
                           {day.highlights.map((highlight) => (
@@ -853,7 +850,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                             />
                           </div>
                         ) : null}
-                      </div>
                     </div>
                   </div>
                 ))}
@@ -949,6 +945,5 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
 
 

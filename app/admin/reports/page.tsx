@@ -167,6 +167,9 @@ export default function AdminReportsPage() {
                 </Button>
               </div>
             </div>
+            <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-white/60">
+              站内报表按浏览器 session 去重，会包含你自己前台浏览的数据；Google Analytics 与 Vercel Analytics 会因为 bot 过滤、广告拦截、cookie 与统计口径不同，所以数字不会完全一样。
+            </div>
           </CardContent>
         </Card>
 

@@ -81,6 +81,12 @@ interface SpotContentProps {
     description?: string
     htmlCode: string
   }>
+  relatedGuides?: Array<{
+    slug: string
+    title: string
+    shortTitle?: string
+    duration?: string
+  }>
 }
 
 function getYouTubeID(url: string) {
@@ -297,6 +303,7 @@ export default function SpotContent({
   onClose,
   relatedLocations = [],
   externalKlookWidgets = [],
+  relatedGuides = [],
 }: SpotContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
@@ -879,7 +886,7 @@ export default function SpotContent({
                   ) : null}
                 </div>
 
-                <div className={`mt-4 grid gap-2.5 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : location.category === 'accommodation' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-2 xl:grid-cols-4'}`}>
+                <div className={`mt-5 grid gap-3 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : location.category === 'accommodation' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}`}>
                   {showStayPricing ? (
                     <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Room Rate / 参考房价</p>
@@ -910,9 +917,9 @@ export default function SpotContent({
                   ) : null}
 
                   {showAdmissionPricing ? (
-                    <div className={`rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4 ${priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? 'xl:col-span-2' : ''}`}>
+                    <div className={`rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5 ${priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? 'xl:col-span-2' : ''}`}>
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Admission / 门票</p>
-                      <div className="mt-4 space-y-3 text-sm">
+                      <div className="mt-4 space-y-3.5 text-sm">
                         {priceInfo.admissionLocalAdult ? (
                           <div className="flex items-start justify-between gap-4">
                             <span className="text-gray-400">Local Adult / 本地成人</span>
@@ -992,7 +999,7 @@ export default function SpotContent({
                           </div>
                         ) : null}
                         {priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? (
-                          <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-100">
+                          <div className="rounded-[22px] border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-base font-medium text-emerald-100">
                             This spot is free to enter. / 这个景点可免费进入。
                           </div>
                         ) : null}
@@ -1001,7 +1008,7 @@ export default function SpotContent({
                   ) : null}
 
                   {showMealPricing ? (
-                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
+                    <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Meals / 吃喝参考</p>
                       <div className="mt-4 space-y-3 text-sm">
                         <div className="flex items-start justify-between gap-4">
@@ -1031,7 +1038,7 @@ export default function SpotContent({
                   ) : null}
 
                   {showParkingPricing ? (
-                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
+                    <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Parking</p>
                       <div className="mt-4 space-y-3 text-sm">
                         {showParkingPricing ? (
@@ -1052,7 +1059,7 @@ export default function SpotContent({
                   ) : null}
 
                   {showCustomPricing ? (
-                    <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:col-span-2 md:rounded-[24px] md:p-4 xl:col-span-2">
+                    <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:col-span-2 md:rounded-[28px] md:p-5 xl:col-span-2">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Extra Cost Notes</p>
                       <div className="mt-4 grid gap-3 md:grid-cols-2">
                         {priceInfo.customItems.map((item, index) => (
@@ -1136,6 +1143,35 @@ export default function SpotContent({
                 </div>
               )}
             </div>
+
+            {!isDrawer && relatedGuides.length > 0 ? (
+              <section className="space-y-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">Travel Guide Match</p>
+                    <h3 className="mt-2 text-2xl font-bold text-white">View the full travel guide</h3>
+                  </div>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {relatedGuides.map((guide) => (
+                    <Link
+                      key={guide.slug}
+                      href={`/guide/${guide.slug}`}
+                      className="group rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 transition hover:-translate-y-1 hover:bg-white/10"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70">{guide.duration || 'Travel Guide'}</p>
+                          <h4 className="mt-2 text-lg font-semibold text-white">{guide.shortTitle || guide.title}</h4>
+                          <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/65">{guide.title}</p>
+                        </div>
+                        <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-white/45 transition group-hover:text-white" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : null}
 
             {!isDrawer && relatedLocations.length > 0 ? (
               <section className="space-y-4">

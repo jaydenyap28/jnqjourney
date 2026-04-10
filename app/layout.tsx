@@ -70,6 +70,14 @@ export const metadata: Metadata = {
     title: 'JnQ Journey | Jayden & Qing',
     description: 'Discover spots, food, stays, region hubs, and complete travel guides.',
   },
+  icons: {
+    icon: [
+      { url: '/icon.png?v=2', type: 'image/png' },
+      { url: '/favicon.ico?v=2', rel: 'shortcut icon' },
+    ],
+    apple: [{ url: '/apple-icon.png?v=2', type: 'image/png' }],
+    shortcut: ['/icon.png?v=2'],
+  },
 }
 
 export default function RootLayout({
