@@ -1541,7 +1541,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                               </div>
                             ) : day.stay ? (
                               <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
-                                当前已保存住宿：{day.stay}。这条记录暂时还没配对到数据库住宿卡，但你可以直接修改名称，或在下面重新搜索绑定。
+                                A saved stay name exists for this day, but it is not matched to a stay card yet. You can keep editing the name here, or search and bind a stay below.
                               </div>
                             ) : (
                               <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-4 text-sm text-slate-500">No stay selected for this day.</div>

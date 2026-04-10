@@ -292,16 +292,6 @@ function resolveStaySource(
   days: Array<{ dayLabel?: string | null; stay?: string; stayRangeStart?: number; stayRangeEnd?: number }>,
   dayNumber: number
 ) {
-  const currentDay = days.find((day) => {
-    const range = parseDayRange(day.dayLabel)
-    const labelDay = range?.start ?? null
-    return labelDay === dayNumber
-  })
-
-  if (currentDay && 'stay' in currentDay && !String(currentDay.stay || '').trim()) {
-    return null
-  }
-
   return (
     days.find((day) => {
       if (!day.stay) return false
@@ -911,7 +901,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
           </div>
 
-          <aside className="space-y-5 xl:sticky xl:top-24">
+          <aside className="space-y-5 xl:self-start">
             {guideKlookWidgetCode ? (
               <KlookWidgetEmbed
                 code={guideKlookWidgetCode}
@@ -952,8 +942,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
-
 
 
 

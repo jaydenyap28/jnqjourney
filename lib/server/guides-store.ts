@@ -82,7 +82,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             currency: String(item?.currency || '').trim() || undefined,
             note: String(item?.note || '').trim() || undefined,
           }))
-          .filter((item: any) => item.amount)
+          .filter((item: any) => item.label || item.amount || item.note)
       : [],
     days: Array.isArray(value?.days)
       ? value.days
