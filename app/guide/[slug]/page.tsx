@@ -8,6 +8,7 @@ import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
+import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { readGuideBySlug } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -923,6 +924,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 singleColumn
               />
             ) : null}
+            <SupportSidebarCard className="bg-white/5" />
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
               <p className="section-kicker text-xs text-amber-300/80">{'Next Step / \u7ee7\u7eed\u63a2\u7d22'}</p>
               <h3 className="mt-3 text-2xl font-semibold text-white">{'\u7ee7\u7eed\u63a2\u7d22'}</h3>
@@ -945,5 +947,4 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-
 

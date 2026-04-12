@@ -6,6 +6,7 @@ import Link from 'next/link'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
+import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
@@ -1226,6 +1227,7 @@ export default function SpotContent({
                 showDisclosure={false}
               />
             ) : null}
+            {!isDrawer ? <SupportSidebarCard className="bg-white/5" /> : null}
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">{isDrawer ? 'Quick Actions' : 'Navigation Maps'}</p>
