@@ -245,6 +245,46 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     }
   }
 
+  const handleDownloadGallery = async () => {
+    if (!formData.images.length) {
+      setMessage('Error: 当前还没有可下载的图集图片。')
+      return
+    }
+
+    try {
+      setMessage('正在打包图集，请稍候...')
+
+      const response = await adminFetch('/api/admin/download-gallery', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          urls: formData.images,
+          baseName: `gallery-${formData.custom_slug || formData.name || 'spot'}`,
+        }),
+      })
+
+      if (!response.ok) {
+        const result = await response.json().catch(() => null)
+        throw new Error(result?.error || '图集下载失败')
+      }
+
+      const blob = await response.blob()
+      const objectUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.download = `gallery-${formData.custom_slug || formData.name || 'spot'}.zip`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(objectUrl)
+      setMessage(`已开始下载整组图集（${formData.images.length} 张）。`)
+    } catch (error: any) {
+      setMessage(`Error: ${error?.message || '图集下载失败'}`)
+    }
+  }
+
   const normalizeSuggestedTag = (tag: string) => {
     const normalized = String(tag || '').trim().toLowerCase()
 
@@ -2913,6 +2953,16 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                     </span>
                   </label>
                 </div>
+                {formData.images.length > 0 ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button type="button" variant="outline" onClick={handleDownloadGallery}>
+                      下载整组图集 ZIP
+                    </Button>
+                    <p className="self-center text-xs text-gray-500">
+                      一键下载当前图集全部图片，方便转成 webp 后再搬去 imgbb。
+                    </p>
+                  </div>
+                ) : null}
               </div>
 
               <div className="flex gap-2">
