@@ -229,6 +229,14 @@ function hasVisibleOpeningHours(value?: string | null) {
   return !/^no information$/i.test(raw)
 }
 
+function formatGroupedHoursLabel(days: number[]) {
+  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  if (!Array.isArray(days) || !days.length) return ''
+  if (days.length === 1) return labels[days[0]]
+  const isConsecutive = days.every((day, index) => index === 0 || day === days[index - 1] + 1)
+  return isConsecutive ? `${labels[days[0]]}-${labels[days[days.length - 1]]}` : days.map((day) => labels[day]).join(', ')
+}
+
 function TikTokIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -831,6 +839,14 @@ export default function SpotContent({
                       typeof data.remarks === 'string' && data.remarks.startsWith('营业时段：')
                         ? data.remarks.replace(/^营业时段：/, '').trim()
                         : ''
+                    const groupedHours = Array.isArray((data as any).scheduleGroups)
+                      ? ((data as any).scheduleGroups as Array<{ days?: number[]; label?: string; hours?: string }>)
+                          .map((group) => ({
+                            label: String(group.label || formatGroupedHoursLabel(Array.isArray(group.days) ? group.days : [])).trim(),
+                            hours: String(group.hours || '').trim(),
+                          }))
+                          .filter((group) => group.label && group.hours)
+                      : []
                     const primaryHours = data.is24Hours
                       ? '24 Hours'
                       : recurringHours || `${formatTime(data.open)} - ${formatTime(data.close)}`
@@ -848,6 +864,16 @@ export default function SpotContent({
                             </span>
                           )}
                         </div>
+                        {groupedHours.length ? (
+                          <div className="grid gap-2.5 md:grid-cols-2">
+                            {groupedHours.map((group) => (
+                              <div key={`${group.label}-${group.hours}`} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                                <div className="text-xs uppercase tracking-[0.18em] text-amber-200/75">{group.label}</div>
+                                <div className="mt-2 text-sm font-medium text-white">{group.hours}</div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     )
                   }

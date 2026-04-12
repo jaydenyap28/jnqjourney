@@ -1,4 +1,6 @@
-import FallbackImage from '@/components/FallbackImage'
+'use client'
+
+import { useState } from 'react'
 import { BUY_ME_A_COFFEE_URL, SUPPORT_TNG_QR_IMAGE_URL } from '@/lib/support-links'
 import { Coffee, HeartHandshake, QrCode } from 'lucide-react'
 
@@ -8,6 +10,7 @@ interface SupportSidebarCardProps {
 
 export default function SupportSidebarCard({ className = '' }: SupportSidebarCardProps) {
   const hasQrImage = Boolean(String(SUPPORT_TNG_QR_IMAGE_URL || '').trim())
+  const [qrFailed, setQrFailed] = useState(false)
 
   return (
     <section className={`rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.18)] ${className}`.trim()}>
@@ -19,13 +22,14 @@ export default function SupportSidebarCard({ className = '' }: SupportSidebarCar
       <div className="mt-4 rounded-[24px] border border-white/10 bg-black/20 p-4">
         <div className="mx-auto flex max-w-[240px] flex-col items-center">
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[22px] border border-white/10 bg-white p-3">
-            {hasQrImage ? (
-              <FallbackImage
+            {hasQrImage && !qrFailed ? (
+              <img
                 src={SUPPORT_TNG_QR_IMAGE_URL}
                 alt="Touch 'n Go QR code"
-                fill
-                sizes="240px"
-                className="object-contain p-3"
+                className="h-full w-full object-contain p-3"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                onError={() => setQrFailed(true)}
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center rounded-[18px] border border-dashed border-slate-300 bg-slate-100 text-slate-500">
@@ -53,7 +57,7 @@ export default function SupportSidebarCard({ className = '' }: SupportSidebarCar
           <p className="mt-2 text-sm leading-6 text-white/85">
             Support my travel content
             <br />
-            Buy me a coffee ☕
+            Buy me a coffee
           </p>
         </div>
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-amber-100">
@@ -63,3 +67,4 @@ export default function SupportSidebarCard({ className = '' }: SupportSidebarCar
     </section>
   )
 }
+

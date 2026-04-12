@@ -55,6 +55,11 @@ interface StructuredOpeningHours {
   closedDays: number[] // 0=Sun, 1=Mon, ..., 6=Sat
   remarks: string
   is24Hours: boolean
+  scheduleGroups?: Array<{
+    days: number[]
+    label: string
+    hours: string
+  }>
 }
 
 interface LocationFormData {
@@ -153,7 +158,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     close: '22:00',
     closedDays: [],
     remarks: '',
-    is24Hours: false
+    is24Hours: false,
+    scheduleGroups: [],
   })
   const [structuredPriceInfo, setStructuredPriceInfo] = useState<StructuredPriceInfo>(createDefaultPriceInfo())
   const [loading, setLoading] = useState(false)
@@ -445,6 +451,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         closedDays: [],
         remarks: normalized,
         is24Hours: true,
+        scheduleGroups: [],
       }))
       return
     }
@@ -458,6 +465,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         close: simpleRange[2],
         remarks: normalized,
         is24Hours: false,
+        scheduleGroups: [],
       }))
       return
     }
@@ -466,6 +474,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       ...prev,
       isUnknown: false,
       remarks: normalized,
+      scheduleGroups: [],
     }))
   }
 
@@ -485,6 +494,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         closedDays: [],
         remarks: '24 小时营业',
         is24Hours: true,
+        scheduleGroups: [],
       } satisfies StructuredOpeningHours
     }
 
@@ -578,6 +588,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         closedDays: schedules.map((schedule) => schedule.dayIndex).sort((a, b) => a - b),
         remarks: '未识别到营业时段',
         is24Hours: false,
+        scheduleGroups: [],
       } satisfies StructuredOpeningHours
     }
 
@@ -605,13 +616,43 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       (schedule) => scheduleFingerprint(schedule.ranges) === primarySchedule.fingerprint
     )
 
+    const groupedSchedules = Array.from(
+      new Map(
+        openSchedules.map((schedule) => [
+          scheduleFingerprint(schedule.ranges),
+          {
+            days: openSchedules
+              .filter((item) => scheduleFingerprint(item.ranges) === scheduleFingerprint(schedule.ranges))
+              .map((item) => item.dayIndex)
+              .sort((a, b) => a - b),
+            hours: schedule.ranges.map((range) => `${range.start}-${range.end}`).join(' / '),
+          },
+        ])
+      ).values()
+    ).map((group) => {
+      const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      const buildDayLabel = (days: number[]) => {
+        if (!days.length) return ''
+        if (days.length === 1) return dayNames[days[0]]
+        const isConsecutive = days.every((day, index) => index === 0 || day === days[index - 1] + 1)
+        return isConsecutive ? `${dayNames[days[0]]}-${dayNames[days[days.length - 1]]}` : days.map((day) => dayNames[day]).join(', ')
+      }
+
+      return {
+        days: group.days,
+        label: buildDayLabel(group.days),
+        hours: group.hours,
+      }
+    })
+
     return {
       isUnknown: false,
       open: firstRange.start,
       close: lastRange.end,
       closedDays,
-      remarks: '',
+      remarks: sameEveryOpenDay ? '' : groupedSchedules.map((group) => `${group.label} ${group.hours}`).join('\n'),
       is24Hours: false,
+      scheduleGroups: sameEveryOpenDay ? [] : groupedSchedules,
     } satisfies StructuredOpeningHours
   }
 
@@ -671,6 +712,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         close: '22:00',
         closedDays: [],
         remarks: '',
+        scheduleGroups: [],
       }))
       return
     }
@@ -683,6 +725,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         open: '00:00',
         close: '23:59',
         closedDays: [],
+        scheduleGroups: [],
       }))
       return
     }
@@ -693,6 +736,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       is24Hours: false,
       open: prev.open || '10:00',
       close: prev.close || '22:00',
+      scheduleGroups: [],
     }))
   }
 
@@ -1328,7 +1372,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               close: parsed.close || '22:00',
               closedDays: Array.isArray(parsed.closedDays) ? parsed.closedDays : [],
               remarks: parsed.remarks || '',
-              is24Hours: parsed.is24Hours || false
+              is24Hours: parsed.is24Hours || false,
+              scheduleGroups: Array.isArray((parsed as any).scheduleGroups) ? (parsed as any).scheduleGroups : [],
             })
           }
         } catch (e) {
@@ -1339,7 +1384,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             close: '22:00',
             closedDays: [],
             remarks: initialData.opening_hours,
-            is24Hours: false
+            is24Hours: false,
+            scheduleGroups: [],
           })
         }
       } else {
@@ -1350,6 +1396,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           closedDays: [],
           remarks: '',
           is24Hours: false,
+          scheduleGroups: [],
         })
       }
 
@@ -1677,6 +1724,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           closedDays: [],
           remarks: '',
           is24Hours: false,
+          scheduleGroups: [],
         })
         setStructuredPriceInfo(createDefaultPriceInfo())
       } else {
