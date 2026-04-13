@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { BUY_ME_A_COFFEE_URL, SUPPORT_TNG_QR_IMAGE_URL } from '@/lib/support-links'
 import { Coffee, HeartHandshake, QrCode } from 'lucide-react'
 
@@ -23,12 +24,12 @@ export default function SupportSidebarCard({ className = '' }: SupportSidebarCar
         <div className="mx-auto flex max-w-[240px] flex-col items-center">
           <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[22px] border border-white/10 bg-white p-3">
             {hasQrImage && !qrFailed ? (
-              <img
+              <Image
                 src={SUPPORT_TNG_QR_IMAGE_URL}
                 alt="Touch 'n Go QR code"
-                className="h-full w-full object-contain p-3"
-                loading="lazy"
-                referrerPolicy="no-referrer"
+                fill
+                sizes="200px"
+                className="object-contain p-3"
                 onError={() => setQrFailed(true)}
               />
             ) : (

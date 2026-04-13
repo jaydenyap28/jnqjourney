@@ -262,7 +262,8 @@
     ],
     "featuredAffiliateLinkIds": [
       182
-    ]
+    ],
+    "sidebarAffiliateLinkIds": []
   },
   {
     "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
@@ -522,7 +523,8 @@
       "故宫博物院",
       "慕田峪长城"
     ],
-    "featuredAffiliateLinkIds": []
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": []
   },
   {
     "slug": "china-dali-shangri-la-lijiang-11d10n",
@@ -792,7 +794,8 @@
       "白沙古镇",
       "丽江古城"
     ],
-    "featuredAffiliateLinkIds": []
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": []
   },
   {
     "slug": "japan-hokkaido-yamagata-tokyo-10d9n",
@@ -841,17 +844,17 @@
     "budgetItems": [
       {
         "label": "机票 / JR / 国内交通",
-        "amount": "TBC",
+        "amount": "100",
         "note": "北海道、山形、东京之间的主要移动。"
       },
       {
         "label": "住宿",
-        "amount": "TBC",
+        "amount": "200",
         "note": "美瑛、札幌、登别、函馆、银山温泉与东京住宿可分开记录。"
       },
       {
         "label": "当地交通",
-        "amount": "TBC",
+        "amount": "500",
         "note": "JR、巴士、地铁与景区接驳。"
       },
       {
@@ -1029,7 +1032,8 @@
       "函馆山夜景",
       "Arakurayama Sengen Park"
     ],
-    "featuredAffiliateLinkIds": []
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": []
   },
   {
     "slug": "china-guangzhou-8d7n",
@@ -1203,6 +1207,7 @@
     "bestFor": [],
     "notes": [],
     "featuredSpotNames": [],
-    "featuredAffiliateLinkIds": []
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": []
   }
 ]

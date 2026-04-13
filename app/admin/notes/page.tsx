@@ -9,7 +9,7 @@ import { EMPTY_NOTE, DEFAULT_NOTE_COVER_ACCENT } from '@/lib/notes'
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import FallbackImage from '@/components/FallbackImage'
-import SupportSidebarCard from '@/components\SupportSidebarCard'
+import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -403,14 +403,17 @@ export default function AdminNotesPage() {
   }
 
   if (loading) {
-    return <main className="min-h-screen bg-[#09090b] text-white"><div className="mx-auto max-w-7xl px-4 py-10">正在加载长文笔记后台...</div></main>
+    return (
+      <main className="min-h-screen bg-[#09090b] text-white">
+        <div className="mx-auto max-w-7xl px-4 py-10">正在加载长文笔记后台...</div>
+      </main>
+    )
   }
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4">
-          <div>
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="flex items-center justify-between text-lg">
@@ -437,7 +440,6 @@ export default function AdminNotesPage() {
               )) : <p className="text-sm text-gray-400">还没有笔记，先新建一篇。</p>}
             </CardContent>
           </Card>
-          </div>
         </aside>
 
         <section className="space-y-6">
@@ -551,83 +553,84 @@ export default function AdminNotesPage() {
               <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
                 <div className="space-y-5">
                   {form.summary ? <p className="max-w-3xl text-base leading-8 text-gray-100">{form.summary}</p> : null}
-                  {contentBlocks.length ? contentBlocks.map((block) => {
-                    const selectedSpot = locations.find((item) => item.id === block.spotId)
+                  {contentBlocks.length ? (
+                    contentBlocks.map((block) => {
+                      const selectedSpot = locations.find((item) => item.id === block.spotId)
 
-                    if (block.type === 'heading') {
-                      return <h3 key={block.id} className="font-display pt-2 text-3xl text-white">{block.content || block.title || 'Section heading'}</h3>
-                    }
+                      if (block.type === 'heading') {
+                        return <h3 key={block.id} className="font-display pt-2 text-3xl text-white">{block.content || block.title || 'Section heading'}</h3>
+                      }
 
-                    if (block.type === 'quote') {
-                      return <blockquote key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">{block.content || 'Quote preview'}</blockquote>
-                    }
+                      if (block.type === 'quote') {
+                        return <blockquote key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">{block.content || 'Quote preview'}</blockquote>
+                      }
 
-                    if (block.type === 'image') {
-                      return (
-                        <figure key={block.id} className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5">
-                          <div className="relative aspect-[16/9] overflow-hidden">
-                            {block.imageUrl ? (
-                              <FallbackImage src={block.imageUrl} alt={block.caption || form.title || 'Preview image'} fill className="object-cover" />
-                            ) : (
-                              <div className="flex h-full items-center justify-center text-sm text-white/45">Image preview</div>
-                            )}
-                          </div>
-                          {block.caption ? <figcaption className="px-5 py-4 text-sm leading-7 text-gray-300">{block.caption}</figcaption> : null}
-                        </figure>
-                      )
-                    }
-
-                    if (block.type === 'spot') {
-                      return (
-                        <div key={block.id} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
-                          <div className="grid gap-5 md:grid-cols-[220px_minmax(0,1fr)]">
-                            <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
-                              <FallbackImage src={getLocationCover(selectedSpot)} alt={getLocationLabel(selectedSpot) || 'Spot preview'} fill className="object-cover" />
+                      if (block.type === 'image') {
+                        return (
+                          <figure key={block.id} className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5">
+                            <div className="relative aspect-[16/9] overflow-hidden">
+                              {block.imageUrl ? (
+                                <FallbackImage src={block.imageUrl} alt={block.caption || form.title || 'Preview image'} fill className="object-cover" />
+                              ) : (
+                                <div className="flex h-full items-center justify-center text-sm text-white/45">Image preview</div>
+                              )}
                             </div>
-                            <div className="p-5">
-                              <p className="section-kicker text-xs text-amber-300/80">Linked Spot</p>
-                              <h3 className="mt-3 text-2xl font-semibold text-white">{getLocationLabel(selectedSpot) || 'Choose a spot card'}</h3>
-                              <p className="mt-3 text-sm leading-7 text-gray-300">
-                                {selectedSpot ? 'This note will link back to your existing spot page.' : 'Pick one related spot and it will appear here as a premium card.'}
-                              </p>
+                            {block.caption ? <figcaption className="px-5 py-4 text-sm leading-7 text-gray-300">{block.caption}</figcaption> : null}
+                          </figure>
+                        )
+                      }
+
+                      if (block.type === 'spot') {
+                        return (
+                          <div key={block.id} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
+                            <div className="grid gap-5 md:grid-cols-[220px_minmax(0,1fr)]">
+                              <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
+                                <FallbackImage src={getLocationCover(selectedSpot)} alt={getLocationLabel(selectedSpot) || 'Spot preview'} fill className="object-cover" />
+                              </div>
+                              <div className="p-5">
+                                <p className="section-kicker text-xs text-amber-300/80">Linked Spot</p>
+                                <h3 className="mt-3 text-2xl font-semibold text-white">{getLocationLabel(selectedSpot) || 'Choose a spot card'}</h3>
+                                <p className="mt-3 text-sm leading-7 text-gray-300">
+                                  {selectedSpot ? 'This note will link back to your existing spot page.' : 'Pick one related spot and it will appear here as a premium card.'}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    }
+                        )
+                      }
 
-                    return (
-                      <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">
-                        {block.content || 'Paragraph preview'}
-                      </p>
-                    )
-                  }) : (
+                      return (
+                        <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">
+                          {block.content || 'Paragraph preview'}
+                        </p>
+                      )
+                    })
+                  ) : (
                     <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-6 text-sm text-white/50">
                       Add a paragraph block to start building this longform note.
                     </div>
                   )}
                 </div>
 
-                  {selectedRelatedSpots.length ? (
-                    <section className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                      <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
-                      <h3 className="mt-3 text-2xl font-semibold text-white">文末延伸景点</h3>
-                      <div className="mt-5 grid gap-3 md:grid-cols-2">
-                        {selectedRelatedSpots.map((spot) => (
-                          <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                            <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
-                              <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
-                            </div>
-                            <div className="min-w-0">
-                              <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
-                              <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                            </div>
+                {selectedRelatedSpots.length ? (
+                  <section className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                    <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
+                    <h3 className="mt-3 text-2xl font-semibold text-white">文末延伸景点</h3>
+                    <div className="mt-5 grid gap-3 md:grid-cols-2">
+                      {selectedRelatedSpots.map((spot) => (
+                        <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                          <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
+                            <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
                           </div>
-                        ))}
-                      </div>
-                    </section>
-                  ) : null}
-                </div>
+                          <div className="min-w-0">
+                            <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
+                            <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
 
                 <aside className="space-y-4">
                   <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
@@ -647,23 +650,29 @@ export default function AdminNotesPage() {
                     </div>
                   </div>
 
-                  {sidebarAffiliateBlocks.length ? sidebarAffiliateBlocks.map((block) => {
-                    const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
-                    return (
-                      <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                        <p className="section-kicker text-xs text-amber-300/80">Affiliate Module</p>
-                        <h3 className="mt-3 text-xl font-semibold text-white">{block.title || '旅途工具 / 预订入口'}</h3>
-                        {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {linkedAffiliates.length ? linkedAffiliates.map((item) => (
-                            <span key={item.id} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/85">
-                              {item.title || `${item.provider} ${item.link_type}`}
-                            </span>
-                          )) : <span className="text-sm text-white/45">这个侧栏模块还没选联盟链接。</span>}
+                  {sidebarAffiliateBlocks.length ? (
+                    sidebarAffiliateBlocks.map((block) => {
+                      const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
+                      return (
+                        <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                          <p className="section-kicker text-xs text-amber-300/80">Affiliate Module</p>
+                          <h3 className="mt-3 text-xl font-semibold text-white">{block.title || '旅途工具 / 预订入口'}</h3>
+                          {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {linkedAffiliates.length ? (
+                              linkedAffiliates.map((item) => (
+                                <span key={item.id} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/85">
+                                  {item.title || `${item.provider} ${item.link_type}`}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-sm text-white/45">这个侧栏模块还没选联盟链接。</span>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )
-                  }) : (
+                      )
+                    })
+                  ) : (
                     <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-5 text-sm leading-7 text-white/55">
                       还没有侧栏变现模块。你可以新增 `Affiliate / 联盟推荐`，把住宿、门票、保险或交通入口集中放到右边。
                     </div>
@@ -839,6 +848,5 @@ export default function AdminNotesPage() {
     </main>
   )
 }
-
 
 
