@@ -395,6 +395,32 @@ export default function AdminNotesPage() {
             </CardContent>
           </Card>
 
+          <Card className="border-white/10 bg-[linear-gradient(180deg,rgba(251,191,36,0.08),rgba(255,255,255,0.03))] text-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl">Quick Insert</CardTitle>
+              <p className="text-sm text-white/65">
+                Add content blocks here first. For images, click <span className="font-semibold text-amber-200">Image / 图片</span>, then paste your image URL.
+              </p>
+            </CardHeader>
+            <CardContent className="flex flex-wrap gap-3">
+              {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
+                <Button
+                  key={`quick-${type}`}
+                  variant={type === 'image' ? 'default' : 'outline'}
+                  className={
+                    type === 'image'
+                      ? 'bg-amber-200 text-black hover:bg-amber-100'
+                      : 'border-white/10 bg-transparent text-white hover:bg-white/10'
+                  }
+                  onClick={() => addBlock(type)}
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  {BLOCK_LABELS[type]}
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+
           <Card className="overflow-hidden border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] text-white">
             <CardHeader className="flex flex-row items-center justify-between gap-4">
               <div>
