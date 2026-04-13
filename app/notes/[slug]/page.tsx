@@ -1,10 +1,11 @@
-﻿import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 
 import SiteFooter from '@/components/SiteFooter'
 import AffiliateCard from '@/components/AffiliateCard'
 import FallbackImage from '@/components/FallbackImage'
+import SupportSidebarCard from '@/components\SupportSidebarCard'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
@@ -75,6 +76,10 @@ export default async function NoteDetailPage({ params }: PageProps) {
   if (!note || !note.published) notFound()
 
   const relatedSpots = await fetchLocationsByIds(note.relatedSpotIds)
+  const contentBlocks = note.blocks.filter((block) => block.type !== 'affiliate')
+  const sidebarAffiliateBlocks = note.blocks.filter(
+    (block) => block.type === 'affiliate' && Boolean(block.affiliateIds?.length)
+  )
   const blockSpotIds = note.blocks.filter((block) => block.type === 'spot' && block.spotId).map((block) => block.spotId as number)
   const blockSpots = await fetchLocationsByIds(blockSpotIds)
   const spotMap = new Map(blockSpots.map((spot: any) => [spot.id, spot]))
@@ -105,7 +110,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
               </div>
             ) : null}
 
-            {note.blocks.map((block) => {
+            {contentBlocks.map((block) => {
               if (block.type === 'heading') {
                 return <h2 key={block.id} className="font-display pt-6 text-3xl text-white md:text-4xl">{block.content}</h2>
               }
@@ -146,18 +151,6 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 )
               }
 
-              if (block.type === 'affiliate' && block.affiliateIds?.length) {
-                return (
-                  <div key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                    {block.title ? <h3 className="text-xl font-semibold text-white">{block.title}</h3> : null}
-                    {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
-                    <div className="mt-5">
-                      <AffiliateCard linkIds={block.affiliateIds} limit={block.affiliateIds.length} showDisclosure={false} />
-                    </div>
-                  </div>
-                )
-              }
-
               if (block.type === 'paragraph') {
                 return <p key={block.id} className="max-w-4xl text-base leading-8 text-gray-200 md:text-[1.02rem]">{block.content}</p>
               }
@@ -167,27 +160,57 @@ export default async function NoteDetailPage({ params }: PageProps) {
           </article>
 
           <aside className="space-y-5 lg:sticky lg:top-8 lg:h-fit">
-            {relatedSpots.length ? (
+            <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="section-kicker text-xs text-amber-300/80">Travel Sidebar</p>
+              <h2 className="mt-3 text-2xl font-semibold text-white">旅行工具与预订入口</h2>
+              <p className="mt-3 text-sm leading-7 text-gray-300">
+                右侧栏现在专门留给住宿、门票、交通等联盟推荐，让正文专心讲故事、给攻略、放照片。
+              </p>
+            </section>
+
+            {sidebarAffiliateBlocks.length ? (
+              sidebarAffiliateBlocks.map((block) => (
+                <section key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+                  {block.title ? <p className="section-kicker text-xs text-amber-300/80">{block.title}</p> : null}
+                  {block.content ? <p className="mt-3 text-sm leading-7 text-gray-300">{block.content}</p> : null}
+                  <div className={block.content ? 'mt-5' : block.title ? 'mt-4' : ''}>
+                    <AffiliateCard linkIds={block.affiliateIds || []} limit={(block.affiliateIds || []).length} showDisclosure={false} />
+                  </div>
+                </section>
+              ))
+            ) : (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                <p className="section-kicker text-xs text-amber-300/80">Related Spots</p>
-                <h2 className="mt-3 text-2xl font-semibold text-white">文中相关景点</h2>
-                <div className="mt-5 space-y-3">
-                  {relatedSpots.map((spot: any) => (
-                    <a key={spot.id} href={buildLocationPath(spot.name, spot.id)} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 transition hover:bg-white/5">
-                      <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
-                        <FallbackImage src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'} alt={spot.name_cn || spot.name} fill className="object-cover" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate font-medium text-white">{spot.name_cn || spot.name}</p>
-                        <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                <p className="section-kicker text-xs text-emerald-300/80">Sidebar Reserved</p>
+                <p className="mt-3 text-sm leading-7 text-gray-300">
+                  这篇长文暂时还没挂联盟模块。后续在后台新增 `Affiliate / 联盟推荐` 模块后，这里会自动出现。
+                </p>
               </section>
-            ) : null}
+            )}
+
+            <SupportSidebarCard className="bg-white/5" />
           </aside>
         </div>
+
+        {relatedSpots.length ? (
+          <section className="mt-8 rounded-[32px] border border-white/10 bg-white/5 p-6 md:p-7">
+            <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
+            <h2 className="mt-3 text-3xl font-semibold text-white">这篇笔记关联的景点</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {relatedSpots.map((spot: any) => (
+                <a key={spot.id} href={buildLocationPath(spot.name, spot.id)} className="flex items-center gap-3 rounded-[24px] border border-white/10 bg-black/20 p-4 transition hover:bg-white/5">
+                  <div className="relative h-20 w-20 overflow-hidden rounded-2xl">
+                    <FallbackImage src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'} alt={spot.name_cn || spot.name} fill className="object-cover" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-lg font-medium text-white">{spot.name_cn || spot.name}</p>
+                    <p className="mt-1 truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-300">{spot.description || spot.review || '继续查看这条景点页，拿到更完整的地图、照片与交通信息。'}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
 
       <SiteFooter />

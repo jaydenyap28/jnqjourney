@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
@@ -9,6 +9,7 @@ import { EMPTY_NOTE, DEFAULT_NOTE_COVER_ACCENT } from '@/lib/notes'
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import FallbackImage from '@/components/FallbackImage'
+import SupportSidebarCard from '@/components\SupportSidebarCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -112,7 +113,9 @@ export default function AdminNotesPage() {
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateOption[]>([])
   const [spotSearch, setSpotSearch] = useState('')
   const [affiliateSearch, setAffiliateSearch] = useState('')
-  const blocksCardRef = useRef<HTMLDivElement | null>(null)
+  const blocksSectionRef = useRef<HTMLDivElement | null>(null)
+  const blockRefs = useRef<Record<string, HTMLDivElement | null>>({})
+  const [activeBlockId, setActiveBlockId] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -163,6 +166,7 @@ export default function AdminNotesPage() {
     if (selected) {
       setForm(selected)
       setMessage('')
+      setActiveBlockId(selected.blocks[0]?.id || '')
     }
   }, [notes, selectedSlug])
 
@@ -201,6 +205,57 @@ export default function AdminNotesPage() {
       .slice(0, 30)
   }, [affiliateLinks, affiliateSearch, form.blocks])
 
+  const contentBlocks = useMemo(
+    () => form.blocks.filter((block) => block.type !== 'affiliate'),
+    [form.blocks]
+  )
+
+  const sidebarAffiliateBlocks = useMemo(
+    () => form.blocks.filter((block) => block.type === 'affiliate' && Boolean(block.affiliateIds?.length)),
+    [form.blocks]
+  )
+
+  const affiliateSelectionCount = useMemo(
+    () => new Set(form.blocks.flatMap((block) => block.affiliateIds || [])).size,
+    [form.blocks]
+  )
+
+  const draftCharacterCount = useMemo(() => {
+    const text = [
+      form.title,
+      form.tagline,
+      form.summary,
+      ...form.blocks.map((block) => [block.title, block.content, block.caption].filter(Boolean).join(' ')),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .replace(/\s+/g, '')
+    return text.length
+  }, [form])
+
+  function registerBlockRef(blockId: string, element: HTMLDivElement | null) {
+    if (!element) {
+      delete blockRefs.current[blockId]
+      return
+    }
+    blockRefs.current[blockId] = element
+  }
+
+  function focusBlockEditor(blockId: string) {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        blocksSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        const container = blockRefs.current[blockId]
+        if (!container) return
+        container.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        const focusable = container.querySelector('input, textarea, button')
+        if (focusable instanceof HTMLElement) {
+          focusable.focus()
+        }
+      })
+    })
+  }
+
   function createNewNote() {
     const next: LongformNote = {
       ...EMPTY_NOTE,
@@ -215,6 +270,8 @@ export default function AdminNotesPage() {
     setSelectedSlug('')
     setForm(next)
     setMessage('')
+    setActiveBlockId(next.blocks[0]?.id || '')
+    focusBlockEditor(next.blocks[0]?.id || '')
   }
 
   function updateForm(patch: Partial<LongformNote>) {
@@ -231,19 +288,27 @@ export default function AdminNotesPage() {
   }
 
   function addBlock(type: NoteBlockType) {
-    setForm((current) => ({ ...current, blocks: [...current.blocks, createEmptyBlock(type)] }))
-    setMessage(`${BLOCK_LABELS[type]} added. Scroll down to edit it.`)
-    requestAnimationFrame(() => {
-      blocksCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
+    const nextBlock = createEmptyBlock(type)
+    setForm((current) => ({ ...current, blocks: [...current.blocks, nextBlock] }))
+    setActiveBlockId(nextBlock.id)
+    setMessage(type === 'image' ? '已新增图片模块，直接贴上图片链接即可开始排版。' : `已新增 ${BLOCK_LABELS[type]} 模块。`)
+    focusBlockEditor(nextBlock.id)
   }
 
   function removeBlock(index: number) {
-    setForm((current) => ({ ...current, blocks: current.blocks.filter((_, blockIndex) => blockIndex !== index) }))
+    setForm((current) => ({
+      ...current,
+      blocks: current.blocks.filter((_, blockIndex) => blockIndex !== index),
+    }))
   }
 
   function moveBlock(index: number, direction: 'up' | 'down') {
+    const movingBlock = form.blocks[index]
     setForm((current) => ({ ...current, blocks: moveItem(current.blocks, index, direction) }))
+    if (movingBlock?.id) {
+      setActiveBlockId(movingBlock.id)
+      focusBlockEditor(movingBlock.id)
+    }
   }
 
   function toggleRelatedSpot(spotId: number) {
@@ -345,7 +410,7 @@ export default function AdminNotesPage() {
     <main className="min-h-screen bg-[linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4">
-          <div ref={blocksCardRef}>
+          <div>
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="flex items-center justify-between text-lg">
@@ -402,11 +467,34 @@ export default function AdminNotesPage() {
             </CardContent>
           </Card>
 
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-white/45">正文模块</p>
+              <p className="mt-3 text-3xl font-semibold text-white">{form.blocks.length}</p>
+              <p className="mt-2 text-sm text-white/55">段落、图片、景点卡与联盟区块</p>
+            </div>
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-white/45">关联景点</p>
+              <p className="mt-3 text-3xl font-semibold text-white">{selectedRelatedSpots.length}</p>
+              <p className="mt-2 text-sm text-white/55">会在正文下方形成延伸阅读入口</p>
+            </div>
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-white/45">变现入口</p>
+              <p className="mt-3 text-3xl font-semibold text-white">{affiliateSelectionCount}</p>
+              <p className="mt-2 text-sm text-white/55">右侧栏集中放联盟推荐与工具入口</p>
+            </div>
+            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-white/45">内容长度</p>
+              <p className="mt-3 text-3xl font-semibold text-white">{draftCharacterCount}</p>
+              <p className="mt-2 text-sm text-white/55">用于判断这篇长文是否够扎实、够可读</p>
+            </div>
+          </div>
+
           <Card className="border-white/10 bg-[linear-gradient(180deg,rgba(251,191,36,0.08),rgba(255,255,255,0.03))] text-white">
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl">Quick Insert</CardTitle>
               <p className="text-sm text-white/65">
-                Add content blocks here first. For images, click <span className="font-semibold text-amber-200">Image / 图片</span>, then paste your image URL.
+                现在点了会直接跳到新模块并自动聚焦。图片模块会把光标带到图片链接输入框，方便你立刻贴图。
               </p>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
@@ -460,12 +548,11 @@ export default function AdminNotesPage() {
                 </div>
               </section>
 
-              <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_280px]">
+              <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
                 <div className="space-y-5">
                   {form.summary ? <p className="max-w-3xl text-base leading-8 text-gray-100">{form.summary}</p> : null}
-                  {form.blocks.length ? form.blocks.map((block) => {
+                  {contentBlocks.length ? contentBlocks.map((block) => {
                     const selectedSpot = locations.find((item) => item.id === block.spotId)
-                    const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
 
                     if (block.type === 'heading') {
                       return <h3 key={block.id} className="font-display pt-2 text-3xl text-white">{block.content || block.title || 'Section heading'}</h3>
@@ -509,24 +596,6 @@ export default function AdminNotesPage() {
                       )
                     }
 
-                    if (block.type === 'affiliate') {
-                      return (
-                        <div key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                          <h3 className="text-xl font-semibold text-white">{block.title || 'Booking picks'}</h3>
-                          {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {linkedAffiliates.length ? linkedAffiliates.map((item) => (
-                              <span key={item.id} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-sm text-white/85">
-                                {item.title || `${item.provider} ${item.link_type}`}
-                              </span>
-                            )) : (
-                              <span className="text-sm text-white/45">Select affiliate links for this block</span>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    }
-
                     return (
                       <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">
                         {block.content || 'Paragraph preview'}
@@ -539,29 +608,74 @@ export default function AdminNotesPage() {
                   )}
                 </div>
 
+                  {selectedRelatedSpots.length ? (
+                    <section className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                      <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
+                      <h3 className="mt-3 text-2xl font-semibold text-white">文末延伸景点</h3>
+                      <div className="mt-5 grid gap-3 md:grid-cols-2">
+                        {selectedRelatedSpots.map((spot) => (
+                          <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                            <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
+                              <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
+                              <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  ) : null}
+                </div>
+
                 <aside className="space-y-4">
                   <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                    <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
-                    <div className="mt-4 space-y-3">
-                      {selectedRelatedSpots.length ? selectedRelatedSpots.slice(0, 5).map((spot) => (
-                        <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                          <div className="relative h-14 w-14 overflow-hidden rounded-2xl">
-                            <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
-                            <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                          </div>
-                        </div>
-                      )) : <p className="text-sm text-gray-400">No connected spots yet.</p>}
+                    <p className="section-kicker text-xs text-amber-300/80">Monetization Rail</p>
+                    <h3 className="mt-3 text-2xl font-semibold text-white">右侧侧栏预览</h3>
+                    <p className="mt-3 text-sm leading-7 text-gray-300">
+                      这里现在专门放联盟营销、住宿预订、工具入口与未来的打赏组件，正文保持更像高级旅游专栏。
+                    </p>
+                  </div>
+
+                  <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                    <p className="section-kicker text-xs text-emerald-300/80">Publishing Signals</p>
+                    <div className="mt-4 space-y-3 text-sm text-gray-300">
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">状态：{form.published ? '已发布' : '草稿中'}</div>
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">正文模块：{contentBlocks.length} 个</div>
+                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">侧栏联盟区块：{sidebarAffiliateBlocks.length} 个</div>
                     </div>
                   </div>
+
+                  {sidebarAffiliateBlocks.length ? sidebarAffiliateBlocks.map((block) => {
+                    const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
+                    return (
+                      <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                        <p className="section-kicker text-xs text-amber-300/80">Affiliate Module</p>
+                        <h3 className="mt-3 text-xl font-semibold text-white">{block.title || '旅途工具 / 预订入口'}</h3>
+                        {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
+                        <div className="mt-4 flex flex-wrap gap-2">
+                          {linkedAffiliates.length ? linkedAffiliates.map((item) => (
+                            <span key={item.id} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/85">
+                              {item.title || `${item.provider} ${item.link_type}`}
+                            </span>
+                          )) : <span className="text-sm text-white/45">这个侧栏模块还没选联盟链接。</span>}
+                        </div>
+                      </div>
+                    )
+                  }) : (
+                    <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-5 text-sm leading-7 text-white/55">
+                      还没有侧栏变现模块。你可以新增 `Affiliate / 联盟推荐`，把住宿、门票、保险或交通入口集中放到右边。
+                    </div>
+                  )}
+
+                  <SupportSidebarCard className="bg-white/5" />
                 </aside>
               </div>
             </CardContent>
           </Card>
 
-          <Card ref={blocksCardRef} className="border-white/10 bg-white/5 text-white">
+          <Card ref={blocksSectionRef} className="border-white/10 bg-white/5 text-white">
             <CardHeader><CardTitle>相关景点与地区</CardTitle></CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-3">
@@ -613,7 +727,7 @@ export default function AdminNotesPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>正文模块</CardTitle>
-                <p className="mt-2 text-sm text-white/55">Use paragraph + image + spot cards to build a polished travel blog note without touching code.</p>
+                <p className="mt-2 text-sm text-white/55">像搭积木一样排正文。图片、景点卡、侧栏联盟块会一起组成更像高级旅游博客的版型。</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
@@ -628,7 +742,12 @@ export default function AdminNotesPage() {
                 const selectedSpot = locations.find((item) => item.id === block.spotId)
                 const selectedAffiliateIds = new Set(block.affiliateIds || [])
                 return (
-                  <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-4">
+                  <div
+                    key={block.id}
+                    ref={(element) => registerBlockRef(block.id, element)}
+                    className={`rounded-[28px] border p-4 transition ${activeBlockId === block.id ? 'border-amber-300/50 bg-amber-300/10 shadow-[0_0_0_1px_rgba(252,211,77,0.15)]' : 'border-white/10 bg-black/20'}`}
+                    onClick={() => setActiveBlockId(block.id)}
+                  >
                     <div className="mb-4 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <Badge className="bg-amber-400/10 text-amber-200">{BLOCK_LABELS[block.type]}</Badge>
@@ -650,7 +769,10 @@ export default function AdminNotesPage() {
 
                     {block.type === 'image' ? (
                       <div className="space-y-3">
-                        <div className="space-y-2"><Label>图片 URL</Label><Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} /></div>
+                        <div className="rounded-2xl border border-dashed border-amber-300/20 bg-amber-300/5 px-4 py-3 text-sm leading-7 text-amber-100/90">
+                          贴上图片直链后，这一块会立刻在上方预览和前台文章中显示，适合做大图分隔、情绪图或攻略步骤图。
+                        </div>
+                        <div className="space-y-2"><Label>图片 URL</Label><Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} placeholder="https://..." /></div>
                         <div className="space-y-2"><Label>图说</Label><Input value={block.caption || ''} onChange={(event) => updateBlock(index, { caption: event.target.value })} /></div>
                       </div>
                     ) : null}
