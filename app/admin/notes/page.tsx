@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowUp, ExternalLink, Plus, Save, Search, Trash2, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ExternalLink, Eye, Plus, Save, Search, Trash2, X } from 'lucide-react'
 
 import type { LongformNote, NoteBlock, NoteBlockType } from '@/lib/notes'
 import { EMPTY_NOTE, DEFAULT_NOTE_COVER_ACCENT } from '@/lib/notes'
@@ -88,6 +88,15 @@ function getLocationCover(location?: LocationOption | null) {
 function getLocationLabel(location?: LocationOption | null) {
   if (!location) return ''
   return location.name_cn || location.name
+}
+
+const BLOCK_LABELS: Record<NoteBlockType, string> = {
+  paragraph: 'Paragraph / 段落',
+  heading: 'Heading / 标题',
+  quote: 'Quote / 引言',
+  image: 'Image / 图片',
+  spot: 'Spot Card / 景点卡片',
+  affiliate: 'Affiliate / 联盟推荐',
 }
 
 export default function AdminNotesPage() {
@@ -302,9 +311,9 @@ export default function AdminNotesPage() {
       })
       setSelectedSlug(nextNote.slug)
       setForm(nextNote)
-      setMessage('长文笔记已保存。')
+      setMessage(nextNote.published ? 'Published note saved successfully.' : 'Draft saved successfully.')
     } catch (error: any) {
-      setMessage(error?.message || '保存失败。')
+      setMessage(error?.message || 'Failed to save note.')
     } finally {
       setSaving(false)
     }
@@ -317,9 +326,9 @@ export default function AdminNotesPage() {
       if (!response.ok) throw new Error('删除失败')
       setNotes((current) => current.filter((item) => item.slug !== form.slug))
       createNewNote()
-      setMessage('长文笔记已删除。')
+      setMessage('Note deleted.')
     } catch (error: any) {
-      setMessage(error?.message || '删除失败。')
+      setMessage(error?.message || 'Failed to delete note.')
     }
   }
 
@@ -369,7 +378,7 @@ export default function AdminNotesPage() {
               <div className="flex flex-wrap justify-end gap-2">
                 {form.slug ? <Link href={`/notes/${form.slug}`} target="_blank" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/10"><ExternalLink className="h-4 w-4" />打开前台</Link> : null}
                 <Button variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={deleteCurrentNote} disabled={!form.slug}><Trash2 className="mr-2 h-4 w-4" />删除</Button>
-                <Button className="bg-white text-black hover:bg-amber-50" onClick={saveNote} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? '保存中...' : '保存'}</Button>
+                <Button className="bg-white text-black hover:bg-amber-50" onClick={saveNote} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}</Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
@@ -382,7 +391,139 @@ export default function AdminNotesPage() {
               <div className="space-y-2"><Label>封面图 URL</Label><Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} /></div>
               <div className="space-y-2"><Label>标签</Label><Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="例如：曼谷, 咖啡馆, 长文攻略" /></div>
               <label className="inline-flex items-center gap-3 text-sm text-white/80"><input type="checkbox" checked={form.published} onChange={(event) => updateForm({ published: event.target.checked })} />发布这篇笔记</label>
-              {message ? <p className="md:col-span-2 text-sm text-amber-200">{message}</p> : null}
+              {message ? <p className={`md:col-span-2 rounded-2xl border px-4 py-3 text-sm ${message.toLowerCase().includes('failed') || message.toLowerCase().includes('error') ? 'border-red-400/20 bg-red-500/10 text-red-200' : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'}`}>{message}</p> : null}
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] text-white">
+            <CardHeader className="flex flex-row items-center justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Live Draft Preview</p>
+                <CardTitle className="mt-3 text-3xl">{form.title || 'Draft preview'}</CardTitle>
+              </div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white/80">
+                <Eye className="h-4 w-4" />
+                {form.published ? 'Published layout' : 'Draft layout'}
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <section className={`overflow-hidden rounded-[32px] border border-white/10 p-6 md:p-8 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_320px] lg:items-end">
+                  <div>
+                    <p className="section-kicker text-xs text-amber-100/80">{form.kicker || 'Longform Note'}</p>
+                    <h2 className="font-display mt-5 text-4xl leading-none text-white md:text-6xl">{form.title || 'Your longform title'}</h2>
+                    {form.tagline ? <p className="mt-5 max-w-3xl text-sm leading-8 text-white/80 md:text-base">{form.tagline}</p> : null}
+                  </div>
+                  {form.coverImage ? (
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-white/10 bg-black/20">
+                      <FallbackImage src={form.coverImage} alt={form.title || 'Note cover'} fill className="object-cover" />
+                    </div>
+                  ) : (
+                    <div className="flex aspect-[4/3] items-center justify-center rounded-[28px] border border-dashed border-white/15 bg-black/20 text-sm text-white/45">
+                      Cover image preview
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_280px]">
+                <div className="space-y-5">
+                  {form.summary ? <p className="max-w-3xl text-base leading-8 text-gray-100">{form.summary}</p> : null}
+                  {form.blocks.length ? form.blocks.map((block) => {
+                    const selectedSpot = locations.find((item) => item.id === block.spotId)
+                    const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
+
+                    if (block.type === 'heading') {
+                      return <h3 key={block.id} className="font-display pt-2 text-3xl text-white">{block.content || block.title || 'Section heading'}</h3>
+                    }
+
+                    if (block.type === 'quote') {
+                      return <blockquote key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">{block.content || 'Quote preview'}</blockquote>
+                    }
+
+                    if (block.type === 'image') {
+                      return (
+                        <figure key={block.id} className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5">
+                          <div className="relative aspect-[16/9] overflow-hidden">
+                            {block.imageUrl ? (
+                              <FallbackImage src={block.imageUrl} alt={block.caption || form.title || 'Preview image'} fill className="object-cover" />
+                            ) : (
+                              <div className="flex h-full items-center justify-center text-sm text-white/45">Image preview</div>
+                            )}
+                          </div>
+                          {block.caption ? <figcaption className="px-5 py-4 text-sm leading-7 text-gray-300">{block.caption}</figcaption> : null}
+                        </figure>
+                      )
+                    }
+
+                    if (block.type === 'spot') {
+                      return (
+                        <div key={block.id} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
+                          <div className="grid gap-5 md:grid-cols-[220px_minmax(0,1fr)]">
+                            <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
+                              <FallbackImage src={getLocationCover(selectedSpot)} alt={getLocationLabel(selectedSpot) || 'Spot preview'} fill className="object-cover" />
+                            </div>
+                            <div className="p-5">
+                              <p className="section-kicker text-xs text-amber-300/80">Linked Spot</p>
+                              <h3 className="mt-3 text-2xl font-semibold text-white">{getLocationLabel(selectedSpot) || 'Choose a spot card'}</h3>
+                              <p className="mt-3 text-sm leading-7 text-gray-300">
+                                {selectedSpot ? 'This note will link back to your existing spot page.' : 'Pick one related spot and it will appear here as a premium card.'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    if (block.type === 'affiliate') {
+                      return (
+                        <div key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+                          <h3 className="text-xl font-semibold text-white">{block.title || 'Booking picks'}</h3>
+                          {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {linkedAffiliates.length ? linkedAffiliates.map((item) => (
+                              <span key={item.id} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-sm text-white/85">
+                                {item.title || `${item.provider} ${item.link_type}`}
+                              </span>
+                            )) : (
+                              <span className="text-sm text-white/45">Select affiliate links for this block</span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">
+                        {block.content || 'Paragraph preview'}
+                      </p>
+                    )
+                  }) : (
+                    <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-6 text-sm text-white/50">
+                      Add a paragraph block to start building this longform note.
+                    </div>
+                  )}
+                </div>
+
+                <aside className="space-y-4">
+                  <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                    <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
+                    <div className="mt-4 space-y-3">
+                      {selectedRelatedSpots.length ? selectedRelatedSpots.slice(0, 5).map((spot) => (
+                        <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                          <div className="relative h-14 w-14 overflow-hidden rounded-2xl">
+                            <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
+                            <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                          </div>
+                        </div>
+                      )) : <p className="text-sm text-gray-400">No connected spots yet.</p>}
+                    </div>
+                  </div>
+                </aside>
+              </div>
             </CardContent>
           </Card>
 
@@ -436,11 +577,14 @@ export default function AdminNotesPage() {
 
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>正文模块</CardTitle>
+              <div>
+                <CardTitle>正文模块</CardTitle>
+                <p className="mt-2 text-sm text-white/55">Use paragraph + image + spot cards to build a polished travel blog note without touching code.</p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
                   <Button key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type)}>
-                    <Plus className="mr-2 h-4 w-4" />{type}
+                    <Plus className="mr-2 h-4 w-4" />{BLOCK_LABELS[type]}
                   </Button>
                 ))}
               </div>
@@ -453,7 +597,7 @@ export default function AdminNotesPage() {
                   <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-4">
                     <div className="mb-4 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3">
-                        <Badge className="bg-amber-400/10 text-amber-200">{block.type}</Badge>
+                        <Badge className="bg-amber-400/10 text-amber-200">{BLOCK_LABELS[block.type]}</Badge>
                         <span className="text-sm text-gray-400">Block {index + 1}</span>
                       </div>
                       <div className="flex gap-2">

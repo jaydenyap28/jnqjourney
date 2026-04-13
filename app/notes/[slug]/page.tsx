@@ -98,16 +98,22 @@ export default async function NoteDetailPage({ params }: PageProps) {
         </section>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <article className="space-y-6">
-            {note.summary ? <p className="max-w-3xl text-base leading-8 text-gray-200">{note.summary}</p> : null}
+          <article className="space-y-8">
+            {note.summary ? (
+              <div className="max-w-4xl rounded-[28px] border border-white/10 bg-white/5 px-6 py-5">
+                <p className="text-base leading-8 text-gray-100 md:text-[1.05rem]">{note.summary}</p>
+              </div>
+            ) : null}
 
             {note.blocks.map((block) => {
               if (block.type === 'heading') {
-                return <h2 key={block.id} className="font-display pt-4 text-3xl text-white">{block.content}</h2>
+                return <h2 key={block.id} className="font-display pt-6 text-3xl text-white md:text-4xl">{block.content}</h2>
               }
 
               if (block.type === 'quote') {
-                return <blockquote key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">{block.content}</blockquote>
+                return <blockquote key={block.id} className="rounded-[32px] border border-white/10 bg-white/5 px-6 py-6 text-lg leading-8 text-white/85 md:px-8">
+                  {block.content}
+                </blockquote>
               }
 
               if (block.type === 'image' && block.imageUrl) {
@@ -153,7 +159,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
               }
 
               if (block.type === 'paragraph') {
-                return <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">{block.content}</p>
+                return <p key={block.id} className="max-w-4xl text-base leading-8 text-gray-200 md:text-[1.02rem]">{block.content}</p>
               }
 
               return null

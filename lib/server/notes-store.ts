@@ -1,9 +1,27 @@
-﻿import { readFile, writeFile } from 'fs/promises'
+import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
+import { createClient } from '@supabase/supabase-js'
 import type { LongformNote, NoteBlock } from '@/lib/notes'
 import { DEFAULT_NOTE_COVER_ACCENT } from '@/lib/notes'
 
 const notesFilePath = path.join(process.cwd(), 'data', 'notes.json')
+const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
+const STORAGE_PATH = '_system/notes.webp'
+const LEGACY_STORAGE_PATH = '_system/notes.json'
+const VERSIONED_STORAGE_DIR = '_system/notes'
+const STORAGE_LATEST_POINTER_PATH = '_system/notes-latest.webp'
+const LEGACY_STORAGE_LATEST_POINTER_PATH = '_system/notes-latest.txt'
+
+function getAdminSupabaseClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceRoleKey) return null
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+}
 
 function normalizeStringArray(value: unknown) {
   if (!Array.isArray(value)) return []
@@ -67,7 +85,21 @@ export function normalizeNotePayload(value: any): LongformNote {
   }
 }
 
-export async function readNotes() {
+function sortNotes(notes: LongformNote[]) {
+  return [...notes].sort((left, right) => {
+    const leftDate = left.updatedAt || left.createdAt || ''
+    const rightDate = right.updatedAt || right.createdAt || ''
+    if (leftDate && rightDate && leftDate !== rightDate) {
+      return Date.parse(rightDate) - Date.parse(leftDate)
+    }
+    if (left.published !== right.published) {
+      return left.published ? -1 : 1
+    }
+    return left.title.localeCompare(right.title)
+  })
+}
+
+async function readLocalNotes() {
   try {
     const raw = await readFile(notesFilePath, 'utf8')
     const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
@@ -76,6 +108,116 @@ export async function readNotes() {
   } catch {
     return []
   }
+}
+
+async function writeLocalNotes(notes: LongformNote[]) {
+  try {
+    await writeFile(notesFilePath, JSON.stringify(notes, null, 2), 'utf8')
+  } catch (error: any) {
+    if (error?.code === 'EROFS' || error?.code === 'EPERM') return
+    throw error
+  }
+}
+
+async function readStorageNotes() {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) return null
+
+  try {
+    const candidatePaths: string[] = []
+
+    for (const pointerPath of [STORAGE_LATEST_POINTER_PATH, LEGACY_STORAGE_LATEST_POINTER_PATH]) {
+      const { data: latestPointer } = await supabase.storage.from(STORAGE_BUCKET).download(pointerPath)
+      if (!latestPointer) continue
+      const latestPath = String(await latestPointer.text()).trim()
+      if (latestPath) candidatePaths.push(latestPath)
+      if (latestPath) break
+    }
+
+    const { data: versions } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
+      limit: 20,
+      sortBy: { column: 'name', order: 'desc' },
+    })
+
+    const versionedFiles = Array.isArray(versions)
+      ? versions
+          .map((item) => String(item?.name || '').trim())
+          .filter((item) => item.endsWith('.webp') || item.endsWith('.json'))
+      : []
+
+    candidatePaths.push(...versionedFiles.map((name) => `${VERSIONED_STORAGE_DIR}/${name}`), STORAGE_PATH, LEGACY_STORAGE_PATH)
+
+    let raw = ''
+    const dedupedPaths = Array.from(new Set(candidatePaths.filter(Boolean)))
+    for (const candidatePath of dedupedPaths) {
+      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
+      if (error || !data) continue
+      raw = await data.text()
+      if (raw) break
+    }
+
+    if (!raw) return null
+    const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
+    if (!Array.isArray(parsed)) return []
+
+    return parsed.map(normalizeNotePayload).filter((note) => note.slug && note.title)
+  } catch {
+    return null
+  }
+}
+
+async function writeStorageNotes(notes: LongformNote[]) {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) return
+
+  const payload = Buffer.from(`${JSON.stringify(notes, null, 2)}\n`, 'utf8')
+  const versionedPath = `${VERSIONED_STORAGE_DIR}/${Date.now()}.webp`
+
+  const { error: versionedError } = await supabase.storage.from(STORAGE_BUCKET).upload(versionedPath, payload, {
+    upsert: false,
+    contentType: 'image/webp',
+    cacheControl: '0',
+  })
+
+  if (versionedError) {
+    throw new Error(versionedError.message || 'Failed to persist versioned notes to storage.')
+  }
+
+  const { error: latestPointerError } = await supabase.storage.from(STORAGE_BUCKET).upload(
+    STORAGE_LATEST_POINTER_PATH,
+    Buffer.from(versionedPath, 'utf8'),
+    {
+      upsert: true,
+      contentType: 'image/webp',
+      cacheControl: '0',
+    }
+  )
+
+  if (latestPointerError) {
+    throw new Error(latestPointerError.message || 'Failed to persist latest notes pointer.')
+  }
+
+  const { error } = await supabase.storage.from(STORAGE_BUCKET).upload(STORAGE_PATH, payload, {
+    upsert: true,
+    contentType: 'image/webp',
+    cacheControl: '0',
+  })
+
+  if (error) {
+    throw new Error(error.message || 'Failed to persist notes to storage.')
+  }
+}
+
+export async function readNotes() {
+  const storageNotes = await readStorageNotes()
+  if (storageNotes) {
+    try {
+      await writeLocalNotes(storageNotes)
+    } catch {}
+    return sortNotes(storageNotes)
+  }
+
+  return sortNotes(await readLocalNotes())
 }
 
 export async function readPublishedNotes() {
@@ -94,5 +236,9 @@ export async function readNoteBySlug(slug: string) {
 
 export async function saveNotes(notes: LongformNote[]) {
   const normalized = notes.map(normalizeNotePayload)
-  await writeFile(notesFilePath, JSON.stringify(normalized, null, 2), 'utf8')
+  try {
+    await writeLocalNotes(normalized)
+  } catch {}
+  await writeStorageNotes(normalized)
+  return sortNotes(normalized)
 }

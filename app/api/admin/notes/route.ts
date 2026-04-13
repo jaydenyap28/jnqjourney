@@ -38,8 +38,9 @@ export async function POST(request: Request) {
       notes.unshift(payload)
     }
 
-    await saveNotes(notes)
-    return NextResponse.json({ note: payload })
+    const savedNotes = await saveNotes(notes)
+    const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
+    return NextResponse.json({ note: savedNote })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存笔记失败。' }, { status: 500 })
   }
