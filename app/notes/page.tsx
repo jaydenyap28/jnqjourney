@@ -8,6 +8,9 @@ import { readPublishedNotes } from '@/lib/server/notes-store'
 export const metadata: Metadata = {
   title: '长文笔记 | JnQ Journey',
   description: '旅行长文笔记、灵感故事、景点延伸内容与预订推荐。',
+  alternates: {
+    canonical: '/notes',
+  },
 }
 
 export const dynamic = 'force-dynamic'

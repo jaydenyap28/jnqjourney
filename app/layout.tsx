@@ -38,6 +38,9 @@ const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
+  alternates: {
+    canonical: '/',
+  },
   title: {
     default: 'JnQ Journey | Jayden & Qing',
     template: '%s | JnQ Journey',

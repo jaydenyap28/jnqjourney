@@ -9,6 +9,9 @@ import { fetchTopRegions } from '@/lib/server/public-location-data'
 export const metadata: Metadata = {
   title: '区域目录 | JnQ Journey',
   description: '浏览 JnQ Journey 已整理的区域目录，快速进入每个地区的景点与美食页面。',
+  alternates: {
+    canonical: '/region',
+  },
 }
 
 export default async function RegionIndexPage() {
