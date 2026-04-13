@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowDown, ArrowUp, ExternalLink, Eye, Plus, Save, Search, Trash2, X } from 'lucide-react'
 
@@ -112,6 +112,7 @@ export default function AdminNotesPage() {
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateOption[]>([])
   const [spotSearch, setSpotSearch] = useState('')
   const [affiliateSearch, setAffiliateSearch] = useState('')
+  const blocksCardRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -231,6 +232,10 @@ export default function AdminNotesPage() {
 
   function addBlock(type: NoteBlockType) {
     setForm((current) => ({ ...current, blocks: [...current.blocks, createEmptyBlock(type)] }))
+    setMessage(`${BLOCK_LABELS[type]} added. Scroll down to edit it.`)
+    requestAnimationFrame(() => {
+      blocksCardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
   }
 
   function removeBlock(index: number) {
@@ -340,11 +345,12 @@ export default function AdminNotesPage() {
     <main className="min-h-screen bg-[linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[320px_minmax(0,1fr)]">
         <aside className="space-y-4">
+          <div ref={blocksCardRef}>
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
               <CardTitle className="flex items-center justify-between text-lg">
                 <span>长文笔记</span>
-                <Button size="sm" onClick={createNewNote} className="bg-white text-black hover:bg-amber-50">
+                <Button type="button" size="sm" onClick={createNewNote} className="bg-white text-black hover:bg-amber-50">
                   <Plus className="mr-2 h-4 w-4" />新建
                 </Button>
               </CardTitle>
@@ -366,6 +372,7 @@ export default function AdminNotesPage() {
               )) : <p className="text-sm text-gray-400">还没有笔记，先新建一篇。</p>}
             </CardContent>
           </Card>
+          </div>
         </aside>
 
         <section className="space-y-6">
@@ -377,8 +384,8 @@ export default function AdminNotesPage() {
               </div>
               <div className="flex flex-wrap justify-end gap-2">
                 {form.slug ? <Link href={`/notes/${form.slug}`} target="_blank" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/10"><ExternalLink className="h-4 w-4" />打开前台</Link> : null}
-                <Button variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={deleteCurrentNote} disabled={!form.slug}><Trash2 className="mr-2 h-4 w-4" />删除</Button>
-                <Button className="bg-white text-black hover:bg-amber-50" onClick={saveNote} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}</Button>
+                <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={deleteCurrentNote} disabled={!form.slug}><Trash2 className="mr-2 h-4 w-4" />删除</Button>
+                <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={saveNote} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}</Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
@@ -405,6 +412,7 @@ export default function AdminNotesPage() {
             <CardContent className="flex flex-wrap gap-3">
               {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
                 <Button
+                  type="button"
                   key={`quick-${type}`}
                   variant={type === 'image' ? 'default' : 'outline'}
                   className={
@@ -553,7 +561,7 @@ export default function AdminNotesPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-white/10 bg-white/5 text-white">
+          <Card ref={blocksCardRef} className="border-white/10 bg-white/5 text-white">
             <CardHeader><CardTitle>相关景点与地区</CardTitle></CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-3">
@@ -609,7 +617,7 @@ export default function AdminNotesPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
-                  <Button key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type)}>
+                  <Button type="button" key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type)}>
                     <Plus className="mr-2 h-4 w-4" />{BLOCK_LABELS[type]}
                   </Button>
                 ))}
@@ -627,9 +635,9 @@ export default function AdminNotesPage() {
                         <span className="text-sm text-gray-400">Block {index + 1}</span>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}><ArrowUp className="h-4 w-4" /></Button>
-                        <Button size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}><ArrowDown className="h-4 w-4" /></Button>
-                        <Button size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => removeBlock(index)}><Trash2 className="h-4 w-4" /></Button>
+                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}><ArrowUp className="h-4 w-4" /></Button>
+                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}><ArrowDown className="h-4 w-4" /></Button>
+                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => removeBlock(index)}><Trash2 className="h-4 w-4" /></Button>
                       </div>
                     </div>
 
