@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowUp, ExternalLink, Eye, Image as ImageIcon, MapPin, Plus, Save, Search, Trash2, X } from 'lucide-react'
+import { ArrowDown, ArrowUp, ExternalLink, Eye, Image as ImageIcon, MapPin, Plus, Save, Search, Trash2, X, Command } from 'lucide-react'
 
 import type { LongformNote, NoteBlock, NoteBlockType } from '@/lib/notes'
 import { EMPTY_NOTE, DEFAULT_NOTE_COVER_ACCENT, parseSummary } from '@/lib/notes'
@@ -16,6 +16,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog'
 
 interface RegionOption {
   id: number
@@ -117,6 +124,13 @@ export default function AdminNotesPage() {
   const blockRefs = useRef<Record<string, HTMLDivElement | null>>({})
   const [activeBlockId, setActiveBlockId] = useState('')
   const summaryTextareaRef = useRef<HTMLTextAreaElement>(null)
+
+  // Interactive Summary Insertion States
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+  const [isSpotDialogOpen, setIsSpotDialogOpen] = useState(false)
+  const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false)
+  const [tempImageUrl, setTempImageUrl] = useState('')
+  const [summaryInsertPos, setSummaryInsertPos] = useState<{ start: number, end: number } | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -290,9 +304,19 @@ export default function AdminNotesPage() {
     }))
   }
 
-  function addBlock(type: NoteBlockType) {
+  function addBlock(type: NoteBlockType, afterBlockId?: string) {
     const nextBlock = createEmptyBlock(type)
-    setForm((current) => ({ ...current, blocks: [...current.blocks, nextBlock] }))
+    setForm((current) => {
+      if (afterBlockId) {
+        const index = current.blocks.findIndex(b => b.id === afterBlockId)
+        if (index !== -1) {
+          const nextBlocks = [...current.blocks]
+          nextBlocks.splice(index + 1, 0, nextBlock)
+          return { ...current, blocks: nextBlocks }
+        }
+      }
+      return { ...current, blocks: [...current.blocks, nextBlock] }
+    })
     setActiveBlockId(nextBlock.id)
     setMessage(type === 'image' ? '已新增图片模块，直接贴上图片链接即可开始排版。' : `已新增 ${BLOCK_LABELS[type]} 模块。`)
     focusBlockEditor(nextBlock.id)
@@ -349,12 +373,12 @@ export default function AdminNotesPage() {
     }))
   }
 
-  function insertIntoSummary(text: string) {
+  function insertIntoSummary(text: string, overridePos?: { start: number, end: number }) {
     const textarea = summaryTextareaRef.current
     if (!textarea) return
 
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
+    const start = overridePos ? overridePos.start : textarea.selectionStart
+    const end = overridePos ? overridePos.end : textarea.selectionEnd
     const current = form.summary || ''
     const next = current.substring(0, start) + text + current.substring(end)
     
@@ -365,6 +389,31 @@ export default function AdminNotesPage() {
       textarea.focus()
       textarea.setSelectionRange(start + text.length, start + text.length)
     }, 0)
+  }
+
+  function handleSummaryKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === '/') {
+      const textarea = summaryTextareaRef.current
+      if (!textarea) return
+      setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
+      setIsCommandMenuOpen(true)
+      // We don't preventDefault yet, let them type / then we replace it or they pick
+    }
+  }
+
+  function confirmImageInsert() {
+    if (tempImageUrl) {
+      insertIntoSummary(`[img:${tempImageUrl}]`, summaryInsertPos || undefined)
+      setTempImageUrl('')
+      setIsImageDialogOpen(false)
+      setSummaryInsertPos(null)
+    }
+  }
+
+  function confirmSpotInsert(spotId: number) {
+    insertIntoSummary(`[spot:${spotId}]`, summaryInsertPos || undefined)
+    setIsSpotDialogOpen(false)
+    setSummaryInsertPos(null)
   }
 
   async function saveNote() {
@@ -484,14 +533,18 @@ export default function AdminNotesPage() {
               <div className="space-y-2 md:col-span-2"><Label>Tagline</Label><Input value={form.tagline} onChange={(event) => updateForm({ tagline: event.target.value })} /></div>
               <div className="space-y-2 md:col-span-2">
                 <div className="flex items-center justify-between">
-                  <Label>摘要</Label>
+                  <Label>摘要 (Summary)</Label>
                   <div className="flex gap-2">
                     <Button 
                       type="button" 
                       size="sm" 
                       variant="outline" 
                       className="h-7 border-white/10 bg-transparent px-2 text-[10px] text-white/60 hover:bg-white/10 hover:text-white"
-                      onClick={() => insertIntoSummary('[img:https://]')}
+                      onClick={() => {
+                        const textarea = summaryTextareaRef.current
+                        if (textarea) setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
+                        setIsImageDialogOpen(true)
+                      }}
                     >
                       <ImageIcon className="mr-1 h-3 w-3" />插入图片
                     </Button>
@@ -501,22 +554,50 @@ export default function AdminNotesPage() {
                       variant="outline" 
                       className="h-7 border-white/10 bg-transparent px-2 text-[10px] text-white/60 hover:bg-white/10 hover:text-white"
                       onClick={() => {
-                        const firstSpotId = form.relatedSpotIds[0] || 0
-                        insertIntoSummary(`[spot:${firstSpotId}]`)
+                        const textarea = summaryTextareaRef.current
+                        if (textarea) setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
+                        setIsSpotDialogOpen(true)
                       }}
                     >
                       <MapPin className="mr-1 h-3 w-3" />插入景点
                     </Button>
                   </div>
                 </div>
-                <Textarea 
-                  ref={summaryTextareaRef}
-                  value={form.summary} 
-                  onChange={(event) => updateForm({ summary: event.target.value })} 
-                  rows={6} 
-                  className="font-mono text-sm leading-relaxed"
-                  placeholder="支持插入 [img:URL] 或 [spot:ID] 标记，会实时在下方预览。"
-                />
+                <div className="relative">
+                  <Textarea 
+                    ref={summaryTextareaRef}
+                    value={form.summary} 
+                    onChange={(event) => updateForm({ summary: event.target.value })} 
+                    onKeyDown={handleSummaryKeyDown}
+                    rows={8} 
+                    className="font-mono text-sm leading-relaxed"
+                    placeholder="输入文字... 输入 '/' 触发快捷指令。支持插入图片或景点卡片。"
+                  />
+                  {isCommandMenuOpen && (
+                    <div className="absolute bottom-full left-0 z-50 mb-2 w-48 overflow-hidden rounded-xl border border-white/10 bg-[#09090b] p-1 shadow-2xl">
+                      <div className="px-2 py-1.5 text-[10px] uppercase tracking-wider text-gray-500">插入内容</div>
+                      <button 
+                        onClick={() => { setIsCommandMenuOpen(false); setIsImageDialogOpen(true); }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm hover:bg-white/10"
+                      >
+                        <ImageIcon className="h-4 w-4 text-amber-300" /> 图片 (Image)
+                      </button>
+                      <button 
+                        onClick={() => { setIsCommandMenuOpen(false); setIsSpotDialogOpen(true); }}
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm hover:bg-white/10"
+                      >
+                        <MapPin className="h-4 w-4 text-emerald-300" /> 景点 (Spot Card)
+                      </button>
+                      <div className="h-px bg-white/5 my-1" />
+                      <button 
+                        onClick={() => setIsCommandMenuOpen(false)}
+                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-gray-500 hover:bg-white/10"
+                      >
+                        取消 (Esc)
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className="space-y-2"><Label>封面图 URL</Label><Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} /></div>
               <div className="space-y-2"><Label>标签</Label><Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="例如：曼谷, 咖啡馆, 长文攻略" /></div>
@@ -552,7 +633,7 @@ export default function AdminNotesPage() {
             <CardHeader className="pb-4">
               <CardTitle className="text-2xl">Quick Insert</CardTitle>
               <p className="text-sm text-white/65">
-                现在点了会直接跳到新模块并自动聚焦。图片模块会把光标带到图片链接输入框，方便你立刻贴图。
+                现在点击会自动插入到当前激活的模块下方并聚焦。
               </p>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
@@ -566,7 +647,7 @@ export default function AdminNotesPage() {
                       ? 'bg-amber-200 text-black hover:bg-amber-100'
                       : 'border-white/10 bg-transparent text-white hover:bg-white/10'
                   }
-                  onClick={() => addBlock(type)}
+                  onClick={() => addBlock(type, activeBlockId)}
                 >
                   <Plus className="mr-2 h-4 w-4" />
                   {BLOCK_LABELS[type]}
@@ -609,14 +690,15 @@ export default function AdminNotesPage() {
               <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
                 <div className="space-y-5">
                   {summaryParts.length ? (
-                    <div className="max-w-4xl space-y-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-5">
+                    <div className="max-w-4xl space-y-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 shadow-inner">
+                      <p className="text-[10px] uppercase tracking-widest text-amber-300/50 mb-2">摘要渲染效果</p>
                       {summaryParts.map((part, index) => {
                         if (part.type === 'text') {
-                          return <p key={index} className="text-base leading-8 text-gray-100">{part.content}</p>
+                          return <p key={index} className="text-base leading-8 text-gray-100 whitespace-pre-wrap">{part.content}</p>
                         }
                         if (part.type === 'image' && part.imageUrl) {
                           return (
-                            <div key={index} className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
+                            <div key={index} className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 bg-black/40">
                               <FallbackImage src={part.imageUrl} alt="Summary image" fill className="object-cover" />
                             </div>
                           )
@@ -624,7 +706,7 @@ export default function AdminNotesPage() {
                         if (part.type === 'spot' && part.spotId) {
                           const spot = locations.find(l => l.id === part.spotId)
                           return (
-                            <div key={index} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3">
+                            <div key={index} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/40 p-3">
                               <div className="relative h-16 w-16 overflow-hidden rounded-xl">
                                 <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
                               </div>
@@ -822,11 +904,11 @@ export default function AdminNotesPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle>正文模块</CardTitle>
-                <p className="mt-2 text-sm text-white/55">像搭积木一样排正文。图片、景点卡、侧栏联盟块会一起组成更像高级旅游博客的版型。</p>
+                <p className="mt-2 text-sm text-white/55">像搭积木一样排正文。点击模块即可激活，激活后点击上方的 Quick Insert 会在下方插入。</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
-                  <Button type="button" key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type)}>
+                  <Button type="button" key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type, activeBlockId)}>
                     <Plus className="mr-2 h-4 w-4" />{BLOCK_LABELS[type]}
                   </Button>
                 ))}
@@ -848,7 +930,17 @@ export default function AdminNotesPage() {
                         <Badge className="bg-amber-400/10 text-amber-200">{BLOCK_LABELS[block.type]}</Badge>
                         <span className="text-sm text-gray-400">Block {index + 1}</span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          type="button" 
+                          size="sm" 
+                          variant="ghost" 
+                          className="h-8 w-8 p-0 text-white/40 hover:bg-white/10 hover:text-white"
+                          onClick={(e) => { e.stopPropagation(); addBlock('paragraph', block.id); }}
+                          title="在下方插入段落"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
                         <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}><ArrowUp className="h-4 w-4" /></Button>
                         <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}><ArrowDown className="h-4 w-4" /></Button>
                         <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => removeBlock(index)}><Trash2 className="h-4 w-4" /></Button>
@@ -865,7 +957,7 @@ export default function AdminNotesPage() {
                     {block.type === 'image' ? (
                       <div className="space-y-3">
                         <div className="rounded-2xl border border-dashed border-amber-300/20 bg-amber-300/5 px-4 py-3 text-sm leading-7 text-amber-100/90">
-                          贴上图片直链后，这一块会立刻在上方预览和前台文章中显示，适合做大图分隔、情绪图或攻略步骤图。
+                          贴上图片直链后，这一块会立刻在上方预览和前台文章中显示。
                         </div>
                         <div className="space-y-2"><Label>图片 URL</Label><Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} placeholder="https://..." /></div>
                         <div className="space-y-2"><Label>图说</Label><Input value={block.caption || ''} onChange={(event) => updateBlock(index, { caption: event.target.value })} /></div>
@@ -931,6 +1023,59 @@ export default function AdminNotesPage() {
           </Card>
         </section>
       </div>
+
+      {/* Dialogs for Summary Interactive Insert */}
+      <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+        <DialogContent className="border-white/10 bg-[#09090b] text-white">
+          <DialogHeader><DialogTitle>插入图片</DialogTitle></DialogHeader>
+          <div className="py-4">
+            <Label>图片 URL</Label>
+            <Input 
+              autoFocus
+              value={tempImageUrl} 
+              onChange={(e) => setTempImageUrl(e.target.value)} 
+              placeholder="https://..." 
+              onKeyDown={(e) => e.key === 'Enter' && confirmImageInsert()}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsImageDialogOpen(false)}>取消</Button>
+            <Button className="bg-white text-black hover:bg-amber-50" onClick={confirmImageInsert}>确认插入</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isSpotDialogOpen} onOpenChange={setIsSpotDialogOpen}>
+        <DialogContent className="max-w-2xl border-white/10 bg-[#09090b] text-white">
+          <DialogHeader><DialogTitle>插入景点卡片</DialogTitle></DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              <Input className="pl-10" value={spotSearch} onChange={(e) => setSpotSearch(e.target.value)} placeholder="搜索景点..." />
+            </div>
+            <div className="max-h-[300px] overflow-y-auto grid gap-3 sm:grid-cols-2">
+              {filteredSpots.map((spot) => (
+                <button 
+                  key={spot.id} 
+                  onClick={() => confirmSpotInsert(spot.id)}
+                  className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-2 text-left hover:bg-white/10"
+                >
+                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
+                    <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{getLocationLabel(spot)}</p>
+                    <p className="truncate text-[10px] text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsSpotDialogOpen(false)}>关闭</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }
