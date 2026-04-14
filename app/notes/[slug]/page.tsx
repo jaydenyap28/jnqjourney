@@ -9,6 +9,7 @@ import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
+import { parseSummary } from '@/lib/notes'
 
 interface PageProps {
   params: { slug: string }
@@ -76,12 +77,17 @@ export default async function NoteDetailPage({ params }: PageProps) {
   if (!note || !note.published) notFound()
 
   const relatedSpots = await fetchLocationsByIds(note.relatedSpotIds)
+  const summaryParts = parseSummary(note.summary)
+  const summarySpotIds = summaryParts
+    .filter((part) => part.type === 'spot' && part.spotId)
+    .map((part) => part.spotId as number)
+
   const contentBlocks = note.blocks.filter((block) => block.type !== 'affiliate')
   const sidebarAffiliateBlocks = note.blocks.filter(
     (block) => block.type === 'affiliate' && Boolean(block.affiliateIds?.length)
   )
   const blockSpotIds = note.blocks.filter((block) => block.type === 'spot' && block.spotId).map((block) => block.spotId as number)
-  const blockSpots = await fetchLocationsByIds(blockSpotIds)
+  const blockSpots = await fetchLocationsByIds([...new Set([...blockSpotIds, ...summarySpotIds])])
   const spotMap = new Map(blockSpots.map((spot: any) => [spot.id, spot]))
 
   return (
@@ -104,9 +110,54 @@ export default async function NoteDetailPage({ params }: PageProps) {
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <article className="space-y-8">
-            {note.summary ? (
-              <div className="max-w-4xl rounded-[28px] border border-white/10 bg-white/5 px-6 py-5">
-                <p className="text-base leading-8 text-gray-100 md:text-[1.05rem]">{note.summary}</p>
+            {summaryParts.length ? (
+              <div className="max-w-4xl space-y-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-5">
+                {summaryParts.map((part, index) => {
+                  if (part.type === 'text') {
+                    return (
+                      <p key={index} className="text-base leading-8 text-gray-100 md:text-[1.05rem]">
+                        {part.content}
+                      </p>
+                    )
+                  }
+
+                  if (part.type === 'image' && part.imageUrl) {
+                    return (
+                      <div key={index} className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
+                        <FallbackImage src={part.imageUrl} alt={note.title} fill className="object-cover" />
+                      </div>
+                    )
+                  }
+
+                  if (part.type === 'spot' && part.spotId) {
+                    const spot = spotMap.get(part.spotId)
+                    if (!spot) return null
+                    return (
+                      <a
+                        key={index}
+                        href={buildLocationPath(spot.name, spot.id)}
+                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 transition hover:bg-white/10"
+                      >
+                        <div className="relative h-16 w-16 overflow-hidden rounded-xl">
+                          <FallbackImage
+                            src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+                            alt={spot.name_cn || spot.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-white">{spot.name_cn || spot.name}</p>
+                          <p className="truncate text-xs text-gray-400">
+                            {spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}
+                          </p>
+                        </div>
+                      </a>
+                    )
+                  }
+
+                  return null
+                })}
               </div>
             ) : null}
 

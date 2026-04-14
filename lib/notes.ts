@@ -1,3 +1,4 @@
+// Utility for notes
 export type NoteBlockType = 'paragraph' | 'heading' | 'quote' | 'image' | 'spot' | 'affiliate'
 
 export interface NoteBlock {
@@ -28,6 +29,67 @@ export interface LongformNote {
   blocks: NoteBlock[]
   createdAt?: string
   updatedAt?: string
+}
+
+export interface SummaryPart {
+  type: 'text' | 'image' | 'spot'
+  content?: string
+  imageUrl?: string
+  spotId?: number
+}
+
+export function parseSummary(summary: string): SummaryPart[] {
+  if (!summary) return []
+
+  const parts: SummaryPart[] = []
+  const regex = /\[(img|image|spot|location):([^\]]+)\]/g
+  let lastIndex = 0
+  let match
+
+  while ((match = regex.exec(summary)) !== null) {
+    // Add text before the match
+    if (match.index > lastIndex) {
+      parts.push({
+        type: 'text',
+        content: summary.substring(lastIndex, match.index),
+      })
+    }
+
+    const type = match[1]
+    const value = match[2].trim()
+
+    if (type === 'img' || type === 'image') {
+      parts.push({
+        type: 'image',
+        imageUrl: value,
+      })
+    } else if (type === 'spot' || type === 'location') {
+      const spotId = parseInt(value, 10)
+      if (!isNaN(spotId)) {
+        parts.push({
+          type: 'spot',
+          spotId,
+        })
+      }
+    }
+
+    lastIndex = regex.lastIndex
+  }
+
+  // Add remaining text
+  if (lastIndex < summary.length) {
+    parts.push({
+      type: 'text',
+      content: summary.substring(lastIndex),
+    })
+  }
+
+  return parts
+}
+
+export function stripSummaryTokens(summary: string): string {
+  if (!summary) return ''
+  return summary.replace(/\[(img|image|spot|location):([^\]]+)\]/g, '').trim()
 }
 
 export const DEFAULT_NOTE_COVER_ACCENT =

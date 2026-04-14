@@ -1,9 +1,10 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowRight } from 'lucide-react'
 
 import SiteFooter from '@/components/SiteFooter'
 import { readPublishedNotes } from '@/lib/server/notes-store'
+import { stripSummaryTokens } from '@/lib/notes'
 
 export const metadata: Metadata = {
   title: '长文笔记 | JnQ Journey',
@@ -37,11 +38,11 @@ export default async function NotesIndexPage() {
                 <div className="relative z-10">
                   <p className="section-kicker text-xs text-amber-100/80">{note.kicker}</p>
                   <h2 className="font-display mt-4 text-4xl leading-none text-white md:text-5xl">{note.shortTitle || note.title}</h2>
-                  <p className="mt-4 text-sm leading-7 text-white/78 md:text-base">{note.tagline || note.summary}</p>
+                  <p className="mt-4 text-sm leading-7 text-white/78 md:text-base">{note.tagline || stripSummaryTokens(note.summary)}</p>
                 </div>
               </div>
               <div className="flex items-center justify-between gap-4 p-5">
-                <p className="line-clamp-3 text-sm leading-7 text-gray-300">{note.summary}</p>
+                <p className="line-clamp-3 text-sm leading-7 text-gray-300">{stripSummaryTokens(note.summary)}</p>
                 <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition group-hover:bg-amber-50">
                   打开长文
                   <ArrowRight className="h-4 w-4" />
