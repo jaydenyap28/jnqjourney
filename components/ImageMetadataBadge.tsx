@@ -19,7 +19,7 @@ export function getImageSource(url: string) {
   return 'Other'
 }
 
-export default function ImageMetadataBadge({ url }: { url: string }) {
+export default function ImageMetadataBadge({ url, className }: { url: string, className?: string }) {
   const [size, setSize] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const source = getImageSource(url)
@@ -56,7 +56,7 @@ export default function ImageMetadataBadge({ url }: { url: string }) {
   const isLarge = size && size > 1024 * 1024
 
   return (
-    <div className="absolute top-1 right-1 flex flex-col gap-1 items-end pointer-events-none z-10">
+    <div className={`flex flex-col gap-1 items-end pointer-events-none z-10 ${className || 'absolute top-1 right-1'}`}>
       <div className={`rounded-sm px-1.5 py-0.5 text-[10px] text-white shadow-sm font-medium ${sourceColor}`}>
         {source}
       </div>
