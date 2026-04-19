@@ -1517,11 +1517,34 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     return Array.isArray(result.urls) ? result.urls : []
   }
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = async (index: number) => {
+    const urlToDelete = formData.images[index]
+    if (!urlToDelete) return
+
+    if (!window.confirm('您确定要移除这张图片吗？\n注：如果图库是原生保存在 Supabase 的文件，这将会把它从云端彻底销毁，不可恢复！')) {
+      return
+    }
+
     setFormData(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
     }))
+
+    if (urlToDelete.includes('supabase.co')) {
+      try {
+        const res = await adminFetch('/api/admin/delete-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: urlToDelete }),
+        })
+        if (!res.ok) {
+          const data = await res.json()
+          console.warn('Supabase 图片物理销毁失败:', data?.error)
+        }
+      } catch (e) {
+        console.error('API Error during deletion:', e)
+      }
+    }
   }
 
   const moveGalleryImage = (fromIndex: number, toIndex: number) => {

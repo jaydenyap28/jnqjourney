@@ -1,0 +1,11 @@
+--- Findings in Obsidian (China & Japan) ---
+
+[File] 中国东北北京冬季游｜北京｜Day 3｜故宫与老街生活.md
+[Location Head] 🎫 故宫物流
+[DB Match (Missing Price)] 故宫博物院
+[Context] - **订票**：必须提前在“故宫博物院”微信公众号预约，每晚 8 点放票（淡季 ¥40）。
+
+[File] 中国东北北京冬季游｜北京｜Day 4｜慕田峪长城与CBD夜景.md
+[Location Head] 🧱 慕田峪长城攻略
+[DB Match (Missing Price)] 慕田峪长城
+[Context] - **门票**：成人票 ¥45，摆渡车 ¥15。

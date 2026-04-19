@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import archiver from 'archiver'
-import { PassThrough } from 'node:stream'
+import { PassThrough, Readable } from 'node:stream'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 
 export const runtime = 'nodejs'
@@ -95,7 +95,10 @@ export async function POST(request: Request) {
 
     await archive.finalize()
 
-    return new NextResponse(output as any, {
+    // Convert Node.js stream to Web ReadableStream for Next.js Response
+    const webStream = Readable.toWeb(output) as ReadableStream
+
+    return new NextResponse(webStream, {
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': `attachment; filename="${baseName}-gallery.zip"`,

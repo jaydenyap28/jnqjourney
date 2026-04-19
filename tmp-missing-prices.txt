@@ -1,0 +1,31 @@
+--- Findings in Obsidian ---
+
+[File] 东海岸3号公路｜EP3｜登嘉楼海岸与人文攻略.md
+[Location Head] 🏝️ 离岛一日游：棉花岛 (Pulau Kapas)
+[DB Match (Missing Price)] 狮子山
+[Context] - **配套推荐**：购买了包含**船票 + [[狮子山]] (Bukit Singa) 徒步**的配套（RM50/人）。需另外支付海洋公园保育费（马来西亚公民 RM5）。
+
+[File] 东海岸3号公路｜EP4｜吉兰丹自驾收官攻略.md
+[Location Head] 🌿 绿意与海岸：农场秘境与沙滩打卡
+[DB Match (Missing Price)] Jeram Mengaji
+[Context] - **附属景点**：往山下走是 **[[Jeram Mengaji]]** 瀑布（门票 RM5/车），设有亭子，平时人少，非常适合休闲野餐。
+
+[File] 怡保｜岩洞神庙与美食一日游攻略.md
+[Location Head] 4. 长江白咖啡 (Chang Jiang White Coffee)
+[DB Match (Missing Price)] 长江白咖啡
+[Context] - **餐点**：点了白咖啡（冷）等，总计 RM24.50。
+
+[File] 马来西亚｜古晋｜Day 1｜抵达与仙女洞.md
+[Location Head] 🏡 住宿：阿爸乐园 (Abba Paradise)
+[DB Match (Missing Price)] 阿爸乐园
+[Context] - **价格**: **RM300**/晚（可住 4 人）。
+
+[File] 马来西亚｜古晋｜Day 2｜Bengoh Dam 与河滨夜景.md
+[Location Head] 🌃 古晋河滨公园 (Waterfront)
+[DB Match (Missing Price)] 古晋河滨公园
+[Context] - 甜点尝试: **Three 'i' Tea** 的 Teh C Special 冰淇淋 (RM3.50)。
+
+[File] 马来西亚｜古晋｜Day 4-5｜市区探索与收官.md
+[Location Head] 🏛️ 重点景点：婆罗洲文化博物馆 (Borneo Cultures Museum)
+[DB Match (Missing Price)] 婆罗洲文化博物馆
+[Context] - **门票**: 其他州属大马公民 **RM20**，外国游客 **RM50**。

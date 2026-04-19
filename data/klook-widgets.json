@@ -1,0 +1,129 @@
+[
+  {
+    "id": "widget-1775869981264",
+    "title": "Desaru Activities",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1254220\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"6\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      84
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-11T01:13:01.264Z",
+    "updatedAt": "2026-04-11T01:13:05.087Z"
+  },
+  {
+    "id": "widget-1775869796024",
+    "title": "Tioman Island Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1254219\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"4\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [
+      273
+    ],
+    "regionIds": [],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-11T01:09:56.024Z",
+    "updatedAt": "2026-04-11T01:09:57.045Z"
+  },
+  {
+    "id": "widget-1775816641893",
+    "title": "Suzhou Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253931\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      68
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T10:24:01.893Z",
+    "updatedAt": "2026-04-10T10:24:02.673Z"
+  },
+  {
+    "id": "widget-1775810354274",
+    "title": "Kuantan Activities",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253866\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"6\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      19,
+      9
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T08:39:14.274Z",
+    "updatedAt": "2026-04-10T08:39:15.051Z"
+  },
+  {
+    "id": "widget-1775804927654",
+    "title": "Shanghai Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253783\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      69
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T07:08:47.654Z",
+    "updatedAt": "2026-04-10T07:08:48.459Z"
+  },
+  {
+    "id": "widget-1775802298683",
+    "title": "Semporna Activities",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253729\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-cid=\"365355\" data-tid=\"-1\" data-amount=\"5\" data-prod=\"dynamic_widget\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      79
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T06:28:09.620Z",
+    "updatedAt": "2026-04-10T06:28:13.656Z"
+  },
+  {
+    "id": "widget-1775792635346",
+    "title": "Hangzhou Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253652\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      66
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T03:43:55.346Z",
+    "updatedAt": "2026-04-10T03:43:56.107Z"
+  },
+  {
+    "id": "widget-1775786613358",
+    "title": "Terengganu Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253577\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"2\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      23
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T03:25:08.121Z",
+    "updatedAt": "2026-04-10T03:25:09.145Z"
+  },
+  {
+    "id": "widget-1775789656760",
+    "title": "China Harbin Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253608\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      44
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-10T03:04:42.973Z",
+    "updatedAt": "2026-04-10T03:04:43.446Z"
+  }
+]
