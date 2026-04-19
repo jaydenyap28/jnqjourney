@@ -96,6 +96,18 @@ export default function SiteFooter() {
             </a>
           ))}
         </div>
+
+        <div className="mx-auto mt-8 flex justify-center">
+          <a
+            href="https://m.me/jnqjourney"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center justify-center gap-2.5 rounded-full border border-[#1877F2]/30 bg-[#1877F2]/10 px-6 py-2.5 text-sm font-medium tracking-wide text-white transition-all hover:-translate-y-0.5 hover:border-[#1877F2]/50 hover:bg-[#1877F2]/20 hover:shadow-[0_4px_20px_rgba(24,119,242,0.15)]"
+          >
+            <FacebookLogo className="h-5 w-5 drop-shadow-sm transition-transform group-hover:scale-110" />
+            <span>来Facebook私信我吧！</span>
+          </a>
+        </div>
       </div>
     </footer>
   )
