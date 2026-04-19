@@ -21,6 +21,11 @@ const STORAGE_PATH = '_system/klook-widgets.webp'
 const VERSIONED_STORAGE_DIR = '_system/klook-widgets'
 const STORAGE_LATEST_POINTER_PATH = '_system/klook-widgets-latest.webp'
 
+// In-memory cache to reduce Supabase Storage egress
+let cachedWidgets: KlookWidgetRecord[] | null = null
+let lastFetchTime = 0
+const CACHE_TTL = 60 * 1000 // 1 minute cache in memory
+
 function getAdminSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -152,15 +157,27 @@ function sortWidgets(widgets: KlookWidgetRecord[]) {
 }
 
 export async function readKlookWidgets() {
+  const now = Date.now()
+  if (cachedWidgets && now - lastFetchTime < CACHE_TTL) {
+    return sortWidgets(cachedWidgets)
+  }
+
   const storageWidgets = await readStorageWidgets()
   if (storageWidgets) {
+    cachedWidgets = storageWidgets
+    lastFetchTime = now
     try {
       await writeLocalWidgets(storageWidgets)
     } catch {}
     return sortWidgets(storageWidgets)
   }
 
-  return sortWidgets(await readLocalWidgets())
+  const localWidgets = await readLocalWidgets()
+  if (localWidgets.length) {
+    cachedWidgets = localWidgets
+    lastFetchTime = now
+  }
+  return sortWidgets(localWidgets)
 }
 
 export async function saveKlookWidgets(widgets: KlookWidgetRecord[]) {
@@ -169,7 +186,10 @@ export async function saveKlookWidgets(widgets: KlookWidgetRecord[]) {
     await writeLocalWidgets(normalized)
   } catch {}
   await writeStorageWidgets(normalized)
-  return sortWidgets(normalized)
+  // Clear cache after save
+  cachedWidgets = null
+  lastFetchTime = 0
+  return normalized
 }
 
 export async function getActiveKlookWidgetsForTargets({

@@ -1,9 +1,9 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { readGuides } from '@/lib/server/guides-store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 600 // Cache for 10 minutes
 
 export async function GET() {
   const guides = await readGuides()
@@ -11,7 +11,7 @@ export async function GET() {
     { guides },
     {
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300',
       },
     }
   )

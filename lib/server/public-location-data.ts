@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
+import { cache } from 'react'
+import { unstable_cache } from 'next/cache'
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 
@@ -183,24 +185,27 @@ export async function fetchLocationsByRegion(regionId: number, limit = 60) {
   return data as LocationSummary[]
 }
 
-export async function fetchTopRegions(limit = 80) {
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('regions')
-    .select('id,name,name_cn,country,description,image_url,parent_id')
-    .order('name', { ascending: true })
-    .limit(limit)
+export const fetchTopRegions = unstable_cache(
+  async (limit = 80) => {
+    const supabase = createPublicSupabaseClient()
+    const { data, error } = await supabase
+      .from('regions')
+      .select('id,name,name_cn,country,description,image_url,parent_id')
+      .order('name', { ascending: true })
+      .limit(limit)
 
-  if (error || !data) return []
-  const rows = data as Array<RegionRecord & { parent_id?: number | null }>
-  const parentIds = new Set(
-    rows
-      .map((region) => region.parent_id)
-      .filter((value): value is number => typeof value === 'number')
-  )
-
-  return rows.filter((region) => !parentIds.has(region.id))
-}
+    if (error || !data) return []
+    const rows = data as Array<RegionRecord & { parent_id?: number | null }>
+    const parentIds = new Set(
+      rows
+        .map((region) => region.parent_id)
+        .filter((value): value is number => typeof value === 'number')
+    )
+    return rows.filter((region) => !parentIds.has(region.id))
+  },
+  ['top-regions'],
+  { revalidate: 3600, tags: ['regions'] }
+)
 
 export async function fetchAllLocationsForSitemap() {
   const supabase = createPublicSupabaseClient()

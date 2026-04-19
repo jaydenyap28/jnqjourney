@@ -11,6 +11,11 @@ const VERSIONED_STORAGE_DIR = '_system/guides'
 const STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.webp'
 const LEGACY_STORAGE_LATEST_POINTER_PATH = '_system/guides-latest.txt'
 
+// In-memory cache to reduce Supabase Storage egress
+let cachedGuides: TravelGuide[] | null = null
+let lastFetchTime = 0
+const CACHE_TTL = 60 * 1000 // 1 minute cache in memory
+
 function getAdminSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -241,15 +246,27 @@ function sortGuides(guides: TravelGuide[]) {
 }
 
 export async function readGuides() {
+  const now = Date.now()
+  if (cachedGuides && now - lastFetchTime < CACHE_TTL) {
+    return sortGuides(cachedGuides)
+  }
+
   const storageGuides = await readStorageGuides()
   if (storageGuides) {
+    cachedGuides = storageGuides
+    lastFetchTime = now
     try {
       await writeLocalGuides(storageGuides)
     } catch {}
     return sortGuides(storageGuides)
   }
 
-  return sortGuides(await readLocalGuides())
+  const localGuides = await readLocalGuides()
+  if (localGuides.length) {
+    cachedGuides = localGuides
+    lastFetchTime = now
+  }
+  return sortGuides(localGuides)
 }
 
 export async function readGuideBySlug(slug: string) {
@@ -263,6 +280,9 @@ export async function saveGuides(guides: TravelGuide[]) {
     await writeLocalGuides(normalized)
   } catch {}
   await writeStorageGuides(normalized)
+  // Clear cache after save
+  cachedGuides = null
+  lastFetchTime = 0
   return normalized
 }
 

@@ -671,10 +671,11 @@ export default function SpotContent({
       {validImages.length > 0 ? (
         <div className="group relative h-[31vh] min-h-[196px] w-full max-h-[500px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
           <div className="absolute inset-0 z-0">
-            <FallbackImage src={validImages[currentImageIndex]} alt="background blur" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
+            <FallbackImage key={validImages[currentImageIndex]} src={validImages[currentImageIndex]} alt="background blur" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
           </div>
           <div className="relative z-10 h-full w-full p-0 transition-transform duration-500 ease-out md:p-4">
             <FallbackImage
+              key={validImages[currentImageIndex]}
               src={validImages[currentImageIndex]}
               alt={location.name}
               fill

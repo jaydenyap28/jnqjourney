@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PlayCircle, MapPin } from 'lucide-react'
-import Image from 'next/image'
+import FallbackImage from '@/components/FallbackImage'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 
 interface Location {
@@ -39,7 +39,7 @@ export default function LocationCard({ location, onClick }: LocationCardProps) {
     >
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
         {coverImage ? (
-          <Image
+          <FallbackImage
             src={coverImage}
             alt={location.name}
             fill

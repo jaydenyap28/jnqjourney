@@ -2971,7 +2971,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         draggedGalleryIndex === index ? 'ring-2 ring-amber-400' : '',
                       ].join(' ')}
                     >
-                      <Image src={url} alt={'Preview ' + index} fill className="object-cover" />
+                      <FallbackImage src={url} alt={'Preview ' + index} fill className="object-cover" />
+                      <ImageMetadataBadge url={url} />
                       <div className="absolute left-1 top-1 flex items-center gap-1 rounded-full bg-black/65 px-2 py-1 text-[11px] text-white">
                         <GripVertical className="h-3 w-3" />
                         <span>{index + 1}</span>

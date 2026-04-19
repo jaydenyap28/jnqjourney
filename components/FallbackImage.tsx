@@ -42,11 +42,13 @@ export default function FallbackImage({
       {...props}
       src={resolvedImage.src || fallbackSrc}
       alt={alt}
-      unoptimized={props.unoptimized}
+      unoptimized={props.unoptimized ?? true}
       style={mergedStyle}
       onError={(event) => {
-        props.onError?.(event)
-        setHasError(true)
+        if (!hasError) {
+          props.onError?.(event)
+          setHasError(true)
+        }
       }}
     />
   )

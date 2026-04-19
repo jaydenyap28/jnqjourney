@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 600 // Cache for 10 minutes
 
 export default async function NoteDetailPage({ params }: PageProps) {
   const note = await readNoteBySlug(params.slug)

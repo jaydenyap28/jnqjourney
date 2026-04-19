@@ -1,4 +1,4 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowRight, CalendarDays, Wallet } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
@@ -24,8 +24,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 600 // Cache for 10 minutes
 
 export default async function GuideIndexPage() {
   const guides = await readGuides()

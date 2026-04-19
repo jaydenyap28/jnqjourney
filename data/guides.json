@@ -14,7 +14,7 @@
     "tagline": "从柔佛一路往北到关丹,登嘉楼和吉兰丹，沿着海岸线慢慢开，把海滩、小镇、瀑布、博物馆和寺庙串成一趟完整的东海岸自驾游。",
     "summary": "",
     "duration": "10 Days / 9 Nights",
-    "budget": "",
+    "budget": "RM 1,512",
     "travelStyle": "自驾游",
     "route": [
       {
@@ -48,20 +48,42 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "油费",
-        "amount": "RM322.36"
+        "label": "住宿 Accomodation",
+        "amount": "718",
+        "note": "关丹、登嘉楼、吉兰丹住宿酒店人均花费。"
       },
       {
-        "label": "住宿",
-        "amount": "RM1434.79"
+        "label": "饮食 Food & Dining",
+        "amount": "367",
+        "currency": "RM",
+        "note": "正餐、甜点、小吃和沿路餐饮人均花费。"
       },
       {
-        "label": "吃喝",
-        "amount": "RM558.93"
+        "label": "活动 Activities",
+        "amount": "190",
+        "note": "参与海龟放生、观察海龟妈妈产卵、徒步彩虹瀑布活动花费。"
       },
       {
-        "label": "其他花费与活动",
-        "amount": "RM704.05"
+        "label": "交通 Transportation",
+        "amount": "170",
+        "note": "车油、过路费、停车人均花费。"
+      },
+      {
+        "label": "购物 Shopping",
+        "amount": "41",
+        "note": "个人购物消费。"
+      },
+      {
+        "label": "门票 Tickets / Entrance Fees",
+        "amount": "15",
+        "currency": "RM",
+        "note": "博物馆、海洋公园门票花费。"
+      },
+      {
+        "label": "其他花费 Others",
+        "amount": "11",
+        "currency": "RM",
+        "note": "上厕所与其他杂费。"
       }
     ],
     "days": [
@@ -154,7 +176,6 @@
           "Pantai Penunjuk Kijal",
           "Old Cruise Ship Jetty Kijal",
           "Pantai Kemasik",
-          "邝九二咖啡店",
           "Terowong Bukit Tebuk",
           "Pantai Teluk Bidara",
           "Pantai Batu Pelanduk",
@@ -167,7 +188,7 @@
         "videoUrl": "https://youtu.be/o1fSGXwgYE4",
         "stay": "DJ Citi Plaza Hotel & Suites",
         "stayRangeStart": 5,
-        "stayRangeEnd": 6
+        "stayRangeEnd": 7
       },
       {
         "dayLabel": "Day 6",
@@ -178,9 +199,11 @@
           "水晶清真寺",
           "Zahon Cafe",
           "Terengganu State Museum",
-          "Mayang Mall"
+          "Mayang Mall",
+          "Pesisir Payang",
+          "Jambatan Angkat Kuala Terengganu"
         ],
-        "videoUrl": "https://youtu.be/YNIlX31VnLk",
+        "videoUrl": "https://youtu.be/o1fSGXwgYE4",
         "stay": "DJ Citi Plaza Hotel & Suites",
         "stayRangeStart": 5,
         "stayRangeEnd": 6
@@ -193,9 +216,7 @@
         "linkedSpots": [
           "Pulau Kapas",
           "Bukit Singa",
-          "Marang Wave Breaker",
-          "Pesisir Payang",
-          "Jambatan Angkat Kuala Terengganu"
+          "Marang Wave Breaker"
         ],
         "videoUrl": "https://youtu.be/o1fSGXwgYE4"
       },
@@ -263,7 +284,11 @@
     "featuredAffiliateLinkIds": [
       182
     ],
-    "sidebarAffiliateLinkIds": []
+    "sidebarAffiliateLinkIds": [
+      232,
+      262
+    ],
+    "klookWidgetCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253577\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"2\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>"
   },
   {
     "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
@@ -316,7 +341,7 @@
       }
     ],
     "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(125,211,252,0.28),transparent_20%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
-    "coverImage": "https://scontent.fmkz1-2.fna.fbcdn.net/v/t39.30808-6/597774876_1385342259896870_433196229323751546_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=dd6889&_nc_ohc=vry9_p60lswQ7kNvwHa--q-&_nc_oc=AdpAp6g_64jMCd_ZlIlbJBK5F1G17_40Szv4A95X1LuL4FDLajMYrD05Wyc8Ar_erCE&_nc_zt=23&_nc_ht=scontent.fmkz1-2.fna&_nc_gid=rxPYCFpdtwQNCsQ7Ms4VEw&_nc_ss=7a3a8&oh=00_Af0ojI872tmGL1wTivmJ3h4OilE-yvi2JjlIhIAYTdEZnQ&oe=69D927C4",
+    "coverImage": "https://scontent.fmkz1-2.fna.fbcdn.net/v/t39.30808-6/597774876_1385342259896870_433196229323751546_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=dd6889&_nc_ohc=xNhBJrR08vkQ7kNvwE7FArt&_nc_oc=Adr5CHg_X8BmO5qwpEpegOaSTkWmWBfiX2GQ5C50czzO0XyrHivYC80fmmM_8JHMoe4&_nc_zt=23&_nc_ht=scontent.fmkz1-2.fna&_nc_gid=jr4Dh78greP04kkkz08SAg&_nc_ss=7a3a8&oh=00_Af14vc3bo9M3mlYRoiQkFXCnZ0QV9kgwdzA9AiQ-VEWXQw&oe=69E110C4",
     "highlightTags": [
       "雪景",
       "城市散步",
@@ -328,38 +353,38 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "机票",
-        "amount": "RM 1,334",
+        "label": "机票 International Flight",
+        "amount": "1,334",
         "note": "国际航班来回飞行费用。"
       },
       {
-        "label": "交通",
-        "amount": "RM 1,310",
+        "label": "交通 Transportation",
+        "amount": "1,310",
         "note": "机场接送、包车、打车、跨城交通与雪地接驳。"
       },
       {
-        "label": "门票 / 体验",
-        "amount": "RM 1,191",
+        "label": "门票 / 体验 Tickets / Entrance Fees",
+        "amount": "1,191",
         "note": "冰雪大世界、长白山与雪地活动。"
       },
       {
-        "label": "住宿",
-        "amount": "RM 999",
+        "label": "住宿 Accommodation",
+        "amount": "999",
         "note": "哈尔滨、雪谷、长白山、北京住宿。"
       },
       {
-        "label": "吃喝",
-        "amount": "RM 957",
+        "label": "吃喝 Food & Dining",
+        "amount": "957",
         "note": "东北烧烤、早市和景区餐饮。"
       },
       {
-        "label": "其他",
-        "amount": "RM 484",
+        "label": "其他 Others",
+        "amount": "484",
         "note": "个人购物、其他消费。"
       },
       {
-        "label": "通讯",
-        "amount": "RM 177",
+        "label": "通讯 Internet & Communication",
+        "amount": "177",
         "note": "电话卡、上网费。"
       }
     ],
@@ -377,7 +402,7 @@
           "圣索菲亚教堂"
         ],
         "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
-        "stay": "哈尔滨汉庭酒店",
+        "stay": "汉庭酒店(哈尔滨景阳街中华巴洛克店)",
         "stayRangeStart": 1,
         "stayRangeEnd": 2
       },
@@ -392,10 +417,7 @@
           "音乐长廊",
           "民谣集烧烤酒馆"
         ],
-        "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
-        "stay": "哈尔滨汉庭酒店",
-        "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "videoUrl": "https://youtu.be/C4FwuoTwu-Y"
       },
       {
         "dayLabel": "Day 3",
@@ -478,7 +500,7 @@
         "videoUrl": "https://youtu.be/RsxorBCejcU",
         "stay": "潮漫酒店(北京国贸大望路站店)",
         "stayRangeStart": 8,
-        "stayRangeEnd": 11
+        "stayRangeEnd": 10
       },
       {
         "dayLabel": "Day 9",
@@ -537,7 +559,7 @@
     "tagline": "从大理出发，接着走进香格里拉高原，最后回到丽江看雪山、蓝月谷和古城风景",
     "summary": "",
     "duration": "11 Days / 10 Nights",
-    "budget": "人均 RM 4326",
+    "budget": "RM 4,326",
     "travelStyle": "自由行",
     "route": [
       {
@@ -576,32 +598,32 @@
     "budgetItems": [
       {
         "label": "交通",
-        "amount": "RM 1,027",
+        "amount": "1,027",
         "note": "机场接送、同城交通、跨城交通。"
       },
       {
         "label": "机票",
-        "amount": "RM 987",
+        "amount": "987",
         "note": "国际航班来回飞行费用。"
       },
       {
         "label": "住宿",
-        "amount": "RM 972",
+        "amount": "972",
         "note": "大理、香格里拉、丽江住宿花费。"
       },
       {
         "label": "饮食",
-        "amount": "RM 764",
+        "amount": "764",
         "note": "旅游吃喝花费。"
       },
       {
         "label": "门票 & 套票",
-        "amount": "RM 458",
+        "amount": "458",
         "note": "玉龙雪山、巴拉格宗、虎跳峡等等景点门票和套票。"
       },
       {
         "label": "通讯",
-        "amount": "RM 118",
+        "amount": "118",
         "note": "电话卡、上网费。"
       }
     ],
@@ -609,7 +631,7 @@
       {
         "dayLabel": "Day 1",
         "title": "大理古城周边",
-        "summary": "",
+        "summary": "从昆明长水机场出发，前往《去有风的地方》取景地、保留着淳朴生活气息与原生态建筑的小众村落凤阳邑村，再到坐落于山腰、拥有可俯瞰整片洱海的户外观景台 “凤凰之眼”、还能体验非遗三道茶的凤阳茶室，最后抵达兼具深厚历史文化底蕴、美食与好物云集的大理古城，一路行程惬意又充满大理特色。",
         "highlights": [],
         "linkedSpots": [
           "凤阳茶室",
@@ -625,7 +647,7 @@
       {
         "dayLabel": "Day 2",
         "title": "洱海西线",
-        "summary": "",
+        "summary": "从生态廊道内观赏洱海日出的绝佳地龙龛码头出发，前往洱海边藏着地道小美食、可租装饰单车的才村，顺路去才村码头附近价格合理、味道地道的蒙诏源大理白族民俗餐厅享用早餐，接着打卡网红磻溪S湾，买上气球骑单车拍照出片，再去S湾与才村之间面朝洱海的望田咖啡歇脚发呆，午后前往藏着明清建筑与白族风情、转角楼和麦田必打卡的喜洲古镇，最后以用餐环境舒适、主打野生菌火锅配火塘烧烤且抖音团购划算的菇千味野生菌火锅收尾，全程不赶时间，沉浸式感受洱海的温柔与大理的烟火气。",
         "highlights": [],
         "linkedSpots": [
           "龙龛码头",
@@ -642,21 +664,22 @@
       {
         "dayLabel": "Day 3",
         "title": "洱海东线",
-        "summary": "",
+        "summary": "从大理古城出发，前往靠近洱海、是临海海景房理想之选且保存着明清建筑和南诏风情岛等文化景观的双廊古镇，接着前往曾是杨丽萍老师居所、临海而建且与植物完美融合、网上预约可免费参观的杨丽萍太阳宫艺术空间，再去10元任拍所有网红打卡设施、可租衣服且有网红秋千、天空之境、玻璃球等设施的海地拍照，最后以双廊古镇内高分、能体验白族石板烧魅力且用餐区域大还能观赏院景的市井繁巷白族石板烧作为收尾。",
         "highlights": [],
         "linkedSpots": [
           "双廊古镇",
-          "杨丽萍太阳宫"
+          "杨丽萍太阳宫",
+          "海地拍照"
         ],
         "videoUrl": "https://youtu.be/moFmzVvZOxI",
-        "stay": "大理心悦雅集海景客栈",
+        "stay": "大理心悦·雅集海景客栈",
         "stayRangeStart": 3,
         "stayRangeEnd": 3
       },
       {
         "dayLabel": "Day 4",
         "title": "独克宗古城",
-        "summary": "",
+        "summary": "从大理前往香格里拉后，前往历史悠久的藏传佛教文化重镇、茶马古道上古老的城堡且是藏族人心中月光城的独克宗古城，再前往位于古城制高点、公园内矗立着世界上最大的转经筒且登顶可俯瞰全城壮丽景色的龟山公园，沉浸式感受独克宗古城的藏地风情与人文底蕴。",
         "highlights": [],
         "linkedSpots": [
           "独克宗古城",
@@ -664,56 +687,51 @@
           "月光广场"
         ],
         "videoUrl": "https://youtu.be/_2ffIRevFnY",
-        "stay": "爱慕唯色客栈",
+        "stay": "香格里拉爱慕唯色客栈",
         "stayRangeStart": 4,
-        "stayRangeEnd": 7
+        "stayRangeEnd": 6
       },
       {
         "dayLabel": "Day 5",
         "title": "普达措国家公园",
-        "summary": "",
+        "summary": "从独克宗古城出发，先去普达措国家公园——作为中国首个国家公园、国家5A景区，这里的高原湖泊、雪山与丰富的生物多样性，藏着香格里拉最纯粹的自然之美；随后前往属都湖，这座海拔约3850米的湿地瑰宝，被壮丽雪山与原生态森林紧紧环抱，静谧又治愈；最后打卡海拔约3700米的“高原明珠”碧塔海，幽蓝清澈的湖水映着环绕的雪山，感受每一处景色都藏着高原独有的宁静与优美。",
         "highlights": [],
         "linkedSpots": [
           "普达措国家公园"
         ],
-        "videoUrl": "https://youtu.be/mJUwSP6M36g",
-        "stay": "爱慕唯色客栈",
-        "stayRangeStart": 4,
-        "stayRangeEnd": 7
+        "videoUrl": "https://youtu.be/mJUwSP6M36g"
       },
       {
         "dayLabel": "Day 6",
         "title": "巴拉格宗",
-        "summary": "",
+        "summary": "从独克宗古城出发，奔赴隐世秘境巴拉格宗，沉浸式邂逅险峻深邃的峡谷与鬼斧神工的地质奇观；走进承载千年信仰的巴拉卓玛拉康，探访藏韵十足的巴拉古村，打卡天然形成、神圣壮观的香巴拉佛塔，在回音壁聆听峡谷回响，驻足通天峡入口的千年菩提树，感受自然与信仰的交融；傍晚返回独克宗古城，享用老字号喜鹊阁特色藏餐，地道藏味搭配扎实分量，性价比拉满；夜幕降临，走进四方酒吧，藏式装潢搭配柔和曲风，在静谧氛围中享受独属于香格里拉的松弛夜晚。",
         "highlights": [],
         "linkedSpots": [
           "香巴拉佛塔",
           "回音壁"
         ],
-        "videoUrl": "https://youtu.be/gwl99_Mw3GU",
-        "stay": "爱慕唯色客栈",
-        "stayRangeStart": 4,
-        "stayRangeEnd": 7
+        "videoUrl": "https://youtu.be/gwl99_Mw3GU"
       },
       {
         "dayLabel": "Day 7",
         "title": "白水台与虎跳峡",
-        "summary": "",
+        "summary": "离开独克宗古城，奔赴被誉为“仙人遗田”的白水台，梦幻浅蓝色湖水清澈见底，人少景美，宛如云南版棉花堡；接着打卡中国最深峡谷虎跳峡，亲眼见证急流奔涌的磅礴气势，感受大自然的震撼；随后前往静谧治愈的束河古镇，这里商业化较低，小桥流水的景致沁人心脾，青龙桥与九鼎龙潭更是必打卡点位；最后走进当地人强推的汤佳米云味土鸡米线，餐品选择丰富、价格合理，一口解锁地道云南风味。",
         "highlights": [],
         "linkedSpots": [
           "白水台",
           "虎跳峡",
-          "束河古镇"
+          "束河古镇",
+          "汤佳米云味土鸡米线"
         ],
         "videoUrl": "https://youtu.be/gwl99_Mw3GU",
-        "stay": "爱慕唯色客栈",
-        "stayRangeStart": 4,
-        "stayRangeEnd": 7
+        "stay": "柠檬客栈",
+        "stayRangeStart": 7,
+        "stayRangeEnd": 8
       },
       {
         "dayLabel": "Day 8",
         "title": "束河与听花谷",
-        "summary": "",
+        "summary": "第一站奔赴听花谷，这片小众又浪漫的花花世界，种满各类缤纷花卉，藏着霍比特城堡等超多出片打卡点，还有软萌羊驼可合影，工作室里还能亲手体验鲜花饼制作，满是少女心；接着走进藏在雪山脚下的荒野之国，上百栋造型各异的小房子错落分布，宛如走进宫崎骏的童话世界，既是小孩的欢乐天地，也是大人安放幻想的治愈角落；之后返回静谧的束河古镇，傍晚前往太古里民族食府，现代与古城文化交融的装潢氛围感拉满，主打地道云南民族菜，还有驻场歌手现场演绎，边品美食边赏旋律，解锁惬意时光。",
         "highlights": [],
         "linkedSpots": [
           "听花谷",
@@ -721,32 +739,29 @@
           "汤佳米云味土鸡米线",
           "束河古镇"
         ],
-        "videoUrl": "https://youtu.be/9PxFRfuwnak",
-        "stay": "柠檬客栈",
-        "stayRangeStart": 8,
-        "stayRangeEnd": 8
+        "videoUrl": "https://youtu.be/9PxFRfuwnak"
       },
       {
         "dayLabel": "Day 9",
         "title": "白沙与丽江古城",
-        "summary": "",
+        "summary": "一早出发奔赴玉湖村，这座玉龙雪山脚下的首个村落，保留着原始民族建筑风貌，全村以独具特色的石头建筑闻名，被誉为“石头村”，藏着最纯粹的纳西韵味；接着探访玉柱擎天，这片藏在玉湖村上的小众秘境，深潭、瀑布、密林、古道错落交织，还有玉龙书院、雪松庵等人文景致，一步一景皆是惊喜；随后前往龙女湖，广阔草原与澄澈湖泊相依相伴，在这里可以体验骑马、抱小羊的乐趣，宛如置身云南版纽西兰，治愈又惬意；中午打卡玉景楼雪山观景餐厅，绝佳位置可边享美食边赏雪山盛景，茶水免费、价格亲民，体验感拉满；之后前往白沙古镇，这里保留着宋代建筑风貌，抬头可见雪山巍峨，还浸润着浓厚的白族文化底蕴；傍晚前往丽江古城，沉浸式感受这座以纳西风情闻名、被列入世界文化遗产的古城韵味；最后前往一品香木氏土家音乐餐厅享受地道民族特色菜搭配雅致用餐环境，解锁丽江夜晚的烟火与诗意。",
         "highlights": [],
         "linkedSpots": [
-          "玉柱擎天",
           "玉湖村",
+          "玉柱擎天",
+          "龙女湖",
           "白沙古镇",
-          "丽江古城",
-          "龙女湖"
+          "丽江古城"
         ],
         "videoUrl": "https://youtu.be/V1f3qUVdPiE",
-        "stay": "丽江真美观景客栈",
+        "stay": "丽江真美狮子观景客栈",
         "stayRangeStart": 9,
-        "stayRangeEnd": 9
+        "stayRangeEnd": 11
       },
       {
         "dayLabel": "Day 10",
         "title": "沙溪古镇",
-        "summary": "",
+        "summary": "一早出发前往《去有风的地方》拍摄地沙溪古镇，这里古巷古朴、烟火氤氲，保留着最纯粹的慢生活气息，是体验松弛感的绝佳去处；先打卡鳌头客栈，老板现做的早餐小吃亲民可口，传统古朴的装潢让人倍感温馨；接着走进沙溪薄荷咖啡馆，这里还原了剧中“有风小馆”的模样，装饰摆放与剧中原景几乎一致，静坐品一杯咖啡，惬意又治愈；随后前往树屋Coffee，这座藏在沙溪粮食管理所内的小店，依树而建，两层用餐区各有韵味，二楼阳台可俯瞰古镇街景，底层室内装饰极具格调；漫步至百年古桥玉津桥，触摸沉淀的岁月痕迹，感受古镇的标志性魅力；再探访由粮仓改造而成的先锋沙溪白族书局，这里也是李现同款打卡点，旁边的咖啡厅可让人慢悠悠消磨时光；之后前往半山咖啡，坐在窗边就能望见辽阔稻田与田间劳作的身影，打卡李现同款治愈风景；傍晚返回丽江古城，前往霍比特城堡旅拍过桥米线店，这里藏着霍比特风装潢，部分套餐含免费旅拍。",
         "highlights": [],
         "linkedSpots": [
           "沙溪古镇",
@@ -759,16 +774,13 @@
       {
         "dayLabel": "Day 11",
         "title": "玉龙雪山",
-        "summary": "",
+        "summary": "一早奔赴丽江标志性景点玉龙雪山，这里峰峦叠嶂、雄伟壮丽，景区入山费每人100元，站在山巅便能感受雪山的磅礴气势；随后前往牦牛坪，这片高海拔草甸牧场景色辽阔壮丽，清爽的天气搭配舒适徒步体验，是近距离欣赏玉龙雪山全貌的绝佳去处；接着打卡有“云南版九寨沟”之称的蓝月谷，湛蓝清澈的湖水蜿蜒在月牙形山谷间，天气晴朗时，湖水倒映着玉龙雪山的倩影，美得让人沉醉；游玩之后回到丽江古城，前往幺哥土鸡米线，顶楼户外区视野绝佳，可边享用美食边观赏古城全景，亲民的价格、地道的味道，让旅途的疲惫在舌尖得到治愈。",
         "highlights": [],
         "linkedSpots": [
           "牦牛坪",
           "蓝月谷"
         ],
-        "videoUrl": "https://youtu.be/Y6y7htaT9kM",
-        "stay": "丽江真美观景客栈",
-        "stayRangeStart": 11,
-        "stayRangeEnd": 11
+        "videoUrl": "https://youtu.be/Y6y7htaT9kM"
       }
     ],
     "bestFor": [
@@ -838,34 +850,32 @@
       }
     ],
     "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.28),transparent_22%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
-    "coverImage": "https://scontent.fmkz1-2.fna.fbcdn.net/v/t39.30808-6/588683657_1371042447993518_6517926248798308817_n.jpg?stp=cp6_dst-jpg_tt6&_nc_cat=100&ccb=1-7&_nc_sid=dd6889&_nc_ohc=NaHLn3AjAIQQ7kNvwFCkzZt&_nc_oc=AdoaUkZ6PDkRw_DDyP4bn2q9N8fn5Q5CgflvXRe0pQAdCYjhpczMjs07UxD7BJpQvrI&_nc_zt=23&_nc_ht=scontent.fmkz1-2.fna&_nc_gid=LaZACdaqqJoc3Y-gBj7FZQ&_nc_ss=7a3a8&oh=00_Af3PdDyDGRYJEt-OB30tYvk_KtQnEU3uppVf3ngsyCNF-Q&oe=69D92489",
+    "coverImage": "https://i.ibb.co/bngSPMX/E.webp",
     "highlightTags": [],
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "机票 / JR / 国内交通",
-        "amount": "100",
-        "note": "北海道、山形、东京之间的主要移动。"
-      },
-      {
         "label": "住宿",
-        "amount": "200",
-        "note": "美瑛、札幌、登别、函馆、银山温泉与东京住宿可分开记录。"
+        "amount": "2,061",
+        "note": "美瑛、札幌、登别、函馆、银山温泉与东京住宿人均花费"
       },
       {
-        "label": "当地交通",
-        "amount": "500",
-        "note": "JR、巴士、地铁与景区接驳。"
+        "label": "机票",
+        "amount": "1,713",
+        "currency": "RM",
+        "note": "往返国际航班人均花费。"
       },
       {
-        "label": "门票 / 体验",
-        "amount": "TBC",
-        "note": "树冰缆车、乐园与景区项目。"
+        "label": "交通",
+        "amount": "1,450",
+        "currency": "RM",
+        "note": "JR、巴士、地铁与景区接驳人均花费。"
       },
       {
-        "label": "吃喝",
-        "amount": "TBC",
-        "note": "拉面、甜点、早市和沿路餐饮。"
+        "label": "饮食",
+        "amount": "1,137",
+        "currency": "RM",
+        "note": "正餐、甜点、小吃和沿路餐饮人均花费。"
       }
     ],
     "days": [

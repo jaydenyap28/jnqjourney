@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 600 // Cache for 10 minutes
 
 export default async function NotesIndexPage() {
   const notes = await readPublishedNotes()

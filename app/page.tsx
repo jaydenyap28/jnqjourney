@@ -133,7 +133,7 @@ function GuideShowcase() {
 
     const fetchGuide = async () => {
       try {
-        const response = await fetch('/api/guides', { cache: 'no-store' })
+        const response = await fetch('/api/guides')
         if (!response.ok) return
         const result = await response.json()
         const nextGuides = Array.isArray(result?.guides) ? result.guides.slice(0, 6) : []

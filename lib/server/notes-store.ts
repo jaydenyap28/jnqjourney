@@ -12,6 +12,11 @@ const VERSIONED_STORAGE_DIR = '_system/notes'
 const STORAGE_LATEST_POINTER_PATH = '_system/notes-latest.webp'
 const LEGACY_STORAGE_LATEST_POINTER_PATH = '_system/notes-latest.txt'
 
+// In-memory cache to reduce Supabase Storage egress
+let cachedNotes: LongformNote[] | null = null
+let lastFetchTime = 0
+const CACHE_TTL = 60 * 1000 // 1 minute cache in memory
+
 function getAdminSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -209,15 +214,27 @@ async function writeStorageNotes(notes: LongformNote[]) {
 }
 
 export async function readNotes() {
+  const now = Date.now()
+  if (cachedNotes && now - lastFetchTime < CACHE_TTL) {
+    return sortNotes(cachedNotes)
+  }
+
   const storageNotes = await readStorageNotes()
   if (storageNotes) {
+    cachedNotes = storageNotes
+    lastFetchTime = now
     try {
       await writeLocalNotes(storageNotes)
     } catch {}
     return sortNotes(storageNotes)
   }
 
-  return sortNotes(await readLocalNotes())
+  const localNotes = await readLocalNotes()
+  if (localNotes.length) {
+    cachedNotes = localNotes
+    lastFetchTime = now
+  }
+  return sortNotes(localNotes)
 }
 
 export async function readPublishedNotes() {
@@ -240,5 +257,8 @@ export async function saveNotes(notes: LongformNote[]) {
     await writeLocalNotes(normalized)
   } catch {}
   await writeStorageNotes(normalized)
-  return sortNotes(normalized)
+  // Clear cache after save
+  cachedNotes = null
+  lastFetchTime = 0
+  return normalized
 }

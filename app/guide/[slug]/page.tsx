@@ -14,8 +14,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 600 // Cache for 10 minutes
 
 interface PageProps {
   params: {
