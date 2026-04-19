@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import ImageMetadataBadge from '@/components/ImageMetadataBadge'
 
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
 const COUNTRY_CURRENCY: Record<string, string> = {
@@ -2865,6 +2866,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                   <div className="mt-4 space-y-3">
                     <div className="relative h-44 overflow-hidden rounded-lg border bg-white">
                       <FallbackImage src={formData.image_url} alt="Cover preview" fill className="object-cover" />
+                      <ImageMetadataBadge url={formData.image_url} />
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <Button
@@ -2877,43 +2879,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       </Button>
                     </div>
                     <div className="rounded-lg border border-slate-200 bg-white p-4">
-                      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-medium text-slate-800">缩图显示位置</p>
-                          <p className="text-xs text-slate-500">自由调整封面图焦点，让人物、建筑或风景主角显示在正确位置。</p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <Button type="button" size="sm" variant="outline" onClick={() => applyCoverFocusPreset(50, 20)}>靠上</Button>
-                          <Button type="button" size="sm" variant="outline" onClick={() => applyCoverFocusPreset(50, 50)}>居中</Button>
-                          <Button type="button" size="sm" variant="outline" onClick={() => applyCoverFocusPreset(50, 80)}>靠下</Button>
-                        </div>
-                      </div>
-                      <div className="grid gap-4 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label htmlFor="coverFocusX" className="text-xs text-slate-500">水平位置</Label>
-                          <input
-                            id="coverFocusX"
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={coverFocus.focus.x}
-                            onChange={(e) => updateCoverFocusValue('x', Number(e.target.value))}
-                            className="w-full"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="coverFocusY" className="text-xs text-slate-500">垂直位置</Label>
-                          <input
-                            id="coverFocusY"
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={coverFocus.focus.y}
-                            onChange={(e) => updateCoverFocusValue('y', Number(e.target.value))}
-                            className="w-full"
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
                 ) : null}
