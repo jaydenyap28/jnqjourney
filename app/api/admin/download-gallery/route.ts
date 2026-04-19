@@ -59,44 +59,60 @@ export async function POST(request: Request) {
 
     archive.pipe(output)
 
-    let appendedCount = 0
+    ;(async () => {
+      let appendedCount = 0
 
-    for (let index = 0; index < urls.length; index += 1) {
-      const sourceUrl = urls[index]
+      for (let index = 0; index < urls.length; index += 1) {
+        const sourceUrl = urls[index]
 
-      try {
-        const remoteResponse = await fetch(sourceUrl, { cache: 'no-store' })
-        if (!remoteResponse.ok) {
-          failures.push(`${index + 1}. ${sourceUrl} -> HTTP ${remoteResponse.status}`)
-          continue
+        try {
+          const remoteResponse = await fetch(sourceUrl, { 
+            cache: 'no-store',
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+          })
+          if (!remoteResponse.ok) {
+            failures.push(`${index + 1}. ${sourceUrl} -> HTTP ${remoteResponse.status}`)
+            continue
+          }
+
+          const contentType = remoteResponse.headers.get('content-type') || 'application/octet-stream'
+          const extension = inferFileExtension(contentType, sourceUrl)
+          const filename = `${baseName}-${String(index + 1).padStart(2, '0')}.${extension}`
+          const arrayBuffer = await remoteResponse.arrayBuffer()
+          archive.append(Buffer.from(arrayBuffer), { name: filename })
+          appendedCount += 1
+        } catch (error: any) {
+          failures.push(`${index + 1}. ${sourceUrl} -> ${error?.message || 'Download failed'}`)
         }
-
-        const contentType = remoteResponse.headers.get('content-type') || 'application/octet-stream'
-        const extension = inferFileExtension(contentType, sourceUrl)
-        const filename = `${baseName}-${String(index + 1).padStart(2, '0')}.${extension}`
-        const arrayBuffer = await remoteResponse.arrayBuffer()
-        archive.append(Buffer.from(arrayBuffer), { name: filename })
-        appendedCount += 1
-      } catch (error: any) {
-        failures.push(`${index + 1}. ${sourceUrl} -> ${error?.message || 'Download failed'}`)
       }
-    }
 
-    if (!appendedCount) {
-      return NextResponse.json({ error: 'None of the gallery images could be downloaded.' }, { status: 502 })
-    }
+      if (!appendedCount) {
+        failures.push('None of the gallery images could be downloaded.')
+      }
 
-    if (failures.length) {
-      archive.append(
-        `Some images could not be downloaded.\n\n${failures.join('\n')}\n`,
-        { name: '_download-report.txt' }
-      )
-    }
+      if (failures.length) {
+        archive.append(
+          `Some images could not be downloaded.\n\n${failures.join('\n')}\n`,
+          { name: '_download-report.txt' }
+        )
+      }
 
-    await archive.finalize()
+      await archive.finalize()
+    })()
 
-    // Convert Node.js stream to Web ReadableStream for Next.js Response
-    const webStream = Readable.toWeb(output) as ReadableStream
+    // Convert Node.js stream to Web ReadableStream for Next.js Response securely
+    const webStream = new ReadableStream({
+      start(controller) {
+        output.on('data', (chunk) => controller.enqueue(new Uint8Array(chunk)))
+        output.on('end', () => controller.close())
+        output.on('error', (err) => controller.error(err))
+      },
+      cancel() {
+        output.destroy()
+      }
+    })
 
     return new NextResponse(webStream, {
       headers: {

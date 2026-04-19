@@ -286,6 +286,42 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     }
   }
 
+  const handleDeleteGallery = async () => {
+    if (!formData.images.length) return
+    if (!window.confirm('您确定要清空图集吗？\n如果这些图片原生存储在 Supabase 云空间内，它们将会被彻底删除！')) {
+      return
+    }
+
+    const urlsToDelete = [...formData.images]
+    setFormData(prev => ({
+      ...prev,
+      images: []
+    }))
+
+    const supabaseUrls = urlsToDelete.filter(url => url.includes('supabase.co'))
+    if (supabaseUrls.length > 0) {
+      setMessage(`正在从云端删除 ${supabaseUrls.length} 张库内图片...`)
+      try {
+        const res = await adminFetch('/api/admin/delete-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ urls: supabaseUrls }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          setMessage(`图集已清空，但部分云端图片物理销毁失败: ${data?.error}`)
+        } else {
+          setMessage(`图集已清空，成功释放了 ${data.count || 0} 张云端图片。`)
+        }
+      } catch (e: any) {
+        setMessage(`图集已清空，但删除请求发生异常: ${e.message}`)
+      }
+    } else {
+      setMessage('图集已清空。')
+    }
+  }
+
+
   const normalizeSuggestedTag = (tag: string) => {
     const normalized = String(tag || '').trim().toLowerCase()
 
@@ -2942,12 +2978,15 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                   </label>
                 </div>
                 {formData.images.length > 0 ? (
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2 items-center">
                     <Button type="button" variant="outline" onClick={handleDownloadGallery}>
                       下载整组图集 ZIP
                     </Button>
-                    <p className="self-center text-xs text-gray-500">
-                      一键下载当前图集全部图片，方便转成 webp 后再搬去 imgbb。
+                    <Button type="button" variant="destructive" onClick={handleDeleteGallery}>
+                      一键清空与删除图集
+                    </Button>
+                    <p className="text-xs text-gray-500">
+                      下载转 WebP 后，你可用右侧按钮彻底清空旧图库释放空间。
                     </p>
                   </div>
                 ) : null}
@@ -2995,7 +3034,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       ].join(' ')}
                     >
                       <FallbackImage src={url} alt={'Preview ' + index} fill className="object-cover" />
-                      <ImageMetadataBadge url={url} />
+                      <ImageMetadataBadge url={url} className="absolute top-8 right-1" />
                       <div className="absolute left-1 top-1 flex items-center gap-1 rounded-full bg-black/65 px-2 py-1 text-[11px] text-white">
                         <GripVertical className="h-3 w-3" />
                         <span>{index + 1}</span>
@@ -3045,7 +3084,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(index)}
-                        className="absolute right-1 top-1 rounded-full bg-red-500 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                        className="absolute right-1 top-1 z-20 rounded-full bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600 transition-colors"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <line x1="18" y1="6" x2="6" y2="18"></line>
