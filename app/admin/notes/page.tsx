@@ -1,28 +1,26 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowUp, ExternalLink, Eye, Image as ImageIcon, MapPin, Plus, Save, Search, Trash2, X, Command } from 'lucide-react'
+import { ArrowDown, ArrowUp, Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
-import type { LongformNote, NoteBlock, NoteBlockType } from '@/lib/notes'
-import { EMPTY_NOTE, DEFAULT_NOTE_COVER_ACCENT, parseSummary } from '@/lib/notes'
-import { supabase } from '@/lib/supabase'
+import type { LongformNote, NoteBlock, NoteBlockType, NoteImageItem } from '@/lib/notes'
+import {
+  buildFallbackAlt,
+  DEFAULT_NOTE_COVER_ACCENT,
+  EMPTY_NOTE,
+  getRenderableNoteBlocks,
+} from '@/lib/notes'
 import { adminFetch } from '@/lib/admin-fetch'
+import { supabase } from '@/lib/supabase'
 import FallbackImage from '@/components/FallbackImage'
-import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from '@/components/ui/dialog'
 
 interface RegionOption {
   id: number
@@ -39,17 +37,6 @@ interface LocationOption {
   images?: string[] | null
   category?: string | null
   regions?: RegionOption | null
-}
-
-interface AffiliateOption {
-  id: number
-  title?: string | null
-  description?: string | null
-  provider: string
-  link_type: string
-  url: string
-  location_id?: number | null
-  region_id?: number | null
 }
 
 function slugify(value: string) {
@@ -72,13 +59,18 @@ function stringifyCommaSeparated(value?: string[]) {
   return Array.isArray(value) ? value.join(', ') : ''
 }
 
+function createBlockId() {
+  return `block-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
 function createEmptyBlock(type: NoteBlockType): NoteBlock {
-  return {
-    id: `block-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    type,
-    content: type === 'heading' ? '新小节标题' : '',
-    affiliateIds: type === 'affiliate' ? [] : undefined,
+  if (type === 'image') {
+    return { id: createBlockId(), type, imageUrl: '', alt: '', caption: '' }
   }
+  if (type === 'gallery' || type === 'spotImages') {
+    return { id: createBlockId(), type, images: [] }
+  }
+  return { id: createBlockId(), type, content: '' }
 }
 
 function moveItem<T>(items: T[], index: number, direction: 'up' | 'down') {
@@ -89,48 +81,103 @@ function moveItem<T>(items: T[], index: number, direction: 'up' | 'down') {
   return next
 }
 
-function getLocationCover(location?: LocationOption | null) {
-  return location?.image_url || location?.images?.[0] || '/placeholder-image.jpg'
-}
-
 function getLocationLabel(location?: LocationOption | null) {
   if (!location) return ''
   return location.name_cn || location.name
 }
 
-const BLOCK_LABELS: Record<NoteBlockType, string> = {
-  paragraph: 'Paragraph / 段落',
-  heading: 'Heading / 标题',
-  quote: 'Quote / 引言',
-  image: 'Image / 图片',
-  spot: 'Spot Card / 景点卡片',
-  affiliate: 'Affiliate / 联盟推荐',
+function getLocationImages(location?: LocationOption | null) {
+  if (!location) return []
+  const items = [location.image_url, ...(location.images || [])].filter(Boolean) as string[]
+  return Array.from(new Set(items))
+}
+
+function renderableBlocks(note: LongformNote) {
+  return getRenderableNoteBlocks(note)
+}
+
+const BLOCK_OPTIONS: { type: NoteBlockType; label: string }[] = [
+  { type: 'paragraph', label: 'Paragraph' },
+  { type: 'heading', label: 'Heading' },
+  { type: 'quote', label: 'Quote' },
+  { type: 'image', label: 'Single Image' },
+  { type: 'spotImages', label: 'Spot Images' },
+]
+
+function BlockPreview({
+  block,
+  locationsById,
+}: {
+  block: NoteBlock
+  locationsById: Map<number, LocationOption>
+}) {
+  if (block.type === 'heading') {
+    return <h3 className="text-2xl font-semibold text-white">{block.content || 'Section heading'}</h3>
+  }
+
+  if (block.type === 'quote') {
+    return <blockquote className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-base leading-8 text-white/85">{block.content || 'Quote block'}</blockquote>
+  }
+
+  if (block.type === 'image' && block.imageUrl) {
+    const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
+    return (
+      <figure className="space-y-3">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+          <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 760px" className="object-cover" />
+        </div>
+        {block.caption ? <figcaption className="text-sm leading-7 text-white/55">{block.caption}</figcaption> : null}
+      </figure>
+    )
+  }
+
+  if ((block.type === 'gallery' || block.type === 'spotImages') && block.images?.length) {
+    const spot = block.spotId ? locationsById.get(block.spotId) : null
+    return (
+      <div className="space-y-4">
+        {block.type === 'spotImages' ? (
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
+            <ImageIcon className="h-3.5 w-3.5" />
+            {block.spotName || getLocationLabel(spot) || 'Spot images'}
+          </div>
+        ) : null}
+        <div className={`grid gap-4 ${block.images.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
+          {block.images.map((image, index) => (
+            <figure key={`${block.id}-${index}`} className="space-y-3">
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_16px_35px_rgba(0,0,0,0.16)]">
+                <FallbackImage
+                  src={image.src}
+                  alt={image.alt || buildFallbackAlt(block.spotName || getLocationLabel(spot), image.caption)}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 520px"
+                  className="object-cover"
+                />
+              </div>
+              {image.caption ? <figcaption className="text-sm leading-7 text-white/55">{image.caption}</figcaption> : null}
+            </figure>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  return <p className="text-base leading-8 text-gray-200 whitespace-pre-wrap">{block.content || 'Paragraph block'}</p>
 }
 
 export default function AdminNotesPage() {
   const [notes, setNotes] = useState<LongformNote[]>([])
   const [selectedSlug, setSelectedSlug] = useState('')
-  const [form, setForm] = useState<LongformNote>(EMPTY_NOTE)
+  const [form, setForm] = useState<LongformNote>({ ...EMPTY_NOTE, blocks: [createEmptyBlock('paragraph')] })
+  const [locations, setLocations] = useState<LocationOption[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
 
-  const [regions, setRegions] = useState<RegionOption[]>([])
-  const [locations, setLocations] = useState<LocationOption[]>([])
-  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateOption[]>([])
-  const [spotSearch, setSpotSearch] = useState('')
-  const [affiliateSearch, setAffiliateSearch] = useState('')
-  const blocksSectionRef = useRef<HTMLDivElement | null>(null)
-  const blockRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const [activeBlockId, setActiveBlockId] = useState('')
-  const summaryTextareaRef = useRef<HTMLTextAreaElement>(null)
-
-  // Interactive Summary Insertion States
-  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
-  const [isSpotDialogOpen, setIsSpotDialogOpen] = useState(false)
-  const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false)
-  const [tempImageUrl, setTempImageUrl] = useState('')
-  const [summaryInsertPos, setSummaryInsertPos] = useState<{ start: number, end: number } | null>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
+  const [pickerBlockId, setPickerBlockId] = useState('')
+  const [spotQuery, setSpotQuery] = useState('')
+  const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
+  const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
 
   useEffect(() => {
     let cancelled = false
@@ -138,32 +185,38 @@ export default function AdminNotesPage() {
     async function fetchAll() {
       setLoading(true)
       try {
-        const [notesResponse, regionsResponse, locationsResponse, affiliateResponse] = await Promise.all([
+        const [notesResponse, locationsResponse] = await Promise.all([
           adminFetch('/api/admin/notes', { cache: 'no-store' }),
-          supabase.from('regions').select('id,name,name_cn,country').order('name', { ascending: true }),
           supabase
             .from('locations')
             .select('id,name,name_cn,image_url,images,category,regions:region_id(id,name,name_cn,country)')
-            .order('id', { ascending: false }),
-          supabase
-            .from('affiliate_links')
-            .select('id,title,description,provider,link_type,url,location_id,region_id')
-            .eq('is_active', true)
             .order('id', { ascending: false }),
         ])
 
         const notesResult = notesResponse.ok ? await notesResponse.json() : { notes: [] }
         if (cancelled) return
 
-        setNotes(Array.isArray(notesResult?.notes) ? notesResult.notes : [])
-        setRegions(regionsResponse.data || [])
+        const nextNotes = Array.isArray(notesResult?.notes) ? notesResult.notes : []
+        setNotes(nextNotes)
         setLocations((locationsResponse.data || []).map((item: any) => ({
           ...item,
           regions: Array.isArray(item?.regions) ? item.regions[0] || null : item?.regions || null,
         })))
-        setAffiliateLinks((affiliateResponse.data || []) as AffiliateOption[])
+
+        if (nextNotes.length) {
+          setSelectedSlug(nextNotes[0].slug)
+          setForm({
+            ...nextNotes[0],
+            blocks: renderableBlocks(nextNotes[0]),
+          })
+        } else {
+          setForm({ ...EMPTY_NOTE, blocks: [createEmptyBlock('paragraph')] })
+        }
       } catch {
-        if (!cancelled) setNotes([])
+        if (!cancelled) {
+          setNotes([])
+          setLocations([])
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -178,108 +231,33 @@ export default function AdminNotesPage() {
   useEffect(() => {
     if (!selectedSlug) return
     const selected = notes.find((item) => item.slug === selectedSlug)
-    if (selected) {
-      setForm(selected)
-      setMessage('')
-      setActiveBlockId(selected.blocks[0]?.id || '')
-    }
+    if (!selected) return
+    setForm({
+      ...selected,
+      blocks: renderableBlocks(selected),
+    })
+    setMessage('')
   }, [notes, selectedSlug])
 
-  const selectedRelatedSpots = useMemo(
-    () => locations.filter((location) => form.relatedSpotIds.includes(location.id)),
-    [form.relatedSpotIds, locations]
-  )
-
-  const selectedRegions = useMemo(
-    () => regions.filter((region) => form.relatedRegionIds.includes(region.id)),
-    [form.relatedRegionIds, regions]
-  )
+  const locationsById = useMemo(() => new Map(locations.map((location) => [location.id, location])), [locations])
 
   const filteredSpots = useMemo(() => {
-    const keyword = spotSearch.trim().toLowerCase()
-    const pool = locations.filter((location) => !form.relatedSpotIds.includes(location.id))
-    if (!keyword) return pool.slice(0, 24)
-    return pool
+    const keyword = spotQuery.trim().toLowerCase()
+    if (!keyword) return locations.slice(0, 20)
+    return locations
       .filter((location) => {
         const haystack = `${location.name} ${location.name_cn || ''} ${location.regions?.name || ''} ${location.regions?.name_cn || ''}`.toLowerCase()
         return haystack.includes(keyword)
       })
-      .slice(0, 24)
-  }, [form.relatedSpotIds, locations, spotSearch])
-
-  const filteredAffiliateLinks = useMemo(() => {
-    const keyword = affiliateSearch.trim().toLowerCase()
-    const selectedSet = new Set(form.blocks.flatMap((block) => block.affiliateIds || []))
-    if (!keyword) return affiliateLinks.filter((item) => !selectedSet.has(item.id)).slice(0, 30)
-    return affiliateLinks
-      .filter((item) => {
-        if (selectedSet.has(item.id)) return false
-        const haystack = `${item.title || ''} ${item.description || ''} ${item.provider} ${item.link_type}`.toLowerCase()
-        return haystack.includes(keyword)
-      })
       .slice(0, 30)
-  }, [affiliateLinks, affiliateSearch, form.blocks])
+  }, [locations, spotQuery])
 
-  const contentBlocks = useMemo(
-    () => form.blocks.filter((block) => block.type !== 'affiliate'),
-    [form.blocks]
-  )
-
-  const sidebarAffiliateBlocks = useMemo(
-    () => form.blocks.filter((block) => block.type === 'affiliate' && Boolean(block.affiliateIds?.length)),
-    [form.blocks]
-  )
-
-  const affiliateSelectionCount = useMemo(
-    () => new Set(form.blocks.flatMap((block) => block.affiliateIds || [])).size,
-    [form.blocks]
-  )
-
-  const summaryParts = useMemo(() => parseSummary(form.summary), [form.summary])
-
-  const draftCharacterCount = useMemo(() => {
-    const text = [
-      form.title,
-      form.tagline,
-      form.summary,
-      ...form.blocks.map((block) => [block.title, block.content, block.caption].filter(Boolean).join(' ')),
-    ]
-      .filter(Boolean)
-      .join(' ')
-      .replace(/\s+/g, '')
-    return text.length
-  }, [form])
-
-  function registerBlockRef(blockId: string, element: HTMLDivElement | null) {
-    if (!element) {
-      delete blockRefs.current[blockId]
-      return
-    }
-    blockRefs.current[blockId] = element
-  }
-
-  function focusBlockEditor(blockId: string) {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        blocksSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        const container = blockRefs.current[blockId]
-        if (!container) return
-        container.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        const focusable = container.querySelector('input, textarea, button')
-        if (focusable instanceof HTMLElement) {
-          focusable.focus()
-        }
-      })
-    })
-  }
+  const selectedSpot = selectedSpotId ? locationsById.get(selectedSpotId) || null : null
+  const selectedSpotImages = useMemo(() => getLocationImages(selectedSpot), [selectedSpot])
 
   function createNewNote() {
     const next: LongformNote = {
       ...EMPTY_NOTE,
-      slug: '',
-      title: '',
-      shortTitle: '',
-      coverAccent: DEFAULT_NOTE_COVER_ACCENT,
       blocks: [createEmptyBlock('paragraph')],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -287,8 +265,6 @@ export default function AdminNotesPage() {
     setSelectedSlug('')
     setForm(next)
     setMessage('')
-    setActiveBlockId(next.blocks[0]?.id || '')
-    focusBlockEditor(next.blocks[0]?.id || '')
   }
 
   function updateForm(patch: Partial<LongformNote>) {
@@ -298,28 +274,21 @@ export default function AdminNotesPage() {
   function updateBlock(index: number, patch: Partial<NoteBlock>) {
     setForm((current) => ({
       ...current,
-      blocks: current.blocks.map((block, blockIndex) =>
-        blockIndex === index ? { ...block, ...patch } : block
-      ),
+      blocks: current.blocks.map((block, blockIndex) => (blockIndex === index ? { ...block, ...patch } : block)),
     }))
   }
 
-  function addBlock(type: NoteBlockType, afterBlockId?: string) {
-    const nextBlock = createEmptyBlock(type)
-    setForm((current) => {
-      if (afterBlockId) {
-        const index = current.blocks.findIndex(b => b.id === afterBlockId)
-        if (index !== -1) {
-          const nextBlocks = [...current.blocks]
-          nextBlocks.splice(index + 1, 0, nextBlock)
-          return { ...current, blocks: nextBlocks }
-        }
-      }
-      return { ...current, blocks: [...current.blocks, nextBlock] }
-    })
-    setActiveBlockId(nextBlock.id)
-    setMessage(type === 'image' ? '已新增图片模块，直接贴上图片链接即可开始排版。' : `已新增 ${BLOCK_LABELS[type]} 模块。`)
-    focusBlockEditor(nextBlock.id)
+  function updateBlockImage(index: number, imageIndex: number, patch: Partial<NoteImageItem>) {
+    setForm((current) => ({
+      ...current,
+      blocks: current.blocks.map((block, blockIndex) => {
+        if (blockIndex !== index) return block
+        const nextImages = (block.images || []).map((image, currentImageIndex) =>
+          currentImageIndex === imageIndex ? { ...image, ...patch } : image
+        )
+        return { ...block, images: nextImages }
+      }),
+    }))
   }
 
   function removeBlock(index: number) {
@@ -329,102 +298,111 @@ export default function AdminNotesPage() {
     }))
   }
 
+  function addBlock(type: NoteBlockType, afterIndex?: number) {
+    const nextBlock = createEmptyBlock(type)
+    setForm((current) => {
+      if (typeof afterIndex === 'number') {
+        const nextBlocks = [...current.blocks]
+        nextBlocks.splice(afterIndex + 1, 0, nextBlock)
+        return { ...current, blocks: nextBlocks }
+      }
+      return { ...current, blocks: [...current.blocks, nextBlock] }
+    })
+  }
+
   function moveBlock(index: number, direction: 'up' | 'down') {
-    const movingBlock = form.blocks[index]
-    setForm((current) => ({ ...current, blocks: moveItem(current.blocks, index, direction) }))
-    if (movingBlock?.id) {
-      setActiveBlockId(movingBlock.id)
-      focusBlockEditor(movingBlock.id)
-    }
-  }
-
-  function toggleRelatedSpot(spotId: number) {
-    setForm((current) => {
-      const exists = current.relatedSpotIds.includes(spotId)
-      return {
-        ...current,
-        relatedSpotIds: exists ? current.relatedSpotIds.filter((id) => id !== spotId) : [...current.relatedSpotIds, spotId],
-      }
-    })
-  }
-
-  function toggleRegion(regionId: number) {
-    setForm((current) => {
-      const exists = current.relatedRegionIds.includes(regionId)
-      return {
-        ...current,
-        relatedRegionIds: exists ? current.relatedRegionIds.filter((id) => id !== regionId) : [...current.relatedRegionIds, regionId],
-      }
-    })
-  }
-
-  function toggleAffiliateForBlock(index: number, affiliateId: number) {
     setForm((current) => ({
       ...current,
-      blocks: current.blocks.map((block, blockIndex) => {
-        if (blockIndex !== index) return block
-        const currentIds = block.affiliateIds || []
-        const exists = currentIds.includes(affiliateId)
-        return {
-          ...block,
-          affiliateIds: exists ? currentIds.filter((id) => id !== affiliateId) : [...currentIds, affiliateId],
-        }
-      }),
+      blocks: moveItem(current.blocks, index, direction),
     }))
   }
 
-  function insertIntoSummary(text: string, overridePos?: { start: number, end: number }) {
-    const textarea = summaryTextareaRef.current
-    if (!textarea) return
-
-    const start = overridePos ? overridePos.start : textarea.selectionStart
-    const end = overridePos ? overridePos.end : textarea.selectionEnd
-    const current = form.summary || ''
-    const next = current.substring(0, start) + text + current.substring(end)
-    
-    updateForm({ summary: next })
-    
-    // Restore focus and selection
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + text.length, start + text.length)
-    }, 0)
+  function openSpotImagePicker(blockId: string) {
+    const targetBlock = form.blocks.find((block) => block.id === blockId)
+    setPickerBlockId(blockId)
+    setPickerOpen(true)
+    setSpotQuery('')
+    setSelectedSpotId(targetBlock?.spotId || null)
+    setSelectedSpotImageUrls(targetBlock?.images?.map((image) => image.src) || [])
   }
 
-  function handleSummaryKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === '/') {
-      const textarea = summaryTextareaRef.current
-      if (!textarea) return
-      setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
-      setIsCommandMenuOpen(true)
-      // We don't preventDefault yet, let them type / then we replace it or they pick
-    }
-  }
+  function applySpotImagesToBlock() {
+    if (!pickerBlockId || !selectedSpot) return
 
-  function confirmImageInsert() {
-    if (tempImageUrl) {
-      insertIntoSummary(`[img:${tempImageUrl}]`, summaryInsertPos || undefined)
-      setTempImageUrl('')
-      setIsImageDialogOpen(false)
-      setSummaryInsertPos(null)
-    }
-  }
+    const targetIndex = form.blocks.findIndex((block) => block.id === pickerBlockId)
+    if (targetIndex === -1) return
 
-  function confirmSpotInsert(spotId: number) {
-    insertIntoSummary(`[spot:${spotId}]`, summaryInsertPos || undefined)
-    setIsSpotDialogOpen(false)
-    setSummaryInsertPos(null)
+    const images = selectedSpotImageUrls
+      .map((src) =>
+        ({
+          src,
+          alt: buildFallbackAlt(getLocationLabel(selectedSpot)),
+          caption: '',
+        }) satisfies NoteImageItem
+      )
+      .filter((image) => image.src)
+
+    updateBlock(targetIndex, {
+      type: 'spotImages',
+      spotId: selectedSpot.id,
+      spotName: getLocationLabel(selectedSpot),
+      images,
+    })
+    setPickerOpen(false)
   }
 
   async function saveNote() {
     setSaving(true)
     setMessage('')
 
+    const normalizedBlocks = form.blocks
+      .map((block) => {
+        if (block.type === 'image') {
+          return {
+            ...block,
+            imageUrl: String(block.imageUrl || '').trim(),
+            alt: String(block.alt || '').trim() || buildFallbackAlt(undefined, block.caption),
+            caption: String(block.caption || '').trim() || undefined,
+          }
+        }
+
+        if (block.type === 'gallery' || block.type === 'spotImages') {
+          return {
+            ...block,
+            images: (block.images || [])
+              .map((image) => ({
+                src: String(image.src || '').trim(),
+                alt: String(image.alt || '').trim() || buildFallbackAlt(block.spotName, image.caption),
+                caption: String(image.caption || '').trim() || undefined,
+              }))
+              .filter((image) => image.src),
+          }
+        }
+
+        return {
+          ...block,
+          content: String(block.content || '').trim(),
+        }
+      })
+      .filter((block) => {
+        if (block.type === 'image') return Boolean(block.imageUrl)
+        if (block.type === 'gallery' || block.type === 'spotImages') return Boolean(block.images?.length)
+        return Boolean(block.content)
+      })
+
+    const contentFallback = normalizedBlocks
+      .filter((block) => block.type === 'paragraph' || block.type === 'quote')
+      .map((block) => block.content || '')
+      .filter(Boolean)
+      .join('\n\n')
+
     const payload: LongformNote & { previousSlug?: string } = {
       ...form,
       slug: form.slug || slugify(form.title),
       shortTitle: form.shortTitle || form.title,
       tags: parseCommaSeparated(stringifyCommaSeparated(form.tags)),
+      content: contentFallback || form.content || '',
+      blocks: normalizedBlocks,
       updatedAt: new Date().toISOString(),
       previousSlug: selectedSlug || undefined,
     }
@@ -437,21 +415,22 @@ export default function AdminNotesPage() {
       })
 
       const result = await response.json()
-      if (!response.ok) throw new Error(result?.error || '保存失败')
+      if (!response.ok) throw new Error(result?.error || 'Failed to save note.')
 
       const nextNote = result.note as LongformNote
+      const hydrated = { ...nextNote, blocks: renderableBlocks(nextNote) }
       setNotes((current) => {
         const existing = current.findIndex((item) => item.slug === selectedSlug || item.slug === nextNote.slug)
         if (existing >= 0) {
           const next = [...current]
-          next[existing] = nextNote
+          next[existing] = hydrated
           return next
         }
-        return [nextNote, ...current]
+        return [hydrated, ...current]
       })
-      setSelectedSlug(nextNote.slug)
-      setForm(nextNote)
-      setMessage(nextNote.published ? 'Published note saved successfully.' : 'Draft saved successfully.')
+      setSelectedSlug(hydrated.slug)
+      setForm(hydrated)
+      setMessage(hydrated.published ? 'Published note saved.' : 'Draft saved.')
     } catch (error: any) {
       setMessage(error?.message || 'Failed to save note.')
     } finally {
@@ -463,9 +442,15 @@ export default function AdminNotesPage() {
     if (!form.slug) return
     try {
       const response = await adminFetch(`/api/admin/notes?slug=${encodeURIComponent(form.slug)}`, { method: 'DELETE' })
-      if (!response.ok) throw new Error('删除失败')
-      setNotes((current) => current.filter((item) => item.slug !== form.slug))
-      createNewNote()
+      if (!response.ok) throw new Error('Failed to delete note.')
+      const remaining = notes.filter((item) => item.slug !== form.slug)
+      setNotes(remaining)
+      if (remaining.length) {
+        setSelectedSlug(remaining[0].slug)
+        setForm({ ...remaining[0], blocks: renderableBlocks(remaining[0]) })
+      } else {
+        createNewNote()
+      }
       setMessage('Note deleted.')
     } catch (error: any) {
       setMessage(error?.message || 'Failed to delete note.')
@@ -475,39 +460,48 @@ export default function AdminNotesPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#09090b] text-white">
-        <div className="mx-auto max-w-7xl px-4 py-10">正在加载长文笔记后台...</div>
+        <div className="mx-auto max-w-7xl px-4 py-10">Loading notes…</div>
       </main>
     )
   }
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[320px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[300px_minmax(0,1fr)]">
         <aside className="space-y-4">
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
-              <CardTitle className="flex items-center justify-between text-lg">
-                <span>长文笔记</span>
+              <CardTitle className="flex items-center justify-between gap-3 text-lg">
+                <span>Notes</span>
                 <Button type="button" size="sm" onClick={createNewNote} className="bg-white text-black hover:bg-amber-50">
-                  <Plus className="mr-2 h-4 w-4" />新建
+                  <Plus className="mr-2 h-4 w-4" />
+                  New
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {notes.length ? notes.map((note) => (
-                <button
-                  key={note.slug}
-                  type="button"
-                  onClick={() => setSelectedSlug(note.slug)}
-                  className={`w-full rounded-2xl border px-4 py-3 text-left transition ${selectedSlug === note.slug ? 'border-amber-300/50 bg-amber-400/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="font-medium text-white">{note.shortTitle || note.title}</p>
-                    {note.published ? <Badge className="bg-emerald-500/20 text-emerald-200">已发布</Badge> : <Badge variant="outline">草稿</Badge>}
-                  </div>
-                  <p className="mt-2 line-clamp-2 text-xs leading-6 text-gray-400">{note.summary || '还没有摘要。'}</p>
-                </button>
-              )) : <p className="text-sm text-gray-400">还没有笔记，先新建一篇。</p>}
+              {notes.length ? (
+                notes.map((note) => (
+                  <button
+                    key={note.slug}
+                    type="button"
+                    onClick={() => setSelectedSlug(note.slug)}
+                    className={`w-full rounded-2xl border px-4 py-3 text-left transition ${selectedSlug === note.slug ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-white">{note.shortTitle || note.title}</p>
+                        <p className="mt-2 line-clamp-2 text-xs leading-6 text-gray-400">{note.tagline || note.summary || 'No excerpt yet.'}</p>
+                      </div>
+                      <Badge variant={note.published ? 'default' : 'outline'} className={note.published ? 'bg-emerald-500/20 text-emerald-100' : 'border-white/10 text-white/70'}>
+                        {note.published ? 'Live' : 'Draft'}
+                      </Badge>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <p className="text-sm text-gray-400">No notes yet.</p>
+              )}
             </CardContent>
           </Card>
         </aside>
@@ -516,563 +510,332 @@ export default function AdminNotesPage() {
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader className="flex flex-row items-start justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Longform Note Studio</p>
-                <CardTitle className="mt-3 text-3xl">{form.title || '未命名长文笔记'}</CardTitle>
+                <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Longform Note Editor</p>
+                <CardTitle className="mt-3 text-3xl">{form.title || 'Untitled note'}</CardTitle>
               </div>
-              <div className="flex flex-wrap justify-end gap-2">
-                {form.slug ? <Link href={`/notes/${form.slug}`} target="_blank" className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-white/80 hover:bg-white/10"><ExternalLink className="h-4 w-4" />打开前台</Link> : null}
-                <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={deleteCurrentNote} disabled={!form.slug}><Trash2 className="mr-2 h-4 w-4" />删除</Button>
-                <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={saveNote} disabled={saving}><Save className="mr-2 h-4 w-4" />{saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}</Button>
+              <div className="flex flex-wrap gap-2">
+                {form.slug ? (
+                  <Link href={`/notes/${form.slug}`} target="_blank" className="inline-flex items-center rounded-full border border-white/10 px-4 py-2 text-sm text-white/75 transition hover:bg-white/10">
+                    Preview
+                  </Link>
+                ) : null}
+                <Button type="button" variant="outline" onClick={deleteCurrentNote} className="border-white/10 bg-transparent text-white hover:bg-white/10">
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </Button>
+                <Button type="button" onClick={saveNote} disabled={saving} className="bg-white text-black hover:bg-amber-50">
+                  <Save className="mr-2 h-4 w-4" />
+                  {saving ? 'Saving…' : form.published ? 'Save & Update' : 'Save Draft'}
+                </Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
-              <div className="space-y-2"><Label>标题</Label><Input value={form.title} onChange={(event) => updateForm({ title: event.target.value, slug: form.slug || slugify(event.target.value) })} /></div>
-              <div className="space-y-2"><Label>短标题</Label><Input value={form.shortTitle} onChange={(event) => updateForm({ shortTitle: event.target.value })} /></div>
-              <div className="space-y-2"><Label>Slug</Label><Input value={form.slug} onChange={(event) => updateForm({ slug: slugify(event.target.value) })} /></div>
-              <div className="space-y-2"><Label>Kicker</Label><Input value={form.kicker} onChange={(event) => updateForm({ kicker: event.target.value })} /></div>
-              <div className="space-y-2 md:col-span-2"><Label>Tagline</Label><Input value={form.tagline} onChange={(event) => updateForm({ tagline: event.target.value })} /></div>
+              <div className="space-y-2">
+                <Label>Title</Label>
+                <Input value={form.title} onChange={(event) => updateForm({ title: event.target.value })} placeholder="Cameron Highlands travel guide" />
+              </div>
+              <div className="space-y-2">
+                <Label>Slug</Label>
+                <Input value={form.slug} onChange={(event) => updateForm({ slug: slugify(event.target.value) })} placeholder="cameron-highlands-trip" />
+              </div>
+              <div className="space-y-2">
+                <Label>Short Title</Label>
+                <Input value={form.shortTitle} onChange={(event) => updateForm({ shortTitle: event.target.value })} placeholder="Cameron Highlands" />
+              </div>
+              <div className="space-y-2">
+                <Label>Kicker</Label>
+                <Input value={form.kicker} onChange={(event) => updateForm({ kicker: event.target.value })} placeholder="Longform Note" />
+              </div>
               <div className="space-y-2 md:col-span-2">
-                <div className="flex items-center justify-between">
-                  <Label>摘要 (Summary)</Label>
-                  <div className="flex gap-2">
-                    <Button 
-                      type="button" 
-                      size="sm" 
-                      variant="outline" 
-                      className="h-7 border-white/10 bg-transparent px-2 text-[10px] text-white/60 hover:bg-white/10 hover:text-white"
-                      onClick={() => {
-                        const textarea = summaryTextareaRef.current
-                        if (textarea) setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
-                        setIsImageDialogOpen(true)
-                      }}
-                    >
-                      <ImageIcon className="mr-1 h-3 w-3" />插入图片
-                    </Button>
-                    <Button 
-                      type="button" 
-                      size="sm" 
-                      variant="outline" 
-                      className="h-7 border-white/10 bg-transparent px-2 text-[10px] text-white/60 hover:bg-white/10 hover:text-white"
-                      onClick={() => {
-                        const textarea = summaryTextareaRef.current
-                        if (textarea) setSummaryInsertPos({ start: textarea.selectionStart, end: textarea.selectionEnd })
-                        setIsSpotDialogOpen(true)
-                      }}
-                    >
-                      <MapPin className="mr-1 h-3 w-3" />插入景点
-                    </Button>
-                  </div>
+                <Label>Tagline</Label>
+                <Textarea value={form.tagline} onChange={(event) => updateForm({ tagline: event.target.value })} rows={2} placeholder="A concise subtitle for the note." />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label>Excerpt / Summary</Label>
+                <Textarea value={form.summary} onChange={(event) => updateForm({ summary: event.target.value })} rows={3} placeholder="This summary is used for cards and metadata." />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label>Cover Image URL</Label>
+                <Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} placeholder="https://..." />
+              </div>
+              <div className="space-y-2">
+                <Label>Tags</Label>
+                <Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="cameron highlands, tea plantation" />
+              </div>
+              <div className="flex items-center gap-3 pt-8">
+                <input id="published" type="checkbox" checked={form.published} onChange={(event) => updateForm({ published: event.target.checked })} />
+                <Label htmlFor="published" className="cursor-pointer">Published</Label>
+              </div>
+              {message ? (
+                <div className={`md:col-span-2 rounded-2xl border px-4 py-3 text-sm ${message.toLowerCase().includes('fail') || message.toLowerCase().includes('error') ? 'border-red-400/20 bg-red-500/10 text-red-200' : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'}`}>
+                  {message}
                 </div>
-                <div className="relative">
-                  <Textarea 
-                    ref={summaryTextareaRef}
-                    value={form.summary} 
-                    onChange={(event) => updateForm({ summary: event.target.value })} 
-                    onKeyDown={handleSummaryKeyDown}
-                    rows={8} 
-                    className="font-mono text-sm leading-relaxed"
-                    placeholder="输入文字... 输入 '/' 触发快捷指令。支持插入图片或景点卡片。"
-                  />
-                  {isCommandMenuOpen && (
-                    <div className="absolute bottom-full left-0 z-50 mb-2 w-48 overflow-hidden rounded-xl border border-white/10 bg-[#09090b] p-1 shadow-2xl">
-                      <div className="px-2 py-1.5 text-[10px] uppercase tracking-wider text-gray-500">插入内容</div>
-                      <button 
-                        onClick={() => { setIsCommandMenuOpen(false); setIsImageDialogOpen(true); }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm hover:bg-white/10"
+              ) : null}
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+            <Card className="border-white/10 bg-white/5 text-white">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between gap-3">
+                  <span>Content Blocks</span>
+                  <div className="flex flex-wrap gap-2">
+                    {BLOCK_OPTIONS.map((option) => (
+                      <Button
+                        key={option.type}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="border-white/10 bg-transparent text-white hover:bg-white/10"
+                        onClick={() => addBlock(option.type)}
                       >
-                        <ImageIcon className="h-4 w-4 text-amber-300" /> 图片 (Image)
-                      </button>
-                      <button 
-                        onClick={() => { setIsCommandMenuOpen(false); setIsSpotDialogOpen(true); }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left text-sm hover:bg-white/10"
-                      >
-                        <MapPin className="h-4 w-4 text-emerald-300" /> 景点 (Spot Card)
-                      </button>
-                      <div className="h-px bg-white/5 my-1" />
-                      <button 
-                        onClick={() => setIsCommandMenuOpen(false)}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs text-gray-500 hover:bg-white/10"
-                      >
-                        取消 (Esc)
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-2"><Label>封面图 URL</Label><Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} /></div>
-              <div className="space-y-2"><Label>标签</Label><Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="例如：曼谷, 咖啡馆, 长文攻略" /></div>
-              <label className="inline-flex items-center gap-3 text-sm text-white/80"><input type="checkbox" checked={form.published} onChange={(event) => updateForm({ published: event.target.checked })} />发布这篇笔记</label>
-              {message ? <p className={`md:col-span-2 rounded-2xl border px-4 py-3 text-sm ${message.toLowerCase().includes('failed') || message.toLowerCase().includes('error') ? 'border-red-400/20 bg-red-500/10 text-red-200' : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'}`}>{message}</p> : null}
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-white/45">正文模块</p>
-              <p className="mt-3 text-3xl font-semibold text-white">{form.blocks.length}</p>
-              <p className="mt-2 text-sm text-white/55">段落、图片、景点卡与联盟区块</p>
-            </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-white/45">关联景点</p>
-              <p className="mt-3 text-3xl font-semibold text-white">{selectedRelatedSpots.length}</p>
-              <p className="mt-2 text-sm text-white/55">会在正文下方形成延伸阅读入口</p>
-            </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-white/45">变现入口</p>
-              <p className="mt-3 text-3xl font-semibold text-white">{affiliateSelectionCount}</p>
-              <p className="mt-2 text-sm text-white/55">右侧栏集中放联盟推荐与工具入口</p>
-            </div>
-            <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.24em] text-white/45">内容长度</p>
-              <p className="mt-3 text-3xl font-semibold text-white">{draftCharacterCount}</p>
-              <p className="mt-2 text-sm text-white/55">用于判断这篇长文是否够扎实、够可读</p>
-            </div>
-          </div>
-
-          <Card className="border-white/10 bg-[linear-gradient(180deg,rgba(251,191,36,0.08),rgba(255,255,255,0.03))] text-white">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-2xl">Quick Insert</CardTitle>
-              <p className="text-sm text-white/65">
-                现在点击会自动插入到当前激活的模块下方并聚焦。
-              </p>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-3">
-              {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
-                <Button
-                  type="button"
-                  key={`quick-${type}`}
-                  variant={type === 'image' ? 'default' : 'outline'}
-                  className={
-                    type === 'image'
-                      ? 'bg-amber-200 text-black hover:bg-amber-100'
-                      : 'border-white/10 bg-transparent text-white hover:bg-white/10'
-                  }
-                  onClick={() => addBlock(type, activeBlockId)}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  {BLOCK_LABELS[type]}
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="overflow-hidden border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] text-white">
-            <CardHeader className="flex flex-row items-center justify-between gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Live Draft Preview</p>
-                <CardTitle className="mt-3 text-3xl">{form.title || 'Draft preview'}</CardTitle>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm text-white/80">
-                <Eye className="h-4 w-4" />
-                {form.published ? 'Published layout' : 'Draft layout'}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <section className={`overflow-hidden rounded-[32px] border border-white/10 p-6 md:p-8 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_320px] lg:items-end">
-                  <div>
-                    <p className="section-kicker text-xs text-amber-100/80">{form.kicker || 'Longform Note'}</p>
-                    <h2 className="font-display mt-5 text-4xl leading-none text-white md:text-6xl">{form.title || 'Your longform title'}</h2>
-                    {form.tagline ? <p className="mt-5 max-w-3xl text-sm leading-8 text-white/80 md:text-base">{form.tagline}</p> : null}
+                        <Plus className="mr-2 h-4 w-4" />
+                        {option.label}
+                      </Button>
+                    ))}
                   </div>
-                  {form.coverImage ? (
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-white/10 bg-black/20">
-                      <FallbackImage src={form.coverImage} alt={form.title || 'Note cover'} fill className="object-cover" />
-                    </div>
-                  ) : (
-                    <div className="flex aspect-[4/3] items-center justify-center rounded-[28px] border border-dashed border-white/15 bg-black/20 text-sm text-white/45">
-                      Cover image preview
-                    </div>
-                  )}
-                </div>
-              </section>
-
-              <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
-                <div className="space-y-5">
-                  {summaryParts.length ? (
-                    <div className="max-w-4xl space-y-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 shadow-inner">
-                      <p className="text-[10px] uppercase tracking-widest text-amber-300/50 mb-2">摘要渲染效果</p>
-                      {summaryParts.map((part, index) => {
-                        if (part.type === 'text') {
-                          return <p key={index} className="text-base leading-8 text-gray-100 whitespace-pre-wrap">{part.content}</p>
-                        }
-                        if (part.type === 'image' && part.imageUrl) {
-                          return (
-                            <div key={index} className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10 bg-black/40">
-                              <FallbackImage src={part.imageUrl} alt="Summary image" fill className="object-cover" />
-                            </div>
-                          )
-                        }
-                        if (part.type === 'spot' && part.spotId) {
-                          const spot = locations.find(l => l.id === part.spotId)
-                          return (
-                            <div key={index} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/40 p-3">
-                              <div className="relative h-16 w-16 overflow-hidden rounded-xl">
-                                <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="truncate font-medium text-white">{getLocationLabel(spot) || `Spot #${part.spotId}`}</p>
-                                <p className="truncate text-xs text-gray-400">{spot?.regions?.country} / {spot?.regions?.name_cn || spot?.regions?.name}</p>
-                              </div>
-                            </div>
-                          )
-                        }
-                        return null
-                      })}
-                    </div>
-                  ) : null}
-                  {contentBlocks.length ? (
-                    contentBlocks.map((block) => {
-                      const selectedSpot = locations.find((item) => item.id === block.spotId)
-
-                      if (block.type === 'heading') {
-                        return <h3 key={block.id} className="font-display pt-2 text-3xl text-white">{block.content || block.title || 'Section heading'}</h3>
-                      }
-
-                      if (block.type === 'quote') {
-                        return <blockquote key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">{block.content || 'Quote preview'}</blockquote>
-                      }
-
-                      if (block.type === 'image') {
-                        return (
-                          <figure key={block.id} className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5">
-                            <div className="relative aspect-[16/9] overflow-hidden">
-                              {block.imageUrl ? (
-                                <FallbackImage src={block.imageUrl} alt={block.caption || form.title || 'Preview image'} fill className="object-cover" />
-                              ) : (
-                                <div className="flex h-full items-center justify-center text-sm text-white/45">Image preview</div>
-                              )}
-                            </div>
-                            {block.caption ? <figcaption className="px-5 py-4 text-sm leading-7 text-gray-300">{block.caption}</figcaption> : null}
-                          </figure>
-                        )
-                      }
-
-                      if (block.type === 'spot') {
-                        return (
-                          <div key={block.id} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
-                            <div className="grid gap-5 md:grid-cols-[220px_minmax(0,1fr)]">
-                              <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
-                                <FallbackImage src={getLocationCover(selectedSpot)} alt={getLocationLabel(selectedSpot) || 'Spot preview'} fill className="object-cover" />
-                              </div>
-                              <div className="p-5">
-                                <p className="section-kicker text-xs text-amber-300/80">Linked Spot</p>
-                                <h3 className="mt-3 text-2xl font-semibold text-white">{getLocationLabel(selectedSpot) || 'Choose a spot card'}</h3>
-                                <p className="mt-3 text-sm leading-7 text-gray-300">
-                                  {selectedSpot ? 'This note will link back to your existing spot page.' : 'Pick one related spot and it will appear here as a premium card.'}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      }
-
-                      return (
-                        <p key={block.id} className="max-w-3xl text-base leading-8 text-gray-200">
-                          {block.content || 'Paragraph preview'}
-                        </p>
-                      )
-                    })
-                  ) : (
-                    <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-6 text-sm text-white/50">
-                      Add a paragraph block to start building this longform note.
-                    </div>
-                  )}
-                </div>
-
-                {selectedRelatedSpots.length ? (
-                  <section className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                    <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
-                    <h3 className="mt-3 text-2xl font-semibold text-white">文末延伸景点</h3>
-                    <div className="mt-5 grid gap-3 md:grid-cols-2">
-                      {selectedRelatedSpots.map((spot) => (
-                        <div key={spot.id} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                          <div className="relative h-16 w-16 overflow-hidden rounded-2xl">
-                            <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="truncate font-medium text-white">{getLocationLabel(spot)}</p>
-                            <p className="truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                          </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {form.blocks.length ? (
+                  form.blocks.map((block, index) => (
+                    <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">{block.type}</p>
+                          <p className="mt-2 text-lg font-medium text-white">Block {index + 1}</p>
                         </div>
-                      ))}
-                    </div>
-                  </section>
-                ) : null}
+                        <div className="flex flex-wrap gap-2">
+                          <Button type="button" variant="outline" size="icon" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}>
+                            <ArrowUp className="h-4 w-4" />
+                          </Button>
+                          <Button type="button" variant="outline" size="icon" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}>
+                            <ArrowDown className="h-4 w-4" />
+                          </Button>
+                          <Button type="button" variant="outline" size="icon" className="border-red-400/20 bg-transparent text-red-200 hover:bg-red-500/10" onClick={() => removeBlock(index)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
 
-                <aside className="space-y-4">
-                  <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                    <p className="section-kicker text-xs text-amber-300/80">Monetization Rail</p>
-                    <h3 className="mt-3 text-2xl font-semibold text-white">右侧侧栏预览</h3>
-                    <p className="mt-3 text-sm leading-7 text-gray-300">
-                      这里现在专门放联盟营销、住宿预订、工具入口与未来的打赏组件，正文保持更像高级旅游专栏。
-                    </p>
-                  </div>
-
-                  <div className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                    <p className="section-kicker text-xs text-emerald-300/80">Publishing Signals</p>
-                    <div className="mt-4 space-y-3 text-sm text-gray-300">
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">状态：{form.published ? '已发布' : '草稿中'}</div>
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">正文模块：{contentBlocks.length} 个</div>
-                      <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">侧栏联盟区块：{sidebarAffiliateBlocks.length} 个</div>
-                    </div>
-                  </div>
-
-                  {sidebarAffiliateBlocks.length ? (
-                    sidebarAffiliateBlocks.map((block) => {
-                      const linkedAffiliates = affiliateLinks.filter((item) => (block.affiliateIds || []).includes(item.id))
-                      return (
-                        <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
-                          <p className="section-kicker text-xs text-amber-300/80">Affiliate Module</p>
-                          <h3 className="mt-3 text-xl font-semibold text-white">{block.title || '旅途工具 / 预订入口'}</h3>
-                          {block.content ? <p className="mt-2 text-sm leading-7 text-gray-300">{block.content}</p> : null}
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {linkedAffiliates.length ? (
-                              linkedAffiliates.map((item) => (
-                                <span key={item.id} className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-sm text-white/85">
-                                  {item.title || `${item.provider} ${item.link_type}`}
-                                </span>
-                              ))
-                            ) : (
-                              <span className="text-sm text-white/45">这个侧栏模块还没选联盟链接。</span>
-                            )}
+                      <div className="mt-5 space-y-4">
+                        {(block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote') ? (
+                          <div className="space-y-2">
+                            <Label>Text</Label>
+                            <Textarea
+                              value={block.content || ''}
+                              onChange={(event) => updateBlock(index, { content: event.target.value })}
+                              rows={block.type === 'heading' ? 2 : 6}
+                              placeholder={block.type === 'heading' ? 'Section heading' : 'Write your paragraph here.'}
+                            />
                           </div>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <div className="rounded-[28px] border border-dashed border-white/15 bg-black/20 p-5 text-sm leading-7 text-white/55">
-                      还没有侧栏变现模块。你可以新增 `Affiliate / 联盟推荐`，把住宿、门票、保险或交通入口集中放到右边。
-                    </div>
-                  )}
+                        ) : null}
 
-                  <SupportSidebarCard className="bg-white/5" />
-                </aside>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card ref={blocksSectionRef} className="border-white/10 bg-white/5 text-white">
-            <CardHeader><CardTitle>相关景点与地区</CardTitle></CardHeader>
-            <CardContent className="space-y-5">
-              <div className="space-y-3">
-                <Label>已关联景点</Label>
-                <div className="flex flex-wrap gap-2">
-                  {selectedRelatedSpots.length ? selectedRelatedSpots.map((spot) => (
-                    <button key={spot.id} type="button" onClick={() => toggleRelatedSpot(spot.id)} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-white/90">
-                      {getLocationLabel(spot)}<X className="h-3 w-3" />
-                    </button>
-                  )) : <p className="text-sm text-gray-400">还没关联景点。</p>}
-                </div>
-                <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /><Input className="pl-10" value={spotSearch} onChange={(event) => setSpotSearch(event.target.value)} placeholder="搜索并 @ 已有景点" /></div>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {filteredSpots.map((spot) => (
-                    <button key={spot.id} type="button" onClick={() => toggleRelatedSpot(spot.id)} className="overflow-hidden rounded-2xl border border-white/10 bg-black/20 text-left transition hover:border-amber-300/50 hover:bg-white/5">
-                      <div className="relative aspect-[16/9] overflow-hidden">
-                        <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
-                      </div>
-                      <div className="p-3">
-                        <p className="font-medium text-white">{getLocationLabel(spot)}</p>
-                        <p className="mt-1 text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Label>相关地区</Label>
-                <div className="flex flex-wrap gap-2">
-                  {selectedRegions.length ? selectedRegions.map((region) => (
-                    <button key={region.id} type="button" onClick={() => toggleRegion(region.id)} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-white/90">
-                      {region.name_cn || region.name}<X className="h-3 w-3" />
-                    </button>
-                  )) : <p className="text-sm text-gray-400">还没关联地区。</p>}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {regions.filter((region) => !form.relatedRegionIds.includes(region.id)).slice(0, 24).map((region) => (
-                    <button key={region.id} type="button" onClick={() => toggleRegion(region.id)} className="rounded-full border border-white/10 px-3 py-1 text-sm text-white/75 hover:bg-white/10">
-                      {region.country} / {region.name_cn || region.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-white/10 bg-white/5 text-white">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>正文模块</CardTitle>
-                <p className="mt-2 text-sm text-white/55">像搭积木一样排正文。点击模块即可激活，激活后点击上方的 Quick Insert 会在下方插入。</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {(['paragraph', 'heading', 'quote', 'image', 'spot', 'affiliate'] as NoteBlockType[]).map((type) => (
-                  <Button type="button" key={type} variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock(type, activeBlockId)}>
-                    <Plus className="mr-2 h-4 w-4" />{BLOCK_LABELS[type]}
-                  </Button>
-                ))}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              {form.blocks.length ? form.blocks.map((block, index) => {
-                const selectedSpot = locations.find((item) => item.id === block.spotId)
-                const selectedAffiliateIds = new Set(block.affiliateIds || [])
-                return (
-                  <div
-                    key={block.id}
-                    ref={(element) => registerBlockRef(block.id, element)}
-                    className={`rounded-[28px] border p-4 transition ${activeBlockId === block.id ? 'border-amber-300/50 bg-amber-300/10 shadow-[0_0_0_1px_rgba(252,211,77,0.15)]' : 'border-white/10 bg-black/20'}`}
-                    onClick={() => setActiveBlockId(block.id)}
-                  >
-                    <div className="mb-4 flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <Badge className="bg-amber-400/10 text-amber-200">{BLOCK_LABELS[block.type]}</Badge>
-                        <span className="text-sm text-gray-400">Block {index + 1}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button 
-                          type="button" 
-                          size="sm" 
-                          variant="ghost" 
-                          className="h-8 w-8 p-0 text-white/40 hover:bg-white/10 hover:text-white"
-                          onClick={(e) => { e.stopPropagation(); addBlock('paragraph', block.id); }}
-                          title="在下方插入段落"
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}><ArrowUp className="h-4 w-4" /></Button>
-                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}><ArrowDown className="h-4 w-4" /></Button>
-                        <Button type="button" size="icon" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => removeBlock(index)}><Trash2 className="h-4 w-4" /></Button>
-                      </div>
-                    </div>
-
-                    {(block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote') ? (
-                      <div className="space-y-3">
-                        {block.type !== 'paragraph' ? <div className="space-y-2"><Label>小标题</Label><Input value={block.title || ''} onChange={(event) => updateBlock(index, { title: event.target.value })} /></div> : null}
-                        <div className="space-y-2"><Label>内容</Label><Textarea rows={block.type === 'quote' ? 3 : 6} value={block.content || ''} onChange={(event) => updateBlock(index, { content: event.target.value })} /></div>
-                      </div>
-                    ) : null}
-
-                    {block.type === 'image' ? (
-                      <div className="space-y-3">
-                        <div className="rounded-2xl border border-dashed border-amber-300/20 bg-amber-300/5 px-4 py-3 text-sm leading-7 text-amber-100/90">
-                          贴上图片直链后，这一块会立刻在上方预览和前台文章中显示。
-                        </div>
-                        <div className="space-y-2"><Label>图片 URL</Label><Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} placeholder="https://..." /></div>
-                        <div className="space-y-2"><Label>图说</Label><Input value={block.caption || ''} onChange={(event) => updateBlock(index, { caption: event.target.value })} /></div>
-                      </div>
-                    ) : null}
-
-                    {block.type === 'spot' ? (
-                      <div className="space-y-3">
-                        {selectedSpot ? (
-                          <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-                            <div className="relative aspect-[16/9] overflow-hidden"><FallbackImage src={getLocationCover(selectedSpot)} alt={getLocationLabel(selectedSpot)} fill className="object-cover" /></div>
-                            <div className="flex items-center justify-between p-3">
-                              <div>
-                                <p className="font-medium text-white">{getLocationLabel(selectedSpot)}</p>
-                                <p className="mt-1 text-xs text-gray-400">{selectedSpot.regions?.country} / {selectedSpot.regions?.name_cn || selectedSpot.regions?.name}</p>
-                              </div>
-                              <Button variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => updateBlock(index, { spotId: undefined })}>清除</Button>
+                        {block.type === 'image' ? (
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <Label>Image URL</Label>
+                              <Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} placeholder="https://..." />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Alt</Label>
+                              <Input value={block.alt || ''} onChange={(event) => updateBlock(index, { alt: event.target.value })} placeholder="If empty, it will be generated automatically." />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Caption</Label>
+                              <Textarea value={block.caption || ''} onChange={(event) => updateBlock(index, { caption: event.target.value })} rows={2} placeholder="Optional caption" />
                             </div>
                           </div>
                         ) : null}
-                        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                          {selectedRelatedSpots.slice(0, 12).map((spot) => (
-                            <button key={spot.id} type="button" onClick={() => updateBlock(index, { spotId: spot.id })} className={`overflow-hidden rounded-2xl border text-left transition ${block.spotId === spot.id ? 'border-amber-300/50 bg-amber-300/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}>
-                              <div className="relative aspect-[16/9] overflow-hidden"><FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" /></div>
-                              <div className="p-3"><p className="font-medium text-white">{getLocationLabel(spot)}</p></div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
 
-                    {block.type === 'affiliate' ? (
-                      <div className="space-y-3">
-                        <div className="flex flex-wrap gap-2">
-                          {(block.affiliateIds || []).map((id) => {
-                            const link = affiliateLinks.find((item) => item.id === id)
-                            if (!link) return null
-                            return (
-                              <button key={id} type="button" onClick={() => toggleAffiliateForBlock(index, id)} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1 text-sm text-white/90">
-                                {link.title || `${link.provider} ${link.link_type}`}<X className="h-3 w-3" />
-                              </button>
-                            )
-                          })}
-                        </div>
-                        <div className="relative"><Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" /><Input className="pl-10" value={affiliateSearch} onChange={(event) => setAffiliateSearch(event.target.value)} placeholder="搜索并嵌入联盟链接" /></div>
-                        <div className="grid gap-3 md:grid-cols-2">
-                          {filteredAffiliateLinks.map((link) => (
-                            <button key={link.id} type="button" onClick={() => toggleAffiliateForBlock(index, link.id)} className={`rounded-2xl border p-4 text-left transition ${selectedAffiliateIds.has(link.id) ? 'border-amber-300/50 bg-amber-300/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}>
-                              <div className="flex items-center justify-between gap-3">
-                                <p className="font-medium text-white">{link.title || `${link.provider} ${link.link_type}`}</p>
-                                <Badge variant="outline">{link.provider}</Badge>
+                        {(block.type === 'spotImages' || block.type === 'gallery') ? (
+                          <div className="space-y-4">
+                            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                              <div>
+                                <p className="font-medium text-white">{block.spotName || 'No spot selected yet'}</p>
+                                <p className="text-sm text-white/55">
+                                  {block.images?.length ? `${block.images.length} images selected` : 'Pick a spot, then select one or more images.'}
+                                </p>
                               </div>
-                              <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-400">{link.description || link.url}</p>
-                            </button>
-                          ))}
+                              <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => openSpotImagePicker(block.id)}>
+                                <Search className="mr-2 h-4 w-4" />
+                                Choose spot images
+                              </Button>
+                            </div>
+
+                            {block.images?.length ? (
+                              <div className="space-y-4">
+                                {block.images.map((image, imageIndex) => (
+                                  <div key={`${block.id}-${imageIndex}`} className="grid gap-4 rounded-2xl border border-white/10 bg-black/20 p-4 md:grid-cols-[180px_minmax(0,1fr)]">
+                                    <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+                                      <FallbackImage src={image.src} alt={image.alt} fill sizes="180px" className="object-cover" />
+                                    </div>
+                                    <div className="space-y-3">
+                                      <div className="space-y-2">
+                                        <Label>Alt</Label>
+                                        <Input
+                                          value={image.alt}
+                                          onChange={(event) => updateBlockImage(index, imageIndex, { alt: event.target.value })}
+                                          placeholder="Alt text"
+                                        />
+                                      </div>
+                                      <div className="space-y-2">
+                                        <Label>Caption</Label>
+                                        <Textarea
+                                          value={image.caption || ''}
+                                          onChange={(event) => updateBlockImage(index, imageIndex, { caption: event.target.value })}
+                                          rows={2}
+                                          placeholder="Optional caption"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
+                        ) : null}
+
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('paragraph', index)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Paragraph below
+                          </Button>
+                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('image', index)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Single image below
+                          </Button>
+                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Spot images below
+                          </Button>
                         </div>
                       </div>
-                    ) : null}
+                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-[24px] border border-dashed border-white/15 bg-black/20 p-6 text-sm text-white/55">
+                    No blocks yet. Add a paragraph block to begin.
                   </div>
-                )
-              }) : <p className="text-sm text-gray-400">还没有正文模块，先加一个 paragraph 开始写。</p>}
-            </CardContent>
-          </Card>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="border-white/10 bg-white/5 text-white">
+              <CardHeader>
+                <CardTitle>Structure Preview</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <section className={`overflow-hidden rounded-[30px] border border-white/10 p-6 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
+                  <p className="text-xs uppercase tracking-[0.24em] text-amber-200/80">{form.kicker || 'Longform Note'}</p>
+                  <h2 className="mt-4 text-4xl font-semibold leading-tight text-white">{form.title || 'Your note title'}</h2>
+                  {form.tagline ? <p className="mt-4 text-sm leading-7 text-white/80">{form.tagline}</p> : null}
+                </section>
+
+                {form.summary ? (
+                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm leading-7 text-white/70">
+                    {form.summary}
+                  </div>
+                ) : null}
+
+                <div className="space-y-6">
+                  {form.blocks.map((block) => (
+                    <BlockPreview key={block.id} block={block} locationsById={locationsById} />
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </section>
       </div>
 
-      {/* Dialogs for Summary Interactive Insert */}
-      <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
-        <DialogContent className="border-white/10 bg-[#09090b] text-white">
-          <DialogHeader><DialogTitle>插入图片</DialogTitle></DialogHeader>
-          <div className="py-4">
-            <Label>图片 URL</Label>
-            <Input 
-              autoFocus
-              value={tempImageUrl} 
-              onChange={(e) => setTempImageUrl(e.target.value)} 
-              placeholder="https://..." 
-              onKeyDown={(e) => e.key === 'Enter' && confirmImageInsert()}
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsImageDialogOpen(false)}>取消</Button>
-            <Button className="bg-white text-black hover:bg-amber-50" onClick={confirmImageInsert}>确认插入</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+        <DialogContent className="max-w-5xl border-white/10 bg-[#0b0b0d] text-white">
+          <DialogHeader>
+            <DialogTitle>Select images from an existing spot</DialogTitle>
+          </DialogHeader>
 
-      <Dialog open={isSpotDialogOpen} onOpenChange={setIsSpotDialogOpen}>
-        <DialogContent className="max-w-2xl border-white/10 bg-[#09090b] text-white">
-          <DialogHeader><DialogTitle>插入景点卡片</DialogTitle></DialogHeader>
-          <div className="py-4 space-y-4">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-              <Input className="pl-10" value={spotSearch} onChange={(e) => setSpotSearch(e.target.value)} placeholder="搜索景点..." />
+          <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Search spot</Label>
+                <Input value={spotQuery} onChange={(event) => setSpotQuery(event.target.value)} placeholder="BOH Tea Centre, Green View Garden…" />
+              </div>
+              <div className="max-h-[420px] space-y-2 overflow-y-auto rounded-2xl border border-white/10 bg-black/20 p-2">
+                {filteredSpots.map((spot) => (
+                  <button
+                    key={spot.id}
+                    type="button"
+                    onClick={() => {
+                      setSelectedSpotId(spot.id)
+                      setSelectedSpotImageUrls([])
+                    }}
+                    className={`w-full rounded-2xl border px-3 py-3 text-left transition ${selectedSpotId === spot.id ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                  >
+                    <p className="font-medium text-white">{getLocationLabel(spot)}</p>
+                    <p className="mt-1 text-xs text-white/55">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name || 'No region'}</p>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="max-h-[300px] overflow-y-auto grid gap-3 sm:grid-cols-2">
-              {filteredSpots.map((spot) => (
-                <button 
-                  key={spot.id} 
-                  onClick={() => confirmSpotInsert(spot.id)}
-                  className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-2 text-left hover:bg-white/10"
-                >
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
-                    <FallbackImage src={getLocationCover(spot)} alt={getLocationLabel(spot)} fill className="object-cover" />
+
+            <div className="space-y-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                <p className="font-medium text-white">{selectedSpot ? getLocationLabel(selectedSpot) : 'Choose a spot first'}</p>
+                <p className="mt-1 text-sm text-white/55">
+                  {selectedSpot ? 'Select one or more existing images to insert into this note block.' : 'This picker reuses images already saved on the spot.'}
+                </p>
+              </div>
+
+              {selectedSpot ? (
+                selectedSpotImages.length ? (
+                  <div className="grid max-h-[480px] gap-4 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-3">
+                    {selectedSpotImages.map((src) => {
+                      const checked = selectedSpotImageUrls.includes(src)
+                      return (
+                        <button
+                          key={src}
+                          type="button"
+                          onClick={() =>
+                            setSelectedSpotImageUrls((current) =>
+                              current.includes(src) ? current.filter((item) => item !== src) : [...current, src]
+                            )
+                          }
+                          className={`overflow-hidden rounded-[24px] border text-left transition ${checked ? 'border-amber-300/50 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                        >
+                          <div className="relative aspect-[4/3] overflow-hidden">
+                            <FallbackImage src={src} alt={getLocationLabel(selectedSpot)} fill sizes="320px" className="object-cover" />
+                          </div>
+                          <div className="flex items-center justify-between gap-3 px-4 py-3">
+                            <span className="truncate text-sm text-white/80">{checked ? 'Selected' : 'Click to select'}</span>
+                            <span className={`inline-flex h-5 w-5 items-center justify-center rounded-full border text-xs ${checked ? 'border-amber-300 bg-amber-200 text-black' : 'border-white/20 text-white/55'}`}>
+                              {checked ? '✓' : ''}
+                            </span>
+                          </div>
+                        </button>
+                      )
+                    })}
                   </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{getLocationLabel(spot)}</p>
-                    <p className="truncate text-[10px] text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-6 text-sm text-white/55">
+                    This spot has no images yet.
                   </div>
-                </button>
-              ))}
+                )
+              ) : (
+                <div className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-6 text-sm text-white/55">
+                  Search a spot on the left, then choose images from its existing gallery or cover.
+                </div>
+              )}
             </div>
           </div>
+
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsSpotDialogOpen(false)}>关闭</Button>
+            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setPickerOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applySpotImagesToBlock} disabled={!selectedSpotId || !selectedSpotImageUrls.length}>
+              Insert selected images
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

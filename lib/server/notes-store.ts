@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { LongformNote, NoteBlock } from '@/lib/notes'
-import { DEFAULT_NOTE_COVER_ACCENT } from '@/lib/notes'
+import { createNoteImageItem, DEFAULT_NOTE_COVER_ACCENT, getRenderableNoteBlocks } from '@/lib/notes'
 
 const notesFilePath = path.join(process.cwd(), 'data', 'notes.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -44,18 +44,30 @@ function normalizeBlock(value: any): NoteBlock | null {
   const type = String(value?.type || '').trim() as NoteBlock['type']
   if (!type) return null
 
+  const spotName = String(value?.spotName || value?.title || '').trim() || undefined
+  const imageItems = Array.isArray(value?.images)
+    ? value.images
+        .map((item: any) => createNoteImageItem(item, spotName))
+        .filter((item: ReturnType<typeof createNoteImageItem>): item is NonNullable<ReturnType<typeof createNoteImageItem>> => Boolean(item))
+    : []
+
   const block: NoteBlock = {
     id: String(value?.id || '').trim() || `block-${Math.random().toString(36).slice(2, 10)}`,
     type,
     title: String(value?.title || '').trim() || undefined,
     content: String(value?.content || '').trim() || undefined,
     imageUrl: String(value?.imageUrl || '').trim() || undefined,
+    alt: String(value?.alt || '').trim() || undefined,
     caption: String(value?.caption || '').trim() || undefined,
+    images: imageItems.length ? imageItems : undefined,
     spotId: Number.isFinite(Number(value?.spotId)) ? Number(value.spotId) : undefined,
+    spotSlug: String(value?.spotSlug || '').trim() || undefined,
+    spotName,
     affiliateIds: normalizeNumberArray(value?.affiliateIds),
   }
 
   if (block.type === 'image' && !block.imageUrl) return null
+  if ((block.type === 'gallery' || block.type === 'spotImages') && !block.images?.length) return null
   if (block.type === 'spot' && !block.spotId) return null
   if (block.type === 'affiliate' && !block.affiliateIds?.length) return null
   if ((block.type === 'paragraph' || block.type === 'quote' || block.type === 'heading') && !block.content) {
@@ -66,6 +78,19 @@ function normalizeBlock(value: any): NoteBlock | null {
 }
 
 export function normalizeNotePayload(value: any): LongformNote {
+  const legacyContent = String(value?.content || '').trim()
+  const normalizedBlocks = Array.isArray(value?.blocks)
+    ? value.blocks
+        .map((item: any) => normalizeBlock(item))
+        .filter((item: NoteBlock | null): item is NoteBlock => Boolean(item))
+    : []
+
+  const renderableBlocks = normalizedBlocks.length ? normalizedBlocks : getRenderableNoteBlocks({
+    blocks: [],
+    content: legacyContent,
+    summary: String(value?.summary || '').trim(),
+  })
+
   return {
     slug: String(value?.slug || '').trim(),
     aliases: normalizeStringArray(value?.aliases),
@@ -74,17 +99,14 @@ export function normalizeNotePayload(value: any): LongformNote {
     kicker: String(value?.kicker || '').trim() || 'Longform Note',
     tagline: String(value?.tagline || '').trim(),
     summary: String(value?.summary || '').trim(),
+    content: legacyContent || undefined,
     coverImage: String(value?.coverImage || '').trim() || undefined,
     coverAccent: String(value?.coverAccent || '').trim() || DEFAULT_NOTE_COVER_ACCENT,
     published: Boolean(value?.published),
     tags: normalizeStringArray(value?.tags),
     relatedRegionIds: normalizeNumberArray(value?.relatedRegionIds),
     relatedSpotIds: normalizeNumberArray(value?.relatedSpotIds),
-    blocks: Array.isArray(value?.blocks)
-      ? value.blocks
-          .map((item: any) => normalizeBlock(item))
-          .filter((item: NoteBlock | null): item is NoteBlock => Boolean(item))
-      : [],
+    blocks: renderableBlocks,
     createdAt: String(value?.createdAt || '').trim() || undefined,
     updatedAt: String(value?.updatedAt || '').trim() || undefined,
   }

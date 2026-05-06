@@ -1,5 +1,18 @@
-// Utility for notes
-export type NoteBlockType = 'paragraph' | 'heading' | 'quote' | 'image' | 'spot' | 'affiliate'
+export type NoteBlockType =
+  | 'paragraph'
+  | 'heading'
+  | 'quote'
+  | 'image'
+  | 'gallery'
+  | 'spotImages'
+  | 'spot'
+  | 'affiliate'
+
+export interface NoteImageItem {
+  src: string
+  alt: string
+  caption?: string
+}
 
 export interface NoteBlock {
   id: string
@@ -7,8 +20,12 @@ export interface NoteBlock {
   title?: string
   content?: string
   imageUrl?: string
+  alt?: string
   caption?: string
+  images?: NoteImageItem[]
   spotId?: number
+  spotSlug?: string
+  spotName?: string
   affiliateIds?: number[]
 }
 
@@ -20,6 +37,7 @@ export interface LongformNote {
   kicker: string
   tagline: string
   summary: string
+  content?: string
   coverImage?: string
   coverAccent: string
   published: boolean
@@ -47,7 +65,6 @@ export function parseSummary(summary: string): SummaryPart[] {
   let match
 
   while ((match = regex.exec(summary)) !== null) {
-    // Add text before the match
     if (match.index > lastIndex) {
       parts.push({
         type: 'text',
@@ -65,7 +82,7 @@ export function parseSummary(summary: string): SummaryPart[] {
       })
     } else if (type === 'spot' || type === 'location') {
       const spotId = parseInt(value, 10)
-      if (!isNaN(spotId)) {
+      if (!Number.isNaN(spotId)) {
         parts.push({
           type: 'spot',
           spotId,
@@ -76,7 +93,6 @@ export function parseSummary(summary: string): SummaryPart[] {
     lastIndex = regex.lastIndex
   }
 
-  // Add remaining text
   if (lastIndex < summary.length) {
     parts.push({
       type: 'text',
@@ -87,9 +103,52 @@ export function parseSummary(summary: string): SummaryPart[] {
   return parts
 }
 
-export function stripSummaryTokens(summary: string): string {
+export function stripSummaryTokens(summary: string) {
   if (!summary) return ''
   return summary.replace(/\[(img|image|spot|location):([^\]]+)\]/g, '').trim()
+}
+
+export function buildFallbackAlt(spotName?: string, caption?: string) {
+  const label = String(spotName || '').trim() || String(caption || '').trim()
+  return label ? `${label} 旅游图片` : 'Travel photo'
+}
+
+export function createNoteImageItem(value: Partial<NoteImageItem> & { src?: string }, spotName?: string): NoteImageItem | null {
+  const src = String(value?.src || '').trim()
+  if (!src) return null
+
+  const caption = String(value?.caption || '').trim()
+  const alt = String(value?.alt || '').trim() || buildFallbackAlt(spotName, caption)
+
+  return {
+    src,
+    alt,
+    caption: caption || undefined,
+  }
+}
+
+export function contentToParagraphBlocks(content: string): NoteBlock[] {
+  const cleaned = String(content || '').trim()
+  if (!cleaned) return []
+
+  return cleaned
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph, index) => ({
+      id: `legacy-paragraph-${index + 1}`,
+      type: 'paragraph' as const,
+      content: paragraph,
+    }))
+}
+
+export function getRenderableNoteBlocks(note: Pick<LongformNote, 'blocks' | 'content' | 'summary'>) {
+  if (Array.isArray(note.blocks) && note.blocks.length > 0) {
+    return note.blocks
+  }
+
+  const legacySource = String(note.content || '').trim() || String(note.summary || '').trim()
+  return contentToParagraphBlocks(legacySource)
 }
 
 export const DEFAULT_NOTE_COVER_ACCENT =
@@ -103,6 +162,7 @@ export const EMPTY_NOTE: LongformNote = {
   kicker: 'Longform Note',
   tagline: '',
   summary: '',
+  content: '',
   coverImage: '',
   coverAccent: DEFAULT_NOTE_COVER_ACCENT,
   published: false,

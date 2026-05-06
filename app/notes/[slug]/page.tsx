@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
+import { MapPin } from 'lucide-react'
 
 import SiteFooter from '@/components/SiteFooter'
 import AffiliateCard from '@/components/AffiliateCard'
@@ -9,10 +11,41 @@ import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
-import { parseSummary } from '@/lib/notes'
+import { buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
+import { buildFallbackAlt, getRenderableNoteBlocks, type LongformNote, type NoteBlock } from '@/lib/notes'
 
 interface PageProps {
   params: { slug: string }
+}
+
+interface RegionData {
+  id: number
+  name: string
+  name_cn?: string | null
+  country?: string | null
+}
+
+interface LocationData {
+  id: number
+  name: string
+  name_cn?: string | null
+  category?: string | null
+  image_url?: string | null
+  images?: string[] | null
+  description?: string | null
+  review?: string | null
+  regions?: RegionData | null
+}
+
+interface AffiliateData {
+  id: number
+  title?: string | null
+  description?: string | null
+  provider: string
+  link_type: string
+  url: string
+  preview_image_url?: string | null
+  image_url?: string | null
 }
 
 function createPublicSupabaseClient() {
@@ -45,223 +78,286 @@ async function fetchLocationsByIds(ids: number[]) {
     .sort((left, right) => (order.get(left.id) ?? 999) - (order.get(right.id) ?? 999))
 }
 
+async function fetchAffiliateLinksByIds(ids: number[]) {
+  if (!ids.length) return []
+  const supabase = createPublicSupabaseClient()
+  const { data, error } = await supabase
+    .from('affiliate_links')
+    .select('id,title,description,provider,link_type,url,preview_image_url,image_url')
+    .in('id', ids)
+    .eq('is_active', true)
+
+  if (error || !data) return []
+  return data as AffiliateData[]
+}
+
+function getTextExcerpt(note: LongformNote) {
+  const blockText = getRenderableNoteBlocks(note)
+    .filter((block) => block.type === 'paragraph' || block.type === 'quote' || block.type === 'heading')
+    .map((block) => block.content || '')
+    .join(' ')
+    .trim()
+
+  return note.summary || note.tagline || note.content || blockText
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const note = await readNoteBySlug(params.slug)
   if (!note) {
-    return { title: '笔记不存在 | JnQ Journey' }
+    return { title: buildPageTitle('Note not found') }
   }
 
+  const description = buildMetaDescription(getTextExcerpt(note), `Read this travel note about ${note.title}.`)
+  const title = buildPageTitle(note.title)
+  const path = `/notes/${note.slug}`
+  const image = note.coverImage || absoluteUrl('/icon.png')
+
   return {
-    title: `${note.title} | JnQ Journey`,
-    description: String(note.summary || note.tagline || '').slice(0, 160),
-    alternates: { canonical: `/notes/${note.slug}` },
-    openGraph: {
-      title: note.title,
-      description: String(note.summary || note.tagline || '').slice(0, 160),
-      url: absoluteUrl(`/notes/${note.slug}`),
-      images: note.coverImage ? [{ url: note.coverImage }] : undefined,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: note.title,
-      description: String(note.summary || note.tagline || '').slice(0, 160),
-      images: note.coverImage ? [note.coverImage] : undefined,
-    },
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: buildOpenGraphData(title, description, path, image, 'article'),
+    twitter: buildTwitterCardData(title, description, image),
   }
 }
 
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 600
+
+function NoteImageFigure({
+  src,
+  alt,
+  caption,
+}: {
+  src: string
+  alt: string
+  caption?: string
+}) {
+  return (
+    <figure className="space-y-3">
+      <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+        <FallbackImage src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 820px" className="object-cover" />
+      </div>
+      {caption ? <figcaption className="px-1 text-sm leading-7 text-white/55">{caption}</figcaption> : null}
+    </figure>
+  )
+}
+
+function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>) {
+  if (block.type === 'heading') {
+    return <h2 key={block.id} className="pt-4 text-3xl font-semibold tracking-tight text-white md:text-4xl">{block.content}</h2>
+  }
+
+  if (block.type === 'quote') {
+    return (
+      <blockquote key={block.id} className="rounded-[30px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">
+        {block.content}
+      </blockquote>
+    )
+  }
+
+  if (block.type === 'image' && block.imageUrl) {
+    return (
+      <NoteImageFigure
+        key={block.id}
+        src={block.imageUrl}
+        alt={block.alt?.trim() || buildFallbackAlt(undefined, block.caption)}
+        caption={block.caption}
+      />
+    )
+  }
+
+  if ((block.type === 'gallery' || block.type === 'spotImages') && block.images?.length) {
+    const spot = block.spotId ? locationsById.get(block.spotId) : null
+    const spotLabel = block.spotName || (spot ? spot.name_cn || spot.name : '')
+    return (
+      <div key={block.id} className="space-y-4">
+        {block.type === 'spotImages' && spotLabel ? (
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
+            <MapPin className="h-3.5 w-3.5" />
+            {spotLabel}
+          </div>
+        ) : null}
+        <div className={`grid gap-4 ${block.images.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
+          {block.images.map((image, index) => (
+            <NoteImageFigure
+              key={`${block.id}-${index}`}
+              src={image.src}
+              alt={image.alt?.trim() || buildFallbackAlt(spotLabel, image.caption)}
+              caption={image.caption}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (block.type === 'spot' && block.spotId) {
+    const spot = locationsById.get(block.spotId)
+    if (!spot) return null
+    return (
+      <Link
+        key={block.id}
+        href={buildLocationPath(spot.name, spot.id)}
+        className="grid gap-5 overflow-hidden rounded-[30px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:grid-cols-[240px_minmax(0,1fr)]"
+      >
+        <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
+          <FallbackImage
+            src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+            alt={spot.name_cn || spot.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 240px"
+            className="object-cover"
+          />
+        </div>
+        <div className="p-5">
+          <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Related Spot</p>
+          <h3 className="mt-3 text-2xl font-semibold text-white">{spot.name_cn || spot.name}</h3>
+          <p className="mt-3 text-sm leading-7 text-gray-300">
+            {spot.description || spot.review || 'Open the linked spot page for the full travel details.'}
+          </p>
+        </div>
+      </Link>
+    )
+  }
+
+  return (
+    <p key={block.id} className="text-[1.02rem] leading-8 text-gray-200 whitespace-pre-wrap">
+      {block.content}
+    </p>
+  )
+}
 
 export default async function NoteDetailPage({ params }: PageProps) {
   const note = await readNoteBySlug(params.slug)
   if (!note || !note.published) notFound()
 
-  const relatedSpots = await fetchLocationsByIds(note.relatedSpotIds)
-  const summaryParts = parseSummary(note.summary)
-  const summarySpotIds = summaryParts
-    .filter((part) => part.type === 'spot' && part.spotId)
-    .map((part) => part.spotId as number)
+  const blocks = getRenderableNoteBlocks(note)
+  const contentBlocks = blocks.filter((block) => block.type !== 'affiliate')
+  const affiliateBlocks = blocks.filter((block) => block.type === 'affiliate' && block.affiliateIds?.length)
 
-  const contentBlocks = note.blocks.filter((block) => block.type !== 'affiliate')
-  const sidebarAffiliateBlocks = note.blocks.filter(
-    (block) => block.type === 'affiliate' && Boolean(block.affiliateIds?.length)
+  const spotIds = Array.from(
+    new Set(
+      [
+        ...(note.relatedSpotIds || []),
+        ...blocks.map((block) => block.spotId).filter((value): value is number => Number.isFinite(value)),
+      ].filter(Boolean)
+    )
   )
-  const blockSpotIds = note.blocks.filter((block) => block.type === 'spot' && block.spotId).map((block) => block.spotId as number)
-  const blockSpots = await fetchLocationsByIds([...new Set([...blockSpotIds, ...summarySpotIds])])
-  const spotMap = new Map(blockSpots.map((spot: any) => [spot.id, spot]))
+  const affiliateIds = Array.from(new Set(affiliateBlocks.flatMap((block) => block.affiliateIds || [])))
+
+  const [relatedSpots, affiliateLinks] = await Promise.all([
+    fetchLocationsByIds(spotIds),
+    fetchAffiliateLinksByIds(affiliateIds),
+  ])
+
+  const locationsById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
+  const affiliateById = new Map(affiliateLinks.map((link) => [link.id, link]))
+  const textExcerpt = getTextExcerpt(note)
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.12),transparent_18%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white">
-      <div className="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10">
-        <section className={`overflow-hidden rounded-[40px] border border-white/10 p-7 md:p-10 ${note.coverAccent}`}>
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_420px] lg:items-end">
-            <div>
-              <p className="section-kicker text-xs text-amber-100/80">{note.kicker}</p>
-              <h1 className="font-display mt-5 text-5xl leading-none text-white md:text-7xl">{note.title}</h1>
-              {note.tagline ? <p className="mt-5 max-w-3xl text-base leading-8 text-white/80">{note.tagline}</p> : null}
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.10),transparent_18%),linear-gradient(180deg,#111827_0%,#020617_50%,#000000_100%)] text-white">
+      <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-12">
+        <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-white/45">
+          <Link href="/" className="transition hover:text-white">Home</Link>
+          <span>/</span>
+          <Link href="/notes" className="transition hover:text-white">Notes</Link>
+          <span>/</span>
+          <span className="text-white/65">{note.title}</span>
+        </div>
+
+        <section className={`overflow-hidden rounded-[38px] border border-white/10 p-7 md:p-10 ${note.coverAccent || ''}`}>
+          <div className={`grid gap-6 ${note.coverImage ? 'lg:grid-cols-[minmax(0,1.1fr)_420px] lg:items-center' : ''}`}>
+            <div className="space-y-5">
+              <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{note.kicker || 'Longform Note'}</p>
+              <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">{note.title}</h1>
+              {note.tagline ? <p className="max-w-3xl text-base leading-8 text-white/80">{note.tagline}</p> : null}
             </div>
             {note.coverImage ? (
               <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-white/10 bg-black/20">
-                <FallbackImage src={note.coverImage} alt={note.title} fill className="object-cover" />
+                <FallbackImage src={note.coverImage} alt={`${note.title} cover image`} fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" priority />
               </div>
             ) : null}
           </div>
         </section>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <article className="space-y-8">
-            {summaryParts.length ? (
-              <div className="max-w-4xl space-y-5 rounded-[28px] border border-white/10 bg-white/5 px-6 py-5">
-                {summaryParts.map((part, index) => {
-                  if (part.type === 'text') {
-                    return (
-                      <p key={index} className="text-base leading-8 text-gray-100 md:text-[1.05rem]">
-                        {part.content}
-                      </p>
-                    )
-                  }
-
-                  if (part.type === 'image' && part.imageUrl) {
-                    return (
-                      <div key={index} className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
-                        <FallbackImage src={part.imageUrl} alt={note.title} fill className="object-cover" />
-                      </div>
-                    )
-                  }
-
-                  if (part.type === 'spot' && part.spotId) {
-                    const spot = spotMap.get(part.spotId)
-                    if (!spot) return null
-                    return (
-                      <a
-                        key={index}
-                        href={buildLocationPath(spot.name, spot.id)}
-                        className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 transition hover:bg-white/10"
-                      >
-                        <div className="relative h-16 w-16 overflow-hidden rounded-xl">
-                          <FallbackImage
-                            src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
-                            alt={spot.name_cn || spot.name}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate font-medium text-white">{spot.name_cn || spot.name}</p>
-                          <p className="truncate text-xs text-gray-400">
-                            {spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}
-                          </p>
-                        </div>
-                      </a>
-                    )
-                  }
-
-                  return null
-                })}
+          <article className="space-y-7">
+            {note.summary ? (
+              <div className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-sm leading-7 text-white/70">
+                {note.summary}
               </div>
             ) : null}
 
-            {contentBlocks.map((block) => {
-              if (block.type === 'heading') {
-                return <h2 key={block.id} className="font-display pt-6 text-3xl text-white md:text-4xl">{block.content}</h2>
-              }
-
-              if (block.type === 'quote') {
-                return <blockquote key={block.id} className="rounded-[32px] border border-white/10 bg-white/5 px-6 py-6 text-lg leading-8 text-white/85 md:px-8">
-                  {block.content}
-                </blockquote>
-              }
-
-              if (block.type === 'image' && block.imageUrl) {
-                return (
-                  <figure key={block.id} className="overflow-hidden rounded-[32px] border border-white/10 bg-white/5">
-                    <div className="relative aspect-[16/9] overflow-hidden">
-                      <FallbackImage src={block.imageUrl} alt={block.caption || note.title} fill className="object-cover" />
-                    </div>
-                    {block.caption ? <figcaption className="px-5 py-4 text-sm leading-7 text-gray-300">{block.caption}</figcaption> : null}
-                  </figure>
-                )
-              }
-
-              if (block.type === 'spot' && block.spotId) {
-                const spot = spotMap.get(block.spotId)
-                if (!spot) return null
-                return (
-                  <a key={block.id} href={buildLocationPath(spot.name, spot.id)} className="block overflow-hidden rounded-[28px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10">
-                    <div className="grid gap-5 md:grid-cols-[220px_minmax(0,1fr)]">
-                      <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
-                        <FallbackImage src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'} alt={spot.name_cn || spot.name} fill className="object-cover" />
-                      </div>
-                      <div className="p-5">
-                        <p className="section-kicker text-xs text-amber-300/80">关联景点</p>
-                        <h3 className="mt-3 text-2xl font-semibold text-white">{spot.name_cn || spot.name}</h3>
-                        <p className="mt-3 line-clamp-3 text-sm leading-7 text-gray-300">{spot.description || spot.review || '打开这张卡片，继续查看你已经整理好的独立景点页。'}</p>
-                      </div>
-                    </div>
-                  </a>
-                )
-              }
-
-              if (block.type === 'paragraph') {
-                return <p key={block.id} className="max-w-4xl text-base leading-8 text-gray-200 md:text-[1.02rem]">{block.content}</p>
-              }
-
-              return null
-            })}
+            {contentBlocks.length ? (
+              contentBlocks.map((block) => renderBlock(block, locationsById))
+            ) : textExcerpt ? (
+              <div className="space-y-5">
+                {textExcerpt.split(/\n{2,}/).map((paragraph, index) => (
+                  <p key={index} className="text-[1.02rem] leading-8 text-gray-200 whitespace-pre-wrap">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            ) : null}
           </article>
 
-          <aside className="space-y-5 lg:sticky lg:top-8 lg:h-fit">
-            <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-              <p className="section-kicker text-xs text-amber-300/80">Travel Sidebar</p>
-              <h2 className="mt-3 text-2xl font-semibold text-white">旅行工具与预订入口</h2>
-              <p className="mt-3 text-sm leading-7 text-gray-300">
-                右侧栏现在专门留给住宿、门票、交通等联盟推荐，让正文专心讲故事、给攻略、放照片。
-              </p>
-            </section>
+          <aside className="space-y-4">
+            {affiliateBlocks.map((block) => {
+              const links = (block.affiliateIds || [])
+                .map((id) => affiliateById.get(id))
+                .filter((item): item is AffiliateData => Boolean(item))
 
-            {sidebarAffiliateBlocks.length ? (
-              sidebarAffiliateBlocks.map((block) => (
+              if (!links.length) return null
+
+              return (
                 <section key={block.id} className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                  {block.title ? <p className="section-kicker text-xs text-amber-300/80">{block.title}</p> : null}
-                  {block.content ? <p className="mt-3 text-sm leading-7 text-gray-300">{block.content}</p> : null}
-                  <div className={block.content ? 'mt-5' : block.title ? 'mt-4' : ''}>
-                    <AffiliateCard linkIds={block.affiliateIds || []} limit={(block.affiliateIds || []).length} showDisclosure={false} />
+                  <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">{block.title || 'Recommended Links'}</p>
+                  {block.content ? <p className="mt-3 text-sm leading-7 text-white/60">{block.content}</p> : null}
+                  <div className="mt-4 space-y-3">
+                    <AffiliateCard
+                      linkIds={links.map((link) => link.id)}
+                      compact
+                      singleColumn
+                      hideHeader
+                      limit={links.length}
+                    />
                   </div>
                 </section>
-              ))
-            ) : (
+              )
+            })}
+
+            {relatedSpots.length ? (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                <p className="section-kicker text-xs text-emerald-300/80">Sidebar Reserved</p>
-                <p className="mt-3 text-sm leading-7 text-gray-300">
-                  这篇长文暂时还没挂联盟模块。后续在后台新增 `Affiliate / 联盟推荐` 模块后，这里会自动出现。
-                </p>
+                <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Related Spots</p>
+                <div className="mt-4 space-y-3">
+                  {relatedSpots.slice(0, 8).map((spot) => (
+                    <Link
+                      key={spot.id}
+                      href={buildLocationPath(spot.name, spot.id)}
+                      className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 transition hover:bg-white/10"
+                    >
+                      <div className="relative h-16 w-16 overflow-hidden rounded-xl">
+                        <FallbackImage
+                          src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+                          alt={spot.name_cn || spot.name}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-white">{spot.name_cn || spot.name}</p>
+                        <p className="truncate text-xs text-white/45">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </section>
-            )}
+            ) : null}
 
             <SupportSidebarCard className="bg-white/5" />
           </aside>
         </div>
-
-        {relatedSpots.length ? (
-          <section className="mt-8 rounded-[32px] border border-white/10 bg-white/5 p-6 md:p-7">
-            <p className="section-kicker text-xs text-amber-300/80">Connected Spots</p>
-            <h2 className="mt-3 text-3xl font-semibold text-white">这篇笔记关联的景点</h2>
-            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {relatedSpots.map((spot: any) => (
-                <a key={spot.id} href={buildLocationPath(spot.name, spot.id)} className="flex items-center gap-3 rounded-[24px] border border-white/10 bg-black/20 p-4 transition hover:bg-white/5">
-                  <div className="relative h-20 w-20 overflow-hidden rounded-2xl">
-                    <FallbackImage src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'} alt={spot.name_cn || spot.name} fill className="object-cover" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-lg font-medium text-white">{spot.name_cn || spot.name}</p>
-                    <p className="mt-1 truncate text-xs text-gray-400">{spot.regions?.country} / {spot.regions?.name_cn || spot.regions?.name}</p>
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-300">{spot.description || spot.review || '继续查看这条景点页，拿到更完整的地图、照片与交通信息。'}</p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
-        ) : null}
       </div>
 
       <SiteFooter />
