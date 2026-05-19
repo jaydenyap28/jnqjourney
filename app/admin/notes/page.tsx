@@ -175,6 +175,7 @@ export default function AdminNotesPage() {
 
   const [pickerOpen, setPickerOpen] = useState(false)
   const [pickerBlockId, setPickerBlockId] = useState('')
+  const [pickerMode, setPickerMode] = useState<'replace' | 'insertAfter'>('replace')
   const [spotQuery, setSpotQuery] = useState('')
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
@@ -317,13 +318,19 @@ export default function AdminNotesPage() {
     }))
   }
 
-  function openSpotImagePicker(blockId: string) {
+  function openSpotImagePicker(blockId: string, mode: 'replace' | 'insertAfter' = 'replace') {
     const targetBlock = form.blocks.find((block) => block.id === blockId)
     setPickerBlockId(blockId)
+    setPickerMode(mode)
     setPickerOpen(true)
     setSpotQuery('')
-    setSelectedSpotId(targetBlock?.spotId || null)
-    setSelectedSpotImageUrls(targetBlock?.images?.map((image) => image.src) || [])
+    if (mode === 'replace') {
+      setSelectedSpotId(targetBlock?.spotId || null)
+      setSelectedSpotImageUrls(targetBlock?.images?.map((image) => image.src) || [])
+    } else {
+      setSelectedSpotId(null)
+      setSelectedSpotImageUrls([])
+    }
   }
 
   function applySpotImagesToBlock() {
@@ -342,12 +349,30 @@ export default function AdminNotesPage() {
       )
       .filter((image) => image.src)
 
-    updateBlock(targetIndex, {
-      type: 'spotImages',
-      spotId: selectedSpot.id,
-      spotName: getLocationLabel(selectedSpot),
-      images,
-    })
+    if (pickerMode === 'insertAfter') {
+      const nextBlock: NoteBlock = {
+        id: createBlockId(),
+        type: 'spotImages',
+        spotId: selectedSpot.id,
+        spotName: getLocationLabel(selectedSpot),
+        images,
+      }
+
+      setForm((current) => {
+        const nextBlocks = [...current.blocks]
+        nextBlocks.splice(targetIndex + 1, 0, nextBlock)
+        return { ...current, blocks: nextBlocks }
+      })
+      setMessage(`Inserted ${images.length} image${images.length > 1 ? 's' : ''} from ${getLocationLabel(selectedSpot)} below the current block.`)
+    } else {
+      updateBlock(targetIndex, {
+        type: 'spotImages',
+        spotId: selectedSpot.id,
+        spotName: getLocationLabel(selectedSpot),
+        images,
+      })
+      setMessage(`Updated this image block with ${images.length} image${images.length > 1 ? 's' : ''} from ${getLocationLabel(selectedSpot)}.`)
+    }
     setPickerOpen(false)
   }
 
@@ -657,9 +682,9 @@ export default function AdminNotesPage() {
                                   {block.images?.length ? `${block.images.length} images selected` : 'Pick a spot, then select one or more images.'}
                                 </p>
                               </div>
-                              <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => openSpotImagePicker(block.id)}>
+                              <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => openSpotImagePicker(block.id, 'replace')}>
                                 <Search className="mr-2 h-4 w-4" />
-                                Choose spot images
+                                Change selected images
                               </Button>
                             </div>
 
@@ -705,10 +730,17 @@ export default function AdminNotesPage() {
                             <Plus className="mr-2 h-4 w-4" />
                             Single image below
                           </Button>
-                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Spot images below
-                          </Button>
+                          {(block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote') ? (
+                            <Button type="button" variant="outline" className="border-emerald-400/20 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/20" onClick={() => openSpotImagePicker(block.id, 'insertAfter')}>
+                              <ImageIcon className="mr-2 h-4 w-4" />
+                              Insert spot gallery below
+                            </Button>
+                          ) : (
+                            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
+                              <Plus className="mr-2 h-4 w-4" />
+                              Spot images below
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -752,7 +784,7 @@ export default function AdminNotesPage() {
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent className="max-w-5xl border-white/10 bg-[#0b0b0d] text-white">
           <DialogHeader>
-            <DialogTitle>Select images from an existing spot</DialogTitle>
+            <DialogTitle>{pickerMode === 'insertAfter' ? 'Insert spot images below current block' : 'Edit selected spot images'}</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
@@ -783,7 +815,7 @@ export default function AdminNotesPage() {
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
                 <p className="font-medium text-white">{selectedSpot ? getLocationLabel(selectedSpot) : 'Choose a spot first'}</p>
                 <p className="mt-1 text-sm text-white/55">
-                  {selectedSpot ? 'Select one or more existing images to insert into this note block.' : 'This picker reuses images already saved on the spot.'}
+                  {selectedSpot ? 'Select one or more existing images and insert them exactly below the block you selected.' : 'This picker reuses images already saved on the spot.'}
                 </p>
               </div>
 
