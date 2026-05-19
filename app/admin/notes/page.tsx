@@ -176,6 +176,8 @@ export default function AdminNotesPage() {
   const [pickerOpen, setPickerOpen] = useState(false)
   const [pickerBlockId, setPickerBlockId] = useState('')
   const [pickerMode, setPickerMode] = useState<'replace' | 'insertAfter'>('replace')
+  const [commandMenuOpen, setCommandMenuOpen] = useState(false)
+  const [commandBlockId, setCommandBlockId] = useState('')
   const [spotQuery, setSpotQuery] = useState('')
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
@@ -331,6 +333,33 @@ export default function AdminNotesPage() {
       setSelectedSpotId(null)
       setSelectedSpotImageUrls([])
     }
+  }
+
+  function openCommandMenu(blockId: string) {
+    setCommandBlockId(blockId)
+    setCommandMenuOpen(true)
+  }
+
+  function runCommand(type: 'paragraph' | 'image' | 'spotImages') {
+    const targetIndex = form.blocks.findIndex((block) => block.id === commandBlockId)
+    if (targetIndex === -1) {
+      setCommandMenuOpen(false)
+      return
+    }
+
+    if (type === 'spotImages') {
+      setCommandMenuOpen(false)
+      openSpotImagePicker(commandBlockId, 'insertAfter')
+      return
+    }
+
+    addBlock(type, targetIndex)
+    setCommandMenuOpen(false)
+    setMessage(
+      type === 'image'
+        ? 'Inserted a single image block below the current text block.'
+        : 'Inserted a paragraph block below the current text block.'
+    )
   }
 
   function applySpotImagesToBlock() {
@@ -650,9 +679,16 @@ export default function AdminNotesPage() {
                             <Textarea
                               value={block.content || ''}
                               onChange={(event) => updateBlock(index, { content: event.target.value })}
+                              onKeyDown={(event) => {
+                                if (event.key === '/') {
+                                  event.preventDefault()
+                                  openCommandMenu(block.id)
+                                }
+                              }}
                               rows={block.type === 'heading' ? 2 : 6}
-                              placeholder={block.type === 'heading' ? 'Section heading' : 'Write your paragraph here.'}
+                              placeholder={block.type === 'heading' ? 'Section heading' : "Write your paragraph here. Press '/' for quick insert."}
                             />
+                            <p className="text-xs text-white/45">Press <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/</span> to insert a spot gallery, single image, or another paragraph below this block.</p>
                           </div>
                         ) : null}
 
@@ -867,6 +903,56 @@ export default function AdminNotesPage() {
             </Button>
             <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applySpotImagesToBlock} disabled={!selectedSpotId || !selectedSpotImageUrls.length}>
               Insert selected images
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
+        <DialogContent className="max-w-lg border-white/10 bg-[#0b0b0d] text-white">
+          <DialogHeader>
+            <DialogTitle>Quick Insert</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <button
+              type="button"
+              onClick={() => runCommand('spotImages')}
+              className="flex w-full items-center justify-between rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-left transition hover:bg-emerald-500/20"
+            >
+              <div>
+                <p className="font-medium text-emerald-100">Insert spot gallery below</p>
+                <p className="mt-1 text-sm text-emerald-100/65">Search an existing spot and insert one or more of its saved images below this text block.</p>
+              </div>
+              <ImageIcon className="h-5 w-5 text-emerald-200" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => runCommand('image')}
+              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+            >
+              <div>
+                <p className="font-medium text-white">Insert single image below</p>
+                <p className="mt-1 text-sm text-white/55">Add one standalone image block and paste a URL.</p>
+              </div>
+              <Plus className="h-5 w-5 text-white/70" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => runCommand('paragraph')}
+              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
+            >
+              <div>
+                <p className="font-medium text-white">Insert paragraph below</p>
+                <p className="mt-1 text-sm text-white/55">Continue the story with another text block below the current one.</p>
+              </div>
+              <Plus className="h-5 w-5 text-white/70" />
+            </button>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setCommandMenuOpen(false)}>
+              Cancel
             </Button>
           </DialogFooter>
         </DialogContent>
