@@ -63,6 +63,31 @@ function createBlockId() {
   return `block-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
+function getSlashCommandAtCursor(value: string, cursorPosition: number) {
+  const safeCursor = Math.max(0, Math.min(cursorPosition, value.length))
+  const beforeCursor = value.slice(0, safeCursor)
+  const match = beforeCursor.match(/(^|\s)(\/[a-z]+)$/i)
+  if (!match) return null
+
+  const command = match[2].toLowerCase()
+  const commandStart = beforeCursor.length - command.length
+
+  return {
+    command,
+    commandStart,
+    commandEnd: beforeCursor.length,
+  }
+}
+
+function stripSlashCommand(value: string, commandStart: number, commandEnd: number) {
+  const before = value.slice(0, commandStart).replace(/\s+$/, '')
+  const after = value.slice(commandEnd).replace(/^\s+/, '')
+
+  if (!before) return after
+  if (!after) return before
+  return `${before}\n${after}`
+}
+
 function createEmptyBlock(type: NoteBlockType): NoteBlock {
   if (type === 'image') {
     return { id: createBlockId(), type, imageUrl: '', alt: '', caption: '' }
@@ -360,6 +385,32 @@ export default function AdminNotesPage() {
         ? 'Inserted a single image block below the current text block.'
         : 'Inserted a paragraph block below the current text block.'
     )
+  }
+
+  function runSlashCommandFromEditor(blockId: string, command: string) {
+    const normalized = command.toLowerCase()
+    setCommandMenuOpen(false)
+
+    if (normalized === '/spot') {
+      openSpotImagePicker(blockId, 'insertAfter')
+      setMessage('Opening spot gallery picker for this block.')
+      return
+    }
+
+    if (normalized === '/image') {
+      const targetIndex = form.blocks.findIndex((block) => block.id === blockId)
+      if (targetIndex === -1) return
+      addBlock('image', targetIndex)
+      setMessage('Inserted a single image block below the current text block.')
+      return
+    }
+
+    if (normalized === '/p' || normalized === '/paragraph') {
+      const targetIndex = form.blocks.findIndex((block) => block.id === blockId)
+      if (targetIndex === -1) return
+      addBlock('paragraph', targetIndex)
+      setMessage('Inserted a paragraph block below the current text block.')
+    }
   }
 
   function applySpotImagesToBlock() {
@@ -680,15 +731,30 @@ export default function AdminNotesPage() {
                               value={block.content || ''}
                               onChange={(event) => updateBlock(index, { content: event.target.value })}
                               onKeyDown={(event) => {
-                                if (event.key === '/') {
+                                const target = event.currentTarget
+                                const slashCommand =
+                                  event.key === ' ' || event.key === 'Enter' || event.key === 'Tab'
+                                    ? getSlashCommandAtCursor(target.value, target.selectionStart ?? target.value.length)
+                                    : null
+
+                                if (slashCommand && ['/spot', '/image', '/p', '/paragraph'].includes(slashCommand.command)) {
                                   event.preventDefault()
-                                  openCommandMenu(block.id)
+                                  const nextContent = stripSlashCommand(target.value, slashCommand.commandStart, slashCommand.commandEnd)
+                                  updateBlock(index, { content: nextContent })
+                                  runSlashCommandFromEditor(block.id, slashCommand.command)
+                                  return
                                 }
+
                               }}
                               rows={block.type === 'heading' ? 2 : 6}
-                              placeholder={block.type === 'heading' ? 'Section heading' : "Write your paragraph here. Press '/' for quick insert."}
+                              placeholder={block.type === 'heading' ? 'Section heading' : "Write your paragraph here. Press '/' or type /spot, /image, /p."}
                             />
-                            <p className="text-xs text-white/45">Press <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/</span> to insert a spot gallery, single image, or another paragraph below this block.</p>
+                            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/45">
+                              <p>Type <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/spot</span>, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/image</span>, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/p</span> then press space, Enter, or Tab.</p>
+                              <Button type="button" variant="ghost" size="sm" className="h-7 rounded-full px-3 text-xs text-white/70 hover:bg-white/10 hover:text-white" onClick={() => openCommandMenu(block.id)}>
+                                Quick Insert
+                              </Button>
+                            </div>
                           </div>
                         ) : null}
 
