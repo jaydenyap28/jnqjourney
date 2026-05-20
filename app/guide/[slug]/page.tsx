@@ -2,14 +2,14 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { ArrowRight, ExternalLink, MapPinned } from 'lucide-react'
+import { ArrowRight, ExternalLink, MapPinned, CalendarDays } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
-import { readGuideBySlug } from '@/lib/server/guides-store'
+import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -70,36 +70,35 @@ function getYouTubeID(url: string) {
   }
 }
 
+import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const guide = await readGuideBySlug(params.slug)
 
   if (!guide) {
     return {
-      title: '\u653b\u7565\u4e0d\u5b58\u5728 | JnQ Journey',
+      title: buildPageTitle('Guide not found'),
     }
   }
 
-  const routeText = guide.route.map((item) => item.name).filter(Boolean).slice(0, 3).join(' / ')
-  const seoTitle = routeText ? `${guide.title} | ${routeText} Travel Guide | JnQ Journey` : `${guide.title} | JnQ Journey`
-  const seoDescription = guide.summary || guide.tagline || guide.title
+  const daysText = guide.duration ? `${guide.duration}` : ''
+  const hasBudgetOrStay = guide.budget || guide.days.some(d => d.stay)
+  const baseTitle = `${guide.title}${daysText ? ` (${daysText})` : ''} Travel Guide`
+
+  const description = buildMetaDescription(
+    guide.summary || guide.tagline || guide.title, 
+    `Plan ${guide.title} with a day-by-day route, linked spots, transport notes${hasBudgetOrStay ? ', stays, budget references' : ''}, photos, and practical travel details from JnQ Journey.`
+  )
+  const canonicalUrl = buildCanonicalUrl(`/guide/${guide.slug}`)
 
   return {
-    title: seoTitle,
-    description: seoDescription,
+    title: baseTitle,
+    description,
     alternates: {
-      canonical: `/guide/${guide.slug}`,
+      canonical: canonicalUrl,
     },
-    openGraph: {
-      type: 'article',
-      title: guide.title,
-      description: seoDescription,
-      url: absoluteUrl(`/guide/${guide.slug}`),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: guide.title,
-      description: seoDescription,
-    },
+    openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guide.coverImage, 'article'),
+    twitter: buildTwitterCardData(baseTitle, description, guide.coverImage),
   }
 }
 
@@ -533,25 +532,114 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ]
   })
 
-  const structuredData = {
+  const foodSpots = allGuideSpots.filter(loc => loc.category === 'food')
+
+  const allGuides = await readGuides()
+  const relatedGuides = allGuides
+    .filter(g => g.slug !== guide.slug)
+    .slice(0, 3)
+
+  const faqs = [
+    {
+      q: `这条路线适合几天？`,
+      a: guide.duration ? `根据我们的行程，安排 ${guide.duration} 比较合适，您也可以根据自己的时间自由调整停留长短。` : `建议根据上面列出的路线概览和每日行程，预留充裕的时间慢慢体验。`
+    },
+    {
+      q: `这条路线适合第一次自由行吗？`,
+      a: `只要提前安排好交通和住宿，参考文中的路线概览，多数地区都适合第一次规划自由行的旅客。建议出发前多查阅相关的景点注意事项。`
+    },
+    {
+      q: `这条路线需要自驾吗？`,
+      a: guide.days.some(d => d.transport && d.transport.includes('自驾')) ? `部分行程包含自驾建议，自驾可以更灵活地安排时间。如果在市区也可以使用 Grab 或公共交通。` : `这取决于您的个人习惯，多数城市内可以使用网约车（如 Grab），如果是跨城或者去较偏远的自然景点，自驾会更加方便。`
+    },
+    {
+      q: `这条路线适合亲子吗？`,
+      a: `您可以查看涵盖景点中是否有农场、公园或适合全家游玩的地点，如果行程比较轻松，通常都可以带小朋友同行。具体视小朋友的体力而定。`
+    },
+    {
+      q: `这条路线包含哪些主要地区？`,
+      a: `本路线主要经过 ${Array.from(new Set(routeRegions.map(r => r.primaryLabel))).slice(0, 3).join('、')} 等地区，详细路线请参考上方的涵盖地区和每日行程。`
+    }
+  ]
+
+  const itemListElement = routeRegions.map((stop, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: stop.primaryLabel || stop.name,
+    url: stop.href ? absoluteUrl(stop.href) : undefined
+  }))
+
+  const structuredData: any = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: guide.title,
     description: guide.summary || guide.tagline || guide.title,
+    image: guide.coverImage || undefined,
     author: {
-      '@type': 'Organization',
-      name: 'Jayden & Qing \u4e00\u8d77\u770b\u4e16\u754c',
+      '@type': 'Person',
+      name: 'Jayden & Qing 一起看世界',
     },
-    mainEntityOfPage: absoluteUrl(`/guide/${guide.slug}`),
+    publisher: {
+      '@type': 'Organization',
+      name: 'JnQ Journey',
+      logo: {
+        '@type': 'ImageObject',
+        url: absoluteUrl('/icon.png')
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': absoluteUrl(`/guide/${guide.slug}`)
+    },
     inLanguage: ['zh-CN', 'en'],
+  }
+
+  if (itemListElement.length > 0) {
+    structuredData.hasPart = {
+      '@type': 'ItemList',
+      itemListElement
+    }
+  }
+
+  const breadcrumbData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: absoluteUrl('/'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Guides',
+        item: absoluteUrl('/guide'),
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: guide.title,
+        item: absoluteUrl(`/guide/${guide.slug}`),
+      },
+    ],
   }
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_18%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_20%),linear-gradient(180deg,#0b1220_0%,#050913_55%,#020308_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
 
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-12">
+          <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-white/70">
+            <Link href="/" className="transition hover:text-white">Home</Link>
+            <span>›</span>
+            <Link href="/guide" className="transition hover:text-white">Travel Guides</Link>
+            <span>›</span>
+            <span className="text-white/40">{guide.title}</span>
+          </div>
           <div
             className={`overflow-hidden rounded-[34px] border border-white/10 p-4 shadow-[0_36px_120px_rgba(0,0,0,0.32)] md:rounded-[42px] md:p-10 ${guide.coverAccent}`}
             style={
@@ -567,9 +655,17 @@ export default async function GuideDetailPage({ params }: PageProps) {
             <div className="relative z-10 space-y-4 md:space-y-6">
               <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
                 <div className="space-y-4">
-                  <p className="section-kicker text-xs text-amber-100/80">{'Travel Guide / \u6e38\u8bb0'}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="section-kicker text-xs text-amber-100/80">{'Travel Guide / 游记'}</p>
+                    {guide.duration ? (
+                      <span className="rounded-full border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[10px] text-amber-200">{guide.duration}</span>
+                    ) : null}
+                    {guide.travelStyle ? (
+                      <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] text-white/90">{guide.travelStyle}</span>
+                    ) : null}
+                  </div>
                   <h1 className="font-display max-w-4xl text-[2.35rem] leading-[0.96] text-white md:text-[5.4rem]">
-                    {guide.title}
+                    {guide.title}｜完整自由行攻略
                   </h1>
                   <p className="max-w-3xl text-sm leading-7 text-white/82 md:text-xl md:leading-9">{guide.tagline}</p>
                   <p className="max-w-3xl text-sm leading-7 text-white/66 md:text-base md:leading-8">{guide.summary}</p>
@@ -709,7 +805,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                     <div className="relative aspect-square overflow-hidden bg-black/20 md:aspect-[16/10]">
                                       <FallbackImage
                                         src={getSpotCover(spot)}
-                                        alt={spot.name}
+                                        alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅游照片'}`.trim()}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 320px"
                                         className="object-cover transition duration-500 group-hover:scale-105"
@@ -775,7 +871,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                 <div className="relative min-h-[84px] overflow-hidden bg-black/20 md:min-h-[108px]">
                                   <FallbackImage
                                     src={getSpotCover(day.staySpot)}
-                                    alt={day.staySpot.name}
+                                    alt={`${day.staySpot.name_cn || day.staySpot.name} ${day.staySpot.regions?.name_cn || day.staySpot.regions?.name || ''} 旅游照片`.trim()}
                                     fill
                                     sizes="(max-width: 768px) 100vw, 220px"
                                     className="object-cover transition duration-500 group-hover:scale-105"
@@ -901,6 +997,120 @@ export default async function GuideDetailPage({ params }: PageProps) {
               </div>
             </section>
 
+            {/* 5. Spots Covered */}
+            {allGuideSpots.length > 0 && (
+              <section className="space-y-5">
+                <div>
+                  <p className="section-kicker text-xs text-amber-300/80">Spots Covered / 涵盖景点</p>
+                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">涵盖景点</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+                  {allGuideSpots.map((spot) => (
+                    <Link
+                      key={spot.id}
+                      href={buildLocationPath(spot.name, spot.id)}
+                      className="group overflow-hidden rounded-[20px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
+                        <FallbackImage
+                          src={getSpotCover(spot)}
+                          alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} 旅游照片`.trim()}
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                        />
+                        {spot.category && (
+                          <div className="absolute left-3 top-3">
+                            <span className="rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] text-white/90">
+                              {spotTypeLabel(spot.category)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-3 md:p-4">
+                        <div className="line-clamp-1 font-medium text-white">{spot.name_cn || spot.name}</div>
+                        <div className="text-xs text-white/55 mt-1">
+                          {spot.regions?.name_cn || spot.regions?.name || '地点'}
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 7. Food & Cafe */}
+            {foodSpots.length > 0 && (
+              <section className="space-y-5">
+                <div>
+                  <p className="section-kicker text-xs text-amber-300/80">Food & Cafe / 美食咖啡</p>
+                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">路线周边美食</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+                  {foodSpots.map((spot) => (
+                    <Link
+                      key={spot.id}
+                      href={buildLocationPath(spot.name, spot.id)}
+                      className="group overflow-hidden rounded-[20px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
+                        <FallbackImage
+                          src={getSpotCover(spot)}
+                          alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} 美食或环境照片`.trim()}
+                          fill
+                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute left-3 top-3">
+                          <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-[11px] text-amber-100">
+                            美食打卡
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-3 md:p-4">
+                        <div className="line-clamp-1 font-medium text-white">{spot.name_cn || spot.name}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 11. Related Guides */}
+            {relatedGuides.length > 0 && (
+              <section className="space-y-5">
+                <div>
+                  <p className="section-kicker text-xs text-amber-300/80">Related Guides / 相关游记路线</p>
+                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">探索更多路线</h2>
+                </div>
+                <div className="grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {relatedGuides.map(g => (
+                    <Link key={g.slug} href={`/guide/${g.slug}`} className="block rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] p-4 md:p-5 transition hover:-translate-y-1 hover:bg-white/10">
+                      <div className="flex items-center gap-2 mb-2.5 text-xs text-amber-400">
+                        <CalendarDays className="w-4 h-4" />
+                        <span>{g.duration || '行程参考'}</span>
+                      </div>
+                      <h3 className="font-semibold text-white line-clamp-2 leading-snug">{g.title}</h3>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* 12. FAQ */}
+            <section className="space-y-6 pt-8 pb-8">
+              <h2 className="font-display text-4xl leading-tight text-white md:text-[2.6rem]">常见问题 FAQ</h2>
+              <div className="space-y-4 mt-6">
+                 {faqs.map((faq, i) => (
+                    <div key={i} className="rounded-[24px] border border-white/10 bg-white/5 p-5 md:p-6">
+                      <h3 className="font-semibold text-white text-lg">Q：{faq.q}</h3>
+                      <p className="mt-3 text-gray-300 text-sm md:text-base leading-relaxed">
+                        A：{faq.a}
+                      </p>
+                    </div>
+                 ))}
+              </div>
+            </section>
 
           </div>
 
@@ -946,4 +1156,3 @@ export default async function GuideDetailPage({ params }: PageProps) {
     </main>
   )
 }
-

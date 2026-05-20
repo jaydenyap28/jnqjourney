@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -33,8 +33,13 @@ const cormorantGaramond = Cormorant_Garamond({
   variable: '--font-cormorant-garamond',
 })
 
+import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
+
 const siteUrl = getSiteUrl()
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
+
+const defaultTitle = 'JnQ Journey | Jayden & Qing'
+const defaultDesc = buildMetaDescription('JnQ Journey by Jayden & Qing. Explore spots, food, stays, maps, and full travel guides built for both Chinese and English-speaking travelers.')
 
 export const metadata: Metadata = {
   metadataBase: siteUrl,
@@ -42,11 +47,10 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   title: {
-    default: 'JnQ Journey | Jayden & Qing',
+    default: defaultTitle,
     template: '%s | JnQ Journey',
   },
-  description:
-    'JnQ Journey by Jayden & Qing. Explore spots, food, stays, maps, and full travel guides built for both Chinese and English-speaking travelers.',
+  description: defaultDesc,
   keywords: [
     'JnQ Journey',
     'Jayden & Qing',
@@ -60,19 +64,11 @@ export const metadata: Metadata = {
     'travel itinerary',
   ],
   openGraph: {
-    type: 'website',
+    ...buildOpenGraphData(defaultTitle, defaultDesc, '/'),
     siteName: 'JnQ Journey',
-    title: 'JnQ Journey | Jayden & Qing',
-    description:
-      'Discover spots, food, stays, region hubs, and complete travel guides for your next trip.',
-    url: siteUrl,
     locale: 'en_US',
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'JnQ Journey | Jayden & Qing',
-    description: 'Discover spots, food, stays, region hubs, and complete travel guides.',
-  },
+  twitter: buildTwitterCardData(defaultTitle, defaultDesc),
   icons: {
     icon: [
       { url: '/icon.png?v=3', type: 'image/png' },
@@ -88,7 +84,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" translate="yes" suppressHydrationWarning>
+    <html lang="en" translate="yes" suppressHydrationWarning>
       <body
         className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
