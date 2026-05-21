@@ -98,6 +98,16 @@ function createEmptyBlock(type: NoteBlockType): NoteBlock {
   return { id: createBlockId(), type, content: '' }
 }
 
+function isTextBlock(block: NoteBlock) {
+  return block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote'
+}
+
+function getTextareaRows(block: NoteBlock) {
+  if (block.type === 'heading') return 2
+  const lineCount = String(block.content || '').split('\n').length
+  return Math.min(12, Math.max(block.type === 'quote' ? 3 : 4, lineCount + 1))
+}
+
 function moveItem<T>(items: T[], index: number, direction: 'up' | 'down') {
   const target = direction === 'up' ? index - 1 : index + 1
   if (target < 0 || target >= items.length) return items
@@ -565,14 +575,14 @@ export default function AdminNotesPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#09090b] text-white">
-        <div className="mx-auto max-w-7xl px-4 py-10">Loading notes…</div>
+        <div className="mx-auto max-w-7xl px-4 py-10">Loading notes...</div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 lg:grid-cols-[300px_minmax(0,1fr)]">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_12%_0%,rgba(20,184,166,0.16),transparent_24%),radial-gradient(circle_at_88%_12%,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
+      <div className="mx-auto grid max-w-[1680px] gap-6 px-4 py-8 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="space-y-4">
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
@@ -611,8 +621,8 @@ export default function AdminNotesPage() {
           </Card>
         </aside>
 
-        <section className="space-y-6">
-          <Card className="border-white/10 bg-white/5 text-white">
+        <section className="flex flex-col gap-6">
+          <Card className="order-2 border-white/10 bg-white/5 text-white">
             <CardHeader className="flex flex-row items-start justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Longform Note Editor</p>
@@ -630,7 +640,7 @@ export default function AdminNotesPage() {
                 </Button>
                 <Button type="button" onClick={saveNote} disabled={saving} className="bg-white text-black hover:bg-amber-50">
                   <Save className="mr-2 h-4 w-4" />
-                  {saving ? 'Saving…' : form.published ? 'Save & Update' : 'Save Draft'}
+                  {saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}
                 </Button>
               </div>
             </CardHeader>
@@ -656,8 +666,8 @@ export default function AdminNotesPage() {
                 <Textarea value={form.tagline} onChange={(event) => updateForm({ tagline: event.target.value })} rows={2} placeholder="A concise subtitle for the note." />
               </div>
               <div className="space-y-2 md:col-span-2">
-                <Label>Excerpt / Summary</Label>
-                <Textarea value={form.summary} onChange={(event) => updateForm({ summary: event.target.value })} rows={3} placeholder="This summary is used for cards and metadata." />
+                <Label>Card Summary / 首页短摘要</Label>
+                <Textarea value={form.summary} onChange={(event) => updateForm({ summary: event.target.value })} rows={2} placeholder="Keep this short. Full article content is edited in the writing canvas above." />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label>Cover Image URL</Label>
@@ -679,11 +689,17 @@ export default function AdminNotesPage() {
             </CardContent>
           </Card>
 
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-            <Card className="border-white/10 bg-white/5 text-white">
+          <div className="order-1 grid gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
+            <Card className="border-white/10 bg-[rgba(7,10,12,0.78)] text-white shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur">
               <CardHeader>
-                <CardTitle className="flex items-center justify-between gap-3">
-                  <span>Content Blocks</span>
+                <CardTitle className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.28em] text-emerald-200/70">Writing Canvas</p>
+                    <span className="mt-2 block text-3xl">Article Body / 长文正文</span>
+                    <p className="mt-2 max-w-2xl text-sm font-normal leading-6 text-white/50">
+                      Write in order here. Type <span className="rounded border border-emerald-300/20 bg-emerald-400/10 px-1.5 py-0.5 text-emerald-100">/spot</span> inside any paragraph, then press Space or Enter to insert spot images right below that paragraph.
+                    </p>
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {BLOCK_OPTIONS.map((option) => (
                       <Button
@@ -701,14 +717,16 @@ export default function AdminNotesPage() {
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 {form.blocks.length ? (
                   form.blocks.map((block, index) => (
-                    <div key={block.id} className="rounded-[28px] border border-white/10 bg-black/20 p-5">
+                    <div key={block.id} className="rounded-[24px] border border-white/10 bg-black/25 p-4 transition hover:border-white/20">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                          <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">{block.type}</p>
-                          <p className="mt-2 text-lg font-medium text-white">Block {index + 1}</p>
+                          <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300/75">{block.type}</p>
+                          <p className="mt-1 text-sm text-white/45">
+                            {isTextBlock(block) ? 'Text block. /spot works here.' : block.type === 'spotImages' ? 'Inline spot images.' : 'Inline media block.'}
+                          </p>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <Button type="button" variant="outline" size="icon" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}>
@@ -724,9 +742,8 @@ export default function AdminNotesPage() {
                       </div>
 
                       <div className="mt-5 space-y-4">
-                        {(block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote') ? (
+                        {isTextBlock(block) ? (
                           <div className="space-y-2">
-                            <Label>Text</Label>
                             <Textarea
                               value={block.content || ''}
                               onChange={(event) => updateBlock(index, { content: event.target.value })}
@@ -746,13 +763,14 @@ export default function AdminNotesPage() {
                                 }
 
                               }}
-                              rows={block.type === 'heading' ? 2 : 6}
-                              placeholder={block.type === 'heading' ? 'Section heading' : "Write your paragraph here. Press '/' or type /spot, /image, /p."}
+                              rows={getTextareaRows(block)}
+                              className="resize-y border-white/10 bg-black/30 text-[15px] leading-7 text-white placeholder:text-white/30 focus-visible:ring-emerald-300/40"
+                              placeholder={block.type === 'heading' ? 'Section heading' : "Write this part of the article here. Type /spot to insert saved spot images below."}
                             />
                             <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/45">
-                              <p>Type <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/spot</span>, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/image</span>, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/p</span> then press space, Enter, or Tab.</p>
+                              <p><span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/spot</span> saved spot images, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/image</span> image URL, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/p</span> new paragraph.</p>
                               <Button type="button" variant="ghost" size="sm" className="h-7 rounded-full px-3 text-xs text-white/70 hover:bg-white/10 hover:text-white" onClick={() => openCommandMenu(block.id)}>
-                                Quick Insert
+                                Insert
                               </Button>
                             </div>
                           </div>
@@ -777,7 +795,7 @@ export default function AdminNotesPage() {
 
                         {(block.type === 'spotImages' || block.type === 'gallery') ? (
                           <div className="space-y-4">
-                            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-300/15 bg-emerald-400/10 px-4 py-3">
                               <div>
                                 <p className="font-medium text-white">{block.spotName || 'No spot selected yet'}</p>
                                 <p className="text-sm text-white/55">
@@ -824,21 +842,21 @@ export default function AdminNotesPage() {
                         ) : null}
 
                         <div className="flex flex-wrap gap-2 pt-2">
-                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('paragraph', index)}>
+                          <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('paragraph', index)}>
                             <Plus className="mr-2 h-4 w-4" />
                             Paragraph below
                           </Button>
-                          <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('image', index)}>
+                          <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('image', index)}>
                             <Plus className="mr-2 h-4 w-4" />
-                            Single image below
+                            Image URL below
                           </Button>
-                          {(block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote') ? (
-                            <Button type="button" variant="outline" className="border-emerald-400/20 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/20" onClick={() => openSpotImagePicker(block.id, 'insertAfter')}>
+                          {isTextBlock(block) ? (
+                            <Button type="button" size="sm" variant="outline" className="border-emerald-400/20 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/20" onClick={() => openSpotImagePicker(block.id, 'insertAfter')}>
                               <ImageIcon className="mr-2 h-4 w-4" />
-                              Insert spot gallery below
+                              Insert spot images
                             </Button>
                           ) : (
-                            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
+                            <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
                               <Plus className="mr-2 h-4 w-4" />
                               Spot images below
                             </Button>
@@ -855,9 +873,9 @@ export default function AdminNotesPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-white/10 bg-white/5 text-white">
+            <Card className="border-white/10 bg-[rgba(7,10,12,0.64)] text-white backdrop-blur xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:overflow-y-auto">
               <CardHeader>
-                <CardTitle>Structure Preview</CardTitle>
+                <CardTitle>Live Article Preview</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <section className={`overflow-hidden rounded-[30px] border border-white/10 p-6 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>

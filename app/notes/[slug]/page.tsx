@@ -134,22 +134,22 @@ function NoteImageFigure({
 }) {
   return (
     <figure className="space-y-3">
-      <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] border border-white/10 bg-white/5 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
-        <FallbackImage src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 820px" className="object-cover" />
+      <div className="relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+        <FallbackImage src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 980px" className="object-cover" />
       </div>
-      {caption ? <figcaption className="px-1 text-sm leading-7 text-white/55">{caption}</figcaption> : null}
+      {caption ? <figcaption className="px-2 text-sm leading-7 text-white/55">{caption}</figcaption> : null}
     </figure>
   )
 }
 
 function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>) {
   if (block.type === 'heading') {
-    return <h2 key={block.id} className="pt-4 text-3xl font-semibold tracking-tight text-white md:text-4xl">{block.content}</h2>
+    return <h2 key={block.id} className="pt-8 text-3xl font-semibold tracking-tight text-white md:text-5xl">{block.content}</h2>
   }
 
   if (block.type === 'quote') {
     return (
-      <blockquote key={block.id} className="rounded-[30px] border border-white/10 bg-white/5 px-6 py-5 text-lg leading-8 text-white/85">
+      <blockquote key={block.id} className="rounded-[32px] border border-amber-200/15 bg-amber-200/10 px-7 py-6 text-xl leading-9 text-white/88">
         {block.content}
       </blockquote>
     )
@@ -221,7 +221,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>)
   }
 
   return (
-    <p key={block.id} className="text-[1.02rem] leading-8 text-gray-200 whitespace-pre-wrap">
+    <p key={block.id} className="text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem]">
       {block.content}
     </p>
   )
@@ -255,8 +255,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const textExcerpt = getTextExcerpt(note)
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(244,114,182,0.10),transparent_18%),linear-gradient(180deg,#111827_0%,#020617_50%,#000000_100%)] text-white">
-      <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-12">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#101418_0%,#05070a_52%,#000000_100%)] text-white">
+      <div className="mx-auto max-w-[1500px] px-4 py-8 md:px-8 md:py-12">
         <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-white/45">
           <Link href="/" className="transition hover:text-white">Home</Link>
           <span>/</span>
@@ -265,25 +265,25 @@ export default async function NoteDetailPage({ params }: PageProps) {
           <span className="text-white/65">{note.title}</span>
         </div>
 
-        <section className={`overflow-hidden rounded-[38px] border border-white/10 p-7 md:p-10 ${note.coverAccent || ''}`}>
-          <div className={`grid gap-6 ${note.coverImage ? 'lg:grid-cols-[minmax(0,1.1fr)_420px] lg:items-center' : ''}`}>
+        <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] md:p-10 ${note.coverAccent || ''}`}>
+          <div className={`grid gap-8 ${note.coverImage ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
             <div className="space-y-5">
               <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{note.kicker || 'Longform Note'}</p>
-              <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">{note.title}</h1>
-              {note.tagline ? <p className="max-w-3xl text-base leading-8 text-white/80">{note.tagline}</p> : null}
+              <h1 className="text-4xl font-semibold leading-tight text-white md:text-7xl">{note.title}</h1>
+              {note.tagline ? <p className="max-w-3xl text-lg leading-9 text-white/80">{note.tagline}</p> : null}
             </div>
             {note.coverImage ? (
-              <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] border border-white/10 bg-black/20">
-                <FallbackImage src={note.coverImage} alt={`${note.title} cover image`} fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" priority />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[34px] border border-white/10 bg-black/20">
+                <FallbackImage src={note.coverImage} alt={`${note.title} cover image`} fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" priority />
               </div>
             ) : null}
           </div>
         </section>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <article className="space-y-7">
+        <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
+          <article className="space-y-8 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-7 shadow-[0_24px_90px_rgba(0,0,0,0.22)] md:px-10 md:py-10">
             {note.summary ? (
-              <div className="rounded-[28px] border border-white/10 bg-white/5 px-6 py-5 text-sm leading-7 text-white/70">
+              <div className="rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85">
                 {note.summary}
               </div>
             ) : null}
@@ -293,7 +293,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
             ) : textExcerpt ? (
               <div className="space-y-5">
                 {textExcerpt.split(/\n{2,}/).map((paragraph, index) => (
-                  <p key={index} className="text-[1.02rem] leading-8 text-gray-200 whitespace-pre-wrap">
+                  <p key={index} className="text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem]">
                     {paragraph}
                   </p>
                 ))}
@@ -301,7 +301,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
             ) : null}
           </article>
 
-          <aside className="space-y-4">
+          <aside className="space-y-4 lg:sticky lg:top-6">
             {affiliateBlocks.map((block) => {
               const links = (block.affiliateIds || [])
                 .map((id) => affiliateById.get(id))
