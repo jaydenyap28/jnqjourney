@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Search, Loader2, Save, Upload, ImagePlus, ExternalLink, MapPin, GripVertical, ArrowUp, ArrowDown } from 'lucide-react'
+import { Search, Loader2, Save, Upload, ImagePlus, ExternalLink, MapPin, GripVertical, ArrowUp, ArrowDown, Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import FallbackImage from '@/components/FallbackImage'
@@ -318,6 +318,60 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       }
     } else {
       setMessage('图集已清空。')
+    }
+  }
+
+  const handleDeleteCover = async () => {
+    const urlToDelete = formData.image_url
+    if (!urlToDelete) return
+
+    const alsoUsedInGallery = formData.images.includes(urlToDelete)
+    const shouldDeleteStorage = urlToDelete.includes('supabase.co') && !alsoUsedInGallery
+    const confirmMessage = shouldDeleteStorage
+      ? 'Delete this cover image?\n\nThis will clear the cover field and delete the Supabase file.'
+      : alsoUsedInGallery
+        ? 'Clear this cover image?\n\nThis image is also used in the gallery, so only the cover field will be cleared.'
+        : 'Clear this cover image?\n\nExternal image files cannot be deleted here, so only the cover field will be cleared.'
+
+    if (!window.confirm(confirmMessage)) return
+
+    if (mode === 'edit' && initialData?.id) {
+      const { error } = await supabase
+        .from('locations')
+        .update({ image_url: '' })
+        .eq('id', initialData.id)
+
+      if (error) {
+        setMessage(`Error: Failed to clear cover from database: ${error.message}`)
+        return
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, image_url: '' }))
+
+    if (!shouldDeleteStorage) {
+      setMessage(
+        alsoUsedInGallery
+          ? 'Cover cleared from this spot. The same image remains in the gallery.'
+          : 'Cover cleared from this spot.'
+      )
+      return
+    }
+
+    try {
+      const res = await adminFetch('/api/admin/delete-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: urlToDelete }),
+      })
+      const data = await res.json().catch(() => null)
+      if (!res.ok) {
+        setMessage(`Cover cleared from this spot, but the Supabase file could not be deleted: ${data?.error || 'Unknown error'}`)
+        return
+      }
+      setMessage('Cover cleared from this spot and Supabase file deleted.')
+    } catch (error: any) {
+      setMessage(`Cover cleared from this spot, but the delete request failed: ${error?.message || 'Unknown error'}`)
     }
   }
 
@@ -2935,6 +2989,15 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         onClick={() => handleDownloadImage(formData.image_url, `cover-${formData.custom_slug || formData.name || 'spot'}`)}
                       >
                         下载封面图
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        onClick={handleDeleteCover}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Delete cover
                       </Button>
                     </div>
                     <div className="rounded-lg border border-slate-200 bg-white p-4">
