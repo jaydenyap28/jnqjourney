@@ -2,14 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowUp, Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
+import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
-import type { LongformNote, NoteBlock, NoteBlockType, NoteImageItem } from '@/lib/notes'
+import type { LongformNote, NoteBlock, NoteImageItem } from '@/lib/notes'
 import {
   buildFallbackAlt,
   DEFAULT_NOTE_COVER_ACCENT,
   EMPTY_NOTE,
   getRenderableNoteBlocks,
+  convertBlocksToMarkdown,
+  parseMarkdownToBlocks,
 } from '@/lib/notes'
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
@@ -59,63 +61,6 @@ function stringifyCommaSeparated(value?: string[]) {
   return Array.isArray(value) ? value.join(', ') : ''
 }
 
-function createBlockId() {
-  return `block-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-}
-
-function getSlashCommandAtCursor(value: string, cursorPosition: number) {
-  const safeCursor = Math.max(0, Math.min(cursorPosition, value.length))
-  const beforeCursor = value.slice(0, safeCursor)
-  const match = beforeCursor.match(/(^|\s)(\/[a-z]+)$/i)
-  if (!match) return null
-
-  const command = match[2].toLowerCase()
-  const commandStart = beforeCursor.length - command.length
-
-  return {
-    command,
-    commandStart,
-    commandEnd: beforeCursor.length,
-  }
-}
-
-function stripSlashCommand(value: string, commandStart: number, commandEnd: number) {
-  const before = value.slice(0, commandStart).replace(/\s+$/, '')
-  const after = value.slice(commandEnd).replace(/^\s+/, '')
-
-  if (!before) return after
-  if (!after) return before
-  return `${before}\n${after}`
-}
-
-function createEmptyBlock(type: NoteBlockType): NoteBlock {
-  if (type === 'image') {
-    return { id: createBlockId(), type, imageUrl: '', alt: '', caption: '' }
-  }
-  if (type === 'gallery' || type === 'spotImages') {
-    return { id: createBlockId(), type, images: [] }
-  }
-  return { id: createBlockId(), type, content: '' }
-}
-
-function isTextBlock(block: NoteBlock) {
-  return block.type === 'paragraph' || block.type === 'heading' || block.type === 'quote'
-}
-
-function getTextareaRows(block: NoteBlock) {
-  if (block.type === 'heading') return 2
-  const lineCount = String(block.content || '').split('\n').length
-  return Math.min(12, Math.max(block.type === 'quote' ? 3 : 4, lineCount + 1))
-}
-
-function moveItem<T>(items: T[], index: number, direction: 'up' | 'down') {
-  const target = direction === 'up' ? index - 1 : index + 1
-  if (target < 0 || target >= items.length) return items
-  const next = [...items]
-  ;[next[index], next[target]] = [next[target], next[index]]
-  return next
-}
-
 function getLocationLabel(location?: LocationOption | null) {
   if (!location) return ''
   return location.name_cn || location.name
@@ -131,64 +76,135 @@ function renderableBlocks(note: LongformNote) {
   return getRenderableNoteBlocks(note)
 }
 
-const BLOCK_OPTIONS: { type: NoteBlockType; label: string }[] = [
-  { type: 'paragraph', label: 'Paragraph' },
-  { type: 'heading', label: 'Heading' },
-  { type: 'quote', label: 'Quote' },
-  { type: 'image', label: 'Single Image' },
-  { type: 'spotImages', label: 'Spot Images' },
-]
-
 function BlockPreview({
   block,
   locationsById,
+  isFullPreview = false,
 }: {
   block: NoteBlock
   locationsById: Map<number, LocationOption>
+  isFullPreview?: boolean
 }) {
   if (block.type === 'heading') {
-    return <h3 className="text-2xl font-semibold text-white">{block.content || 'Section heading'}</h3>
+    if (isFullPreview) {
+      return (
+        <h2 className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
+          {block.content}
+        </h2>
+      )
+    }
+    return (
+      <h3 className="pt-6 pb-2 text-2xl font-bold tracking-tight text-white border-l-2 border-amber-400 pl-3">
+        {block.content}
+      </h3>
+    )
   }
 
   if (block.type === 'quote') {
-    return <blockquote className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-base leading-8 text-white/85">{block.content || 'Quote block'}</blockquote>
+    if (isFullPreview) {
+      return (
+        <blockquote className="max-w-2xl mx-auto rounded-[32px] border border-amber-200/15 bg-amber-200/10 px-8 py-6 text-xl leading-9 text-white/88 my-8 relative pl-12">
+          <span className="absolute left-4 top-3 text-5xl font-serif text-amber-400/40 select-none">“</span>
+          {block.content}
+        </blockquote>
+      )
+    }
+    return (
+      <blockquote className="relative my-6 rounded-[24px] border border-amber-200/10 bg-gradient-to-br from-amber-500/5 to-transparent px-6 py-5 text-lg italic leading-8 text-amber-100/90 pl-10">
+        <span className="absolute left-3 top-2 text-4xl font-serif text-amber-400/40">“</span>
+        {block.content}
+      </blockquote>
+    )
   }
 
   if (block.type === 'image' && block.imageUrl) {
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
+    if (isFullPreview) {
+      return (
+        <figure className="max-w-4xl mx-auto w-full my-10 space-y-3 group">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+            <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 980px" className="object-cover" />
+          </div>
+          {block.caption ? <figcaption className="px-2 text-sm leading-7 text-white/55 text-center italic">{block.caption}</figcaption> : null}
+        </figure>
+      )
+    }
     return (
-      <figure className="space-y-3">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-[0_18px_40px_rgba(0,0,0,0.18)]">
+      <figure className="space-y-2 my-6">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-lg">
           <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 760px" className="object-cover" />
         </div>
-        {block.caption ? <figcaption className="text-sm leading-7 text-white/55">{block.caption}</figcaption> : null}
+        {block.caption ? <figcaption className="text-xs text-white/55 text-center">{block.caption}</figcaption> : null}
       </figure>
     )
   }
 
   if ((block.type === 'gallery' || block.type === 'spotImages') && block.images?.length) {
     const spot = block.spotId ? locationsById.get(block.spotId) : null
-    return (
-      <div className="space-y-4">
-        {block.type === 'spotImages' ? (
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
-            <ImageIcon className="h-3.5 w-3.5" />
-            {block.spotName || getLocationLabel(spot) || 'Spot images'}
-          </div>
-        ) : null}
-        <div className={`grid gap-4 ${block.images.length === 1 ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
-          {block.images.map((image, index) => (
-            <figure key={`${block.id}-${index}`} className="space-y-3">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-[0_16px_35px_rgba(0,0,0,0.16)]">
-                <FallbackImage
-                  src={image.src}
-                  alt={image.alt || buildFallbackAlt(block.spotName || getLocationLabel(spot), image.caption)}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 520px"
-                  className="object-cover"
-                />
+    const spotLabel = block.spotName || (spot ? spot.name_cn || spot.name : '')
+    if (isFullPreview) {
+      return (
+        <div className="max-w-4xl mx-auto w-full my-10 space-y-6 rounded-[36px] border border-white/10 bg-white/[0.02] p-6 shadow-[0_32px_90px_rgba(0,0,0,0.25)] backdrop-blur-md">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-5">
+            <div className="flex items-start gap-3">
+              <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                <span className="text-sm">📍</span>
               </div>
-              {image.caption ? <figcaption className="text-sm leading-7 text-white/55">{image.caption}</figcaption> : null}
+              <div>
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <h4 className="text-xl font-bold text-white tracking-tight">{spot?.name_cn || spotLabel}</h4>
+                  {spot?.name_cn && spot.name && (
+                    <span className="text-sm font-normal text-white/50">{spot.name}</span>
+                  )}
+                </div>
+                <p className="mt-0.5 text-xs text-white/40 uppercase tracking-widest">
+                  {spot?.regions ? `${spot.regions.country} · ${spot.regions.name_cn || spot.regions.name}` : '旅行相册'}
+                </p>
+              </div>
+            </div>
+            {spot && (
+              <span className="text-xs text-emerald-400 font-medium bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                关联景点已链接 ✓
+              </span>
+            )}
+          </div>
+          <div className={`grid gap-5 ${block.images.length === 1 ? 'grid-cols-1' : block.images.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+            {block.images.map((image, index) => (
+              <div key={`${block.id}-${index}`} className="space-y-2 group">
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-md">
+                  <FallbackImage src={image.src} alt={image.alt || 'Travel photo'} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
+                </div>
+                {image.caption ? <p className="px-2 text-xs text-white/45 text-center leading-relaxed tracking-wide italic">{image.caption}</p> : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="space-y-4 rounded-[28px] border border-emerald-500/10 bg-emerald-500/5 p-4 my-6">
+        <div className="flex items-center justify-between gap-3 border-b border-white/5 pb-3">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-300">
+              <span className="text-sm">📍</span>
+            </div>
+            <div>
+              <h4 className="font-semibold text-white text-sm">{spotLabel || '景点相册'}</h4>
+              <p className="text-[10px] text-white/40 uppercase tracking-widest">{spot?.regions?.name_cn || '旅行相册'}</p>
+            </div>
+          </div>
+          <span className="text-xs text-emerald-400 font-medium">关联景点已链接 ✓</span>
+        </div>
+        <div className={`grid gap-3 ${block.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          {block.images.map((image, index) => (
+            <figure key={`${block.id}-${index}`} className="relative group overflow-hidden rounded-xl aspect-[4/3] border border-white/5">
+              <FallbackImage
+                src={image.src}
+                alt={image.alt || 'Travel photo'}
+                fill
+                sizes="300px"
+                className="object-cover"
+              />
             </figure>
           ))}
         </div>
@@ -196,26 +212,78 @@ function BlockPreview({
     )
   }
 
-  return <p className="text-base leading-8 text-gray-200 whitespace-pre-wrap">{block.content || 'Paragraph block'}</p>
+  if (block.type === 'spot' && block.spotId) {
+    const spot = locationsById.get(block.spotId)
+    if (isFullPreview) {
+      if (!spot) return null
+      return (
+        <div className="max-w-3xl mx-auto w-full my-8">
+          <div className="grid gap-5 overflow-hidden rounded-[30px] border border-white/10 bg-white/5 md:grid-cols-[240px_minmax(0,1fr)] shadow-[0_16px_50px_rgba(0,0,0,0.18)]">
+            <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
+              <FallbackImage
+                src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+                alt={spot.name_cn || spot.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 240px"
+                className="object-cover"
+              />
+            </div>
+            <div className="p-6 flex flex-col justify-center text-left">
+              <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Related Spot / 相关景点</p>
+              <h3 className="mt-2 text-2xl font-semibold text-white">{spot.name_cn || spot.name}</h3>
+              <p className="mt-3 text-sm leading-7 text-gray-300 line-clamp-3">
+                点击前往景点详情页，可查看此景点的开放时间、详细交通方式、门票信息、以及更多深度的旅行游记与用户评价。
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="my-6 rounded-[24px] border border-white/10 bg-white/5 p-4 flex gap-4 items-center">
+        <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-black/20 shrink-0">
+          <FallbackImage
+            src={spot?.image_url || spot?.images?.[0] || '/placeholder-image.jpg'}
+            alt={spot?.name_cn || spot?.name || 'Spot'}
+            fill
+            sizes="64px"
+            className="object-cover"
+          />
+        </div>
+        <div className="text-left">
+          <h4 className="font-semibold text-white">{spot?.name_cn || spot?.name || 'Linked Spot'}</h4>
+          <p className="text-xs text-white/50 line-clamp-1">{spot?.regions?.country} / {spot?.regions?.name_cn || spot?.regions?.name}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isFullPreview) {
+    return (
+      <p className="max-w-2xl mx-auto text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem] tracking-wide my-6 text-left">
+        {block.content}
+      </p>
+    )
+  }
+
+  return <p className="text-base leading-8 text-gray-200 whitespace-pre-wrap my-4 text-left">{block.content}</p>
 }
 
 export default function AdminNotesPage() {
   const [notes, setNotes] = useState<LongformNote[]>([])
   const [selectedSlug, setSelectedSlug] = useState('')
-  const [form, setForm] = useState<LongformNote>({ ...EMPTY_NOTE, blocks: [createEmptyBlock('paragraph')] })
+  const [form, setForm] = useState<LongformNote>(EMPTY_NOTE)
   const [locations, setLocations] = useState<LocationOption[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [workspaceMode, setWorkspaceMode] = useState<'split' | 'edit' | 'preview'>('split')
 
   const [pickerOpen, setPickerOpen] = useState(false)
-  const [pickerBlockId, setPickerBlockId] = useState('')
-  const [pickerMode, setPickerMode] = useState<'replace' | 'insertAfter'>('replace')
-  const [commandMenuOpen, setCommandMenuOpen] = useState(false)
-  const [commandBlockId, setCommandBlockId] = useState('')
   const [spotQuery, setSpotQuery] = useState('')
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
+  const [markdownText, setMarkdownText] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -243,12 +311,16 @@ export default function AdminNotesPage() {
 
         if (nextNotes.length) {
           setSelectedSlug(nextNotes[0].slug)
-          setForm({
-            ...nextNotes[0],
-            blocks: renderableBlocks(nextNotes[0]),
-          })
+          const firstNote = nextNotes[0]
+          const hydrated = {
+            ...firstNote,
+            blocks: renderableBlocks(firstNote),
+          }
+          setForm(hydrated)
+          setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
         } else {
-          setForm({ ...EMPTY_NOTE, blocks: [createEmptyBlock('paragraph')] })
+          setForm(EMPTY_NOTE)
+          setMarkdownText('')
         }
       } catch {
         if (!cancelled) {
@@ -270,10 +342,12 @@ export default function AdminNotesPage() {
     if (!selectedSlug) return
     const selected = notes.find((item) => item.slug === selectedSlug)
     if (!selected) return
-    setForm({
+    const hydrated = {
       ...selected,
       blocks: renderableBlocks(selected),
-    })
+    }
+    setForm(hydrated)
+    setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
     setMessage('')
   }, [notes, selectedSlug])
 
@@ -293,15 +367,12 @@ export default function AdminNotesPage() {
   const selectedSpot = selectedSpotId ? locationsById.get(selectedSpotId) || null : null
   const selectedSpotImages = useMemo(() => getLocationImages(selectedSpot), [selectedSpot])
 
+  const previewBlocks = useMemo(() => parseMarkdownToBlocks(markdownText), [markdownText])
+
   function createNewNote() {
-    const next: LongformNote = {
-      ...EMPTY_NOTE,
-      blocks: [createEmptyBlock('paragraph')],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
     setSelectedSlug('')
-    setForm(next)
+    setForm(EMPTY_NOTE)
+    setMarkdownText('')
     setMessage('')
   }
 
@@ -309,215 +380,58 @@ export default function AdminNotesPage() {
     setForm((current) => ({ ...current, ...patch }))
   }
 
-  function updateBlock(index: number, patch: Partial<NoteBlock>) {
-    setForm((current) => ({
-      ...current,
-      blocks: current.blocks.map((block, blockIndex) => (blockIndex === index ? { ...block, ...patch } : block)),
-    }))
-  }
-
-  function updateBlockImage(index: number, imageIndex: number, patch: Partial<NoteImageItem>) {
-    setForm((current) => ({
-      ...current,
-      blocks: current.blocks.map((block, blockIndex) => {
-        if (blockIndex !== index) return block
-        const nextImages = (block.images || []).map((image, currentImageIndex) =>
-          currentImageIndex === imageIndex ? { ...image, ...patch } : image
-        )
-        return { ...block, images: nextImages }
-      }),
-    }))
-  }
-
-  function removeBlock(index: number) {
-    setForm((current) => ({
-      ...current,
-      blocks: current.blocks.filter((_, blockIndex) => blockIndex !== index),
-    }))
-  }
-
-  function addBlock(type: NoteBlockType, afterIndex?: number) {
-    const nextBlock = createEmptyBlock(type)
-    setForm((current) => {
-      if (typeof afterIndex === 'number') {
-        const nextBlocks = [...current.blocks]
-        nextBlocks.splice(afterIndex + 1, 0, nextBlock)
-        return { ...current, blocks: nextBlocks }
-      }
-      return { ...current, blocks: [...current.blocks, nextBlock] }
-    })
-  }
-
-  function moveBlock(index: number, direction: 'up' | 'down') {
-    setForm((current) => ({
-      ...current,
-      blocks: moveItem(current.blocks, index, direction),
-    }))
-  }
-
-  function openSpotImagePicker(blockId: string, mode: 'replace' | 'insertAfter' = 'replace') {
-    const targetBlock = form.blocks.find((block) => block.id === blockId)
-    setPickerBlockId(blockId)
-    setPickerMode(mode)
+  function openMarkdownSpotPicker() {
     setPickerOpen(true)
     setSpotQuery('')
-    if (mode === 'replace') {
-      setSelectedSpotId(targetBlock?.spotId || null)
-      setSelectedSpotImageUrls(targetBlock?.images?.map((image) => image.src) || [])
-    } else {
-      setSelectedSpotId(null)
-      setSelectedSpotImageUrls([])
-    }
+    setSelectedSpotId(null)
+    setSelectedSpotImageUrls([])
   }
 
-  function openCommandMenu(blockId: string) {
-    setCommandBlockId(blockId)
-    setCommandMenuOpen(true)
-  }
-
-  function runCommand(type: 'paragraph' | 'image' | 'spotImages') {
-    const targetIndex = form.blocks.findIndex((block) => block.id === commandBlockId)
-    if (targetIndex === -1) {
-      setCommandMenuOpen(false)
+  function insertTextAtCursor(textToInsert: string) {
+    const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement
+    if (!textarea) {
+      setMarkdownText((prev) => prev + '\n' + textToInsert)
       return
     }
 
-    if (type === 'spotImages') {
-      setCommandMenuOpen(false)
-      openSpotImagePicker(commandBlockId, 'insertAfter')
-      return
-    }
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const text = textarea.value
+    const before = text.substring(0, start)
+    const after = text.substring(end, text.length)
+    const nextText = before + textToInsert + after
+    setMarkdownText(nextText)
 
-    addBlock(type, targetIndex)
-    setCommandMenuOpen(false)
-    setMessage(
-      type === 'image'
-        ? 'Inserted a single image block below the current text block.'
-        : 'Inserted a paragraph block below the current text block.'
-    )
+    setTimeout(() => {
+      textarea.focus()
+      textarea.selectionStart = textarea.selectionEnd = start + textToInsert.length
+    }, 0)
   }
 
-  function runSlashCommandFromEditor(blockId: string, command: string) {
-    const normalized = command.toLowerCase()
-    setCommandMenuOpen(false)
+  function applySpotImagesToMarkdown() {
+    if (!selectedSpot) return
 
-    if (normalized === '/spot') {
-      openSpotImagePicker(blockId, 'insertAfter')
-      setMessage('Opening spot gallery picker for this block.')
-      return
-    }
+    const imagesList = selectedSpotImageUrls.join(',')
+    const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"]`
 
-    if (normalized === '/image') {
-      const targetIndex = form.blocks.findIndex((block) => block.id === blockId)
-      if (targetIndex === -1) return
-      addBlock('image', targetIndex)
-      setMessage('Inserted a single image block below the current text block.')
-      return
-    }
-
-    if (normalized === '/p' || normalized === '/paragraph') {
-      const targetIndex = form.blocks.findIndex((block) => block.id === blockId)
-      if (targetIndex === -1) return
-      addBlock('paragraph', targetIndex)
-      setMessage('Inserted a paragraph block below the current text block.')
-    }
-  }
-
-  function applySpotImagesToBlock() {
-    if (!pickerBlockId || !selectedSpot) return
-
-    const targetIndex = form.blocks.findIndex((block) => block.id === pickerBlockId)
-    if (targetIndex === -1) return
-
-    const images = selectedSpotImageUrls
-      .map((src) =>
-        ({
-          src,
-          alt: buildFallbackAlt(getLocationLabel(selectedSpot)),
-          caption: '',
-        }) satisfies NoteImageItem
-      )
-      .filter((image) => image.src)
-
-    if (pickerMode === 'insertAfter') {
-      const nextBlock: NoteBlock = {
-        id: createBlockId(),
-        type: 'spotImages',
-        spotId: selectedSpot.id,
-        spotName: getLocationLabel(selectedSpot),
-        images,
-      }
-
-      setForm((current) => {
-        const nextBlocks = [...current.blocks]
-        nextBlocks.splice(targetIndex + 1, 0, nextBlock)
-        return { ...current, blocks: nextBlocks }
-      })
-      setMessage(`Inserted ${images.length} image${images.length > 1 ? 's' : ''} from ${getLocationLabel(selectedSpot)} below the current block.`)
-    } else {
-      updateBlock(targetIndex, {
-        type: 'spotImages',
-        spotId: selectedSpot.id,
-        spotName: getLocationLabel(selectedSpot),
-        images,
-      })
-      setMessage(`Updated this image block with ${images.length} image${images.length > 1 ? 's' : ''} from ${getLocationLabel(selectedSpot)}.`)
-    }
+    insertTextAtCursor(`\n\n${shortcode}\n\n`)
     setPickerOpen(false)
+    setMessage(`Successfully linked spot images for "${getLocationLabel(selectedSpot)}" at your cursor!`)
   }
 
   async function saveNote() {
     setSaving(true)
     setMessage('')
 
-    const normalizedBlocks = form.blocks
-      .map((block) => {
-        if (block.type === 'image') {
-          return {
-            ...block,
-            imageUrl: String(block.imageUrl || '').trim(),
-            alt: String(block.alt || '').trim() || buildFallbackAlt(undefined, block.caption),
-            caption: String(block.caption || '').trim() || undefined,
-          }
-        }
-
-        if (block.type === 'gallery' || block.type === 'spotImages') {
-          return {
-            ...block,
-            images: (block.images || [])
-              .map((image) => ({
-                src: String(image.src || '').trim(),
-                alt: String(image.alt || '').trim() || buildFallbackAlt(block.spotName, image.caption),
-                caption: String(image.caption || '').trim() || undefined,
-              }))
-              .filter((image) => image.src),
-          }
-        }
-
-        return {
-          ...block,
-          content: String(block.content || '').trim(),
-        }
-      })
-      .filter((block) => {
-        if (block.type === 'image') return Boolean(block.imageUrl)
-        if (block.type === 'gallery' || block.type === 'spotImages') return Boolean(block.images?.length)
-        return Boolean(block.content)
-      })
-
-    const contentFallback = normalizedBlocks
-      .filter((block) => block.type === 'paragraph' || block.type === 'quote')
-      .map((block) => block.content || '')
-      .filter(Boolean)
-      .join('\n\n')
+    const parsedBlocks = parseMarkdownToBlocks(markdownText)
 
     const payload: LongformNote & { previousSlug?: string } = {
       ...form,
       slug: form.slug || slugify(form.title),
       shortTitle: form.shortTitle || form.title,
       tags: parseCommaSeparated(stringifyCommaSeparated(form.tags)),
-      content: contentFallback || form.content || '',
-      blocks: normalizedBlocks,
+      content: markdownText.trim(),
+      blocks: parsedBlocks,
       updatedAt: new Date().toISOString(),
       previousSlug: selectedSlug || undefined,
     }
@@ -545,6 +459,7 @@ export default function AdminNotesPage() {
       })
       setSelectedSlug(hydrated.slug)
       setForm(hydrated)
+      setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
       setMessage(hydrated.published ? 'Published note saved.' : 'Draft saved.')
     } catch (error: any) {
       setMessage(error?.message || 'Failed to save note.')
@@ -582,7 +497,7 @@ export default function AdminNotesPage() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_12%_0%,rgba(20,184,166,0.16),transparent_24%),radial-gradient(circle_at_88%_12%,rgba(245,158,11,0.12),transparent_24%),linear-gradient(180deg,#0a0a0b_0%,#09090b_35%,#050505_100%)] text-white">
-      <div className="mx-auto grid max-w-[1680px] gap-6 px-4 py-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1780px] gap-6 px-4 py-8 lg:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="space-y-4">
           <Card className="border-white/10 bg-white/5 text-white">
             <CardHeader>
@@ -598,10 +513,10 @@ export default function AdminNotesPage() {
               {notes.length ? (
                 notes.map((note) => (
                   <button
-                    key={note.slug}
-                    type="button"
-                    onClick={() => setSelectedSlug(note.slug)}
-                    className={`w-full rounded-2xl border px-4 py-3 text-left transition ${selectedSlug === note.slug ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}
+                     key={note.slug}
+                     type="button"
+                     onClick={() => setSelectedSlug(note.slug)}
+                     className={`w-full rounded-2xl border px-4 py-3 text-left transition ${selectedSlug === note.slug ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
@@ -689,228 +604,254 @@ export default function AdminNotesPage() {
             </CardContent>
           </Card>
 
-          <div className="order-1 grid gap-6 xl:grid-cols-[minmax(0,1fr)_520px]">
-            <Card className="border-white/10 bg-[rgba(7,10,12,0.78)] text-white shadow-[0_24px_80px_rgba(0,0,0,0.25)] backdrop-blur">
-              <CardHeader>
-                <CardTitle className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.28em] text-emerald-200/70">Writing Canvas</p>
-                    <span className="mt-2 block text-3xl">Article Body / 长文正文</span>
-                    <p className="mt-2 max-w-2xl text-sm font-normal leading-6 text-white/50">
-                      Write in order here. Type <span className="rounded border border-emerald-300/20 bg-emerald-400/10 px-1.5 py-0.5 text-emerald-100">/spot</span> inside any paragraph, then press Space or Enter to insert spot images right below that paragraph.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {BLOCK_OPTIONS.map((option) => (
-                      <Button
-                        key={option.type}
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="border-white/10 bg-transparent text-white hover:bg-white/10"
-                        onClick={() => addBlock(option.type)}
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        {option.label}
-                      </Button>
-                    ))}
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {form.blocks.length ? (
-                  form.blocks.map((block, index) => (
-                    <div key={block.id} className="rounded-[24px] border border-white/10 bg-black/25 p-4 transition hover:border-white/20">
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                          <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300/75">{block.type}</p>
-                          <p className="mt-1 text-sm text-white/45">
-                            {isTextBlock(block) ? 'Text block. /spot works here.' : block.type === 'spotImages' ? 'Inline spot images.' : 'Inline media block.'}
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <Button type="button" variant="outline" size="icon" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'up')}>
-                            <ArrowUp className="h-4 w-4" />
-                          </Button>
-                          <Button type="button" variant="outline" size="icon" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => moveBlock(index, 'down')}>
-                            <ArrowDown className="h-4 w-4" />
-                          </Button>
-                          <Button type="button" variant="outline" size="icon" className="border-red-400/20 bg-transparent text-red-200 hover:bg-red-500/10" onClick={() => removeBlock(index)}>
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-
-                      <div className="mt-5 space-y-4">
-                        {isTextBlock(block) ? (
-                          <div className="space-y-2">
-                            <Textarea
-                              value={block.content || ''}
-                              onChange={(event) => updateBlock(index, { content: event.target.value })}
-                              onKeyDown={(event) => {
-                                const target = event.currentTarget
-                                const slashCommand =
-                                  event.key === ' ' || event.key === 'Enter' || event.key === 'Tab'
-                                    ? getSlashCommandAtCursor(target.value, target.selectionStart ?? target.value.length)
-                                    : null
-
-                                if (slashCommand && ['/spot', '/image', '/p', '/paragraph'].includes(slashCommand.command)) {
-                                  event.preventDefault()
-                                  const nextContent = stripSlashCommand(target.value, slashCommand.commandStart, slashCommand.commandEnd)
-                                  updateBlock(index, { content: nextContent })
-                                  runSlashCommandFromEditor(block.id, slashCommand.command)
-                                  return
-                                }
-
-                              }}
-                              rows={getTextareaRows(block)}
-                              className="resize-y border-white/10 bg-black/30 text-[15px] leading-7 text-white placeholder:text-white/30 focus-visible:ring-emerald-300/40"
-                              placeholder={block.type === 'heading' ? 'Section heading' : "Write this part of the article here. Type /spot to insert saved spot images below."}
-                            />
-                            <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-white/45">
-                              <p><span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/spot</span> saved spot images, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/image</span> image URL, <span className="rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-white/70">/p</span> new paragraph.</p>
-                              <Button type="button" variant="ghost" size="sm" className="h-7 rounded-full px-3 text-xs text-white/70 hover:bg-white/10 hover:text-white" onClick={() => openCommandMenu(block.id)}>
-                                Insert
-                              </Button>
-                            </div>
-                          </div>
-                        ) : null}
-
-                        {block.type === 'image' ? (
-                          <div className="space-y-4">
-                            <div className="space-y-2">
-                              <Label>Image URL</Label>
-                              <Input value={block.imageUrl || ''} onChange={(event) => updateBlock(index, { imageUrl: event.target.value })} placeholder="https://..." />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Alt</Label>
-                              <Input value={block.alt || ''} onChange={(event) => updateBlock(index, { alt: event.target.value })} placeholder="If empty, it will be generated automatically." />
-                            </div>
-                            <div className="space-y-2">
-                              <Label>Caption</Label>
-                              <Textarea value={block.caption || ''} onChange={(event) => updateBlock(index, { caption: event.target.value })} rows={2} placeholder="Optional caption" />
-                            </div>
-                          </div>
-                        ) : null}
-
-                        {(block.type === 'spotImages' || block.type === 'gallery') ? (
-                          <div className="space-y-4">
-                            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-300/15 bg-emerald-400/10 px-4 py-3">
-                              <div>
-                                <p className="font-medium text-white">{block.spotName || 'No spot selected yet'}</p>
-                                <p className="text-sm text-white/55">
-                                  {block.images?.length ? `${block.images.length} images selected` : 'Pick a spot, then select one or more images.'}
-                                </p>
-                              </div>
-                              <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => openSpotImagePicker(block.id, 'replace')}>
-                                <Search className="mr-2 h-4 w-4" />
-                                Change selected images
-                              </Button>
-                            </div>
-
-                            {block.images?.length ? (
-                              <div className="space-y-4">
-                                {block.images.map((image, imageIndex) => (
-                                  <div key={`${block.id}-${imageIndex}`} className="grid gap-4 rounded-2xl border border-white/10 bg-black/20 p-4 md:grid-cols-[180px_minmax(0,1fr)]">
-                                    <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-                                      <FallbackImage src={image.src} alt={image.alt} fill sizes="180px" className="object-cover" />
-                                    </div>
-                                    <div className="space-y-3">
-                                      <div className="space-y-2">
-                                        <Label>Alt</Label>
-                                        <Input
-                                          value={image.alt}
-                                          onChange={(event) => updateBlockImage(index, imageIndex, { alt: event.target.value })}
-                                          placeholder="Alt text"
-                                        />
-                                      </div>
-                                      <div className="space-y-2">
-                                        <Label>Caption</Label>
-                                        <Textarea
-                                          value={image.caption || ''}
-                                          onChange={(event) => updateBlockImage(index, imageIndex, { caption: event.target.value })}
-                                          rows={2}
-                                          placeholder="Optional caption"
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : null}
-                          </div>
-                        ) : null}
-
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('paragraph', index)}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Paragraph below
-                          </Button>
-                          <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('image', index)}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Image URL below
-                          </Button>
-                          {isTextBlock(block) ? (
-                            <Button type="button" size="sm" variant="outline" className="border-emerald-400/20 bg-emerald-500/10 text-emerald-100 hover:bg-emerald-500/20" onClick={() => openSpotImagePicker(block.id, 'insertAfter')}>
-                              <ImageIcon className="mr-2 h-4 w-4" />
-                              Insert spot images
-                            </Button>
-                          ) : (
-                            <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => addBlock('spotImages', index)}>
-                              <Plus className="mr-2 h-4 w-4" />
-                              Spot images below
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="rounded-[24px] border border-dashed border-white/15 bg-black/20 p-6 text-sm text-white/55">
-                    No blocks yet. Add a paragraph block to begin.
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="border-white/10 bg-[rgba(7,10,12,0.64)] text-white backdrop-blur xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:overflow-y-auto">
-              <CardHeader>
-                <CardTitle>Live Article Preview</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <section className={`overflow-hidden rounded-[30px] border border-white/10 p-6 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
-                  <p className="text-xs uppercase tracking-[0.24em] text-amber-200/80">{form.kicker || 'Longform Note'}</p>
-                  <h2 className="mt-4 text-4xl font-semibold leading-tight text-white">{form.title || 'Your note title'}</h2>
-                  {form.tagline ? <p className="mt-4 text-sm leading-7 text-white/80">{form.tagline}</p> : null}
-                </section>
-
-                {form.summary ? (
-                  <div className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm leading-7 text-white/70">
-                    {form.summary}
-                  </div>
-                ) : null}
-
-                <div className="space-y-6">
-                  {form.blocks.map((block) => (
-                    <BlockPreview key={block.id} block={block} locationsById={locationsById} />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+          {/* WORKSPACE VIEW CONTROLLER Segmented Tabs */}
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-[26px] border border-white/10 bg-black/45 p-2 shadow-xl backdrop-blur-md">
+            <div className="flex items-center gap-2 pl-3">
+              <span className="text-xs uppercase tracking-[0.24em] text-white/40 font-bold">Workspace View / 编辑画布视图</span>
+            </div>
+            <div className="flex items-center bg-black/40 p-1.5 rounded-2xl border border-white/5 shadow-inner">
+              <button
+                type="button"
+                onClick={() => setWorkspaceMode('split')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'split' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+              >
+                编辑 + 下方预览 (Editor + Preview)
+              </button>
+              <button
+                type="button"
+                onClick={() => setWorkspaceMode('edit')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'edit' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+              >
+                📝 仅编辑 (Edit Only)
+              </button>
+              <button
+                type="button"
+                onClick={() => setWorkspaceMode('preview')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'preview' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+              >
+                ✨ 实境预览 (True Preview)
+              </button>
+            </div>
           </div>
+
+          {workspaceMode === 'preview' ? (
+            /* TRUE PREVIEW MODE: Highly Realistic 100% Simulation of Frontend Page Layout */
+            <div className="order-1 flex flex-col gap-6">
+              {/* Simulated Glowing Progress Bar */}
+              <div className="w-full h-[4px] bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 rounded-full opacity-90 shadow-[0_0_12px_rgba(245,158,11,0.4)] animate-pulse" />
+
+              {/* Cover Header */}
+              <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-10 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
+                <div className={`grid gap-8 ${form.coverImage ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
+                  <div className="space-y-5 text-left">
+                    <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{form.kicker || 'Longform Note'}</p>
+                    <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl tracking-tight">{form.title || 'Your note title'}</h1>
+                    {form.tagline ? <p className="max-w-3xl text-lg leading-8 text-white/80">{form.tagline}</p> : null}
+                  </div>
+                  {form.coverImage ? (
+                    <div className="relative aspect-[4/3] overflow-hidden rounded-[34px] border border-white/10 bg-black/20 shadow-2xl">
+                      <FallbackImage src={form.coverImage} alt={`${form.title || 'Note'} cover`} fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" priority />
+                    </div>
+                  ) : null}
+                </div>
+              </section>
+
+              {/* Grid content matching public detail page */}
+              <div className="grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
+                {/* Main Article column */}
+                <article className="space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12 w-full text-left">
+                  {form.summary ? (
+                    <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
+                      <p className="text-xs text-emerald-300 font-bold uppercase tracking-widest mb-1">Card Summary</p>
+                      {form.summary}
+                    </div>
+                  ) : null}
+
+                  {previewBlocks.length ? (
+                    previewBlocks.map((block) => (
+                      <BlockPreview key={block.id} block={block} locationsById={locationsById} isFullPreview={true} />
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 italic text-center py-10">在写作画布中输入 Markdown 格式故事，这里将渲染出 100% 真实的排版。</p>
+                  )}
+                </article>
+
+                {/* Sidebar Column */}
+                <aside className="space-y-4 lg:sticky lg:top-6 w-full text-left">
+                  {/* Simulated TOC */}
+                  <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+                    <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80 mb-4 font-bold">Table of Contents / 目录</p>
+                    <div className="space-y-3 border-l border-white/10 pl-4 py-1">
+                      {previewBlocks.filter(b => b.type === 'heading' && b.content).length ? (
+                        previewBlocks.filter(b => b.type === 'heading' && b.content).map((b, i) => (
+                          <p key={b.id} className={`text-sm leading-6 transition ${i === 0 ? 'text-amber-300 font-medium' : 'text-white/60'}`}>
+                            {b.content}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="text-xs text-white/40 italic">暂无目录标题 (添加 H2 标题自动生成)</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Related Spots */}
+                  <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+                    <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80 font-bold">Related Spots / 相关景点</p>
+                    <div className="mt-4 space-y-3">
+                      {Array.from(new Set(previewBlocks.map(b => b.spotId).filter((id): id is number => Number.isFinite(id)))).length ? (
+                        Array.from(new Set(previewBlocks.map(b => b.spotId).filter((id): id is number => Number.isFinite(id)))).map(spotId => {
+                          const spot = locationsById.get(spotId)
+                          if (!spot) return null
+                          return (
+                            <div
+                              key={spot.id}
+                              className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 hover:bg-white/5 transition duration-200"
+                            >
+                              <div className="relative h-14 w-14 overflow-hidden rounded-xl shrink-0">
+                                <FallbackImage
+                                  src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+                                  alt={spot.name_cn || spot.name}
+                                  fill
+                                  sizes="56px"
+                                  className="object-cover"
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="truncate font-semibold text-white text-sm">{spot.name_cn || spot.name}</p>
+                                <p className="truncate text-[10px] text-white/45">{spot.regions?.country} · {spot.regions?.name_cn || spot.regions?.name}</p>
+                              </div>
+                            </div>
+                          )
+                        })
+                      ) : (
+                        <p className="text-xs text-white/40 italic">未关联任何景点 (正文插入景点图片自动链接)</p>
+                      )}
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          ) : (
+            /* EDIT AND SPLIT MODES */
+            <div className="order-1 grid grid-cols-1 gap-6">
+              {/* LEFT PANEL: Markdown Writing Canvas */}
+              <Card className="border-white/10 bg-[rgba(8,8,10,0.85)] text-white shadow-[0_24px_80px_rgba(0,0,0,0.3)] backdrop-blur-md">
+                <CardHeader className="border-b border-white/5 pb-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="text-left">
+                      <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Writing Canvas</p>
+                      <span className="mt-1 block text-2xl font-bold">博客写作画布</span>
+                      <p className="mt-1 text-sm font-normal text-white/50">
+                        支持标准 Markdown。您可在任何段落后点击 **“关联景点图片”** 直接在光标处插入景点画廊。
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={() => insertTextAtCursor('## ')}
+                      >
+                        标题 (H2)
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={() => insertTextAtCursor('> ')}
+                      >
+                        引用段
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={() => insertTextAtCursor('![图片描述](https://)')}
+                      >
+                        独立图片
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        className="border-emerald-400/20 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30"
+                        onClick={openMarkdownSpotPicker}
+                      >
+                        <ImageIcon className="mr-2 h-4 w-4" />
+                        关联已有景点图片
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-4">
+                  <Textarea
+                    id="markdown-editor"
+                    value={markdownText}
+                    onChange={(event) => setMarkdownText(event.target.value)}
+                    rows={workspaceMode === 'edit' ? 36 : 28}
+                    className="font-mono text-[14px] leading-7 bg-black/40 border-white/5 text-gray-100 placeholder:text-white/20 focus-visible:ring-amber-300/50 resize-y"
+                    placeholder={`在此输入您的旅行故事...\n\n支持 Markdown 格式：\n## 这是一个二级标题\n这里是正文段落，可以直接写一大堆文字。\n\n> 这是一个好看的引用块\n\n点击上方的“关联已有景点图片”可以将您已收藏景点的照片瞬间插入！`}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* BOTTOM PANEL: Live Premium Preview */}
+              {workspaceMode === 'split' && (
+                <Card className="border-white/10 bg-[rgba(5,5,7,0.9)] text-white shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md">
+                  <CardHeader className="border-b border-white/5 pb-4">
+                    <CardTitle className="text-lg flex items-center justify-between">
+                      <span>实时博客效果预览 (Live Preview)</span>
+                      <span className="text-xs text-amber-300/80 font-normal">WYSIWYG</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-6 space-y-8">
+                    {/* Simulated Glowing Progress Bar */}
+                    <div className="w-full h-[3px] bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 rounded-full opacity-80" />
+
+                    {/* Cover Header */}
+                    <section className={`overflow-hidden rounded-[30px] border border-white/10 p-6 relative text-left ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
+                      <p className="text-xs uppercase tracking-[0.24em] text-amber-200/80">{form.kicker || 'Longform Note'}</p>
+                      <h2 className="mt-4 text-3xl font-semibold leading-tight text-white">{form.title || 'Your note title'}</h2>
+                      {form.tagline ? <p className="mt-3 text-sm leading-7 text-white/80">{form.tagline}</p> : null}
+                    </section>
+
+                    {form.summary ? (
+                      <div className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm leading-7 text-white/70 text-left">
+                        <p className="text-xs text-amber-300/80 uppercase tracking-widest mb-1">Card Summary</p>
+                        {form.summary}
+                      </div>
+                    ) : null}
+
+                    {/* Article Body Renderer */}
+                    <div className="space-y-6 max-w-xl mx-auto text-left">
+                      {previewBlocks.length ? (
+                        previewBlocks.map((block) => (
+                          <BlockPreview key={block.id} block={block} locationsById={locationsById} />
+                        ))
+                      ) : (
+                        <p className="text-sm text-gray-500 italic text-center py-10">在左侧编辑区域输入文字后，这里将实时渲染出高档的杂志排版效果。</p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
         </section>
       </div>
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent className="max-w-5xl border-white/10 bg-[#0b0b0d] text-white">
           <DialogHeader>
-            <DialogTitle>{pickerMode === 'insertAfter' ? 'Insert spot images below current block' : 'Edit selected spot images'}</DialogTitle>
+            <DialogTitle>关联景点已有相册图片</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label>Search spot</Label>
+                <Label>搜索已有景点</Label>
                 <Input value={spotQuery} onChange={(event) => setSpotQuery(event.target.value)} placeholder="BOH Tea Centre, Green View Garden…" />
               </div>
               <div className="max-h-[420px] space-y-2 overflow-y-auto rounded-2xl border border-white/10 bg-black/20 p-2">
@@ -933,9 +874,9 @@ export default function AdminNotesPage() {
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                <p className="font-medium text-white">{selectedSpot ? getLocationLabel(selectedSpot) : 'Choose a spot first'}</p>
+                <p className="font-medium text-white">{selectedSpot ? getLocationLabel(selectedSpot) : '请先在左侧选择景点'}</p>
                 <p className="mt-1 text-sm text-white/55">
-                  {selectedSpot ? 'Select one or more existing images and insert them exactly below the block you selected.' : 'This picker reuses images already saved on the spot.'}
+                  {selectedSpot ? '从该景点的现有相册中，勾选一张或多张图片插入到您的文章光标处。' : '此选择器会复用该景点已保存的相册及封面图。'}
                 </p>
               </div>
 
@@ -970,12 +911,12 @@ export default function AdminNotesPage() {
                   </div>
                 ) : (
                   <div className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-6 text-sm text-white/55">
-                    This spot has no images yet.
+                    该景点目前没有关联任何图片。
                   </div>
                 )
               ) : (
                 <div className="rounded-2xl border border-dashed border-white/15 bg-black/20 px-4 py-6 text-sm text-white/55">
-                  Search a spot on the left, then choose images from its existing gallery or cover.
+                  请先在左侧输入搜索并选择景点，再从其关联的画廊中挑选照片。
                 </div>
               )}
             </div>
@@ -983,60 +924,10 @@ export default function AdminNotesPage() {
 
           <DialogFooter>
             <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setPickerOpen(false)}>
-              Cancel
+              取消
             </Button>
-            <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applySpotImagesToBlock} disabled={!selectedSpotId || !selectedSpotImageUrls.length}>
-              Insert selected images
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={commandMenuOpen} onOpenChange={setCommandMenuOpen}>
-        <DialogContent className="max-w-lg border-white/10 bg-[#0b0b0d] text-white">
-          <DialogHeader>
-            <DialogTitle>Quick Insert</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <button
-              type="button"
-              onClick={() => runCommand('spotImages')}
-              className="flex w-full items-center justify-between rounded-2xl border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-left transition hover:bg-emerald-500/20"
-            >
-              <div>
-                <p className="font-medium text-emerald-100">Insert spot gallery below</p>
-                <p className="mt-1 text-sm text-emerald-100/65">Search an existing spot and insert one or more of its saved images below this text block.</p>
-              </div>
-              <ImageIcon className="h-5 w-5 text-emerald-200" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => runCommand('image')}
-              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
-            >
-              <div>
-                <p className="font-medium text-white">Insert single image below</p>
-                <p className="mt-1 text-sm text-white/55">Add one standalone image block and paste a URL.</p>
-              </div>
-              <Plus className="h-5 w-5 text-white/70" />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => runCommand('paragraph')}
-              className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-left transition hover:bg-white/10"
-            >
-              <div>
-                <p className="font-medium text-white">Insert paragraph below</p>
-                <p className="mt-1 text-sm text-white/55">Continue the story with another text block below the current one.</p>
-              </div>
-              <Plus className="h-5 w-5 text-white/70" />
-            </button>
-          </div>
-          <DialogFooter>
-            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setCommandMenuOpen(false)}>
-              Cancel
+            <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applySpotImagesToMarkdown} disabled={!selectedSpotId || !selectedSpotImageUrls.length}>
+              插入所选景点图片
             </Button>
           </DialogFooter>
         </DialogContent>
