@@ -7,6 +7,7 @@ export type NoteBlockType =
   | 'spotImages'
   | 'spot'
   | 'affiliate'
+  | 'klookWidget'
 
 export interface NoteImageItem {
   src: string
@@ -27,6 +28,7 @@ export interface NoteBlock {
   spotSlug?: string
   spotName?: string
   affiliateIds?: number[]
+  klookWidgetIds?: string[]
 }
 
 export interface LongformNote {
@@ -172,4 +174,192 @@ export const EMPTY_NOTE: LongformNote = {
   blocks: [],
   createdAt: '',
   updatedAt: '',
+}
+
+function parseAttributes(tagText: string): Record<string, string> {
+  const attrs: Record<string, string> = {}
+  const matches = tagText.matchAll(/(\w+)="([^"]*)"/g)
+  for (const match of matches) {
+    attrs[match[1]] = match[2]
+  }
+  return attrs
+}
+
+export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
+  if (!Array.isArray(blocks) || blocks.length === 0) return ''
+
+  return blocks
+    .map((block) => {
+      if (block.type === 'heading') {
+        return `## ${block.content || ''}`
+      }
+      if (block.type === 'quote') {
+        return `> ${block.content || ''}`
+      }
+      if (block.type === 'image') {
+        const altText = block.alt || ''
+        const urlText = block.imageUrl || ''
+        const captionText = block.caption ? `\n*${block.caption}*` : ''
+        return `![${altText}](${urlText})${captionText}`
+      }
+      if (block.type === 'spotImages' || block.type === 'gallery') {
+        const imagesList = (block.images || []).map((img) => img.src).join(',')
+        return `[spot-images id="${block.spotId || ''}" name="${block.spotName || ''}" images="${imagesList}"]`
+      }
+      if (block.type === 'spot') {
+        return `[spot id="${block.spotId || ''}"]`
+      }
+      if (block.type === 'affiliate') {
+        const ids = (block.affiliateIds || []).join(',')
+        return `[affiliate ids="${ids}" title="${block.title || ''}" content="${block.content || ''}"]`
+      }
+      if (block.type === 'klookWidget') {
+        const ids = (block.klookWidgetIds || []).join(',')
+        return `[klook-widget ids="${ids}" title="${block.title || ''}" content="${block.content || ''}"]`
+      }
+      return block.content || ''
+    })
+    .join('\n\n')
+}
+
+export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
+  const trimmed = String(markdown || '').trim()
+  if (!trimmed) return []
+
+  // Split blocks by double (or more) newlines, normalizing carriage returns
+  const rawSections = trimmed.replace(/\r\n/g, '\n').split(/\n\n+/)
+  const blocks: NoteBlock[] = []
+
+  rawSections.forEach((section, index) => {
+    const text = section.trim()
+    if (!text) return
+
+    const blockId = `block-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 6)}`
+
+    // 1. Heading
+    if (text.startsWith('#')) {
+      const levelMatch = text.match(/^(#{1,6})\s+(.*)$/)
+      if (levelMatch) {
+        blocks.push({
+          id: blockId,
+          type: 'heading',
+          content: levelMatch[2].trim(),
+        })
+        return
+      }
+    }
+
+    // 2. Blockquote
+    if (text.startsWith('>')) {
+      const content = text.slice(1).trim()
+      blocks.push({
+        id: blockId,
+        type: 'quote',
+        content,
+      })
+      return
+    }
+
+    // 3. Shortcodes like [spot-images ...] or [spot-gallery ...]
+    if (text.startsWith('[spot-images') || text.startsWith('[spot-gallery')) {
+      const attrs = parseAttributes(text)
+      const spotId = parseInt(attrs.id || attrs.spotId || '', 10)
+      const spotName = attrs.name || attrs.spotName || 'Spot Images'
+      const imagesStr = attrs.images || ''
+      const images = imagesStr
+        .split(',')
+        .filter(Boolean)
+        .map((src) => ({
+          src: src.trim(),
+          alt: buildFallbackAlt(spotName),
+        }))
+
+      blocks.push({
+        id: blockId,
+        type: 'spotImages',
+        spotId: Number.isFinite(spotId) ? spotId : undefined,
+        spotName,
+        images,
+      })
+      return
+    }
+
+    // 4. Shortcode [spot ...] or [spot-card ...]
+    if (text.startsWith('[spot-card') || text.startsWith('[spot')) {
+      const attrs = parseAttributes(text)
+      const spotId = parseInt(attrs.id || attrs.spotId || '', 10)
+
+      blocks.push({
+        id: blockId,
+        type: 'spot',
+        spotId: Number.isFinite(spotId) ? spotId : undefined,
+      })
+      return
+    }
+
+    // 5. Shortcode [affiliate ...]
+    if (text.startsWith('[affiliate')) {
+      const attrs = parseAttributes(text)
+      const idsStr = attrs.ids || ''
+      const affiliateIds = idsStr
+        .split(',')
+        .map((id) => parseInt(id.trim(), 10))
+        .filter(Number.isFinite)
+
+      blocks.push({
+        id: blockId,
+        type: 'affiliate',
+        title: attrs.title || undefined,
+        content: attrs.content || undefined,
+        affiliateIds,
+      })
+      return
+    }
+
+    // 6. Shortcode [klook-widget ...]
+    if (text.startsWith('[klook-widget') || text.startsWith('[klook')) {
+      const attrs = parseAttributes(text)
+      const idsStr = attrs.ids || attrs.id || ''
+      const klookWidgetIds = idsStr
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean)
+
+      blocks.push({
+        id: blockId,
+        type: 'klookWidget',
+        title: attrs.title || undefined,
+        content: attrs.content || undefined,
+        klookWidgetIds,
+      })
+      return
+    }
+
+    // 7. Standalone Image: ![alt](url)
+    if (text.startsWith('![')) {
+      const markdownImgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\s*\n*\*([^*]+)\*)?$/)
+      if (markdownImgMatch) {
+        const alt = markdownImgMatch[1]
+        const imageUrl = markdownImgMatch[2]
+        const caption = markdownImgMatch[3]
+        blocks.push({
+          id: blockId,
+          type: 'image',
+          imageUrl,
+          alt: alt || undefined,
+          caption: caption || undefined,
+        })
+        return
+      }
+    }
+
+    // Default: Paragraph block
+    blocks.push({
+      id: blockId,
+      type: 'paragraph',
+      content: text,
+    })
+  })
+
+  return blocks
 }

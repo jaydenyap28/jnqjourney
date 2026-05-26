@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
-import type { LongformNote, NoteBlock, NoteImageItem } from '@/lib/notes'
+import type { LongformNote, NoteBlock } from '@/lib/notes'
 import {
   buildFallbackAlt,
   DEFAULT_NOTE_COVER_ACCENT,
@@ -39,6 +39,23 @@ interface LocationOption {
   images?: string[] | null
   category?: string | null
   regions?: RegionOption | null
+}
+
+interface AffiliateOption {
+  id: number
+  title?: string | null
+  provider?: string | null
+  link_type?: string | null
+  url?: string | null
+  locations?: { name?: string | null; name_cn?: string | null } | null
+  regions?: { name?: string | null; name_cn?: string | null; country?: string | null } | null
+}
+
+interface KlookWidgetOption {
+  id: string
+  title: string
+  description?: string
+  isActive: boolean
 }
 
 function slugify(value: string) {
@@ -145,7 +162,7 @@ function BlockPreview({
     if (isFullPreview) {
       return (
         <div className="max-w-4xl mx-auto w-full my-10 space-y-6 rounded-[36px] border border-white/10 bg-white/[0.02] p-6 shadow-[0_32px_90px_rgba(0,0,0,0.25)] backdrop-blur-md">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/5 pb-5">
+          <div className="hidden">
             <div className="flex items-start gap-3">
               <div className="mt-1 flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                 <span className="text-sm">📍</span>
@@ -183,7 +200,7 @@ function BlockPreview({
     }
     return (
       <div className="space-y-4 rounded-[28px] border border-emerald-500/10 bg-emerald-500/5 p-4 my-6">
-        <div className="flex items-center justify-between gap-3 border-b border-white/5 pb-3">
+        <div className="hidden">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-300">
               <span className="text-sm">📍</span>
@@ -274,15 +291,23 @@ export default function AdminNotesPage() {
   const [selectedSlug, setSelectedSlug] = useState('')
   const [form, setForm] = useState<LongformNote>(EMPTY_NOTE)
   const [locations, setLocations] = useState<LocationOption[]>([])
+  const [affiliateLinks, setAffiliateLinks] = useState<AffiliateOption[]>([])
+  const [klookWidgets, setKlookWidgets] = useState<KlookWidgetOption[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [workspaceMode, setWorkspaceMode] = useState<'split' | 'edit' | 'preview'>('split')
 
   const [pickerOpen, setPickerOpen] = useState(false)
+  const [affiliatePickerOpen, setAffiliatePickerOpen] = useState(false)
+  const [klookPickerOpen, setKlookPickerOpen] = useState(false)
   const [spotQuery, setSpotQuery] = useState('')
+  const [affiliateQuery, setAffiliateQuery] = useState('')
+  const [klookQuery, setKlookQuery] = useState('')
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
+  const [selectedAffiliateIds, setSelectedAffiliateIds] = useState<number[]>([])
+  const [selectedKlookWidgetIds, setSelectedKlookWidgetIds] = useState<string[]>([])
   const [markdownText, setMarkdownText] = useState('')
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
 
@@ -292,15 +317,23 @@ export default function AdminNotesPage() {
     async function fetchAll() {
       setLoading(true)
       try {
-        const [notesResponse, locationsResponse] = await Promise.all([
+        const [notesResponse, locationsResponse, affiliateResponse, widgetsResponse] = await Promise.all([
           adminFetch('/api/admin/notes', { cache: 'no-store' }),
           supabase
             .from('locations')
             .select('id,name,name_cn,image_url,images,category,regions:region_id(id,name,name_cn,country)')
             .order('id', { ascending: false }),
+          supabase
+            .from('affiliate_links')
+            .select('id,title,provider,link_type,url,locations:location_id(name,name_cn),regions:region_id(name,name_cn,country)')
+            .eq('is_active', true)
+            .order('id', { ascending: false })
+            .limit(200),
+          adminFetch('/api/admin/klook-widgets', { cache: 'no-store' }),
         ])
 
         const notesResult = notesResponse.ok ? await notesResponse.json() : { notes: [] }
+        const widgetsResult = widgetsResponse.ok ? await widgetsResponse.json() : { widgets: [] }
         if (cancelled) return
 
         const nextNotes = Array.isArray(notesResult?.notes) ? notesResult.notes : []
@@ -309,6 +342,12 @@ export default function AdminNotesPage() {
           ...item,
           regions: Array.isArray(item?.regions) ? item.regions[0] || null : item?.regions || null,
         })))
+        setAffiliateLinks(((affiliateResponse.data || []) as any[]).map((item) => ({
+          ...item,
+          locations: Array.isArray(item?.locations) ? item.locations[0] || null : item?.locations || null,
+          regions: Array.isArray(item?.regions) ? item.regions[0] || null : item?.regions || null,
+        })))
+        setKlookWidgets((Array.isArray(widgetsResult?.widgets) ? widgetsResult.widgets : []).filter((widget: KlookWidgetOption) => widget.isActive !== false))
 
         if (nextNotes.length) {
           setSelectedSlug(nextNotes[0].slug)
@@ -327,6 +366,8 @@ export default function AdminNotesPage() {
         if (!cancelled) {
           setNotes([])
           setLocations([])
+          setAffiliateLinks([])
+          setKlookWidgets([])
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -365,6 +406,26 @@ export default function AdminNotesPage() {
       .slice(0, 30)
   }, [locations, spotQuery])
 
+  const filteredAffiliateLinks = useMemo(() => {
+    const keyword = affiliateQuery.trim().toLowerCase()
+    return affiliateLinks
+      .filter((link) => {
+        const haystack = `${link.title || ''} ${link.provider || ''} ${link.link_type || ''} ${link.locations?.name || ''} ${link.locations?.name_cn || ''} ${link.regions?.name || ''} ${link.regions?.name_cn || ''}`.toLowerCase()
+        return !keyword || haystack.includes(keyword)
+      })
+      .slice(0, 80)
+  }, [affiliateLinks, affiliateQuery])
+
+  const filteredKlookWidgets = useMemo(() => {
+    const keyword = klookQuery.trim().toLowerCase()
+    return klookWidgets
+      .filter((widget) => {
+        const haystack = `${widget.title || ''} ${widget.description || ''}`.toLowerCase()
+        return !keyword || haystack.includes(keyword)
+      })
+      .slice(0, 80)
+  }, [klookWidgets, klookQuery])
+
   const selectedSpot = selectedSpotId ? locationsById.get(selectedSpotId) || null : null
   const selectedSpotImages = useMemo(() => getLocationImages(selectedSpot), [selectedSpot])
 
@@ -387,6 +448,20 @@ export default function AdminNotesPage() {
     setSpotQuery('')
     setSelectedSpotId(null)
     setSelectedSpotImageUrls([])
+  }
+
+  function openAffiliatePicker() {
+    rememberMarkdownSelection()
+    setAffiliatePickerOpen(true)
+    setAffiliateQuery('')
+    setSelectedAffiliateIds([])
+  }
+
+  function openKlookPicker() {
+    rememberMarkdownSelection()
+    setKlookPickerOpen(true)
+    setKlookQuery('')
+    setSelectedKlookWidgetIds([])
   }
 
   function rememberMarkdownSelection() {
@@ -441,6 +516,20 @@ export default function AdminNotesPage() {
     insertTextAtCursor(shortcode)
     setPickerOpen(false)
     setMessage(`Inserted ${selectedSpotImageUrls.length} image${selectedSpotImageUrls.length > 1 ? 's' : ''} for "${getLocationLabel(selectedSpot)}" at the saved cursor position.`)
+  }
+
+  function applyAffiliateLinksToMarkdown() {
+    if (!selectedAffiliateIds.length) return
+    insertTextAtCursor(`[affiliate ids="${selectedAffiliateIds.join(',')}" title="Recommended Links" content=""]`)
+    setAffiliatePickerOpen(false)
+    setMessage(`Inserted ${selectedAffiliateIds.length} affiliate link${selectedAffiliateIds.length > 1 ? 's' : ''} at the saved cursor position.`)
+  }
+
+  function applyKlookWidgetsToMarkdown() {
+    if (!selectedKlookWidgetIds.length) return
+    insertTextAtCursor(`[klook-widget ids="${selectedKlookWidgetIds.join(',')}" title="Klook" content=""]`)
+    setKlookPickerOpen(false)
+    setMessage(`Inserted ${selectedKlookWidgetIds.length} Klook widget${selectedKlookWidgetIds.length > 1 ? 's' : ''} at the saved cursor position.`)
   }
 
   async function saveNote() {
@@ -639,7 +728,7 @@ export default function AdminNotesPage() {
                 onClick={() => setWorkspaceMode('split')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'split' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
               >
-                编辑 + 下方预览 (Editor + Preview)
+                编辑画布 (Editor)
               </button>
               <button
                 type="button"
@@ -806,6 +895,26 @@ export default function AdminNotesPage() {
                         <ImageIcon className="mr-2 h-4 w-4" />
                         关联已有景点图片
                       </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={openAffiliatePicker}
+                      >
+                        <Search className="mr-2 h-4 w-4" />
+                        Affiliate
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={openKlookPicker}
+                      >
+                        <Search className="mr-2 h-4 w-4" />
+                        Klook Widget
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -826,7 +935,7 @@ export default function AdminNotesPage() {
               </Card>
 
               {/* BOTTOM PANEL: Live Premium Preview */}
-              {workspaceMode === 'split' && (
+              {false && workspaceMode === 'split' && (
                 <Card className="border-white/10 bg-[rgba(5,5,7,0.9)] text-white shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-md">
                   <CardHeader className="border-b border-white/5 pb-4">
                     <CardTitle className="text-lg flex items-center justify-between">
@@ -973,6 +1082,79 @@ export default function AdminNotesPage() {
             </Button>
             <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applySpotImagesToMarkdown} disabled={!selectedSpotId || !selectedSpotImageUrls.length}>
               插入所选景点图片
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={affiliatePickerOpen} onOpenChange={setAffiliatePickerOpen}>
+        <DialogContent className="max-h-[86vh] max-w-4xl overflow-y-auto border-white/10 bg-[#0b0b0d] text-white">
+          <DialogHeader>
+            <DialogTitle>Select affiliate links</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input value={affiliateQuery} onChange={(event) => setAffiliateQuery(event.target.value)} placeholder="Search Agoda, Klook, hotel, tickets..." />
+            <div className="grid max-h-[56vh] gap-3 overflow-y-auto md:grid-cols-2">
+              {filteredAffiliateLinks.map((link) => {
+                const checked = selectedAffiliateIds.includes(link.id)
+                const label = link.title || `${link.provider || 'Affiliate'} ${link.link_type || ''}`.trim()
+                const target = link.locations?.name_cn || link.locations?.name || link.regions?.name_cn || link.regions?.name || 'Site-wide'
+                return (
+                  <button
+                    key={link.id}
+                    type="button"
+                    onClick={() => setSelectedAffiliateIds((current) => checked ? current.filter((id) => id !== link.id) : [...current, link.id])}
+                    className={`rounded-2xl border p-4 text-left transition ${checked ? 'border-amber-300/60 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                  >
+                    <p className="font-semibold text-white">{label}</p>
+                    <p className="mt-1 text-xs uppercase tracking-widest text-white/45">{link.provider} / {link.link_type}</p>
+                    <p className="mt-2 text-sm text-white/60">{target}</p>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setAffiliatePickerOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applyAffiliateLinksToMarkdown} disabled={!selectedAffiliateIds.length}>
+              Insert affiliate block
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={klookPickerOpen} onOpenChange={setKlookPickerOpen}>
+        <DialogContent className="max-h-[86vh] max-w-4xl overflow-y-auto border-white/10 bg-[#0b0b0d] text-white">
+          <DialogHeader>
+            <DialogTitle>Select Klook widgets</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input value={klookQuery} onChange={(event) => setKlookQuery(event.target.value)} placeholder="Search Klook widget..." />
+            <div className="grid max-h-[56vh] gap-3 overflow-y-auto md:grid-cols-2">
+              {filteredKlookWidgets.map((widget) => {
+                const checked = selectedKlookWidgetIds.includes(widget.id)
+                return (
+                  <button
+                    key={widget.id}
+                    type="button"
+                    onClick={() => setSelectedKlookWidgetIds((current) => checked ? current.filter((id) => id !== widget.id) : [...current, widget.id])}
+                    className={`rounded-2xl border p-4 text-left transition ${checked ? 'border-amber-300/60 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                  >
+                    <p className="font-semibold text-white">{widget.title}</p>
+                    {widget.description ? <p className="mt-2 text-sm leading-6 text-white/60">{widget.description}</p> : null}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setKlookPickerOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" className="bg-white text-black hover:bg-amber-50" onClick={applyKlookWidgetsToMarkdown} disabled={!selectedKlookWidgetIds.length}>
+              Insert Klook widget
             </Button>
           </DialogFooter>
         </DialogContent>
