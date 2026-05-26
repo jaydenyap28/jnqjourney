@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
@@ -284,6 +284,7 @@ export default function AdminNotesPage() {
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
   const [markdownText, setMarkdownText] = useState('')
+  const markdownSelectionRef = useRef({ start: 0, end: 0 })
 
   useEffect(() => {
     let cancelled = false
@@ -381,30 +382,53 @@ export default function AdminNotesPage() {
   }
 
   function openMarkdownSpotPicker() {
+    rememberMarkdownSelection()
     setPickerOpen(true)
     setSpotQuery('')
     setSelectedSpotId(null)
     setSelectedSpotImageUrls([])
   }
 
+  function rememberMarkdownSelection() {
+    const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement | null
+    if (!textarea) return
+    markdownSelectionRef.current = {
+      start: textarea.selectionStart ?? textarea.value.length,
+      end: textarea.selectionEnd ?? textarea.value.length,
+    }
+  }
+
   function insertTextAtCursor(textToInsert: string) {
     const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement
-    if (!textarea) {
-      setMarkdownText((prev) => prev + '\n' + textToInsert)
+    const savedSelection = markdownSelectionRef.current
+
+    if (!textarea && !markdownText) {
+      setMarkdownText(textToInsert.trim())
       return
     }
 
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const text = textarea.value
+    const text = textarea?.value ?? markdownText
+    const start = textarea
+      ? Math.min(savedSelection.start, text.length)
+      : text.length
+    const end = textarea
+      ? Math.min(savedSelection.end, text.length)
+      : text.length
     const before = text.substring(0, start)
     const after = text.substring(end, text.length)
-    const nextText = before + textToInsert + after
+
+    const needsBeforeBreak = before.trim().length > 0 && !before.endsWith('\n\n')
+    const needsAfterBreak = after.trim().length > 0 && !after.startsWith('\n\n')
+    const insertion = `${needsBeforeBreak ? '\n\n' : ''}${textToInsert.trim()}${needsAfterBreak ? '\n\n' : ''}`
+    const nextText = before + insertion + after
     setMarkdownText(nextText)
 
     setTimeout(() => {
+      if (!textarea) return
       textarea.focus()
-      textarea.selectionStart = textarea.selectionEnd = start + textToInsert.length
+      const nextCursor = start + insertion.length
+      textarea.selectionStart = textarea.selectionEnd = nextCursor
+      markdownSelectionRef.current = { start: nextCursor, end: nextCursor }
     }, 0)
   }
 
@@ -414,9 +438,9 @@ export default function AdminNotesPage() {
     const imagesList = selectedSpotImageUrls.join(',')
     const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"]`
 
-    insertTextAtCursor(`\n\n${shortcode}\n\n`)
+    insertTextAtCursor(shortcode)
     setPickerOpen(false)
-    setMessage(`Successfully linked spot images for "${getLocationLabel(selectedSpot)}" at your cursor!`)
+    setMessage(`Inserted ${selectedSpotImageUrls.length} image${selectedSpotImageUrls.length > 1 ? 's' : ''} for "${getLocationLabel(selectedSpot)}" at the saved cursor position.`)
   }
 
   async function saveNote() {
@@ -790,6 +814,10 @@ export default function AdminNotesPage() {
                     id="markdown-editor"
                     value={markdownText}
                     onChange={(event) => setMarkdownText(event.target.value)}
+                    onSelect={rememberMarkdownSelection}
+                    onKeyUp={rememberMarkdownSelection}
+                    onClick={rememberMarkdownSelection}
+                    onFocus={rememberMarkdownSelection}
                     rows={workspaceMode === 'edit' ? 36 : 28}
                     className="font-mono text-[14px] leading-7 bg-black/40 border-white/5 text-gray-100 placeholder:text-white/20 focus-visible:ring-amber-300/50 resize-y"
                     placeholder={`在此输入您的旅行故事...\n\n支持 Markdown 格式：\n## 这是一个二级标题\n这里是正文段落，可以直接写一大堆文字。\n\n> 这是一个好看的引用块\n\n点击上方的“关联已有景点图片”可以将您已收藏景点的照片瞬间插入！`}
@@ -843,12 +871,12 @@ export default function AdminNotesPage() {
       </div>
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
-        <DialogContent className="max-w-5xl border-white/10 bg-[#0b0b0d] text-white">
+        <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto border-white/10 bg-[#0b0b0d] text-white">
           <DialogHeader>
             <DialogTitle>关联景点已有相册图片</DialogTitle>
           </DialogHeader>
 
-          <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+          <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>搜索已有景点</Label>
@@ -861,7 +889,7 @@ export default function AdminNotesPage() {
                     type="button"
                     onClick={() => {
                       setSelectedSpotId(spot.id)
-                      setSelectedSpotImageUrls([])
+                      setSelectedSpotImageUrls(getLocationImages(spot))
                     }}
                     className={`w-full rounded-2xl border px-3 py-3 text-left transition ${selectedSpotId === spot.id ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
                   >
@@ -880,9 +908,21 @@ export default function AdminNotesPage() {
                 </p>
               </div>
 
+              {selectedSpot && selectedSpotImages.length ? (
+                <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                  <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setSelectedSpotImageUrls(selectedSpotImages)}>
+                    Select all
+                  </Button>
+                  <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => setSelectedSpotImageUrls([])}>
+                    Clear
+                  </Button>
+                  <span className="text-xs text-white/45">{selectedSpotImageUrls.length} / {selectedSpotImages.length} selected</span>
+                </div>
+              ) : null}
+
               {selectedSpot ? (
                 selectedSpotImages.length ? (
-                  <div className="grid max-h-[480px] gap-4 overflow-y-auto pr-1 sm:grid-cols-2 xl:grid-cols-3">
+                  <div className="grid max-h-[62vh] gap-5 overflow-y-auto pr-1 sm:grid-cols-2">
                     {selectedSpotImages.map((src) => {
                       const checked = selectedSpotImageUrls.includes(src)
                       return (
@@ -894,10 +934,15 @@ export default function AdminNotesPage() {
                               current.includes(src) ? current.filter((item) => item !== src) : [...current, src]
                             )
                           }
-                          className={`overflow-hidden rounded-[24px] border text-left transition ${checked ? 'border-amber-300/50 bg-amber-400/10' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
+                          className={`overflow-hidden rounded-[24px] border text-left transition ${checked ? 'border-amber-300/60 bg-amber-400/10 shadow-[0_0_0_1px_rgba(251,191,36,0.25)]' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
                         >
-                          <div className="relative aspect-[4/3] overflow-hidden">
-                            <FallbackImage src={src} alt={getLocationLabel(selectedSpot)} fill sizes="320px" className="object-cover" />
+                          <div className="relative aspect-[16/10] overflow-hidden">
+                            <FallbackImage src={src} alt={getLocationLabel(selectedSpot)} fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" />
+                            {checked ? (
+                              <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-200 text-sm font-bold text-black shadow-lg">
+                                ✓
+                              </span>
+                            ) : null}
                           </div>
                           <div className="flex items-center justify-between gap-3 px-4 py-3">
                             <span className="truncate text-sm text-white/80">{checked ? 'Selected' : 'Click to select'}</span>
