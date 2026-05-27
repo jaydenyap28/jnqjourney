@@ -203,6 +203,16 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
     )
   }
 
+  if (block.type === 'video' && block.videoUrl) {
+    return (
+      <figure key={block.id} className="max-w-4xl mx-auto w-full my-10">
+        <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+          <CoverVideoEmbed url={block.videoUrl} title={block.title || 'Article video'} />
+        </div>
+      </figure>
+    )
+  }
+
   if (block.type === 'image' && block.imageUrl) {
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
     return (
@@ -426,9 +436,9 @@ export default async function NoteDetailPage({ params }: PageProps) {
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
           <article className="space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12">
-            {note.summary ? (
+            {note.summary?.trim() ? (
               <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
-                {note.summary}
+                {note.summary.trim()}
               </div>
             ) : null}
 

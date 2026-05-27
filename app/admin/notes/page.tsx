@@ -201,6 +201,26 @@ function BlockPreview({
     )
   }
 
+  if (block.type === 'video' && block.videoUrl) {
+    const title = block.title || 'Article video'
+    if (isFullPreview) {
+      return (
+        <figure className="max-w-4xl mx-auto w-full my-10">
+          <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+            <CoverVideoPreview url={block.videoUrl} title={title} />
+          </div>
+        </figure>
+      )
+    }
+    return (
+      <figure className="max-w-3xl mx-auto w-full my-6">
+        <div className="relative aspect-video overflow-hidden rounded-[24px] border border-white/10 bg-black/40 shadow-lg">
+          <CoverVideoPreview url={block.videoUrl} title={title} />
+        </div>
+      </figure>
+    )
+  }
+
   if (block.type === 'image' && block.imageUrl) {
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
     if (isFullPreview) {
@@ -857,10 +877,10 @@ export default function AdminNotesPage() {
               <div className="grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
                 {/* Main Article column */}
                 <article className="space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12 w-full text-left">
-                  {form.summary ? (
+                  {form.summary?.trim() ? (
                     <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
                       <p className="text-xs text-emerald-300 font-bold uppercase tracking-widest mb-1">Card Summary</p>
-                      {form.summary}
+                      {form.summary.trim()}
                     </div>
                   ) : null}
 
@@ -985,6 +1005,15 @@ export default function AdminNotesPage() {
                       <Button
                         type="button"
                         size="sm"
+                        variant="outline"
+                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                        onClick={() => insertTextAtCursor('[video url="https://" title=""]')}
+                      >
+                        插入影片链接
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
                         className="border-emerald-400/20 bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30"
                         onClick={openMarkdownSpotPicker}
                       >
@@ -1050,10 +1079,10 @@ export default function AdminNotesPage() {
                       {form.tagline ? <p className="mt-3 text-sm leading-7 text-white/80">{form.tagline}</p> : null}
                     </section>
 
-                    {form.summary ? (
+                    {form.summary?.trim() ? (
                       <div className="rounded-[24px] border border-white/10 bg-white/5 px-5 py-4 text-sm leading-7 text-white/70 text-left">
                         <p className="text-xs text-amber-300/80 uppercase tracking-widest mb-1">Card Summary</p>
-                        {form.summary}
+                        {form.summary.trim()}
                       </div>
                     ) : null}
 

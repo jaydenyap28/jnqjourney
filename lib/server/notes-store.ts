@@ -57,6 +57,7 @@ function normalizeBlock(value: any): NoteBlock | null {
     title: String(value?.title || '').trim() || undefined,
     content: String(value?.content || '').trim() || undefined,
     imageUrl: String(value?.imageUrl || '').trim() || undefined,
+    videoUrl: String(value?.videoUrl || '').trim() || undefined,
     imageSize: normalizeNoteImageSize(value?.imageSize),
     alt: String(value?.alt || '').trim() || undefined,
     caption: String(value?.caption || '').trim() || undefined,
@@ -69,6 +70,7 @@ function normalizeBlock(value: any): NoteBlock | null {
   }
 
   if (block.type === 'image' && !block.imageUrl) return null
+  if (block.type === 'video' && !block.videoUrl) return null
   if ((block.type === 'gallery' || block.type === 'spotImages') && !block.images?.length) return null
   if (block.type === 'spot' && !block.spotId) return null
   if (block.type === 'affiliate' && !block.affiliateIds?.length) return null

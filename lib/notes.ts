@@ -3,6 +3,7 @@ export type NoteBlockType =
   | 'heading'
   | 'quote'
   | 'image'
+  | 'video'
   | 'gallery'
   | 'spotImages'
   | 'spot'
@@ -23,6 +24,7 @@ export interface NoteBlock {
   title?: string
   content?: string
   imageUrl?: string
+  videoUrl?: string
   imageSize?: NoteImageSize
   alt?: string
   caption?: string
@@ -202,6 +204,12 @@ function isLikelyImageUrl(value: string) {
   return /\.(avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(text)
 }
 
+function isLikelyVideoUrl(value: string) {
+  const text = String(value || '').trim()
+  if (!/^https?:\/\/\S+$/i.test(text)) return false
+  return /(?:youtube\.com|youtu\.be|facebook\.com|fb\.watch)/i.test(text)
+}
+
 function normalizeImageUrl(value: string) {
   return String(value || '').trim().replace(/^https?:\/\/https?:\/\//i, 'https://')
 }
@@ -277,6 +285,9 @@ export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
         const sizeText = block.imageSize ? `{size=${block.imageSize}}` : ''
         return `![${altText}](${urlText})${sizeText}${captionText}`
       }
+      if (block.type === 'video') {
+        return `[video url="${block.videoUrl || ''}" title="${block.title || ''}"]`
+      }
       if (block.type === 'spotImages' || block.type === 'gallery') {
         const imagesList = (block.images || []).map((img) => img.src).join('|')
         const sizeText = block.imageSize ? ` size="${block.imageSize}"` : ''
@@ -341,6 +352,28 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         id: blockId,
         type: 'quote',
         content,
+      })
+      return
+    }
+
+    // 3. Shortcodes like [spot-images ...] or [spot-gallery ...]
+    if (text.startsWith('[video')) {
+      const attrs = parseAttributes(text)
+      const videoUrl = String(attrs.url || attrs.src || '').trim()
+      blocks.push({
+        id: blockId,
+        type: 'video',
+        videoUrl,
+        title: attrs.title || undefined,
+      })
+      return
+    }
+
+    if (isLikelyVideoUrl(text)) {
+      blocks.push({
+        id: blockId,
+        type: 'video',
+        videoUrl: text,
       })
       return
     }
