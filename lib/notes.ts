@@ -202,6 +202,17 @@ function isLikelyImageUrl(value: string) {
   return /\.(avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(text)
 }
 
+function parseImageList(value: string) {
+  const text = String(value || '').trim()
+  if (!text) return []
+
+  const separator = text.includes('|') ? /\|/ : /,(?=https?:\/\/)/i
+  return text
+    .split(separator)
+    .map((src) => src.trim())
+    .filter(Boolean)
+}
+
 function isImplicitHeading(text: string) {
   const value = String(text || '').trim()
   if (!value || value.includes('\n') || value.length > 80) return false
@@ -229,7 +240,7 @@ export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
         return `![${altText}](${urlText})${sizeText}${captionText}`
       }
       if (block.type === 'spotImages' || block.type === 'gallery') {
-        const imagesList = (block.images || []).map((img) => img.src).join(',')
+        const imagesList = (block.images || []).map((img) => img.src).join('|')
         const sizeText = block.imageSize ? ` size="${block.imageSize}"` : ''
         return `[spot-images id="${block.spotId || ''}" name="${block.spotName || ''}" images="${imagesList}"${sizeText}]`
       }
@@ -302,9 +313,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
       const spotId = parseInt(attrs.id || attrs.spotId || '', 10)
       const spotName = attrs.name || attrs.spotName || 'Spot Images'
       const imagesStr = attrs.images || ''
-      const images = imagesStr
-        .split(',')
-        .filter(Boolean)
+      const images = parseImageList(imagesStr)
         .map((src) => ({
           src: src.trim(),
           alt: buildFallbackAlt(spotName),

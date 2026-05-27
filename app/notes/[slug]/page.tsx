@@ -218,7 +218,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>)
             alt={alt}
             fill
             sizes="(max-width: 1024px) 100vw, 980px"
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <span className="bg-black/60 backdrop-blur-md text-white/90 border border-white/10 px-4 py-2 rounded-full text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">
@@ -291,7 +291,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>)
                     alt={imgAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 400px"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+                    className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <span className="bg-black/60 backdrop-blur-md text-white/90 border border-white/10 px-4 py-2 rounded-full text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">

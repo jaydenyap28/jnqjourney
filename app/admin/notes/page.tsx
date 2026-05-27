@@ -204,7 +204,7 @@ function BlockPreview({
       return (
         <figure className={`${getImageFigureClass(block.imageSize, true)} mx-auto w-full my-10 space-y-3 group`}>
           <div className="relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
-            <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 980px" className="object-cover" />
+            <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 980px" className="object-contain" />
           </div>
           {block.caption ? <figcaption className="px-2 text-sm leading-7 text-white/55 text-center italic">{block.caption}</figcaption> : null}
         </figure>
@@ -213,7 +213,7 @@ function BlockPreview({
     return (
       <figure className={`${getImageFigureClass(block.imageSize)} mx-auto w-full space-y-2 my-6`}>
         <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-lg">
-          <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 760px" className="object-cover" />
+          <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 760px" className="object-contain" />
         </div>
         {block.caption ? <figcaption className="text-xs text-white/55 text-center">{block.caption}</figcaption> : null}
       </figure>
@@ -253,7 +253,7 @@ function BlockPreview({
             {block.images.map((image, index) => (
               <div key={`${block.id}-${index}`} className="space-y-2 group">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-md">
-                  <FallbackImage src={image.src} alt={image.alt || 'Travel photo'} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
+                  <FallbackImage src={image.src} alt={image.alt || 'Travel photo'} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-contain" />
                 </div>
                 {image.caption ? <p className="px-2 text-xs text-white/45 text-center leading-relaxed tracking-wide italic">{image.caption}</p> : null}
               </div>
@@ -284,7 +284,7 @@ function BlockPreview({
                 alt={image.alt || 'Travel photo'}
                 fill
                 sizes="300px"
-                className="object-cover"
+                className="object-contain"
               />
             </figure>
           ))}
@@ -580,7 +580,7 @@ export default function AdminNotesPage() {
     const scrollX = window.scrollX
     const scrollY = window.scrollY
 
-    const imagesList = selectedSpotImageUrls.join(',')
+    const imagesList = selectedSpotImageUrls.join('|')
     const sizeText = imageInsertSize && imageInsertSize !== 'wide' ? ` size="${imageInsertSize}"` : ''
     const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"${sizeText}]`
 
