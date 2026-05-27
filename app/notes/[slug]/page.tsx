@@ -12,7 +12,7 @@ import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInt
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
-import { readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
+import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
 import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 
@@ -383,10 +383,11 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const affiliateIds = Array.from(new Set(affiliateBlocks.flatMap((block) => block.affiliateIds || [])))
   const klookWidgetIds = Array.from(new Set(klookBlocks.flatMap((block) => block.klookWidgetIds || [])))
 
-  const [relatedSpots, affiliateLinks, allKlookWidgets] = await Promise.all([
+  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets] = await Promise.all([
     fetchLocationsByIds(spotIds),
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
+    getActiveKlookWidgetsForTargets({ noteSlug: note.slug }),
   ])
 
   const locationsById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
@@ -500,6 +501,16 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 />
               ))
             })}
+
+            {noteKlookWidgets.map((widget) => (
+              <KlookWidgetEmbed
+                key={`note-widget-${widget.id}`}
+                code={widget.htmlCode}
+                title={widget.title}
+                description={widget.description || 'Book related travel experiences on Klook.'}
+                variant="card"
+              />
+            ))}
 
             {relatedSpots.length ? (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">

@@ -9,6 +9,7 @@ export interface KlookWidgetRecord {
   htmlCode: string
   locationIds: number[]
   regionIds: number[]
+  noteSlugs: string[]
   isActive: boolean
   sortOrder: number
   createdAt: string
@@ -42,6 +43,11 @@ function normalizeNumberArray(value: unknown) {
   return value.map((item) => Number(item)).filter((item) => Number.isFinite(item) && item > 0)
 }
 
+function normalizeStringArray(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value.map((item) => String(item || '').trim()).filter(Boolean)
+}
+
 export function normalizeKlookWidgetPayload(value: any): KlookWidgetRecord {
   const now = new Date().toISOString()
   return {
@@ -51,6 +57,7 @@ export function normalizeKlookWidgetPayload(value: any): KlookWidgetRecord {
     htmlCode: String(value?.htmlCode || '').trim(),
     locationIds: normalizeNumberArray(value?.locationIds),
     regionIds: normalizeNumberArray(value?.regionIds),
+    noteSlugs: normalizeStringArray(value?.noteSlugs),
     isActive: value?.isActive !== false,
     sortOrder: Number.isFinite(Number(value?.sortOrder)) ? Number(value.sortOrder) : 0,
     createdAt: String(value?.createdAt || '').trim() || now,
@@ -195,15 +202,19 @@ export async function saveKlookWidgets(widgets: KlookWidgetRecord[]) {
 export async function getActiveKlookWidgetsForTargets({
   locationId,
   regionId,
+  noteSlug,
 }: {
   locationId?: number | null
   regionId?: number | null
+  noteSlug?: string | null
 }) {
+  const normalizedNoteSlug = String(noteSlug || '').trim()
   const widgets = await readKlookWidgets()
   return widgets.filter((widget) => {
     if (!widget.isActive) return false
     if (locationId && widget.locationIds.includes(locationId)) return true
     if (regionId && widget.regionIds.includes(regionId)) return true
+    if (normalizedNoteSlug && widget.noteSlugs.includes(normalizedNoteSlug)) return true
     return false
   })
 }

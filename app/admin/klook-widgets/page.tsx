@@ -19,6 +19,7 @@ interface WidgetRecord {
   htmlCode: string
   locationIds: number[]
   regionIds: number[]
+  noteSlugs: string[]
   isActive: boolean
   sortOrder: number
   updatedAt: string
@@ -50,6 +51,13 @@ interface BasicRegion {
   } | null
 }
 
+interface BasicNote {
+  slug: string
+  title: string
+  shortTitle?: string
+  published?: boolean
+}
+
 const EMPTY_FORM = {
   id: '',
   title: '',
@@ -74,8 +82,11 @@ export default function AdminKlookWidgetsPage() {
   const [search, setSearch] = useState('')
   const [locationSearch, setLocationSearch] = useState('')
   const [regionSearch, setRegionSearch] = useState('')
+  const [noteSearch, setNoteSearch] = useState('')
   const [selectedLocationIds, setSelectedLocationIds] = useState<number[]>([])
   const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([])
+  const [selectedNoteSlugs, setSelectedNoteSlugs] = useState<string[]>([])
+  const [notes, setNotes] = useState<BasicNote[]>([])
   const [form, setForm] = useState(EMPTY_FORM)
 
   async function loadData() {
@@ -83,8 +94,9 @@ export default function AdminKlookWidgetsPage() {
     setMessage(null)
 
     try {
-      const [widgetsResponse, locationsResponse, regionsResponse] = await Promise.all([
+      const [widgetsResponse, notesResponse, locationsResponse, regionsResponse] = await Promise.all([
         adminFetch('/api/admin/klook-widgets', { cache: 'no-store' }),
+        adminFetch('/api/admin/notes', { cache: 'no-store' }),
         supabase
           .from('locations')
           .select('id, name, name_cn, regions:region_id(name, name_cn, country, parent:parent_id(name, name_cn))')
@@ -99,7 +111,9 @@ export default function AdminKlookWidgetsPage() {
       if (!widgetsResponse.ok) throw new Error('Failed to load Klook widgets.')
 
       const widgetsJson = await widgetsResponse.json()
+      const notesJson = notesResponse.ok ? await notesResponse.json() : { notes: [] }
       setWidgets(Array.isArray(widgetsJson?.widgets) ? widgetsJson.widgets : [])
+      setNotes(Array.isArray(notesJson?.notes) ? notesJson.notes : [])
 
       setLocations(
         ((locationsResponse.data || []) as any[]).map((item) => ({
@@ -129,8 +143,10 @@ export default function AdminKlookWidgetsPage() {
     setForm(EMPTY_FORM)
     setSelectedLocationIds([])
     setSelectedRegionIds([])
+    setSelectedNoteSlugs([])
     setLocationSearch('')
     setRegionSearch('')
+    setNoteSearch('')
   }
 
   function startEdit(widget: WidgetRecord) {
@@ -144,6 +160,7 @@ export default function AdminKlookWidgetsPage() {
     })
     setSelectedLocationIds(widget.locationIds || [])
     setSelectedRegionIds(widget.regionIds || [])
+    setSelectedNoteSlugs(widget.noteSlugs || [])
     setMessage(null)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -161,6 +178,7 @@ export default function AdminKlookWidgetsPage() {
           ...form,
           locationIds: selectedLocationIds,
           regionIds: selectedRegionIds,
+          noteSlugs: selectedNoteSlugs,
         }),
       })
 
@@ -210,6 +228,17 @@ export default function AdminKlookWidgetsPage() {
     )
   }, [regionSearch, regions])
 
+  const filteredNotes = useMemo(() => {
+    const keyword = noteSearch.trim().toLowerCase()
+    if (!keyword) return notes
+    return notes.filter((item) =>
+      [item.title, item.shortTitle, item.slug]
+        .map((value) => String(value || '').toLowerCase())
+        .join(' ')
+        .includes(keyword)
+    )
+  }, [noteSearch, notes])
+
   const filteredWidgets = useMemo(() => {
     const keyword = search.trim().toLowerCase()
     if (!keyword) return widgets
@@ -223,6 +252,7 @@ export default function AdminKlookWidgetsPage() {
 
   const selectedLocationMap = useMemo(() => new Map(locations.map((item) => [item.id, item])), [locations])
   const selectedRegionMap = useMemo(() => new Map(regions.map((item) => [item.id, item])), [regions])
+  const selectedNoteMap = useMemo(() => new Map(notes.map((item) => [item.slug, item])), [notes])
 
   return (
     <div className="space-y-6 p-6">
@@ -343,6 +373,35 @@ export default function AdminKlookWidgetsPage() {
                 </div>
               </div>
 
+              <div className="space-y-3 rounded-2xl border border-white/10 p-4">
+                <div>
+                  <Label>Bind to notes</Label>
+                  <Input value={noteSearch} onChange={(e) => setNoteSearch(e.target.value)} placeholder="Search longform notes..." className="mt-2" />
+                </div>
+                <div className="max-h-56 space-y-2 overflow-y-auto">
+                  {filteredNotes.slice(0, 80).map((note) => {
+                    const checked = selectedNoteSlugs.includes(note.slug)
+                    return (
+                      <label key={note.slug} className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-2 text-sm ${checked ? 'border-amber-300 bg-amber-500/10' : 'border-white/10 bg-white/5'}`}>
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) =>
+                            setSelectedNoteSlugs((prev) =>
+                              e.target.checked ? Array.from(new Set([...prev, note.slug])) : prev.filter((item) => item !== note.slug)
+                            )
+                          }
+                        />
+                        <span className="min-w-0">
+                          <span className="block">{note.shortTitle || note.title}</span>
+                          <span className="block text-xs text-white/45">{note.slug}{note.published === false ? ' / draft' : ''}</span>
+                        </span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+
               <Button type="submit" disabled={saving} className="w-full bg-emerald-500 text-slate-950 hover:bg-emerald-400">
                 <Plus className="mr-2 h-4 w-4" />
                 {saving ? 'Saving...' : form.id ? 'Save widget' : 'Create widget'}
@@ -404,6 +463,15 @@ export default function AdminKlookWidgetsPage() {
                         {widget.regionIds.slice(0, 8).map((id) => (
                           <span key={`${widget.id}-region-${id}`} className="rounded-full border border-emerald-300/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-100">
                             {selectedRegionMap.get(id)?.name_cn || selectedRegionMap.get(id)?.name || `Region ${id}`}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                    {widget.noteSlugs?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {widget.noteSlugs.slice(0, 8).map((slug) => (
+                          <span key={`${widget.id}-note-${slug}`} className="rounded-full border border-amber-300/20 bg-amber-500/10 px-3 py-1 text-xs text-amber-100">
+                            {selectedNoteMap.get(slug)?.shortTitle || selectedNoteMap.get(slug)?.title || slug}
                           </span>
                         ))}
                       </div>

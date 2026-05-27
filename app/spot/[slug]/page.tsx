@@ -6,6 +6,7 @@ import FallbackImage from '@/components/FallbackImage'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Clock, Navigation, ExternalLink, CalendarDays } from 'lucide-react'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
+import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getActiveKlookWidgetsForTargets } from '@/lib/server/klook-widgets-store'
@@ -218,7 +219,7 @@ export default async function SpotPage({ params }: PageProps) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
 
-      <div className="mx-auto max-w-4xl px-4 py-8 md:px-8 md:py-12 space-y-12">
+      <div className="mx-auto max-w-6xl px-4 py-8 md:px-8 md:py-12 space-y-12">
         {/* 1. Breadcrumb */}
         <nav className="flex flex-wrap items-center gap-2 text-sm text-gray-400">
           <Link href="/" className="hover:text-white transition">Home</Link>
@@ -250,6 +251,8 @@ export default async function SpotPage({ params }: PageProps) {
           </div>
         </header>
 
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,760px)_340px] lg:items-start">
+          <div className="space-y-12">
         {/* 3. Overview */}
         <section className="space-y-4">
           <h2 className="text-2xl font-bold text-white">简介</h2>
@@ -259,7 +262,7 @@ export default async function SpotPage({ params }: PageProps) {
         </section>
 
         {/* 4. Highlights */}
-        {visibleTags.length > 0 && (
+        {visibleTags.length > 1 && (
           <section className="space-y-4">
             <h2 className="text-2xl font-bold text-white">看点</h2>
             <div className="flex flex-wrap gap-2">
@@ -305,15 +308,6 @@ export default async function SpotPage({ params }: PageProps) {
               </div>
             </div>
           </div>
-          
-          {/* Klook Widgets */}
-          {klookWidgets.length > 0 && (
-            <div className="mt-6 space-y-4">
-              {klookWidgets.map(widget => (
-                <KlookWidgetEmbed key={widget.id} code={widget.htmlCode} title={widget.title} description={widget.description} variant="banner" />
-              ))}
-            </div>
-          )}
         </section>
 
         {/* 6. Good For */}
@@ -409,6 +403,40 @@ export default async function SpotPage({ params }: PageProps) {
             )}
           </div>
         </section>
+          </div>
+
+          <aside className="space-y-4 lg:sticky lg:top-6">
+            {klookWidgets.length > 0 ? (
+              <div className="space-y-4">
+                {klookWidgets.map((widget) => (
+                  <KlookWidgetEmbed
+                    key={widget.id}
+                    code={widget.htmlCode}
+                    title={widget.title}
+                    description={widget.description}
+                    variant="card"
+                  />
+                ))}
+              </div>
+            ) : null}
+
+            <SupportSidebarCard className="bg-white/5" />
+
+            <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Navigation</p>
+              <div className="mt-4 space-y-3">
+                <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white transition hover:bg-white/10">
+                  Google Maps
+                  <ExternalLink className="h-4 w-4 text-white/45" />
+                </a>
+                <a href={`https://www.waze.com/ul?ll=${location.latitude},${location.longitude}&z=17`} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white transition hover:bg-white/10">
+                  Waze
+                  <ExternalLink className="h-4 w-4 text-white/45" />
+                </a>
+              </div>
+            </section>
+          </aside>
+        </div>
 
       </div>
       <SiteFooter />
