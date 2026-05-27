@@ -202,6 +202,21 @@ function isLikelyImageUrl(value: string) {
   return /\.(avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(text)
 }
 
+function normalizeImageUrl(value: string) {
+  return String(value || '').trim().replace(/^https?:\/\/https?:\/\//i, 'https://')
+}
+
+export function createNoteHeadingId(content?: string | null, fallback?: string | number) {
+  const base = String(content || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return base || `section-${fallback || 'note'}`
+}
+
 function parseImageList(value: string) {
   const text = String(value || '').trim()
   if (!text) return []
@@ -209,8 +224,31 @@ function parseImageList(value: string) {
   const separator = text.includes('|') ? /\|/ : /,(?=https?:\/\/)/i
   return text
     .split(separator)
-    .map((src) => src.trim())
+    .map((src) => normalizeImageUrl(src))
     .filter(Boolean)
+}
+
+function parseStandaloneImageMarkdown(text: string) {
+  const markdownImgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\{size=(full|wide|medium|small)\})?(?:\s*\n*\*([^*]+)\*)?$/i)
+  if (!markdownImgMatch) return null
+
+  return {
+    alt: markdownImgMatch[1] || undefined,
+    imageUrl: normalizeImageUrl(markdownImgMatch[2]),
+    imageSize: normalizeNoteImageSize(markdownImgMatch[3]),
+    caption: markdownImgMatch[4] || undefined,
+  }
+}
+
+function splitImageOnlySection(section: string) {
+  const lines = section
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  if (lines.length <= 1) return [section]
+  const allImages = lines.every((line) => parseStandaloneImageMarkdown(line) || isLikelyImageUrl(normalizeImageUrl(line)))
+  return allImages ? lines : [section]
 }
 
 function isImplicitHeading(text: string) {
@@ -265,7 +303,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
   if (!trimmed) return []
 
   // Split blocks by double (or more) newlines, normalizing carriage returns
-  const rawSections = trimmed.replace(/\r\n/g, '\n').split(/\n\n+/)
+  const rawSections = trimmed.replace(/\r\n/g, '\n').split(/\n\n+/).flatMap(splitImageOnlySection)
   const blocks: NoteBlock[] = []
 
   rawSections.forEach((section, index) => {
@@ -315,7 +353,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
       const imagesStr = attrs.images || ''
       const images = parseImageList(imagesStr)
         .map((src) => ({
-          src: src.trim(),
+          src,
           alt: buildFallbackAlt(spotName),
         }))
 
@@ -383,29 +421,26 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
 
     // 7. Standalone Image: ![alt](url){size=small}
     if (text.startsWith('![')) {
-      const markdownImgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\{size=(full|wide|medium|small)\})?(?:\s*\n*\*([^*]+)\*)?$/i)
-      if (markdownImgMatch) {
-        const alt = markdownImgMatch[1]
-        const imageUrl = markdownImgMatch[2]
-        const imageSize = normalizeNoteImageSize(markdownImgMatch[3])
-        const caption = markdownImgMatch[4]
+      const image = parseStandaloneImageMarkdown(text)
+      if (image) {
         blocks.push({
           id: blockId,
           type: 'image',
-          imageUrl,
-          imageSize,
-          alt: alt || undefined,
-          caption: caption || undefined,
+          imageUrl: image.imageUrl,
+          imageSize: image.imageSize,
+          alt: image.alt,
+          caption: image.caption,
         })
         return
       }
     }
 
-    if (isLikelyImageUrl(text)) {
+    const imageUrl = normalizeImageUrl(text)
+    if (isLikelyImageUrl(imageUrl)) {
       blocks.push({
         id: blockId,
         type: 'image',
-        imageUrl: text,
+        imageUrl,
       })
       return
     }

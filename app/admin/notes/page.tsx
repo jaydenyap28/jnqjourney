@@ -7,6 +7,7 @@ import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 import type { LongformNote, NoteBlock, NoteImageSize } from '@/lib/notes'
 import {
   buildFallbackAlt,
+  createNoteHeadingId,
   DEFAULT_NOTE_COVER_ACCENT,
   EMPTY_NOTE,
   getRenderableNoteBlocks,
@@ -161,15 +162,17 @@ function BlockPreview({
   block,
   locationsById,
   isFullPreview = false,
+  index = 0,
 }: {
   block: NoteBlock
   locationsById: Map<number, LocationOption>
   isFullPreview?: boolean
+  index?: number
 }) {
   if (block.type === 'heading') {
     if (isFullPreview) {
       return (
-        <h2 id={`heading-${block.id}`} className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
+        <h2 id={`heading-${createNoteHeadingId(block.content, index)}`} className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
           {block.content}
         </h2>
       )
@@ -862,8 +865,8 @@ export default function AdminNotesPage() {
                   ) : null}
 
                   {previewBlocks.length ? (
-                    previewBlocks.map((block) => (
-                      <BlockPreview key={block.id} block={block} locationsById={locationsById} isFullPreview={true} />
+                    previewBlocks.map((block, index) => (
+                      <BlockPreview key={block.id} block={block} locationsById={locationsById} isFullPreview={true} index={index} />
                     ))
                   ) : (
                     <p className="text-sm text-gray-500 italic text-center py-10">在写作画布中输入 Markdown 格式故事，这里将渲染出 100% 真实的排版。</p>
@@ -877,10 +880,10 @@ export default function AdminNotesPage() {
                     <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80 mb-4 font-bold">Table of Contents / 目录</p>
                     <div className="space-y-3 border-l border-white/10 pl-4 py-1">
                       {previewBlocks.filter(b => b.type === 'heading' && b.content).length ? (
-                        previewBlocks.filter(b => b.type === 'heading' && b.content).map((b, i) => (
-                          <p key={b.id} className={`text-sm leading-6 transition ${i === 0 ? 'text-amber-300 font-medium' : 'text-white/60'}`}>
+                        previewBlocks.map((block, index) => ({ block, index })).filter(({ block }) => block.type === 'heading' && block.content).map(({ block: b, index }, i) => (
+                          <a key={b.id} href={`#heading-${createNoteHeadingId(b.content, index)}`} className={`block text-sm leading-6 transition hover:text-amber-200 ${i === 0 ? 'text-amber-300 font-medium' : 'text-white/60'}`}>
                             {b.content}
-                          </p>
+                          </a>
                         ))
                       ) : (
                         <p className="text-xs text-white/40 italic">暂无目录标题 (添加 H2 标题自动生成)</p>
@@ -1057,8 +1060,8 @@ export default function AdminNotesPage() {
                     {/* Article Body Renderer */}
                     <div className="space-y-6 max-w-xl mx-auto text-left">
                       {previewBlocks.length ? (
-                        previewBlocks.map((block) => (
-                          <BlockPreview key={block.id} block={block} locationsById={locationsById} />
+                        previewBlocks.map((block, index) => (
+                          <BlockPreview key={block.id} block={block} locationsById={locationsById} index={index} />
                         ))
                       ) : (
                         <p className="text-sm text-gray-500 italic text-center py-10">在左侧编辑区域输入文字后，这里将实时渲染出高档的杂志排版效果。</p>

@@ -14,7 +14,7 @@ import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
 import { readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 
 interface PageProps {
   params: { slug: string }
@@ -177,9 +177,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export const revalidate = 600
 
-function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>) {
+function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
   if (block.type === 'heading') {
-    const headingId = `heading-${block.id}`
+    const headingId = `heading-${createNoteHeadingId(block.content, index)}`
     return (
       <h2
         id={headingId}
@@ -386,8 +386,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
 
   const headings = contentBlocks
     .filter((block) => block.type === 'heading' && block.content)
-    .map((block) => ({
-      id: block.id,
+    .map((block, index) => ({
+      id: createNoteHeadingId(block.content, index),
       content: block.content || '',
     }))
 
@@ -433,7 +433,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
             ) : null}
 
             {contentBlocks.length ? (
-              contentBlocks.map((block) => renderBlock(block, locationsById))
+              contentBlocks.map((block, index) => renderBlock(block, locationsById, index))
             ) : textExcerpt ? (
               <div className="space-y-6 max-w-2xl mx-auto">
                 {textExcerpt.split(/\n{2,}/).map((paragraph, index) => (
