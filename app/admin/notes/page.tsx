@@ -93,6 +93,45 @@ function renderableBlocks(note: LongformNote) {
   return getRenderableNoteBlocks(note)
 }
 
+function getDisplayKicker(kicker?: string | null) {
+  const value = String(kicker || '').trim()
+  return value && value.toLowerCase() !== 'longform note' ? value : ''
+}
+
+function getYoutubeEmbedUrl(url: string) {
+  const value = String(url || '').trim()
+  const match = value.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/)
+  return match ? `https://www.youtube.com/embed/${match[1]}` : ''
+}
+
+function getFacebookVideoEmbedUrl(url: string) {
+  const value = String(url || '').trim()
+  return /facebook\.com|fb\.watch/i.test(value)
+    ? `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(value)}&show_text=false&width=720`
+    : ''
+}
+
+function getCoverVideoEmbedUrl(url?: string | null) {
+  const value = String(url || '').trim()
+  if (!value) return ''
+  return getYoutubeEmbedUrl(value) || getFacebookVideoEmbedUrl(value)
+}
+
+function CoverVideoPreview({ url, title }: { url?: string | null; title: string }) {
+  const embedUrl = getCoverVideoEmbedUrl(url)
+  if (!embedUrl) return null
+
+  return (
+    <iframe
+      src={embedUrl}
+      title={title}
+      className="h-full w-full"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowFullScreen
+    />
+  )
+}
+
 function BlockPreview({
   block,
   locationsById,
@@ -296,7 +335,7 @@ export default function AdminNotesPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
-  const [workspaceMode, setWorkspaceMode] = useState<'split' | 'edit' | 'preview'>('split')
+  const [workspaceMode, setWorkspaceMode] = useState<'split' | 'preview'>('split')
 
   const [pickerOpen, setPickerOpen] = useState(false)
   const [affiliatePickerOpen, setAffiliatePickerOpen] = useState(false)
@@ -476,9 +515,12 @@ export default function AdminNotesPage() {
   function insertTextAtCursor(textToInsert: string) {
     const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement
     const savedSelection = markdownSelectionRef.current
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
 
     if (!textarea && !markdownText) {
       setMarkdownText(textToInsert.trim())
+      window.requestAnimationFrame(() => window.scrollTo(scrollX, scrollY))
       return
     }
 
@@ -500,21 +542,24 @@ export default function AdminNotesPage() {
 
     setTimeout(() => {
       if (!textarea) return
-      textarea.focus()
       const nextCursor = start + insertion.length
       textarea.selectionStart = textarea.selectionEnd = nextCursor
       markdownSelectionRef.current = { start: nextCursor, end: nextCursor }
+      window.scrollTo(scrollX, scrollY)
     }, 0)
   }
 
   function applySpotImagesToMarkdown() {
     if (!selectedSpot) return
+    const scrollX = window.scrollX
+    const scrollY = window.scrollY
 
     const imagesList = selectedSpotImageUrls.join(',')
     const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"]`
 
     insertTextAtCursor(shortcode)
     setPickerOpen(false)
+    window.requestAnimationFrame(() => window.scrollTo(scrollX, scrollY))
     setMessage(`Inserted ${selectedSpotImageUrls.length} image${selectedSpotImageUrls.length > 1 ? 's' : ''} for "${getLocationLabel(selectedSpot)}" at the saved cursor position.`)
   }
 
@@ -701,6 +746,10 @@ export default function AdminNotesPage() {
                 <Label>Cover Image URL</Label>
                 <Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} placeholder="https://..." />
               </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label>Cover Video URL</Label>
+                <Input value={form.coverVideoUrl || ''} onChange={(event) => updateForm({ coverVideoUrl: event.target.value })} placeholder="Facebook or YouTube video link" />
+              </div>
               <div className="space-y-2">
                 <Label>Tags</Label>
                 <Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="cameron highlands, tea plantation" />
@@ -732,8 +781,9 @@ export default function AdminNotesPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setWorkspaceMode('edit')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'edit' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                onClick={() => setWorkspaceMode('split')}
+                className="hidden"
+                aria-hidden="true"
               >
                 📝 仅编辑 (Edit Only)
               </button>
@@ -755,13 +805,17 @@ export default function AdminNotesPage() {
 
               {/* Cover Header */}
               <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-10 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
-                <div className={`grid gap-8 ${form.coverImage ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
+                <div className={`grid gap-8 ${form.coverImage || form.coverVideoUrl ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
                   <div className="space-y-5 text-left">
-                    <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{form.kicker || 'Longform Note'}</p>
+                    {getDisplayKicker(form.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(form.kicker)}</p> : null}
                     <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl tracking-tight">{form.title || 'Your note title'}</h1>
                     {form.tagline ? <p className="max-w-3xl text-lg leading-8 text-white/80">{form.tagline}</p> : null}
                   </div>
-                  {form.coverImage ? (
+                  {form.coverVideoUrl ? (
+                    <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/30 shadow-2xl">
+                      <CoverVideoPreview url={form.coverVideoUrl} title={`${form.title || 'Note'} cover video`} />
+                    </div>
+                  ) : form.coverImage ? (
                     <div className="relative aspect-[4/3] overflow-hidden rounded-[34px] border border-white/10 bg-black/20 shadow-2xl">
                       <FallbackImage src={form.coverImage} alt={`${form.title || 'Note'} cover`} fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" priority />
                     </div>
@@ -927,7 +981,7 @@ export default function AdminNotesPage() {
                     onKeyUp={rememberMarkdownSelection}
                     onClick={rememberMarkdownSelection}
                     onFocus={rememberMarkdownSelection}
-                    rows={workspaceMode === 'edit' ? 36 : 28}
+                    rows={36}
                     className="font-mono text-[14px] leading-7 bg-black/40 border-white/5 text-gray-100 placeholder:text-white/20 focus-visible:ring-amber-300/50 resize-y"
                     placeholder={`在此输入您的旅行故事...\n\n支持 Markdown 格式：\n## 这是一个二级标题\n这里是正文段落，可以直接写一大堆文字。\n\n> 这是一个好看的引用块\n\n点击上方的“关联已有景点图片”可以将您已收藏景点的照片瞬间插入！`}
                   />
@@ -980,12 +1034,12 @@ export default function AdminNotesPage() {
       </div>
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
-        <DialogContent className="max-h-[90vh] max-w-6xl overflow-y-auto border-white/10 bg-[#0b0b0d] text-white">
+        <DialogContent className="max-h-[94vh] max-w-[92vw] overflow-y-auto border-white/10 bg-[#0b0b0d] text-white xl:max-w-7xl">
           <DialogHeader>
             <DialogTitle>关联景点已有相册图片</DialogTitle>
           </DialogHeader>
 
-          <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
+          <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label>搜索已有景点</Label>
@@ -1031,7 +1085,7 @@ export default function AdminNotesPage() {
 
               {selectedSpot ? (
                 selectedSpotImages.length ? (
-                  <div className="grid max-h-[62vh] gap-5 overflow-y-auto pr-1 sm:grid-cols-2">
+                  <div className="grid max-h-[68vh] gap-6 overflow-y-auto pr-1 xl:grid-cols-2">
                     {selectedSpotImages.map((src) => {
                       const checked = selectedSpotImageUrls.includes(src)
                       return (
@@ -1045,8 +1099,8 @@ export default function AdminNotesPage() {
                           }
                           className={`overflow-hidden rounded-[24px] border text-left transition ${checked ? 'border-amber-300/60 bg-amber-400/10 shadow-[0_0_0_1px_rgba(251,191,36,0.25)]' : 'border-white/10 bg-white/5 hover:bg-white/10'}`}
                         >
-                          <div className="relative aspect-[16/10] overflow-hidden">
-                            <FallbackImage src={src} alt={getLocationLabel(selectedSpot)} fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" />
+                          <div className="relative aspect-[16/10] min-h-[260px] overflow-hidden md:min-h-[340px]">
+                            <FallbackImage src={src} alt={getLocationLabel(selectedSpot)} fill sizes="(max-width: 1280px) 100vw, 620px" className="object-cover" />
                             {checked ? (
                               <span className="absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-amber-200 text-sm font-bold text-black shadow-lg">
                                 ✓

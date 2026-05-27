@@ -41,6 +41,7 @@ export interface LongformNote {
   summary: string
   content?: string
   coverImage?: string
+  coverVideoUrl?: string
   coverAccent: string
   published: boolean
   tags: string[]
@@ -161,11 +162,12 @@ export const EMPTY_NOTE: LongformNote = {
   aliases: [],
   title: '',
   shortTitle: '',
-  kicker: 'Longform Note',
+  kicker: '',
   tagline: '',
   summary: '',
   content: '',
   coverImage: '',
+  coverVideoUrl: '',
   coverAccent: DEFAULT_NOTE_COVER_ACCENT,
   published: false,
   tags: [],
