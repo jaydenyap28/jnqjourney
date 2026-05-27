@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { LongformNote, NoteBlock } from '@/lib/notes'
-import { createNoteImageItem, DEFAULT_NOTE_COVER_ACCENT, getRenderableNoteBlocks } from '@/lib/notes'
+import { createNoteImageItem, DEFAULT_NOTE_COVER_ACCENT, getRenderableNoteBlocks, normalizeNoteImageSize } from '@/lib/notes'
 
 const notesFilePath = path.join(process.cwd(), 'data', 'notes.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -57,6 +57,7 @@ function normalizeBlock(value: any): NoteBlock | null {
     title: String(value?.title || '').trim() || undefined,
     content: String(value?.content || '').trim() || undefined,
     imageUrl: String(value?.imageUrl || '').trim() || undefined,
+    imageSize: normalizeNoteImageSize(value?.imageSize),
     alt: String(value?.alt || '').trim() || undefined,
     caption: String(value?.caption || '').trim() || undefined,
     images: imageItems.length ? imageItems : undefined,
@@ -64,12 +65,14 @@ function normalizeBlock(value: any): NoteBlock | null {
     spotSlug: String(value?.spotSlug || '').trim() || undefined,
     spotName,
     affiliateIds: normalizeNumberArray(value?.affiliateIds),
+    klookWidgetIds: normalizeStringArray(value?.klookWidgetIds),
   }
 
   if (block.type === 'image' && !block.imageUrl) return null
   if ((block.type === 'gallery' || block.type === 'spotImages') && !block.images?.length) return null
   if (block.type === 'spot' && !block.spotId) return null
   if (block.type === 'affiliate' && !block.affiliateIds?.length) return null
+  if (block.type === 'klookWidget' && !block.klookWidgetIds?.length) return null
   if ((block.type === 'paragraph' || block.type === 'quote' || block.type === 'heading') && !block.content) {
     return null
   }
@@ -96,11 +99,12 @@ export function normalizeNotePayload(value: any): LongformNote {
     aliases: normalizeStringArray(value?.aliases),
     title: String(value?.title || '').trim(),
     shortTitle: String(value?.shortTitle || '').trim() || String(value?.title || '').trim(),
-    kicker: String(value?.kicker || '').trim() || 'Longform Note',
+    kicker: String(value?.kicker || '').trim(),
     tagline: String(value?.tagline || '').trim(),
     summary: String(value?.summary || '').trim(),
     content: legacyContent || undefined,
     coverImage: String(value?.coverImage || '').trim() || undefined,
+    coverVideoUrl: String(value?.coverVideoUrl || '').trim() || undefined,
     coverAccent: String(value?.coverAccent || '').trim() || DEFAULT_NOTE_COVER_ACCENT,
     published: Boolean(value?.published),
     tags: normalizeStringArray(value?.tags),

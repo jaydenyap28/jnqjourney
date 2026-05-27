@@ -14,7 +14,7 @@ import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
 import { readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, getRenderableNoteBlocks, type LongformNote, type NoteBlock } from '@/lib/notes'
+import { buildFallbackAlt, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 
 interface PageProps {
   params: { slug: string }
@@ -127,6 +127,19 @@ function getCoverVideoEmbedUrl(url?: string | null) {
   return getYoutubeEmbedUrl(value) || getFacebookVideoEmbedUrl(value)
 }
 
+function getImageFigureClass(size?: NoteImageSize) {
+  if (size === 'small') return 'max-w-sm'
+  if (size === 'medium') return 'max-w-2xl'
+  if (size === 'full') return 'max-w-full'
+  return 'max-w-4xl'
+}
+
+function getGalleryClass(size?: NoteImageSize, count = 1) {
+  const widthClass = size === 'small' ? 'max-w-xl' : size === 'medium' ? 'max-w-2xl' : size === 'full' ? 'max-w-full' : 'max-w-4xl'
+  const gridClass = count === 1 ? 'grid-cols-1' : count === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+  return `${widthClass} ${gridClass}`
+}
+
 function CoverVideoEmbed({ url, title }: { url?: string | null; title: string }) {
   const embedUrl = getCoverVideoEmbedUrl(url)
   if (!embedUrl) return null
@@ -193,7 +206,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>)
   if (block.type === 'image' && block.imageUrl) {
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
     return (
-      <figure key={block.id} className="max-w-4xl mx-auto w-full my-10 space-y-3 group">
+      <figure key={block.id} className={`${getImageFigureClass(block.imageSize)} mx-auto w-full my-10 space-y-3 group`}>
         <div
           data-lightbox-src={block.imageUrl}
           data-lightbox-alt={alt}
@@ -262,15 +275,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>)
         </div>
 
         {/* Elegant Photo Grid */}
-        <div
-          className={`grid gap-5 ${
-            block.images.length === 1
-              ? 'grid-cols-1'
-              : block.images.length === 2
-              ? 'grid-cols-1 md:grid-cols-2'
-              : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-          }`}
-        >
+        <div className={`mx-auto grid gap-5 ${getGalleryClass(block.imageSize, block.images.length)}`}>
           {block.images.map((image, index) => {
             const imgAlt = image.alt?.trim() || buildFallbackAlt(spotLabel, image.caption)
             return (

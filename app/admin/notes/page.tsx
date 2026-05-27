@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
-import type { LongformNote, NoteBlock } from '@/lib/notes'
+import type { LongformNote, NoteBlock, NoteImageSize } from '@/lib/notes'
 import {
   buildFallbackAlt,
   DEFAULT_NOTE_COVER_ACCENT,
@@ -83,6 +83,31 @@ function getLocationLabel(location?: LocationOption | null) {
   return location.name_cn || location.name
 }
 
+const IMAGE_SIZE_OPTIONS: { value: NoteImageSize; label: string }[] = [
+  { value: 'wide', label: 'Wide' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'small', label: 'Small' },
+  { value: 'full', label: 'Full' },
+]
+
+function getImageFigureClass(size?: NoteImageSize, isFullPreview = false) {
+  if (size === 'small') return 'max-w-sm'
+  if (size === 'medium') return 'max-w-2xl'
+  if (size === 'full') return 'max-w-full'
+  return isFullPreview ? 'max-w-4xl' : 'max-w-3xl'
+}
+
+function getGalleryClass(size?: NoteImageSize, count = 1) {
+  const widthClass = size === 'small' ? 'max-w-xl' : size === 'medium' ? 'max-w-2xl' : size === 'full' ? 'max-w-full' : 'max-w-4xl'
+  const gridClass = count === 1 ? 'grid-cols-1' : count === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+  return `${widthClass} ${gridClass}`
+}
+
+function imageMarkdown(size: NoteImageSize) {
+  const sizeText = size && size !== 'wide' ? `{size=${size}}` : ''
+  return `![图片描述](https://)${sizeText}`
+}
+
 function getLocationImages(location?: LocationOption | null) {
   if (!location) return []
   const items = [location.image_url, ...(location.images || [])].filter(Boolean) as string[]
@@ -144,7 +169,7 @@ function BlockPreview({
   if (block.type === 'heading') {
     if (isFullPreview) {
       return (
-        <h2 className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
+        <h2 id={`heading-${block.id}`} className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
           {block.content}
         </h2>
       )
@@ -177,7 +202,7 @@ function BlockPreview({
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
     if (isFullPreview) {
       return (
-        <figure className="max-w-4xl mx-auto w-full my-10 space-y-3 group">
+        <figure className={`${getImageFigureClass(block.imageSize, true)} mx-auto w-full my-10 space-y-3 group`}>
           <div className="relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
             <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 980px" className="object-cover" />
           </div>
@@ -186,7 +211,7 @@ function BlockPreview({
       )
     }
     return (
-      <figure className="space-y-2 my-6">
+      <figure className={`${getImageFigureClass(block.imageSize)} mx-auto w-full space-y-2 my-6`}>
         <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] border border-white/10 bg-white/5 shadow-lg">
           <FallbackImage src={block.imageUrl} alt={alt} fill sizes="(max-width: 1024px) 100vw, 760px" className="object-cover" />
         </div>
@@ -224,7 +249,7 @@ function BlockPreview({
               </span>
             )}
           </div>
-          <div className={`grid gap-5 ${block.images.length === 1 ? 'grid-cols-1' : block.images.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+          <div className={`mx-auto grid gap-5 ${getGalleryClass(block.imageSize, block.images.length)}`}>
             {block.images.map((image, index) => (
               <div key={`${block.id}-${index}`} className="space-y-2 group">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-md">
@@ -251,7 +276,7 @@ function BlockPreview({
           </div>
           <span className="text-xs text-emerald-400 font-medium">关联景点已链接 ✓</span>
         </div>
-        <div className={`grid gap-3 ${block.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+        <div className={`mx-auto grid gap-3 ${getGalleryClass(block.imageSize, block.images.length)}`}>
           {block.images.map((image, index) => (
             <figure key={`${block.id}-${index}`} className="relative group overflow-hidden rounded-xl aspect-[4/3] border border-white/5">
               <FallbackImage
@@ -347,6 +372,7 @@ export default function AdminNotesPage() {
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
   const [selectedAffiliateIds, setSelectedAffiliateIds] = useState<number[]>([])
   const [selectedKlookWidgetIds, setSelectedKlookWidgetIds] = useState<string[]>([])
+  const [imageInsertSize, setImageInsertSize] = useState<NoteImageSize>('wide')
   const [markdownText, setMarkdownText] = useState('')
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
 
@@ -555,7 +581,8 @@ export default function AdminNotesPage() {
     const scrollY = window.scrollY
 
     const imagesList = selectedSpotImageUrls.join(',')
-    const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"]`
+    const sizeText = imageInsertSize && imageInsertSize !== 'wide' ? ` size="${imageInsertSize}"` : ''
+    const shortcode = `[spot-images id="${selectedSpot.id}" name="${getLocationLabel(selectedSpot)}" images="${imagesList}"${sizeText}]`
 
     insertTextAtCursor(shortcode)
     setPickerOpen(false)
@@ -913,6 +940,18 @@ export default function AdminNotesPage() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      <select
+                        value={imageInsertSize}
+                        onChange={(event) => setImageInsertSize(event.target.value as NoteImageSize)}
+                        className="h-9 rounded-md border border-white/10 bg-[#121214] px-3 text-sm text-white outline-none focus:border-amber-300/60"
+                        aria-label="Image size"
+                      >
+                        {IMAGE_SIZE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            图片尺寸: {option.label}
+                          </option>
+                        ))}
+                      </select>
                       <Button
                         type="button"
                         size="sm"
@@ -936,7 +975,7 @@ export default function AdminNotesPage() {
                         size="sm"
                         variant="outline"
                         className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
-                        onClick={() => insertTextAtCursor('![图片描述](https://)')}
+                        onClick={() => insertTextAtCursor(imageMarkdown(imageInsertSize))}
                       >
                         独立图片
                       </Button>

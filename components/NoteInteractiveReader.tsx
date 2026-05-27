@@ -204,7 +204,8 @@ export function NoteTableOfContents({ headings }: NoteInteractiveReaderProps) {
     const targetId = `heading-${id}`
     const el = document.getElementById(targetId)
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' })
+      const top = el.getBoundingClientRect().top + window.scrollY - 96
+      window.scrollTo({ top, behavior: 'smooth' })
       window.history.replaceState(null, '', `#${targetId}`)
     }
   }

@@ -15,12 +15,15 @@ export interface NoteImageItem {
   caption?: string
 }
 
+export type NoteImageSize = 'full' | 'wide' | 'medium' | 'small'
+
 export interface NoteBlock {
   id: string
   type: NoteBlockType
   title?: string
   content?: string
   imageUrl?: string
+  imageSize?: NoteImageSize
   alt?: string
   caption?: string
   images?: NoteImageItem[]
@@ -187,6 +190,26 @@ function parseAttributes(tagText: string): Record<string, string> {
   return attrs
 }
 
+export function normalizeNoteImageSize(value?: string | null): NoteImageSize | undefined {
+  const size = String(value || '').trim().toLowerCase()
+  if (size === 'full' || size === 'wide' || size === 'medium' || size === 'small') return size
+  return undefined
+}
+
+function isLikelyImageUrl(value: string) {
+  const text = String(value || '').trim()
+  if (!/^https?:\/\/\S+$/i.test(text)) return false
+  return /\.(avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(text)
+}
+
+function isImplicitHeading(text: string) {
+  const value = String(text || '').trim()
+  if (!value || value.includes('\n') || value.length > 80) return false
+  if (/[:：]$/.test(value) && value.length <= 48) return true
+  const latinLetters = value.replace(/[^A-Za-z]/g, '')
+  return latinLetters.length >= 3 && latinLetters === latinLetters.toUpperCase() && /[A-Z]/.test(latinLetters)
+}
+
 export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
   if (!Array.isArray(blocks) || blocks.length === 0) return ''
 
@@ -202,11 +225,13 @@ export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
         const altText = block.alt || ''
         const urlText = block.imageUrl || ''
         const captionText = block.caption ? `\n*${block.caption}*` : ''
-        return `![${altText}](${urlText})${captionText}`
+        const sizeText = block.imageSize ? `{size=${block.imageSize}}` : ''
+        return `![${altText}](${urlText})${sizeText}${captionText}`
       }
       if (block.type === 'spotImages' || block.type === 'gallery') {
         const imagesList = (block.images || []).map((img) => img.src).join(',')
-        return `[spot-images id="${block.spotId || ''}" name="${block.spotName || ''}" images="${imagesList}"]`
+        const sizeText = block.imageSize ? ` size="${block.imageSize}"` : ''
+        return `[spot-images id="${block.spotId || ''}" name="${block.spotName || ''}" images="${imagesList}"${sizeText}]`
       }
       if (block.type === 'spot') {
         return `[spot id="${block.spotId || ''}"]`
@@ -251,6 +276,15 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
       }
     }
 
+    if (isImplicitHeading(text)) {
+      blocks.push({
+        id: blockId,
+        type: 'heading',
+        content: text.replace(/[:：]$/, '').trim(),
+      })
+      return
+    }
+
     // 2. Blockquote
     if (text.startsWith('>')) {
       const content = text.slice(1).trim()
@@ -281,6 +315,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         type: 'spotImages',
         spotId: Number.isFinite(spotId) ? spotId : undefined,
         spotName,
+        imageSize: normalizeNoteImageSize(attrs.size),
         images,
       })
       return
@@ -337,22 +372,33 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
       return
     }
 
-    // 7. Standalone Image: ![alt](url)
+    // 7. Standalone Image: ![alt](url){size=small}
     if (text.startsWith('![')) {
-      const markdownImgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\s*\n*\*([^*]+)\*)?$/)
+      const markdownImgMatch = text.match(/^!\[([^\]]*)\]\(([^)]+)\)(?:\{size=(full|wide|medium|small)\})?(?:\s*\n*\*([^*]+)\*)?$/i)
       if (markdownImgMatch) {
         const alt = markdownImgMatch[1]
         const imageUrl = markdownImgMatch[2]
-        const caption = markdownImgMatch[3]
+        const imageSize = normalizeNoteImageSize(markdownImgMatch[3])
+        const caption = markdownImgMatch[4]
         blocks.push({
           id: blockId,
           type: 'image',
           imageUrl,
+          imageSize,
           alt: alt || undefined,
           caption: caption || undefined,
         })
         return
       }
+    }
+
+    if (isLikelyImageUrl(text)) {
+      blocks.push({
+        id: blockId,
+        type: 'image',
+        imageUrl: text,
+      })
+      return
     }
 
     // Default: Paragraph block
