@@ -20,6 +20,18 @@ import FallbackImage from '@/components/FallbackImage'
 import { getDisplayTitle, getGuideDisplayPair, getSpotDescription } from '@/lib/content-display'
 import { getRegionCountry } from '@/lib/region-utils'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
+import { stripSummaryTokens } from '@/lib/notes'
+
+interface NoteData {
+  slug: string
+  title: string
+  shortTitle?: string
+  tagline?: string
+  summary?: string
+  kicker?: string
+  coverAccent?: string
+  published?: boolean
+}
 
 interface Region {
   id: number
@@ -364,6 +376,35 @@ function RegionCard({ region }: { region: RegionHighlight }) {
   )
 }
 
+function NoteCard({ note }: { note: NoteData }) {
+  return (
+    <Link
+      href={`/notes/${note.slug}`}
+      className="group relative block overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition duration-500 hover:-translate-y-1 hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(17,24,39,0.96))]"
+    >
+      <div className={`relative overflow-hidden p-6 md:p-8 ${note.coverAccent || ''}`}>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="relative z-10">
+          {note.kicker ? <p className="section-kicker text-xs text-amber-100/80">{note.kicker}</p> : null}
+          <h3 className="font-editorial-title mt-4 text-3xl leading-none text-white md:text-4xl">
+            {note.shortTitle || note.title}
+          </h3>
+        </div>
+      </div>
+
+      <div className="flex flex-col justify-between gap-4 p-6 md:gap-5 md:p-6">
+        <p className="line-clamp-3 text-[13px] leading-7 text-white/72 md:text-sm md:leading-7">
+          {note.tagline || stripSummaryTokens(note.summary || '')}
+        </p>
+        <div className="inline-flex items-center gap-2 text-[13px] font-medium text-white/88 md:text-sm">
+          {'Read note / 阅读长文'}
+          <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 export default function Home() {
   const router = useRouter()
   const mapRef = useRef<MapRef>(null)
@@ -371,6 +412,7 @@ export default function Home() {
   const [locations, setLocations] = useState<Location[]>([])
   const [regions, setRegions] = useState<Region[]>([])
   const [filteredLocations, setFilteredLocations] = useState<Location[]>([])
+  const [notes, setNotes] = useState<NoteData[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [flyToLocation, setFlyToLocation] = useState<{
     latitude: number
@@ -379,7 +421,7 @@ export default function Home() {
   } | null>(null)
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchData = async () => {
       const [{ data: locationData, error: locationError }, { data: regionData, error: regionError }] = await Promise.all([
         supabase
           .from('locations')
@@ -400,12 +442,28 @@ export default function Home() {
         console.error('Error fetching regions:', regionError)
       }
 
-      setRegions((regionData || []) as Region[])
+      setRegions((regionData || []) as Region[]
       setLocations(locationData || [])
       setFilteredLocations(locationData || [])
     }
 
-    fetchLocations()
+    const fetchNotes = async () => {
+      try {
+        const response = await fetch('/api/notes')
+        if (!response.ok) {
+          throw new Error('Failed to fetch notes')
+        }
+        const result = await response.json()
+        if (result.notes) {
+          setNotes(result.notes)
+        }
+      } catch (err) {
+        console.error('Error fetching notes:', err)
+      }
+    }
+
+    fetchData()
+    fetchNotes()
   }, [])
 
   const fuse = useMemo(
@@ -606,7 +664,7 @@ export default function Home() {
           <section id="guides" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl">Travel Guides / 完整游记攻略</h2>
+                <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl">Travel Guides / 完整游记攻略</h2>
               </div>
               <Link
                 href="/guide"
@@ -618,6 +676,29 @@ export default function Home() {
             </div>
             <GuideShowcase />
           </section>
+
+          {notes.length > 0 ? (
+            <section id="notes" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="section-kicker text-xs text-amber-300/80">Longform Notes</p>
+                  <h2 className="font-cjk-display mt-2 text-[2rem] leading-none text-white md:text-4xl">长文笔记 / 深度内容</h2>
+                </div>
+                <Link
+                  href="/notes"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
+                >
+                  {'View all notes / 查看全部笔记'}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid gap-3 md:grid-cols-2 md:gap-5">
+                {notes.slice(0, 4).map((note) => (
+                  <NoteCard key={note.slug} note={note} />
+                ))}
+              </div>
+            </section>
+          ) : null}
 
           <section id="malaysia" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
