@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Download, Edit, ExternalLink, Filter, Plus, Trash2, X } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { adminFetch } from '@/lib/admin-fetch'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -217,8 +218,10 @@ function AffiliatePageContent() {
 
   const fetchNotes = async () => {
     try {
-      const { readNotes } = await import('@/lib/server/notes-store')
-      const notesData = await readNotes()
+      const response = await adminFetch('/api/admin/notes', { cache: 'no-store' })
+      if (!response.ok) throw new Error('Failed to fetch notes')
+      const result = await response.json()
+      const notesData: BasicNote[] = Array.isArray(result?.notes) ? result.notes : []
       setNotes(notesData.map((n) => ({
         slug: n.slug,
         title: n.title,
@@ -800,7 +803,7 @@ function AffiliatePageContent() {
                 />
                 <Select
                   value={form.region_id || '__none__'}
-                  onValueChange={(value) => setForm((prev) => ({ ...prev, region_id: value === '__none__' ? '' : value })}
+                  onValueChange={(value) => setForm((prev) => ({ ...prev, region_id: value === '__none__' ? '' : value }))}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="选择地区" />
@@ -820,7 +823,7 @@ function AffiliatePageContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>平台</Label>
-                  <Select value={form.provider} onValueChange={(value) => setForm((prev) => ({ ...prev, provider: value })}>
+                  <Select value={form.provider} onValueChange={(value) => setForm((prev) => ({ ...prev, provider: value }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -999,7 +1002,7 @@ function AffiliatePageContent() {
                                     <span key={label} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-700">
                                       {label}
                                     </span>
-                                  )}
+                                  ))}
                                   {group.associationLabels.length > 4 ? (
                                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
                                       +{group.associationLabels.length - 4}

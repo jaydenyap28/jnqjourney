@@ -442,14 +442,14 @@ export default function Home() {
         console.error('Error fetching regions:', regionError)
       }
 
-      setRegions((regionData || []) as Region[]
+      setRegions((regionData || []) as Region[])
       setLocations(locationData || [])
       setFilteredLocations(locationData || [])
     }
 
     const fetchNotes = async () => {
       try {
-        const response = await fetch('/api/notes')
+        const response = await fetch('/api/notes', { cache: 'no-store' })
         if (!response.ok) {
           throw new Error('Failed to fetch notes')
         }

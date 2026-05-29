@@ -472,6 +472,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
           <aside className="space-y-4 lg:sticky lg:top-6">
             {/* Dynamic Sticky Table of Contents sidebar widget */}
             <NoteTableOfContents headings={headings} />
+            <SupportSidebarCard className="bg-white/5" />
 
             {affiliateBlocks.map((block) => {
               const links = (block.affiliateIds || [])
@@ -565,7 +566,6 @@ export default async function NoteDetailPage({ params }: PageProps) {
               </section>
             ) : null}
 
-            <SupportSidebarCard className="bg-white/5" />
           </aside>
         </div>
       </div>

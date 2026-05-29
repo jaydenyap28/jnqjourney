@@ -512,6 +512,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
+  const coveredSpots = Array.from(
+    new Map(
+      datedDayPlans
+        .flatMap((day) => day.displaySpots)
+        .map((spot) => [spot.id, spot])
+    ).values()
+  ).slice(0, 8)
+
   const routeMapPoints = routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
     const longitude = typeof stop.longitude === 'number' ? Number(stop.longitude) : null
@@ -532,7 +540,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ]
   })
 
-  const foodSpots = allGuideSpots.filter(loc => loc.category === 'food')
+  const foodSpots = coveredSpots.filter(loc => loc.category === 'food')
 
   const allGuides = await readGuides()
   const relatedGuides = allGuides
@@ -998,14 +1006,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
             </section>
 
             {/* 5. Spots Covered */}
-            {allGuideSpots.length > 0 && (
+            {coveredSpots.length > 0 && (
               <section className="space-y-5">
                 <div>
                   <p className="section-kicker text-xs text-amber-300/80">Spots Covered / 涵盖景点</p>
                   <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">涵盖景点</h2>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                  {allGuideSpots.map((spot) => (
+                  {coveredSpots.map((spot) => (
                     <Link
                       key={spot.id}
                       href={buildLocationPath(spot.name, spot.id)}

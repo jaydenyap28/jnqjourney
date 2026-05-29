@@ -3,7 +3,7 @@ import { readPublishedNotes } from '@/lib/server/notes-store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 0
 
 export async function GET() {
   const notes = await readPublishedNotes()
@@ -11,7 +11,7 @@ export async function GET() {
     { notes },
     {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300',
+        'Cache-Control': 'no-store, max-age=0',
       },
     }
   )
