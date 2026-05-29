@@ -112,8 +112,39 @@ function parseRegionCodeTokens(code?: string) {
   )
 }
 
-function getGuideCoverImage(guide: TravelGuide) {
-  return guide.coverImage || ''
+function normalizeGuideSpotName(value?: string | null) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '')
+}
+
+function getGuideCoverImage(guide: TravelGuide, locations: Location[] = []) {
+  if (guide.coverImage) return guide.coverImage
+
+  const candidateNames = [
+    ...(guide.featuredSpotNames || []),
+    ...guide.route.map((stop) => stop.mapSpotName || stop.name),
+    ...guide.days.flatMap((day) => day.linkedSpots || []),
+  ]
+    .map(normalizeGuideSpotName)
+    .filter(Boolean)
+
+  if (!candidateNames.length) return ''
+
+  const locationByName = new Map<string, Location>()
+  for (const location of locations) {
+    const names = [location.name, location.name_cn].map(normalizeGuideSpotName).filter(Boolean)
+    for (const name of names) locationByName.set(name, location)
+  }
+
+  for (const name of candidateNames) {
+    const location = locationByName.get(name)
+    const image = location?.image_url || location?.images?.[0]
+    if (image) return image
+  }
+
+  return ''
 }
 
 function formatGuideDuration(duration: string) {
@@ -137,7 +168,7 @@ function getGuideRouteSummary(guide: TravelGuide, limit = 3) {
     .slice(0, limit)
 }
 
-function GuideShowcase() {
+function GuideShowcase({ locations }: { locations: Location[] }) {
   const [guides, setGuides] = useState<TravelGuide[]>([])
   const [activeGuidePage, setActiveGuidePage] = useState(0)
 
@@ -178,7 +209,7 @@ function GuideShowcase() {
         {visibleGuides.map((guide, index) => {
           const title = getGuideDisplayPair(guide)
           const route = getGuideRouteSummary(guide, 3)
-          const coverImage = getGuideCoverImage(guide)
+          const coverImage = getGuideCoverImage(guide, locations)
 
           return (
             <Link
@@ -686,7 +717,7 @@ export default function Home() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <GuideShowcase />
+            <GuideShowcase locations={locations} />
           </section>
 
           {notes.length > 0 ? (

@@ -8,6 +8,7 @@ import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
+import { formatOpeningHoursDisplay, hasVisibleOpeningHours } from '@/lib/opening-hours'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -213,28 +214,27 @@ function getPriceCurrencyLabel(primary?: string, secondary?: string) {
   return parts.length ? parts.join(' / ') : 'Local Currency'
 }
 
-function hasVisibleOpeningHours(value?: string | null) {
-  const raw = String(value || '').trim()
-  if (!raw) return false
-
-  try {
-    const parsed = JSON.parse(raw)
-    if (parsed && typeof parsed === 'object' && 'isUnknown' in parsed) {
-      return !Boolean((parsed as { isUnknown?: boolean }).isUnknown)
-    }
-  } catch {
-    // ignore
+function normalizeImageList(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean)
   }
 
-  return !/^no information$/i.test(raw)
-}
+  const text = String(value || '').trim()
+  if (!text) return []
 
-function formatGroupedHoursLabel(days: number[]) {
-  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  if (!Array.isArray(days) || !days.length) return ''
-  if (days.length === 1) return labels[days[0]]
-  const isConsecutive = days.every((day, index) => index === 0 || day === days[index - 1] + 1)
-  return isConsecutive ? `${labels[days[0]]}-${labels[days[days.length - 1]]}` : days.map((day) => labels[day]).join(', ')
+  try {
+    const parsed = JSON.parse(text)
+    if (Array.isArray(parsed)) {
+      return parsed.map((item) => String(item || '').trim()).filter(Boolean)
+    }
+  } catch {
+    // Fall through to delimiter parsing.
+  }
+
+  return text
+    .split(/\s*(?:\||,|\n)\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean)
 }
 
 function TikTokIcon({ className }: { className?: string }) {
@@ -328,10 +328,8 @@ export default function SpotContent({
   const regionPath = location.regions?.id && location.regions?.name ? buildRegionPath(location.regions.name, location.regions.id) : null
 
   const allImages = useMemo(() => {
-    if (Array.isArray(location.images) && location.images.length > 0) {
-      return Array.from(new Set(location.image_url ? [location.image_url, ...location.images] : location.images))
-    }
-    return location.image_url ? [location.image_url] : []
+    const galleryImages = normalizeImageList(location.images)
+    return Array.from(new Set([location.image_url, ...galleryImages].map((item) => String(item || '').trim()).filter(Boolean)))
   }, [location.image_url, location.images])
 
   const validImages = useMemo(
@@ -425,6 +423,7 @@ export default function SpotContent({
       Boolean(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt))
   const priceHeading = getPriceHeading(location.category)
   const priceCurrencyLabel = getPriceCurrencyLabel(priceInfo.currency, priceInfo.secondaryCurrency)
+  const openingHoursDisplay = useMemo(() => formatOpeningHoursDisplay(location.opening_hours), [location.opening_hours])
 
   const socialLinks = [
     { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube', color: 'bg-red-600' },
@@ -809,82 +808,31 @@ export default function SpotContent({
             </div>
             <div className="flex-1">
               <h4 className="mb-2 text-sm font-bold uppercase tracking-wider text-amber-200">Opening Hours</h4>
-              {(() => {
-                try {
-                  const data = JSON.parse(location.opening_hours || '')
-                  if (data && typeof data === 'object' && ('open' in data || 'close' in data || 'is24Hours' in data || 'isUnknown' in data)) {
-                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-                    const formatTime = (time: string) => {
-                      if (!time) return ''
-                      const [hourRaw, minute] = time.split(':')
-                      const hour = Number(hourRaw)
-                      const ampm = hour >= 12 ? 'PM' : 'AM'
-                      const hour12 = hour % 12 || 12
-                      return `${hour12}:${minute} ${ampm}`
-                    }
-
-                    if (data.isUnknown) {
-                      return (
-                        <div className="space-y-3 text-sm">
-                          <div className="flex flex-wrap items-center justify-between gap-3">
-                            <span className="font-semibold text-white">No information</span>
-                            <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-gray-300">
-                              To be confirmed
-                            </span>
-                          </div>
-                          {data.remarks ? <p className="text-xs leading-6 text-gray-300">{String(data.remarks).trim()}</p> : null}
-                        </div>
-                      )
-                    }
-
-                    const recurringHours =
-                      typeof data.remarks === 'string' && data.remarks.startsWith('营业时段：')
-                        ? data.remarks.replace(/^营业时段：/, '').trim()
-                        : ''
-                    const groupedHours = Array.isArray((data as any).scheduleGroups)
-                      ? ((data as any).scheduleGroups as Array<{ days?: number[]; label?: string; hours?: string }>)
-                          .map((group) => ({
-                            label: String(group.label || formatGroupedHoursLabel(Array.isArray(group.days) ? group.days : [])).trim(),
-                            hours: String(group.hours || '').trim(),
-                          }))
-                          .filter((group) => group.label && group.hours)
-                      : []
-                    const primaryHours = data.is24Hours
-                      ? '24 Hours'
-                      : recurringHours || `${formatTime(data.open)} - ${formatTime(data.close)}`
-                    return (
-                      <div className="space-y-3 text-sm">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                          <span className="font-semibold text-white">{primaryHours}</span>
-                          {Array.isArray(data.closedDays) && data.closedDays.length > 0 ? (
-                            <span className="rounded-full border border-red-400/20 bg-red-500/10 px-3 py-1 text-xs text-red-200">
-                              Closed on: {data.closedDays.map((day: number) => days[day]).join(', ')}
-                            </span>
-                          ) : (
-                            <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
-                              Open daily
-                            </span>
-                          )}
-                        </div>
-                        {groupedHours.length ? (
-                          <div className="grid gap-2.5 md:grid-cols-2">
-                            {groupedHours.map((group) => (
-                              <div key={`${group.label}-${group.hours}`} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                                <div className="text-xs uppercase tracking-[0.18em] text-amber-200/75">{group.label}</div>
-                                <div className="mt-2 text-sm font-medium text-white">{group.hours}</div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : null}
+              <div className="space-y-3 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="font-semibold text-white">{openingHoursDisplay.primary}</span>
+                  {openingHoursDisplay.statusLabel ? (
+                    <span className={`rounded-full border px-3 py-1 text-xs ${
+                      openingHoursDisplay.statusTone === 'closed'
+                        ? 'border-red-400/20 bg-red-500/10 text-red-200'
+                        : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'
+                    }`}>
+                      {openingHoursDisplay.statusLabel}
+                    </span>
+                  ) : null}
+                </div>
+                {openingHoursDisplay.groupedHours.length ? (
+                  <div className="grid gap-2.5 md:grid-cols-2">
+                    {openingHoursDisplay.groupedHours.map((group) => (
+                      <div key={`${group.label}-${group.hours}`} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                        <div className="text-xs uppercase tracking-[0.18em] text-amber-200/75">{group.label}</div>
+                        <div className="mt-2 text-sm font-medium text-white">{group.hours}</div>
                       </div>
-                    )
-                  }
-                } catch {
-                  // Fall back to plain text below.
-                }
-
-                return <p className="whitespace-pre-line text-gray-200">{location.opening_hours}</p>
-              })()}
+                    ))}
+                  </div>
+                ) : null}
+                {openingHoursDisplay.remarks ? <p className="text-xs leading-6 text-gray-300">{openingHoursDisplay.remarks}</p> : null}
+              </div>
             </div>
           </div>
         ) : null}

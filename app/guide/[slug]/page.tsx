@@ -435,6 +435,11 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const allGuideSpots = Array.from(
     new Map([...linkedSpots, ...regionSpots].map((spot) => [spot.id, spot])).values()
   )
+  const guideCoverImage =
+    guide.coverImage ||
+    linkedSpots.map((spot) => spot.image_url || spot.images?.[0]).find(Boolean) ||
+    regionSpots.map((spot) => spot.image_url || spot.images?.[0]).find(Boolean) ||
+    ''
   const spotMap = new Map(
     allGuideSpots.flatMap((spot) => {
       const entries: Array<[string, LinkedSpot]> = []
@@ -582,7 +587,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
     '@type': 'Article',
     headline: guide.title,
     description: guide.summary || guide.tagline || guide.title,
-    image: guide.coverImage || undefined,
+    image: guideCoverImage || undefined,
     author: {
       '@type': 'Person',
       name: 'Jayden & Qing 一起看世界',
@@ -651,9 +656,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
           <div
             className={`overflow-hidden rounded-[34px] border border-white/10 p-4 shadow-[0_36px_120px_rgba(0,0,0,0.32)] md:rounded-[42px] md:p-10 ${guide.coverAccent}`}
             style={
-              guide.coverImage
+              guideCoverImage
                 ? {
-                    backgroundImage: `linear-gradient(120deg,rgba(2,6,23,0.88),rgba(2,6,23,0.6) 45%,rgba(2,6,23,0.34)), url(${guide.coverImage})`,
+                    backgroundImage: `linear-gradient(120deg,rgba(2,6,23,0.88),rgba(2,6,23,0.6) 45%,rgba(2,6,23,0.34)), url(${guideCoverImage})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                   }

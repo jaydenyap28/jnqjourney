@@ -15,6 +15,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { buildLocationPath } from '@/lib/location-routing'
 import { getDisplayTitle } from '@/lib/content-display'
+import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 
 import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
@@ -133,10 +134,11 @@ export default async function SpotPage({ params }: PageProps) {
       longitude: location.longitude,
     }
   }
-  if (location.opening_hours) {
+  const metadataOpeningHours = formatOpeningHoursDisplay(location.opening_hours)
+  if (metadataOpeningHours.visible) {
     structuredData.openingHoursSpecification = {
       '@type': 'OpeningHoursSpecification',
-      description: location.opening_hours
+      description: metadataOpeningHours.plainText
     }
   }
   
@@ -188,6 +190,7 @@ export default async function SpotPage({ params }: PageProps) {
   const imgAlt = location.category === 'food' ? `${primaryName} ${regionName} 美食或环境照片` : `${primaryName} ${regionName} 旅游照片`
   
   const visibleTags = getVisibleLocationTags(location.tags)
+  const openingHoursDisplay = formatOpeningHoursDisplay(location.opening_hours)
   const description = location.description || location.review || '这里整理 JnQ Journey 已收录的地点资料，包括位置、照片、相关地区和旅行参考资讯，方便你规划自由行、周末游或亲子行程。更多实际体验会陆续更新。'
 
   const mapQuery = encodeURIComponent([location.name, location.name_cn, location.address].filter(Boolean).join(' '))
@@ -288,12 +291,12 @@ export default async function SpotPage({ params }: PageProps) {
                 </div>
               </div>
             )}
-            {location.opening_hours && (
+            {openingHoursDisplay.visible && (
               <div className="flex gap-3">
                 <Clock className="w-5 h-5 shrink-0 text-amber-400" />
                 <div>
                   <p className="font-semibold text-white">营业时间</p>
-                  <p className="mt-1 leading-relaxed">{location.opening_hours}</p>
+                  <p className="mt-1 whitespace-pre-line leading-relaxed">{openingHoursDisplay.plainText}</p>
                 </div>
               </div>
             )}

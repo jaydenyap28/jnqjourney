@@ -430,10 +430,21 @@ export default async function NoteDetailPage({ params }: PageProps) {
         </div>
 
         <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-10 ${note.coverAccent || ''}`}>
-          <div className="max-w-5xl space-y-5">
-            {getDisplayKicker(note.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(note.kicker)}</p> : null}
-            <h1 className="text-4xl font-semibold leading-tight text-white md:text-7xl">{note.title}</h1>
-            {note.tagline ? <p className="max-w-3xl text-lg leading-9 text-white/80">{note.tagline}</p> : null}
+          <div className={`grid gap-8 ${note.coverImage || note.coverVideoUrl ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
+            <div className="max-w-5xl space-y-5">
+              {getDisplayKicker(note.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(note.kicker)}</p> : null}
+              <h1 className="text-4xl font-semibold leading-tight text-white md:text-7xl">{note.title}</h1>
+              {note.tagline ? <p className="max-w-3xl text-lg leading-9 text-white/80">{note.tagline}</p> : null}
+            </div>
+            {note.coverVideoUrl ? (
+              <div className="relative aspect-video overflow-hidden rounded-[32px] border border-white/10 bg-black/50 shadow-[0_24px_70px_rgba(0,0,0,0.24)]">
+                <CoverVideoEmbed url={note.coverVideoUrl} title={`${note.title} cover video`} />
+              </div>
+            ) : note.coverImage ? (
+              <div className="relative aspect-[4/3] overflow-hidden rounded-[32px] border border-white/10 bg-black/30 shadow-[0_24px_70px_rgba(0,0,0,0.24)]">
+                <FallbackImage src={note.coverImage} alt={`${note.title} cover`} fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" priority />
+              </div>
+            ) : null}
           </div>
         </section>
 

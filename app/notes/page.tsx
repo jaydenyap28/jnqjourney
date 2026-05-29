@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { ArrowRight } from 'lucide-react'
 
 import SiteFooter from '@/components/SiteFooter'
+import FallbackImage from '@/components/FallbackImage'
 import { readPublishedNotes } from '@/lib/server/notes-store'
 import { stripSummaryTokens } from '@/lib/notes'
 
@@ -31,9 +32,21 @@ export default async function NotesIndexPage() {
         </div>
 
         <section className="mt-8 grid gap-6 lg:grid-cols-2">
-          {notes.map((note) => (
-            <Link key={note.slug} href={`/notes/${note.slug}`} className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10">
-              <div className={`relative overflow-hidden p-6 md:p-8 ${note.coverAccent}`}>
+          {notes.map((note) => {
+            const coverImage = note.coverImage || ''
+
+            return (
+              <Link key={note.slug} href={`/notes/${note.slug}`} className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10">
+              <div className={`relative min-h-[260px] overflow-hidden p-6 md:p-8 ${coverImage ? 'bg-black' : note.coverAccent}`}>
+                {coverImage ? (
+                  <FallbackImage
+                    src={coverImage}
+                    alt={note.shortTitle || note.title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                  />
+                ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="relative z-10">
                   <p className="section-kicker text-xs text-amber-100/80">{note.kicker}</p>
@@ -48,8 +61,9 @@ export default async function NotesIndexPage() {
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </section>
       </div>
 

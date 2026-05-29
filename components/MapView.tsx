@@ -14,6 +14,7 @@ interface Location {
   visit_date?: string
   video_url?: string
   image_url?: string
+  images?: string[]
   tags?: string[]
   opening_hours?: string
 }
