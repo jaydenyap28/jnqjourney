@@ -29,6 +29,7 @@ interface NoteData {
   tagline?: string
   summary?: string
   kicker?: string
+  coverImage?: string
   coverAccent?: string
   published?: boolean
 }
@@ -377,16 +378,27 @@ function RegionCard({ region }: { region: RegionHighlight }) {
 }
 
 function NoteCard({ note }: { note: NoteData }) {
+  const coverImage = note.coverImage || ''
+
   return (
     <Link
       href={`/notes/${note.slug}`}
       className="group relative block overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition duration-500 hover:-translate-y-1 hover:border-white/20 hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(17,24,39,0.96))]"
     >
-      <div className={`relative overflow-hidden p-6 md:p-8 ${note.coverAccent || ''}`}>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-        <div className="relative z-10">
-          {note.kicker ? <p className="section-kicker text-xs text-amber-100/80">{note.kicker}</p> : null}
-          <h3 className="font-editorial-title mt-4 text-3xl leading-none text-white md:text-4xl">
+      <div className={`relative aspect-[16/9] overflow-hidden bg-white/5 ${coverImage ? '' : note.coverAccent || ''}`}>
+        {coverImage ? (
+          <FallbackImage
+            src={coverImage}
+            alt={note.shortTitle || note.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition duration-700 group-hover:scale-105"
+          />
+        ) : null}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.18)_40%,rgba(0,0,0,0.86)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
+          <p className="section-kicker text-[10px] text-amber-100/82">Longform Note / 长文笔记</p>
+          <h3 className="font-editorial-title mt-2 text-3xl leading-none text-white md:text-4xl">
             {note.shortTitle || note.title}
           </h3>
         </div>
@@ -681,8 +693,7 @@ export default function Home() {
             <section id="notes" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="section-kicker text-xs text-amber-300/80">Longform Notes</p>
-                  <h2 className="font-cjk-display mt-2 text-[2rem] leading-none text-white md:text-4xl">长文笔记 / 深度内容</h2>
+                  <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl">Longform Notes / 长文笔记</h2>
                 </div>
                 <Link
                   href="/notes"
