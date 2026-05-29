@@ -44,6 +44,7 @@ interface AffiliateLink {
   id: number
   location_id?: number | null
   region_id?: number | null
+  note_slug?: string | null
   provider: string
   link_type: string
   url: string
@@ -100,6 +101,13 @@ interface BasicRegion {
   } | null
 }
 
+interface BasicNote {
+  slug: string
+  title: string
+  shortTitle?: string
+  published?: boolean
+}
+
 function getRegionPathLabel(region?: BasicRegion | BasicLocation['regions'] | null) {
   if (!region) return ''
 
@@ -117,6 +125,9 @@ function getRegionPathLabel(region?: BasicRegion | BasicLocation['regions'] | nu
 }
 
 function getAffiliateAssociationLabel(link: AffiliateLink) {
+  if (link.note_slug) {
+    return `笔记: ${link.note_slug}`
+  }
   if (link.locations?.name || link.locations?.name_cn) {
     return link.locations?.name_cn || link.locations?.name || ''
   }
@@ -134,6 +145,7 @@ function AffiliatePageContent() {
   const [links, setLinks] = useState<AffiliateLink[]>([])
   const [locations, setLocations] = useState<BasicLocation[]>([])
   const [regions, setRegions] = useState<BasicRegion[]>([])
+  const [notes, setNotes] = useState<BasicNote[]>([])
   const [loading, setLoading] = useState(true)
   const [filterProvider, setFilterProvider] = useState('all')
   const [filterType, setFilterType] = useState('all')
@@ -141,7 +153,9 @@ function AffiliatePageContent() {
   const [editingLinkId, setEditingLinkId] = useState<number | null>(null)
   const [locationSearch, setLocationSearch] = useState('')
   const [regionSearch, setRegionSearch] = useState('')
+  const [noteSearch, setNoteSearch] = useState('')
   const [selectedLocationIds, setSelectedLocationIds] = useState<string[]>([])
+  const [selectedNoteSlugs, setSelectedNoteSlugs] = useState<string[]>([])
 
   const [form, setForm] = useState({
     region_id: '',
@@ -201,6 +215,21 @@ function AffiliatePageContent() {
     setRegions(normalizedRegions)
   }
 
+  const fetchNotes = async () => {
+    try {
+      const { readNotes } = await import('@/lib/server/notes-store')
+      const notesData = await readNotes()
+      setNotes(notesData.map((n) => ({
+        slug: n.slug,
+        title: n.title,
+        shortTitle: n.shortTitle,
+        published: n.published
+      })))
+    } catch (error) {
+      console.error('Failed to fetch notes:', error)
+    }
+  }
+
   const resetForm = useCallback((respectSearchParams = true) => {
     const prefilledLocationId = respectSearchParams ? searchParams.get('locationId') || '' : ''
 
@@ -216,6 +245,7 @@ function AffiliatePageContent() {
     })
 
     setSelectedLocationIds(prefilledLocationId ? [prefilledLocationId] : [])
+    setSelectedNoteSlugs([])
     setEditingLinkId(null)
   }, [searchParams])
 
@@ -223,6 +253,7 @@ function AffiliatePageContent() {
     fetchLinks()
     fetchLocations()
     fetchRegions()
+    fetchNotes()
   }, [])
 
   useEffect(() => {
@@ -234,6 +265,11 @@ function AffiliatePageContent() {
   const selectedLocations = useMemo(
     () => locations.filter((location) => selectedLocationIds.includes(String(location.id))),
     [locations, selectedLocationIds]
+  )
+
+  const selectedNotesList = useMemo(
+    () => notes.filter((note) => selectedNoteSlugs.includes(note.slug)),
+    [notes, selectedNoteSlugs]
   )
 
   const selectedRegion = useMemo(
@@ -257,6 +293,7 @@ function AffiliatePageContent() {
           link.locations?.name_cn,
           link.regions?.name,
           link.regions?.country,
+          link.note_slug,
         ]
           .map((item) => String(item || '').toLowerCase())
           .join(' ')
@@ -278,6 +315,7 @@ function AffiliatePageContent() {
         String(link.description || '').trim(),
         String(link.url || '').trim(),
         String(link.region_id || ''),
+        String(link.note_slug || ''),
       ].join('::')
 
       const existing = groups.get(key)
@@ -341,13 +379,38 @@ function AffiliatePageContent() {
     })
   }, [regionSearch, regions])
 
+  const filteredNoteOptions = useMemo(() => {
+    const keyword = noteSearch.trim().toLowerCase()
+    if (!keyword) return notes
+
+    return notes.filter((note) => {
+      const haystack = [note.title, note.shortTitle, note.slug]
+        .map((item) => String(item || '').toLowerCase())
+        .join(' ')
+
+      return haystack.includes(keyword)
+    })
+  }, [noteSearch, notes])
+
   const totalClicks = groupedLinks.reduce((sum, link) => sum + link.clicks, 0)
   const totalConversions = groupedLinks.reduce((sum, link) => sum + link.conversions, 0)
 
   const handleToggleLocationSelection = (locationId: string, checked: boolean) => {
     setSelectedLocationIds((prev) =>
       checked ? Array.from(new Set([...prev, locationId])) : prev.filter((item) => item !== locationId)
+  )
+    if (checked) {
+      setSelectedNoteSlugs([])
+    }
+  }
+
+  const handleToggleNoteSelection = (noteSlug: string, checked: boolean) => {
+    setSelectedNoteSlugs((prev) =>
+      checked ? Array.from(new Set([...prev, noteSlug])) : prev.filter((item) => item !== noteSlug)
     )
+    if (checked) {
+      setSelectedLocationIds([])
+    }
   }
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -356,6 +419,8 @@ function AffiliatePageContent() {
     const locationIds = selectedLocationIds.length
       ? selectedLocationIds.map((item) => Number(item)).filter((item) => Number.isFinite(item))
       : []
+
+    const noteSlugs = selectedNoteSlugs.length ? selectedNoteSlugs : []
 
     const basePayload = {
       region_id: form.region_id ? Number(form.region_id) : null,
@@ -372,12 +437,14 @@ function AffiliatePageContent() {
 
     if (editingLinkId) {
       const [primaryLocationId, ...extraLocationIds] = locationIds
+      const [primaryNoteSlug, ...extraNoteSlugs] = noteSlugs
 
       const updateResult = await supabase
         .from('affiliate_links')
         .update({
           ...basePayload,
           location_id: primaryLocationId || null,
+          note_slug: primaryNoteSlug || null,
         })
         .eq('id', editingLinkId)
 
@@ -388,6 +455,19 @@ function AffiliatePageContent() {
           extraLocationIds.map((locationId) => ({
             ...basePayload,
             location_id: locationId,
+            note_slug: null,
+          }))
+        )
+
+        if (insertResult.error) {
+          error = insertResult.error
+        }
+      } else if (extraNoteSlugs.length) {
+        const insertResult = await supabase.from('affiliate_links').insert(
+          extraNoteSlugs.map((slug) => ({
+            ...basePayload,
+            location_id: null,
+            note_slug: slug,
           }))
         )
 
@@ -396,10 +476,23 @@ function AffiliatePageContent() {
         }
       }
     } else {
-      const payloads = (locationIds.length ? locationIds : [null]).map((locationId) => ({
-        ...basePayload,
-        location_id: locationId,
-      }))
+      let payloads: any[] = []
+      
+      if (locationIds.length) {
+        payloads = locationIds.map((locationId) => ({
+          ...basePayload,
+          location_id: locationId,
+          note_slug: null,
+        }))
+      } else if (noteSlugs.length) {
+        payloads = noteSlugs.map((slug) => ({
+          ...basePayload,
+          location_id: null,
+          note_slug: slug,
+        }))
+      } else {
+        payloads = [{ ...basePayload, location_id: null, note_slug: null }]
+      }
 
       const insertResult = await supabase.from('affiliate_links').insert(payloads)
       if (insertResult.error) {
@@ -412,11 +505,11 @@ function AffiliatePageContent() {
       return
     }
 
-    const affectedCount = Math.max(locationIds.length, 1)
+    const affectedCount = Math.max(locationIds.length, noteSlugs.length, 1)
     alert(
       editingLinkId
-        ? `联盟链接已更新${affectedCount > 1 ? `，并额外复制到 ${affectedCount - 1} 个景点` : ''}`
-        : `联盟链接已添加到 ${affectedCount} 个景点/位置`
+        ? `联盟链接已更新${affectedCount > 1 ? `，并额外复制到 ${affectedCount - 1} 个位置` : ''}`
+        : `联盟链接已添加到 ${affectedCount} 个位置`
     )
 
     resetForm(true)
@@ -425,6 +518,7 @@ function AffiliatePageContent() {
 
   const handleStartEdit = (link: AffiliateLink) => {
     const nextLocationId = link.location_id ? String(link.location_id) : ''
+    const nextNoteSlug = link.note_slug || ''
 
     setEditingLinkId(link.id)
     setForm({
@@ -438,6 +532,7 @@ function AffiliatePageContent() {
       is_active: link.is_active,
     })
     setSelectedLocationIds(nextLocationId ? [nextLocationId] : [])
+    setSelectedNoteSlugs(nextNoteSlug ? [nextNoteSlug] : [])
 
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -491,7 +586,7 @@ function AffiliatePageContent() {
         </div>
       </div>
 
-      {(selectedLocations.length > 0 || selectedRegion) ? (
+      {(selectedLocations.length > 0 || selectedRegion || selectedNotesList.length > 0) ? (
         <Card className="border-amber-200 bg-amber-50/80">
           <CardContent className="flex flex-col gap-2 p-4 text-sm text-amber-900 md:flex-row md:items-center md:justify-between">
             <div className="space-y-1">
@@ -500,8 +595,9 @@ function AffiliatePageContent() {
                 {selectedLocations.length > 0
                   ? `景点：${selectedLocations[0].name}${selectedLocations[0].name_cn ? ` (${selectedLocations[0].name_cn})` : ''}${selectedLocations.length > 1 ? ` 等 ${selectedLocations.length} 个景点` : ''}`
                   : null}
-                {selectedLocations.length > 0 && selectedRegion ? ' / ' : null}
+                {selectedLocations.length > 0 && (selectedRegion || selectedNotesList.length > 0) ? ' / ' : null}
                 {selectedRegion ? `地区：${selectedRegion.name}${selectedRegion.country ? ` (${selectedRegion.country})` : ''}` : null}
+                {selectedNotesList.length > 0 ? `笔记：${selectedNotesList[0].shortTitle || selectedNotesList[0].title}${selectedNotesList.length > 1 ? ` 等 ${selectedNotesList.length} 个笔记` : ''}` : null}
               </p>
             </div>
             <Button variant="outline" onClick={() => resetForm(false)}>
@@ -528,7 +624,7 @@ function AffiliatePageContent() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {editingLinkId ? (
                 <div className="rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900">
-                  正在编辑第 #{editingLinkId} 条联盟链接。你可以重新指定它要显示的景点或地区。
+                  正在编辑第 #{editingLinkId} 条联盟链接。你可以重新指定它要显示的位置。
                 </div>
               ) : null}
 
@@ -564,7 +660,7 @@ function AffiliatePageContent() {
                           className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-medium text-sky-900"
                         >
                           <span>{location.name_cn || location.name}</span>
-                          <span className="text-sky-500">?</span>
+                          <span className="text-sky-500">✕</span>
                         </button>
                       ))}
                     </div>
@@ -616,10 +712,83 @@ function AffiliatePageContent() {
                     )}
                   </div>
                 </div>
+              </div>
 
-                <p className="text-xs text-slate-500">
-                  多选后，保存时会自动为每个景点创建一条对应的联盟链接。
-                </p>
+              <div className="space-y-2">
+                <Label>展示到哪些笔记</Label>
+                <Input
+                  value={noteSearch}
+                  onChange={(event) => setNoteSearch(event.target.value)}
+                  placeholder="先搜笔记标题，再勾选多个笔记"
+                />
+
+                <div className="rounded-lg border border-slate-200 bg-white">
+                  <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2 text-xs text-slate-500">
+                    <span>已选 {selectedNoteSlugs.length} 个笔记</span>
+                    {selectedNoteSlugs.length > 0 ? (
+                      <button
+                        type="button"
+                        className="font-medium text-amber-700"
+                        onClick={() => setSelectedNoteSlugs([])}
+                      >
+                        清空
+                      </button>
+                    ) : null}
+                  </div>
+
+                  {selectedNotesList.length > 0 ? (
+                    <div className="flex flex-wrap gap-2 border-b border-slate-100 px-3 py-3">
+                      {selectedNotesList.map((note) => (
+                        <button
+                          key={note.slug}
+                          type="button"
+                          onClick={() => setSelectedNoteSlugs((prev) => prev.filter((item) => item !== note.slug))}
+                          className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-900"
+                        >
+                          <span>{note.shortTitle || note.title}</span>
+                          <span className="text-amber-500">✕</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+
+                  <div className="max-h-56 space-y-2 overflow-y-auto p-3">
+                    {filteredNoteOptions.length > 0 ? (
+                      filteredNoteOptions.slice(0, 80).map((note) => {
+                        const checked = selectedNoteSlugs.includes(note.slug)
+
+                        return (
+                          <label
+                            key={note.slug}
+                            className={`flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-2 text-sm transition ${
+                              checked ? 'border-amber-300 bg-amber-50 text-amber-950' : 'border-slate-200 hover:bg-slate-50'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(event) => handleToggleNoteSelection(note.slug, event.target.checked)}
+                              className="mt-1"
+                            />
+                            <span className="flex flex-col">
+                              <span>{note.shortTitle || note.title}</span>
+                              <span className="mt-1 text-xs text-slate-500">{note.slug}</span>
+                              {note.published === false ? (
+                                <span className="mt-1 inline-flex w-fit rounded-full bg-slate-200 px-2 py-0.5 text-[10px] text-slate-500">
+                                  草稿
+                                </span>
+                              ) : null}
+                            </span>
+                          </label>
+                        )
+                      })
+                    ) : (
+                      <div className="rounded-lg border border-dashed border-slate-200 px-3 py-4 text-sm text-slate-500">
+                        没有找到符合的笔记。
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -631,7 +800,7 @@ function AffiliatePageContent() {
                 />
                 <Select
                   value={form.region_id || '__none__'}
-                  onValueChange={(value) => setForm((prev) => ({ ...prev, region_id: value === '__none__' ? '' : value }))}
+                  onValueChange={(value) => setForm((prev) => ({ ...prev, region_id: value === '__none__' ? '' : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="选择地区" />
@@ -651,7 +820,7 @@ function AffiliatePageContent() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>平台</Label>
-                  <Select value={form.provider} onValueChange={(value) => setForm((prev) => ({ ...prev, provider: value }))}>
+                  <Select value={form.provider} onValueChange={(value) => setForm((prev) => ({ ...prev, provider: value })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -830,7 +999,7 @@ function AffiliatePageContent() {
                                     <span key={label} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-700">
                                       {label}
                                     </span>
-                                  ))}
+                                  )}
                                   {group.associationLabels.length > 4 ? (
                                     <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-500">
                                       +{group.associationLabels.length - 4}
@@ -885,9 +1054,9 @@ function AffiliatePageContent() {
             </CardHeader>
             <CardContent className="space-y-2 text-sm text-gray-700">
               <p>1. 先在联盟平台拿到自己的专属链接，例如 Klook 门票、Trip.com 酒店。</p>
-              <p>2. 你现在可以一次勾选多个景点，保存时系统会自动帮你拆成多条对应记录。</p>
-              <p>3. 如果你想整个地区共用一条链接，就绑定地区；如果只想放在特定景点，就多选这些景点。</p>
-              <p>4. 每个景点先放 2 到 4 条高相关链接最舒服，不要一次堆太多。</p>
+              <p>2. 你现在可以一次勾选多个位置（景点/笔记/地区），保存时系统会自动帮你拆成多条对应记录。</p>
+              <p>3. 如果只想在特定笔记里展示，就勾选该笔记。</p>
+              <p>4. 每个位置先放 2 到 4 条高相关链接最舒服，不要一次堆太多。</p>
             </CardContent>
           </Card>
         </div>

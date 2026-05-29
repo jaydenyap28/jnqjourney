@@ -383,11 +383,24 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const affiliateIds = Array.from(new Set(affiliateBlocks.flatMap((block) => block.affiliateIds || [])))
   const klookWidgetIds = Array.from(new Set(klookBlocks.flatMap((block) => block.klookWidgetIds || [])))
 
-  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets] = await Promise.all([
+  async function fetchAffiliateLinksForNoteSlug(slug: string) {
+    const supabase = createPublicSupabaseClient()
+    const { data, error } = await supabase
+      .from('affiliate_links')
+      .select('id,title,description,provider,link_type,url,preview_image_url,image_url')
+      .eq('note_slug', slug)
+      .eq('is_active', true)
+
+    if (error || !data) return []
+    return data as AffiliateData[]
+  }
+
+  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets, noteAffiliateLinks] = await Promise.all([
     fetchLocationsByIds(spotIds),
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
     getActiveKlookWidgetsForTargets({ noteSlug: note.slug }),
+    fetchAffiliateLinksForNoteSlug(note.slug),
   ])
 
   const locationsById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
@@ -511,6 +524,17 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 variant="card"
               />
             ))}
+
+            {noteAffiliateLinks.length ? (
+              <AffiliateCard
+                noteSlug={note.slug}
+                title="Booking Recommendations"
+                description="Find the best deals on activities and accommodations for this article."
+                hideHeader
+                compact
+                className="bg-white/5"
+              />
+            ) : null}
 
             {relatedSpots.length ? (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">

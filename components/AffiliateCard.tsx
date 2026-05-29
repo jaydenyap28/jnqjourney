@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, Hotel, MapPin, Star, Ticket, Train, TrendingUp } from 'lucide-react'
@@ -12,6 +12,7 @@ interface AffiliateCardProps {
   linkIds?: number[]
   locationId?: number
   regionId?: number
+  noteSlug?: string
   category?: string | null
   provider?: string
   limit?: number
@@ -35,6 +36,7 @@ interface AffiliateLink {
   clicks?: number | null
   location_id?: number | null
   region_id?: number | null
+  note_slug?: string | null
   locations?: {
     name?: string | null
     name_cn?: string | null
@@ -154,16 +156,18 @@ function getTypePriority(category?: string | null) {
   }
 }
 
-function getLinkScope(link: AffiliateLink, locationId?: number, regionId?: number) {
+function getLinkScope(link: AffiliateLink, locationId?: number, regionId?: number, noteSlug?: string) {
   if (locationId && link.location_id === locationId) return 'location'
   if (regionId && link.region_id === regionId) return 'region'
+  if (noteSlug && link.note_slug === noteSlug) return 'note'
   return 'other'
 }
 
-function getScopePriority(scope: 'location' | 'region' | 'other') {
+function getScopePriority(scope: 'location' | 'region' | 'note' | 'other') {
   if (scope === 'location') return 0
   if (scope === 'region') return 1
-  return 2
+  if (scope === 'note') return 2
+  return 3
 }
 
 function looksLikeWeakPreviewImage(url?: string | null) {
@@ -176,6 +180,7 @@ export default function AffiliateCard({
   linkIds,
   locationId,
   regionId,
+  noteSlug,
   category,
   provider,
   limit = 6,
@@ -202,6 +207,8 @@ export default function AffiliateCard({
 
     if (linkIds?.length) {
       query = query.in('id', linkIds)
+    } else if (noteSlug) {
+      query = query.eq('note_slug', noteSlug)
     } else if (locationId && regionId) {
       query = query.or(`location_id.eq.${locationId},region_id.eq.${regionId}`)
     } else if (locationId) {
@@ -242,8 +249,8 @@ export default function AffiliateCard({
       deduped.sort((a, b) => (order.get(a.id) ?? 999) - (order.get(b.id) ?? 999))
     } else {
       deduped.sort((a, b) => {
-        const scopeA = getScopePriority(getLinkScope(a, locationId, regionId))
-        const scopeB = getScopePriority(getLinkScope(b, locationId, regionId))
+        const scopeA = getScopePriority(getLinkScope(a, locationId, regionId, noteSlug))
+        const scopeB = getScopePriority(getLinkScope(b, locationId, regionId, noteSlug))
         if (scopeA !== scopeB) return scopeA - scopeB
 
         const typeA = typePriority[a.link_type as keyof typeof typePriority] ?? 99
@@ -256,7 +263,7 @@ export default function AffiliateCard({
 
     setLinks(deduped.slice(0, limit))
     setLoading(false)
-  }, [category, limit, linkIds, locationId, provider, regionId])
+  }, [category, limit, linkIds, locationId, provider, regionId, noteSlug])
 
   useEffect(() => {
     fetchLinks()
