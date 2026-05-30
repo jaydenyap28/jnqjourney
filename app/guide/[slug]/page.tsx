@@ -517,13 +517,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
-  const coveredSpots = Array.from(
-    new Map(
-      datedDayPlans
-        .flatMap((day) => day.displaySpots)
-        .map((spot) => [spot.id, spot])
-    ).values()
-  ).slice(0, 8)
+  const coveredSpots: LinkedSpot[] = []
+  const foodSpots: LinkedSpot[] = []
 
   const routeMapPoints = routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
@@ -544,8 +539,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
       },
     ]
   })
-
-  const foodSpots = coveredSpots.filter(loc => loc.category === 'food')
 
   const allGuides = await readGuides()
   const relatedGuides = allGuides
@@ -1010,8 +1003,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
               </div>
             </section>
 
-            {/* 5. Spots Covered */}
-            {coveredSpots.length > 0 && (
+            {false && (
               <section className="space-y-5">
                 <div>
                   <p className="section-kicker text-xs text-amber-300/80">Spots Covered / 涵盖景点</p>
@@ -1053,7 +1045,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
             )}
 
             {/* 7. Food & Cafe */}
-            {foodSpots.length > 0 && (
+            {false && (
               <section className="space-y-5">
                 <div>
                   <p className="section-kicker text-xs text-amber-300/80">Food & Cafe / 美食咖啡</p>
