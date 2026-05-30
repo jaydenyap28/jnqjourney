@@ -367,45 +367,7 @@ export default async function SpotPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* 9. FAQ */}
-        <section className="space-y-6 border-t border-white/10 pt-8 pb-8">
-          <h2 className="text-2xl font-bold text-white">常见问题 FAQ</h2>
-          <div className="space-y-6">
-            <div>
-              <h3 className="font-semibold text-white">Q：{primaryName}在哪里？</h3>
-              <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                A：根据网站资料，{primaryName} 位于 {location.address || regionName || '对应地区'}。建议出发前使用 Google Maps 或 Waze 确认实时路线。
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white">Q：{primaryName}适合亲子吗？</h3>
-              <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                A：{goodForList.some(t => t.includes('亲子') || t.includes('family')) ? '根据页面标签，这里适合亲子同行，您可以参考图片和看点介绍。' : '是否适合亲子需要根据现场环境和同行成员情况判断。建议参考上方简介和看点。'}
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-white">Q：{primaryName}建议停留多久？</h3>
-              <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                A：如果只是简单打卡可安排较短时间，如果需要拍照、用餐或慢慢逛，建议预留更充裕时间。
-              </p>
-            </div>
-            {relatedLocations.length >= 3 && (
-              <div>
-                <h3 className="font-semibold text-white">Q：{primaryName}附近还有什么可以顺路去？</h3>
-                <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                  A：附近或同地区可以顺路参考{' '}
-                  {relatedLocations.slice(0, 3).map((spot, i) => (
-                    <span key={spot.id}>
-                      {i > 0 && '、'}
-                      <Link href={buildLocationPath(spot.name, spot.id)} className="text-amber-400 hover:text-amber-300 transition hover:underline">{spot.name_cn || spot.name}</Link>
-                    </span>
-                  ))}
-                  。
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
+
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-6">

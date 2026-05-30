@@ -79,10 +79,10 @@ export function getDisplayTitle(name: string, nameCn?: string | null) {
   const chinese = String(nameCn || '').trim()
 
   if (english && chinese && english !== chinese) {
-    return { primary: english, secondary: chinese }
+    return { primary: chinese, secondary: english }
   }
 
-  return { primary: english || chinese, secondary: '' }
+  return { primary: chinese || english, secondary: '' }
 }
 
 export function getGuideDisplayPair(guide: Pick<TravelGuide, 'shortTitle' | 'title'>) {
