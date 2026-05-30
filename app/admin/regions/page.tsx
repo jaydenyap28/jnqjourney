@@ -284,13 +284,22 @@ export default function RegionsPage() {
 
     try {
       const form = new FormData()
+      form.append('category', 'locations')
+      form.append('field', 'region-cover')
       form.append('target', 'cover')
+      if (formData.country) form.append('country', formData.country)
+      if (formData.name) form.append('city', formData.name)
+      if (formData.code || formData.name) form.append('locationSlug', formData.code || formData.name)
       form.append('files', file)
-      const response = await adminFetch('/api/admin/upload-image', { method: 'POST', body: form })
+      const response = await adminFetch('/api/upload/r2', { method: 'POST', body: form })
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || 'Failed to upload region cover.')
-      const url = result.files?.[0]?.url
+      const url = result.url || result.items?.[0]?.url || result.files?.[0]?.url
       if (!url) throw new Error('Upload succeeded but no image URL was returned.')
+      console.log('[admin-region-upload] R2 upload response', { url, result })
+      if (String(url).includes('/storage/v1/object/public/location-images/')) {
+        throw new Error(`Upload returned a Supabase Storage URL instead of an R2 URL: ${url}`)
+      }
       setFormData((prev) => ({ ...prev, image_url: url }))
       setSuccessMsg('Region cover uploaded.')
     } catch (error: any) {

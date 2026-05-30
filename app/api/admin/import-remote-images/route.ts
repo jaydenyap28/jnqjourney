@@ -1,11 +1,8 @@
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { ensureStorageBucket, getStorageBucketName } from '@/lib/server/storage-admin'
+import { getR2PublicBaseUrl, uploadImageToR2 } from '@/lib/server/r2'
 
 export const runtime = 'nodejs'
-
-const bucketName = getStorageBucketName()
 
 function sanitizeFileName(fileName: string) {
   const normalized = fileName.toLowerCase().replace(/\.[^.]+$/, '')
@@ -154,16 +151,6 @@ export async function POST(request: Request) {
   const adminCheck = await requireAdminRequest(request)
   if (!adminCheck.ok) return adminCheck.response
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!supabaseUrl || !serviceRoleKey) {
-    return NextResponse.json(
-      { error: '?? NEXT_PUBLIC_SUPABASE_URL ? SUPABASE_SERVICE_ROLE_KEY????????' },
-      { status: 500 }
-    )
-  }
-
   try {
     const body = await request.json()
     const urls = Array.isArray(body?.urls)
@@ -178,13 +165,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '?????? 60 ????' }, { status: 400 })
     }
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey, {
-      auth: { persistSession: false },
-    })
-
-    await ensureStorageBucket(supabase, bucketName)
-
-    const files: Array<{ sourceUrl: string; resolvedSourceUrl: string; url: string; path: string }> = []
+    const files: Array<{
+      sourceUrl: string
+      resolvedSourceUrl: string
+      url: string
+      publicUrl: string
+      path: string
+      key: string
+      provider: 'cloudflare-r2'
+    }> = []
     const skipped: Array<{ sourceUrl: string; reason: string }> = []
 
     for (const [index, sourceUrl] of urls.entries()) {
@@ -196,7 +185,7 @@ export async function POST(request: Request) {
         continue
       }
 
-      let contentType = remoteResponse.headers.get('content-type') || 'image/jpeg'
+      let contentType = (remoteResponse.headers.get('content-type') || 'image/jpeg').split(';')[0].trim().toLowerCase()
       if (!contentType.startsWith('image/')) {
         const html = await remoteResponse.text()
         const fallbackImageUrl = extractImageUrls(html, resolvedSourceUrl)[0]
@@ -210,7 +199,7 @@ export async function POST(request: Request) {
             continue
           }
 
-          contentType = remoteResponse.headers.get('content-type') || 'image/jpeg'
+          contentType = (remoteResponse.headers.get('content-type') || 'image/jpeg').split(';')[0].trim().toLowerCase()
         }
       }
 
@@ -228,26 +217,41 @@ export async function POST(request: Request) {
       }
 
       const fileExt = extensionFromType(contentType, resolvedSourceUrl)
-      const filePath = `imported/facebook/${new Date().toISOString().slice(0, 10)}/${Date.now()}-${index + 1}-${sanitizeFileName(`facebook-${index + 1}`)}.${fileExt}`
-
-      const { error } = await supabase.storage.from(bucketName).upload(filePath, fileBuffer, {
+      const fileName = `${sanitizeFileName(`facebook-${index + 1}`)}.${fileExt}`
+      const uploaded = await uploadImageToR2({
+        body: fileBuffer,
+        fileName,
         contentType,
-        cacheControl: '31536000',
-        upsert: false,
+        category: 'imported/facebook',
+        field: 'remote',
+      }).catch((error: any) => {
+        skipped.push({ sourceUrl, reason: `upload-failed (${error?.message || 'unknown'})` })
+        return null
       })
 
-      if (error) {
-        skipped.push({ sourceUrl, reason: `upload-failed (${error.message})` })
+      if (!uploaded) {
         continue
       }
 
-      const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath)
+      if (!uploaded.url.startsWith(`${getR2PublicBaseUrl()}/`)) {
+        skipped.push({ sourceUrl, reason: `upload-returned-non-r2-url (${uploaded.url})` })
+        continue
+      }
+
+      console.info('[admin:import-remote-images] uploaded remote image to R2', {
+        sourceUrl,
+        key: uploaded.key,
+        url: uploaded.url,
+      })
 
       files.push({
         sourceUrl,
         resolvedSourceUrl,
-        url: data.publicUrl,
-        path: filePath,
+        url: uploaded.url,
+        publicUrl: uploaded.publicUrl,
+        path: uploaded.key,
+        key: uploaded.key,
+        provider: uploaded.provider,
       })
     }
 

@@ -22,6 +22,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import FallbackImage from '@/components/FallbackImage'
 import { parseImageFocus, withImageFocus } from '@/lib/image-focus'
+import { assertR2ImageUrl } from '@/lib/image-url'
 import {
   Select,
   SelectContent,
@@ -32,8 +33,6 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox"
 import ImageMetadataBadge from '@/components/ImageMetadataBadge'
-
-const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
 const COUNTRY_CURRENCY: Record<string, string> = {
   Malaysia: 'RM',
   China: 'CNY',
@@ -944,13 +943,25 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
 
     const optimizedFiles = await Promise.all(files.map(optimizeImage))
     const payload = new FormData()
+    const selectedRegion = findRegionById(regions, Number.parseInt(formData.region_id, 10))
+    const parentRegion = findRegionById(regions, selectedRegion?.parent_id || null)
+    const country = getRegionCountry(selectedRegion, regions)
+
+    payload.append('category', 'locations')
+    payload.append('field', target === 'cover' ? 'image_url' : 'images')
     payload.append('target', target)
+    if (country) payload.append('country', country)
+    if (selectedRegion?.name) payload.append('city', parentRegion?.name || selectedRegion.name)
+    if (formData.custom_slug || formData.name) payload.append('locationSlug', formData.custom_slug || formData.name)
 
     optimizedFiles.forEach((file) => {
       payload.append('files', file)
     })
 
-    const response = await adminFetch('/api/admin/upload-image', {
+    const endpoint = '/api/upload/r2'
+    console.log(`[${target}-upload] endpoint:`, endpoint)
+
+    const response = await adminFetch(endpoint, {
       method: 'POST',
       body: payload,
     })
@@ -961,7 +972,42 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       throw new Error(result.error || '涓婁紶澶辫触锛岃绋嶅悗閲嶈瘯')
     }
 
-    return Array.isArray(result.files) ? result.files : []
+    const uploadedItems = Array.isArray(result.items) ? result.items : Array.isArray(result.files) ? result.files : []
+    console.log('[admin-location-upload] R2 upload response', {
+      target,
+      urls: uploadedItems.map((item: { url?: string }) => item.url).filter(Boolean),
+      result,
+    })
+    if (target === 'gallery') {
+      console.log('[gallery-upload] endpoint:', endpoint)
+      console.log('[gallery-upload] response:', result)
+    }
+
+    const supabaseStorageUrl = uploadedItems.find((item: { url?: string }) =>
+      String(item?.url || '').includes('/storage/v1/object/public/location-images/')
+    )
+    if (supabaseStorageUrl) {
+      throw new Error(`上传接口返回了 Supabase Storage URL，不允许保存：${supabaseStorageUrl.url}`)
+    }
+
+    uploadedItems.forEach((item: { url?: string }) => {
+      if (item.url) assertR2ImageUrl(item.url)
+    })
+
+    return uploadedItems
+  }
+
+  const assertNoSupabaseStorageUrls = (urls: string[], source: string) => {
+    const supabaseStorageUrl = urls.find((url) => url.includes('/storage/v1/object/public/location-images/'))
+    if (supabaseStorageUrl) {
+      throw new Error(`${source} 返回了 Supabase Storage URL，不允许保存：${supabaseStorageUrl}`)
+    }
+  }
+
+  const assertStoredImageUrlsAreR2 = (imageUrl: string, images: string[]) => {
+    const cleanCover = parseImageFocus(imageUrl || '').src
+    assertR2ImageUrl(cleanCover)
+    images.forEach((url) => assertR2ImageUrl(parseImageFocus(url || '').src))
   }
 
   const inspectFacebookImages = async (urls: string[]) => {
@@ -991,7 +1037,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     if (!files.length) return
 
     setUploadingCover(true)
-    setMessage('正在上传封面图到 Supabase Storage...')
+    setMessage('正在上传封面图到 Cloudflare R2...')
 
     try {
       const uploaded = await uploadFilesToStorage(files.slice(0, 1), 'cover')
@@ -1001,6 +1047,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         throw new Error('封面图上传结果异常')
       }
 
+      assertR2ImageUrl(firstFile.url)
       setFormData((prev) => ({ ...prev, image_url: withImageFocus(firstFile.url, { x: 50, y: 50 }) }))
       setMessage('封面图上传成功，链接已自动填入。')
     } catch (error: any) {
@@ -1016,17 +1063,22 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     if (!files.length) return
 
     setUploadingGallery(true)
-    setMessage(`正在上传 ${files.length} 张图库图片到 Supabase Storage...`)
+    setMessage(`正在上传 ${files.length} 张图库图片到 Cloudflare R2...`)
 
     try {
       const uploaded = await uploadFilesToStorage(files, 'gallery')
-      const urls = uploaded
+      const urls: string[] = uploaded
         .map((file: { url?: string }) => file.url)
         .filter((url: string | undefined): url is string => Boolean(url))
 
       if (!urls.length) {
         throw new Error('图库图片上传结果异常')
       }
+
+      urls.forEach((uploadedUrl) => {
+        console.log('[gallery-upload] url used:', uploadedUrl)
+        assertR2ImageUrl(uploadedUrl)
+      })
 
       setFormData((prev) => ({
         ...prev,
@@ -1202,7 +1254,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     }
 
     setImportingFacebookAssets(true)
-    setMessage('正在把 Facebook 图片导入到 Supabase Storage...')
+    setMessage('正在把 Facebook 图片导入到 Cloudflare R2...')
 
     try {
       const importOrder = [
@@ -1227,6 +1279,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             .map((file: { url?: string }) => file.url)
             .filter((url: string | undefined): url is string => Boolean(url))
         : []
+
+      console.log('[admin-location-facebook-import] R2 import response', { urls: uploadedUrls, result })
+      assertNoSupabaseStorageUrls(uploadedUrls, 'Facebook 图片导入')
 
       if (!uploadedUrls.length) {
         throw new Error('没有拿到可用的上传结果')
@@ -1331,6 +1386,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               .filter((url: string | undefined): url is string => Boolean(url))
           : []
       )
+
+      console.log('[admin-location-facebook-links-import] R2 import response', { urls: uploadedUrls, result })
+      assertNoSupabaseStorageUrls(uploadedUrls, 'Facebook 图片批量导入')
 
       if (!uploadedUrls.length) {
         throw new Error('没有拿到可用的上传结果')
@@ -1737,6 +1795,16 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     e.preventDefault()
     setLoading(true)
     setMessage('')
+
+    console.log('[save-location] image_url:', formData.image_url)
+    console.log('[save-location] images:', formData.images)
+    try {
+      assertStoredImageUrlsAreR2(formData.image_url, formData.images)
+    } catch (error: any) {
+      setLoading(false)
+      setMessage(`Error: ${error.message}`)
+      return
+    }
 
     // Use 'description' field as a fallback for 'review' to avoid "Column not found" error
     // if the user hasn't run the migration script yet.
@@ -2783,7 +2851,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                 </div>
 
                 <p className="text-xs text-gray-600">
-                  适合公开可访问的 Facebook 帖文、单图或相册链接。抓到后会先展示候选图，再一键保存到 Supabase Storage。
+                  适合公开可访问的 Facebook 帖文、单图或相册链接。抓到后会先展示候选图，再一键保存到 Cloudflare R2。
                 </p>
 
                 {facebookImport?.images?.length ? (
@@ -2962,9 +3030,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50/70 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="space-y-1">
-                    <p className="text-sm font-medium text-gray-800">直接上传到 Supabase Storage</p>
+                    <p className="text-sm font-medium text-gray-800">直接上传到 Cloudflare R2</p>
                     <p className="text-xs text-gray-500">
-                      不用再经过 imgbb。上传完成后会自动回填封面链接，默认 bucket 为 <code>{STORAGE_BUCKET}</code>。
+                      不用再经过 ImgBB。上传完成后会自动回填 R2 封面链接。
                     </p>
                   </div>
                   <label className="cursor-pointer">
@@ -3022,7 +3090,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-gray-800">批量上传图库图片</p>
                     <p className="text-xs text-gray-500">
-                      可一次上传多张图片，系统会先压缩，再自动存入 Supabase Storage 并加入当前图库。
+                      可一次上传多张图片，系统会先压缩，再自动存入 Cloudflare R2 并加入当前图库。
                     </p>
                   </div>
                   <label className="cursor-pointer">

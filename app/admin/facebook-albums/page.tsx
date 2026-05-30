@@ -342,7 +342,13 @@ export default function FacebookAlbumWorkbenchPage() {
       const result = await response.json()
       if (!response.ok) throw new Error(result.error || '导入图片失败。')
 
-      const importedUrls = Array.isArray(result.files) ? result.files.map((item: any) => String(item.url || '').trim()).filter(Boolean) : []
+      const importedUrls: string[] = Array.isArray(result.files) ? result.files.map((item: any) => String(item.url || '').trim()).filter(Boolean) : []
+      console.log('[admin-facebook-albums] R2 import response', { urls: importedUrls, result })
+
+      const supabaseStorageUrl = importedUrls.find((url) => url.includes('/storage/v1/object/public/location-images/'))
+      if (supabaseStorageUrl) {
+        throw new Error(`Import returned a Supabase Storage URL instead of an R2 URL: ${supabaseStorageUrl}`)
+      }
       if (!importedUrls.length) throw new Error('这组图片没有成功导入。')
 
       const currentLocation = locations.find((item) => item.id === targetId)

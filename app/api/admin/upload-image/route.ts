@@ -1,45 +1,40 @@
-﻿import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-import { ensureStorageBucket, getStorageBucketName } from '@/lib/server/storage-admin'
+import { requireAdminRequest } from '@/lib/server/admin-auth'
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE_BYTES,
+  getR2PublicBaseUrl,
+  getMissingR2EnvVars,
+  uploadImageToR2,
+} from '@/lib/server/r2'
 
 export const runtime = 'nodejs'
 
-const bucketName = getStorageBucketName()
+// Deprecated: ImgBB/Supabase Storage upload disabled. Use Cloudflare R2 instead.
+// Kept for older admin code paths; new uploads should call /api/upload/r2.
 
-function sanitizeFileName(fileName: string) {
-  const normalized = fileName.toLowerCase().replace(/\.[^.]+$/, '')
-  return normalized.replace(/[^a-z0-9-_]+/g, '-').replace(/^-+|-+$/g, '') || 'image'
-}
-
-function extensionForFile(file: File) {
-  const fromName = file.name.split('.').pop()?.toLowerCase()
-  if (fromName && /^[a-z0-9]+$/.test(fromName)) return fromName
-
-  if (file.type === 'image/png') return 'png'
-  if (file.type === 'image/webp') return 'webp'
-  if (file.type === 'image/gif') return 'gif'
-  return 'jpg'
+function collectFiles(formData: FormData) {
+  return formData
+    .getAll('files')
+    .concat(formData.getAll('file'))
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0)
 }
 
 export async function POST(request: Request) {
   const adminCheck = await requireAdminRequest(request)
   if (!adminCheck.ok) return adminCheck.response
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-  if (!supabaseUrl || !serviceRoleKey) {
+  const missing = getMissingR2EnvVars()
+  if (missing.length) {
     return NextResponse.json(
-      { error: '缺少 NEXT_PUBLIC_SUPABASE_URL 或 SUPABASE_SERVICE_ROLE_KEY，无法上传图片。' },
+      { error: `Missing Cloudflare R2 environment variables: ${missing.join(', ')}` },
       { status: 500 }
     )
   }
 
   const formData = await request.formData()
   const target = formData.get('target') === 'cover' ? 'cover' : 'gallery'
-  const files = formData
-    .getAll('files')
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0)
+  const files = collectFiles(formData)
 
   if (!files.length) {
     return NextResponse.json({ error: '没有收到图片文件。' }, { status: 400 })
@@ -49,55 +44,58 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: '单次最多上传 12 张图片。' }, { status: 400 })
   }
 
-  const supabase = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false },
-  })
-
-  try {
-    await ensureStorageBucket(supabase, bucketName)
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error?.message || `无法初始化 Storage bucket: ${bucketName}` },
-      { status: 500 }
-    )
-  }
-
   const uploadedFiles = []
 
   for (const file of files) {
-    if (!file.type.startsWith('image/')) {
-      return NextResponse.json({ error: `文件 ${file.name} 不是图片。` }, { status: 400 })
+    if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+      return NextResponse.json({ error: `文件 ${file.name} 不是支持的图片格式。` }, { status: 400 })
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: `文件 ${file.name} 超过 10MB 限制。` }, { status: 400 })
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      return NextResponse.json({ error: 'Image size exceeds 10MB limit.' }, { status: 400 })
     }
 
-    const fileExt = extensionForFile(file)
-    const filePath = `${target}/${new Date().toISOString().slice(0, 10)}/${Date.now()}-${crypto.randomUUID()}-${sanitizeFileName(file.name)}.${fileExt}`
-    const fileBuffer = Buffer.from(await file.arrayBuffer())
+    try {
+      const fileBuffer = Buffer.from(await file.arrayBuffer())
+      const uploaded = await uploadImageToR2({
+        body: fileBuffer,
+        fileName: file.name,
+        contentType: file.type,
+        category: 'locations',
+        field: target,
+      })
 
-    const { error } = await supabase.storage.from(bucketName).upload(filePath, fileBuffer, {
-      contentType: file.type || 'application/octet-stream',
-      cacheControl: '31536000',
-      upsert: false,
-    })
+      if (!uploaded.url.startsWith(`${getR2PublicBaseUrl()}/`)) {
+        throw new Error(`R2 upload returned a non-R2 URL: ${uploaded.url}`)
+      }
 
-    if (error) {
-      return NextResponse.json({ error: `上传 ${file.name} 失败: ${error.message}` }, { status: 500 })
+      if (uploaded.url.includes('supabase.co') || uploaded.url.includes('/storage/v1/object/public/') || uploaded.url.includes('location-images')) {
+        throw new Error(`R2 upload returned a forbidden Supabase Storage URL: ${uploaded.url}`)
+      }
+
+      console.info('[admin:upload-image] uploaded image through R2 compatibility route', {
+        fileName: uploaded.fileName,
+        key: uploaded.key,
+        url: uploaded.url,
+        provider: uploaded.provider,
+      })
+
+      uploadedFiles.push({
+        name: file.name,
+        path: uploaded.key,
+        key: uploaded.key,
+        fileName: uploaded.fileName,
+        url: uploaded.url,
+        publicUrl: uploaded.publicUrl,
+        provider: uploaded.provider,
+      })
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error?.message || `上传 ${file.name} 失败。` },
+        { status: 500 }
+      )
     }
-
-    const { data } = supabase.storage.from(bucketName).getPublicUrl(filePath)
-
-    uploadedFiles.push({
-      name: file.name,
-      path: filePath,
-      url: data.publicUrl,
-    })
   }
 
-  return NextResponse.json({ files: uploadedFiles })
+  return NextResponse.json({ success: true, provider: 'cloudflare-r2', files: uploadedFiles })
 }
-
-
-

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { isR2ImageUrl } from '@/lib/image-url'
 
 export function formatBytes(bytes: number, decimals = 2) {
   if (!+bytes) return '0 Bytes'
@@ -13,10 +14,11 @@ export function formatBytes(bytes: number, decimals = 2) {
 
 export function getImageSource(url: string) {
   if (!url) return 'Unknown'
+  if (isR2ImageUrl(url)) return 'Cloudflare R2'
   if (url.includes('ibb.co') || url.includes('imgbb.com')) return 'ImgBB'
   if (url.includes('supabase.co')) return 'Supabase'
   if (url.includes('fbcdn.net')) return 'Facebook'
-  return 'Other'
+  return 'External'
 }
 
 export default function ImageMetadataBadge({ url, className }: { url: string, className?: string }) {
@@ -49,6 +51,7 @@ export default function ImageMetadataBadge({ url, className }: { url: string, cl
   }, [url])
 
   let sourceColor = 'bg-gray-500'
+  if (source === 'Cloudflare R2') sourceColor = 'bg-orange-600'
   if (source === 'ImgBB') sourceColor = 'bg-blue-600'
   if (source === 'Supabase') sourceColor = 'bg-emerald-600'
   
