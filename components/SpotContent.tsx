@@ -324,6 +324,7 @@ export default function SpotContent({
   const [copiedField, setCopiedField] = useState<'address' | 'coords' | ''>('')
   const visibleTags = getVisibleLocationTags(location.tags)
   const isDrawer = mode === 'drawer'
+  const spotTitle = getDisplayTitle(location.name, location.name_cn)
   const locationPath = buildLocationPath(location.name, location.id)
   const regionPath = location.regions?.id && location.regions?.name ? buildRegionPath(location.regions.name, location.regions.id) : null
 
@@ -553,8 +554,8 @@ export default function SpotContent({
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">JnQ Journey Spot</p>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl">{location.name}</h1>
-            {location.name_cn ? <p className="mt-2 text-lg text-gray-400 md:text-2xl">{location.name_cn}</p> : null}
+            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl">{spotTitle.primary}</h1>
+            {spotTitle.secondary ? <p className="mt-2 text-lg text-gray-400 md:text-2xl">{spotTitle.secondary}</p> : null}
           </div>
           <Link
             href="/"
@@ -727,8 +728,8 @@ export default function SpotContent({
         <div className="flex flex-col gap-3.5 md:gap-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col">
-              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl">{location.name}</h2> : null}
-              {location.name_cn ? <span className="mt-1 text-lg font-semibold text-gray-400 md:text-2xl">{location.name_cn}</span> : null}
+              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl">{spotTitle.primary}</h2> : null}
+              {spotTitle.secondary ? <span className="mt-1 text-lg font-semibold text-gray-400 md:text-2xl">{spotTitle.secondary}</span> : null}
               {(location.regions?.name || location.regions?.country) ? (
                 <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-gray-400 md:mt-3 md:text-sm">
                   <span>{[location.regions?.country, location.regions?.name].filter(Boolean).join(' / ')}</span>

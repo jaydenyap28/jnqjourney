@@ -199,35 +199,6 @@ export default async function RegionPage({ params }: PageProps) {
   const spotNames = locations.slice(0, 5).map(l => l.name_cn || l.name).join('、')
   const regionIntro = region.description || `${readableName} 是一个非常适合自由行的地方。这里不仅有丰富的景点，如 ${spotNames}，还有各种特色美食等待探索。无论你是想计划周末短暂放松，还是带全家人一起亲子出游，这里都能找到适合的路线。我们在本页面整理了 JnQ Journey 实地走访和收录的打卡点资料，帮助你轻松规划专属的${readableName}之旅。`
 
-  const faqs = [
-    {
-      q: `${readableName}有哪些必去热门景点？`,
-      a: `根据 JnQ Journey 收录的资料，${readableName}的热门景点包括 ${locations.slice(0, 3).map(l => l.name_cn || l.name).join('、')} 等。点击页面上方的“热门景点”查看完整推荐。`
-    },
-    {
-      q: `${readableName}有什么美食推荐？`,
-      a: foodSpots.length > 0 
-        ? `这里推荐尝试 ${foodSpots.slice(0, 3).map(l => l.name_cn || l.name).join('、')} 等美食和咖啡厅，适合打卡和用餐。`
-        : `${readableName}拥有丰富的在地美食，更多详细的美食打卡记录会陆续更新到网站中。`
-    },
-    {
-      q: `${readableName}适合亲子游吗？`,
-      a: familySpots.length > 0
-        ? `非常适合！例如 ${familySpots.slice(0, 2).map(l => l.name_cn || l.name).join('、')} 都是很棒的亲子友好地点，适合带孩子一起探索。`
-        : `是否适合亲子游取决于您的具体行程安排。一般建议选择一些有农场、动物园或大自然体验的景点会更受小朋友欢迎。`
-    },
-    {
-      q: `去${readableName}自由行建议安排几天？`,
-      a: relatedGuides.length > 0
-        ? `可以参考我们的游记路线，比如 ${relatedGuides[0].title}，${relatedGuides[0].duration ? '一般安排 ' + relatedGuides[0].duration + ' 比较充裕' : '您可以根据兴趣自由调整停留时间'}。`
-        : `一般建议安排 2天1夜 或 3天2夜，这样有充足的时间走访核心景点和品尝美食。`
-    },
-    {
-      q: `如何在${readableName}之间解决交通？`,
-      a: `建议自行开车或使用 Grab 叫车，这在马来西亚和多数海外自由行城市中是最方便的移动方式。部分景点若比较偏远，自驾会节省很多时间。`
-    }
-  ]
-
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
@@ -394,21 +365,6 @@ export default async function RegionPage({ params }: PageProps) {
             </div>
           </section>
         )}
-
-        {/* 10. FAQ */}
-        <section className="space-y-6 border-t border-white/10 pt-8 pb-8">
-          <h2 className="text-2xl font-bold text-white">常见问题 FAQ</h2>
-          <div className="space-y-6">
-             {faqs.map((faq, i) => (
-                <div key={i}>
-                  <h3 className="font-semibold text-white">Q：{faq.q}</h3>
-                  <p className="mt-2 text-gray-300 text-sm leading-relaxed">
-                    A：{faq.a}
-                  </p>
-                </div>
-             ))}
-          </div>
-        </section>
 
       </div>
       <SiteFooter />

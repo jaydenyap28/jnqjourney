@@ -545,29 +545,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     .filter(g => g.slug !== guide.slug)
     .slice(0, 3)
 
-  const faqs = [
-    {
-      q: `这条路线适合几天？`,
-      a: guide.duration ? `根据我们的行程，安排 ${guide.duration} 比较合适，您也可以根据自己的时间自由调整停留长短。` : `建议根据上面列出的路线概览和每日行程，预留充裕的时间慢慢体验。`
-    },
-    {
-      q: `这条路线适合第一次自由行吗？`,
-      a: `只要提前安排好交通和住宿，参考文中的路线概览，多数地区都适合第一次规划自由行的旅客。建议出发前多查阅相关的景点注意事项。`
-    },
-    {
-      q: `这条路线需要自驾吗？`,
-      a: guide.days.some(d => d.transport && d.transport.includes('自驾')) ? `部分行程包含自驾建议，自驾可以更灵活地安排时间。如果在市区也可以使用 Grab 或公共交通。` : `这取决于您的个人习惯，多数城市内可以使用网约车（如 Grab），如果是跨城或者去较偏远的自然景点，自驾会更加方便。`
-    },
-    {
-      q: `这条路线适合亲子吗？`,
-      a: `您可以查看涵盖景点中是否有农场、公园或适合全家游玩的地点，如果行程比较轻松，通常都可以带小朋友同行。具体视小朋友的体力而定。`
-    },
-    {
-      q: `这条路线包含哪些主要地区？`,
-      a: `本路线主要经过 ${Array.from(new Set(routeRegions.map(r => r.primaryLabel))).slice(0, 3).join('、')} 等地区，详细路线请参考上方的涵盖地区和每日行程。`
-    }
-  ]
-
   const itemListElement = routeRegions.map((stop, index) => ({
     '@type': 'ListItem',
     position: index + 1,
@@ -1101,21 +1078,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 </div>
               </section>
             )}
-
-            {/* 12. FAQ */}
-            <section className="space-y-6 pt-8 pb-8">
-              <h2 className="font-display text-4xl leading-tight text-white md:text-[2.6rem]">常见问题 FAQ</h2>
-              <div className="space-y-4 mt-6">
-                 {faqs.map((faq, i) => (
-                    <div key={i} className="rounded-[24px] border border-white/10 bg-white/5 p-5 md:p-6">
-                      <h3 className="font-semibold text-white text-lg">Q：{faq.q}</h3>
-                      <p className="mt-3 text-gray-300 text-sm md:text-base leading-relaxed">
-                        A：{faq.a}
-                      </p>
-                    </div>
-                 ))}
-              </div>
-            </section>
 
           </div>
 

@@ -43,10 +43,10 @@ function getCategoryLabel(category?: string) {
 
 function getDisplayTitle(location: Location) {
   if (location.name_cn && location.name_cn.trim() && location.name_cn.trim() !== location.name.trim()) {
-    return { primary: location.name, secondary: location.name_cn }
+    return { primary: location.name_cn, secondary: location.name }
   }
 
-  return { primary: location.name, secondary: '' }
+  return { primary: location.name_cn || location.name, secondary: '' }
 }
 
 export default function BottomFloatingDock({
