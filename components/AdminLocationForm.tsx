@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import { createDefaultPriceInfo, parsePriceInfo, serializePriceInfo, StructuredPriceInfo } from '@/lib/price-utils'
@@ -131,6 +131,7 @@ interface EnrichmentSuggestionState {
 
 export default function AdminLocationForm({ initialData, mode }: AdminLocationFormProps) {
   const router = useRouter()
+  const galleryFileInputRef = useRef<HTMLInputElement | null>(null)
   const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null)
   const [formData, setFormData] = useState<LocationFormData>({
     name: '',
@@ -1059,6 +1060,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   }
 
   const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('[gallery-upload] file input changed', {
+      fileCount: event.target.files?.length || 0,
+    })
     const files = Array.from(event.target.files || [])
     if (!files.length) return
 
@@ -1086,6 +1090,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       }))
       setMessage(`成功上传 ${urls.length} 张图片，已加入图库。`)
     } catch (error: any) {
+      console.error('[gallery-upload] failed', error)
       setMessage(`Error: ${error.message}`)
     } finally {
       setUploadingGallery(false)
@@ -3093,8 +3098,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       可一次上传多张图片，系统会先压缩，再自动存入 Cloudflare R2 并加入当前图库。
                     </p>
                   </div>
-                  <label className="cursor-pointer">
+                  <div className="flex flex-col items-start gap-2">
                     <input
+                      ref={galleryFileInputRef}
                       type="file"
                       accept="image/*"
                       multiple
@@ -3102,11 +3108,19 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       onChange={handleGalleryUpload}
                       disabled={uploadingGallery}
                     />
-                    <span className="inline-flex items-center rounded-md border bg-white px-4 py-2 text-sm font-medium shadow-sm transition hover:bg-gray-100">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        console.log('[gallery-upload] choose button clicked')
+                        galleryFileInputRef.current?.click()
+                      }}
+                      disabled={uploadingGallery}
+                    >
                       {uploadingGallery ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
                       批量上传图片
-                    </span>
-                  </label>
+                    </Button>
+                  </div>
                 </div>
                 {formData.images.length > 0 ? (
                   <div className="mt-3 flex flex-wrap gap-2 items-center">
