@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
-import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
 import { formatOpeningHoursDisplay, hasVisibleOpeningHours } from '@/lib/opening-hours'
@@ -77,12 +76,6 @@ interface SpotContentProps {
   mode?: 'drawer' | 'page'
   onClose?: () => void
   relatedLocations?: RelatedLocation[]
-  externalKlookWidgets?: Array<{
-    id: string
-    title: string
-    description?: string
-    htmlCode: string
-  }>
   relatedGuides?: Array<{
     slug: string
     title: string
@@ -121,24 +114,6 @@ function getYouTubeID(url: string) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|shorts\/|live\/|watch\?v=|&v=)([^#&?]*).*/
   const match = url.match(regExp)
   return match && match[2].length === 11 ? match[2] : null
-}
-
-function normalizeFacebookUrl(url?: string | null) {
-  if (!url) return ''
-
-  return String(url)
-    .replace('m.facebook.com', 'www.facebook.com')
-    .replace('web.facebook.com', 'www.facebook.com')
-    .trim()
-}
-
-function isEmbeddableFacebookVideoUrl(url?: string | null) {
-  const cleanUrl = normalizeFacebookUrl(url)
-  if (!cleanUrl) return false
-
-  if (/facebook\.com\/share\/v\//i.test(cleanUrl)) return false
-
-  return /facebook\.com\/.+\/(posts|videos|reel|watch|permalink)\//i.test(cleanUrl) || /story\.php|permalink\.php|video\.php|fb\.watch\//i.test(cleanUrl)
 }
 
 function isProbablyFacebookVideoUrl(url?: string | null) {
@@ -312,14 +287,11 @@ export default function SpotContent({
   mode = 'drawer',
   onClose,
   relatedLocations = [],
-  externalKlookWidgets = [],
   relatedGuides = [],
 }: SpotContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
   const [facebookEmbedFailed, setFacebookEmbedFailed] = useState(false)
-  const [resolvedFacebookUrl, setResolvedFacebookUrl] = useState('')
-  const [resolvingFacebookUrl, setResolvingFacebookUrl] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
   const [copiedField, setCopiedField] = useState<'address' | 'coords' | ''>('')
   const visibleTags = getVisibleLocationTags(location.tags)
@@ -341,7 +313,7 @@ export default function SpotContent({
   const videoId = location.video_url ? getYouTubeID(location.video_url) : null
   const hasYoutubeLink = Boolean(String(location.video_url || '').trim())
   const hasFacebookLink = Boolean(String(location.facebook_video_url || '').trim())
-  const facebookVideoUrl = resolvedFacebookUrl || location.facebook_video_url || ''
+  const facebookVideoUrl = location.facebook_video_url || ''
   const shouldShowYoutube = Boolean(videoId && !youtubeEmbedFailed)
   const shouldAttemptFacebookPreview = Boolean(
     hasFacebookLink &&
@@ -351,8 +323,6 @@ export default function SpotContent({
   const spotDescription = useMemo(() => getSpotDescription(location), [location])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
-  const mediaFallbackImage = location.image_url || validImages[0] || '/placeholder-image.jpg'
-  const spotKlookWidgetCode = String(priceInfo.klookWidgetCode || '').trim()
   const formattedMealBudget = useMemo(() => {
     if (!priceInfo.mealBudget) return null
 
@@ -453,45 +423,6 @@ export default function SpotContent({
 
   useEffect(() => {
     setFacebookEmbedFailed(false)
-    setResolvedFacebookUrl('')
-  }, [location.id, location.facebook_video_url])
-
-  useEffect(() => {
-    let cancelled = false
-
-    const resolveFacebookUrl = async () => {
-      const sourceUrl = String(location.facebook_video_url || '').trim()
-
-      if (!sourceUrl || !isProbablyFacebookVideoUrl(sourceUrl) || isEmbeddableFacebookVideoUrl(sourceUrl)) {
-        return
-      }
-
-      try {
-        setResolvingFacebookUrl(true)
-        const response = await fetch(`/api/facebook-video-resolve?url=${encodeURIComponent(sourceUrl)}`, {
-          cache: 'no-store',
-        })
-
-        if (!response.ok) return
-
-        const result = await response.json()
-        if (!cancelled && result?.resolvedUrl) {
-          setResolvedFacebookUrl(String(result.resolvedUrl))
-        }
-      } catch {
-        // Keep the original URL as fallback.
-      } finally {
-        if (!cancelled) {
-          setResolvingFacebookUrl(false)
-        }
-      }
-    }
-
-    resolveFacebookUrl()
-
-    return () => {
-      cancelled = true
-    }
   }, [location.id, location.facebook_video_url])
 
   const nextImage = () => {
@@ -626,7 +557,7 @@ export default function SpotContent({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/90 transition hover:bg-white/10"
                 >
-                  {resolvingFacebookUrl ? 'Resolving...' : 'Watch on Facebook'}
+                  Watch on Facebook
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
@@ -641,25 +572,16 @@ export default function SpotContent({
                     onError={() => setFacebookEmbedFailed(true)}
                   />
                 ) : (
-                  <div className="relative h-full overflow-hidden">
-                    <FallbackImage
-                      src={mediaFallbackImage}
-                      alt={`${location.name} Facebook preview`}
-                      fill
-                      className="object-cover opacity-70"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/15" />
-                    <div className="absolute inset-0 flex items-center justify-center p-6">
-                      <a
-                        href={facebookVideoUrl || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 rounded-full border border-blue-500/30 bg-blue-500/10 px-5 py-3 text-sm text-blue-100 transition hover:bg-blue-500/15"
-                      >
-                        <Facebook className="h-4 w-4" />
-                        Open Facebook video
-                      </a>
-                    </div>
+                  <div className="flex h-full items-center justify-center p-6">
+                    <a
+                      href={facebookVideoUrl || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 rounded-full border border-blue-500/30 bg-blue-500/10 px-5 py-3 text-sm text-blue-100 transition hover:bg-blue-500/15"
+                    >
+                      <Facebook className="h-4 w-4" />
+                      Open Facebook video
+                    </a>
                   </div>
                 )}
               </div>
@@ -809,42 +731,6 @@ export default function SpotContent({
                 </Button>
               </div>
               <p className="text-sm leading-6 text-gray-200">{location.address}</p>
-            </div>
-          </div>
-        ) : null}
-
-        {hasVisibleOpeningHours(location.opening_hours) ? (
-          <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md md:gap-3 md:p-4">
-            <div className="rounded-lg bg-amber-400/20 p-2">
-              <Clock className="h-5 w-5 text-amber-400" />
-            </div>
-            <div className="flex-1">
-              <h4 className="mb-2 text-sm font-bold uppercase tracking-wider text-amber-200">Opening Hours</h4>
-              <div className="space-y-3 text-sm">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="font-semibold text-white">{openingHoursDisplay.primary}</span>
-                  {openingHoursDisplay.statusLabel ? (
-                    <span className={`rounded-full border px-3 py-1 text-xs ${
-                      openingHoursDisplay.statusTone === 'closed'
-                        ? 'border-red-400/20 bg-red-500/10 text-red-200'
-                        : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'
-                    }`}>
-                      {openingHoursDisplay.statusLabel}
-                    </span>
-                  ) : null}
-                </div>
-                {openingHoursDisplay.groupedHours.length ? (
-                  <div className="grid gap-2.5 md:grid-cols-2">
-                    {openingHoursDisplay.groupedHours.map((group) => (
-                      <div key={`${group.label}-${group.hours}`} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                        <div className="text-xs uppercase tracking-[0.18em] text-amber-200/75">{group.label}</div>
-                        <div className="mt-2 text-sm font-medium text-white">{group.hours}</div>
-                      </div>
-                    ))}
-                  </div>
-                ) : null}
-                {openingHoursDisplay.remarks ? <p className="text-xs leading-6 text-gray-300">{openingHoursDisplay.remarks}</p> : null}
-              </div>
             </div>
           </div>
         ) : null}
@@ -1186,25 +1072,6 @@ export default function SpotContent({
           </div>
 
           <div className="space-y-4">
-            {!isDrawer && spotKlookWidgetCode ? (
-              <KlookWidgetEmbed
-                code={spotKlookWidgetCode}
-                title={location.category === 'accommodation' ? 'Stay Booking Widget' : 'Spot Booking Widget'}
-                description={'Live widget for this location'}
-                className="bg-white/5"
-              />
-            ) : null}
-            {!isDrawer
-              ? externalKlookWidgets.map((widget) => (
-                  <KlookWidgetEmbed
-                    key={widget.id}
-                    code={widget.htmlCode}
-                    title={widget.title}
-                    description={widget.description || 'Live Klook widget for this location'}
-                    className="bg-white/5"
-                  />
-                ))
-              : null}
             {!isDrawer ? (
               <AffiliateCard
                 locationId={location.id}
@@ -1243,6 +1110,37 @@ export default function SpotContent({
                     </Button>
                   </>
                 )}
+                {hasVisibleOpeningHours(location.opening_hours) ? (
+                  <div className="rounded-xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-gray-200">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="inline-flex items-center gap-2 font-semibold text-amber-100">
+                        <Clock className="h-4 w-4 text-amber-300" />
+                        Opening Hours
+                      </div>
+                      {openingHoursDisplay.statusLabel ? (
+                        <span className={`rounded-full border px-2.5 py-1 text-[11px] ${
+                          openingHoursDisplay.statusTone === 'closed'
+                            ? 'border-red-400/20 bg-red-500/10 text-red-200'
+                            : 'border-emerald-400/20 bg-emerald-500/10 text-emerald-200'
+                        }`}>
+                          {openingHoursDisplay.statusLabel}
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="mt-2 font-medium text-white">{openingHoursDisplay.primary}</p>
+                    {openingHoursDisplay.groupedHours.length ? (
+                      <div className="mt-3 space-y-2">
+                        {openingHoursDisplay.groupedHours.map((group) => (
+                          <div key={`${group.label}-${group.hours}`} className="flex items-start justify-between gap-3 rounded-lg bg-white/5 px-3 py-2">
+                            <span className="text-xs uppercase tracking-[0.14em] text-amber-100/75">{group.label}</span>
+                            <span className="text-right text-xs font-medium text-white">{group.hours}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                    {openingHoursDisplay.remarks ? <p className="mt-2 text-xs leading-5 text-gray-300">{openingHoursDisplay.remarks}</p> : null}
+                  </div>
+                ) : null}
                 {location.address ? (
                   <Button
                     variant="outline"

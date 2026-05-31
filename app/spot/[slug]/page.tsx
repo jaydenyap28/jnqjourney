@@ -4,7 +4,6 @@ import SiteFooter from '@/components/SiteFooter'
 import SpotContent from '@/components/SpotContent'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
-import { getActiveKlookWidgetsForTargets } from '@/lib/server/klook-widgets-store'
 import { readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -73,12 +72,8 @@ export default async function SpotPage({ params }: PageProps) {
     redirect(canonicalPath)
   }
 
-  const [relatedLocations, klookWidgets, allGuides] = await Promise.all([
+  const [relatedLocations, allGuides] = await Promise.all([
     fetchRelatedLocations(location, 6),
-    getActiveKlookWidgetsForTargets({
-      locationId: location.id,
-      regionId: location.region_id,
-    }),
     readGuides(),
   ])
 
@@ -177,7 +172,6 @@ export default async function SpotPage({ params }: PageProps) {
         location={location}
         mode="page"
         relatedLocations={relatedLocations}
-        externalKlookWidgets={klookWidgets}
         relatedGuides={relatedGuides}
       />
       <SiteFooter />
