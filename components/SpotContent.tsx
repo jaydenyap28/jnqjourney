@@ -699,16 +699,27 @@ export default function SpotContent({
 
           {validImages.length > 1 ? (
             <>
-              <button onClick={(event) => { event.stopPropagation(); prevImage() }} className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/30 p-1.5 text-white opacity-100 backdrop-blur-sm transition-all hover:bg-black/50 md:p-2 md:opacity-0 md:group-hover:opacity-100">
+              <button
+                type="button"
+                aria-label="Previous gallery image"
+                onClick={(event) => { event.stopPropagation(); prevImage() }}
+                className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/45 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/65 md:p-2"
+              >
                 <ChevronLeft className="h-5 w-5 md:h-8 md:w-8" />
               </button>
-              <button onClick={(event) => { event.stopPropagation(); nextImage() }} className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/30 p-1.5 text-white opacity-100 backdrop-blur-sm transition-all hover:bg-black/50 md:p-2 md:opacity-0 md:group-hover:opacity-100">
+              <button
+                type="button"
+                aria-label="Next gallery image"
+                onClick={(event) => { event.stopPropagation(); nextImage() }}
+                className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/45 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/65 md:p-2"
+              >
                 <ChevronRight className="h-5 w-5 md:h-8 md:w-8" />
               </button>
-              <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 rounded-full bg-black/30 px-2.5 py-1 backdrop-blur-sm md:bottom-4 md:gap-2 md:px-3">
+              <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/45 px-2.5 py-1 text-xs font-medium text-white shadow-lg backdrop-blur-sm md:bottom-4 md:px-3">
                 {validImages.map((_, index) => (
                   <div key={index} className={`h-1.5 rounded-full transition-all duration-300 ${index === currentImageIndex ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`} />
                 ))}
+                <span>{currentImageIndex + 1}/{validImages.length}</span>
               </div>
             </>
           ) : null}
