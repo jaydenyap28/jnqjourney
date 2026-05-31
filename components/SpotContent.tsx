@@ -116,6 +116,14 @@ function getYouTubeID(url: string) {
   return match && match[2].length === 11 ? match[2] : null
 }
 
+function isEmbeddableFacebookVideoUrl(url?: string | null) {
+  const cleanUrl = String(url || '').trim()
+  if (!cleanUrl) return false
+  if (/facebook\.com\/share\/v\//i.test(cleanUrl)) return false
+
+  return /facebook\.com\/.+\/(posts|videos|reel|watch|permalink)\//i.test(cleanUrl) || /story\.php|permalink\.php|video\.php|fb\.watch\//i.test(cleanUrl)
+}
+
 function stripLeadingCurrency(value: string, currency?: string) {
   const normalized = String(value || '').trim()
   if (!normalized) return ''
@@ -298,6 +306,7 @@ export default function SpotContent({
 }: SpotContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
+  const [facebookEmbedFailed, setFacebookEmbedFailed] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
   const [copiedField, setCopiedField] = useState<'address' | 'coords' | ''>('')
   const visibleTags = getVisibleLocationTags(location.tags)
@@ -326,7 +335,7 @@ export default function SpotContent({
   const hasFacebookLink = Boolean(String(location.facebook_video_url || '').trim())
   const facebookVideoUrl = location.facebook_video_url || ''
   const shouldShowYoutube = Boolean(videoId && !youtubeEmbedFailed)
-  const facebookPreviewImage = String(location.image_url || validImages[0] || '').trim()
+  const shouldShowFacebookEmbed = Boolean(isEmbeddableFacebookVideoUrl(facebookVideoUrl) && !facebookEmbedFailed)
   const spotDescription = useMemo(() => getSpotDescription(location), [location])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
@@ -427,6 +436,10 @@ export default function SpotContent({
   useEffect(() => {
     setYoutubeEmbedFailed(false)
   }, [location.id, location.video_url])
+
+  useEffect(() => {
+    setFacebookEmbedFailed(false)
+  }, [location.id, location.facebook_video_url])
 
   const nextImage = () => {
     if (validImages.length > 1) {
@@ -564,35 +577,30 @@ export default function SpotContent({
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
-              <a
-                href={facebookVideoUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/facebook relative block aspect-video overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-black"
-              >
-                {facebookPreviewImage ? (
-                  <>
-                    <FallbackImage
-                      src={facebookPreviewImage}
-                      alt={`${spotTitle.primary} Facebook preview`}
-                      fill
-                      className="object-cover opacity-80 transition duration-500 group-hover/facebook:scale-105 group-hover/facebook:opacity-95"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/20" />
-                  </>
+              <div className="aspect-video bg-black">
+                {shouldShowFacebookEmbed ? (
+                  <ReactPlayer
+                    src={facebookVideoUrl}
+                    width="100%"
+                    height="100%"
+                    controls
+                    playsInline
+                    onError={() => setFacebookEmbedFailed(true)}
+                  />
                 ) : (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,99,235,0.35),transparent_48%)]" />
-                )}
-                <div className="absolute inset-0 flex items-center justify-center p-6">
-                  <span className="inline-flex items-center gap-3 rounded-full border border-blue-300/40 bg-black/45 px-5 py-3 text-sm font-medium text-blue-50 shadow-2xl backdrop-blur-md transition group-hover/facebook:bg-blue-600/80">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white">
+                  <div className="flex h-full items-center justify-center p-6">
+                    <a
+                      href={facebookVideoUrl || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-3 rounded-full border border-blue-500/30 bg-blue-500/10 px-5 py-3 text-sm text-blue-100 transition hover:bg-blue-500/15"
+                    >
                       <Facebook className="h-4 w-4" />
-                    </span>
-                    Open Facebook video
-                    <ExternalLink className="h-4 w-4" />
-                  </span>
-                </div>
-              </a>
+                      Open Facebook video
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
           ) : null}
         </section>
