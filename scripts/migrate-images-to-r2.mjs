@@ -6,7 +6,7 @@ import { createClient } from '@supabase/supabase-js'
 
 const DEFAULT_TABLES = ['locations', 'spots']
 const DEFAULT_IMAGE_FIELDS = ['image_url', 'images', 'cover_image', 'gallery_images', 'coverImage', 'galleryImages']
-const IMGBB_HOST_PATTERN = /(i\.ibb\.co|imgbb\.com)/i
+const LEGACY_IMAGE_HOST_PATTERN = /(i\.ibb\.co|imgbb\.com|\.supabase\.co\/storage\/v1\/object\/public\/location-images)/i
 const URL_PATTERN = /https?:\/\/[^\s"'<>),\]]+/gi
 
 function loadEnvLocal(envPath) {
@@ -55,7 +55,9 @@ function stripUrlTail(url) {
 
 function getImageUrlsFromString(value) {
   const matches = String(value || '').match(URL_PATTERN) || []
-  return matches.map(stripUrlTail).filter((url) => IMGBB_HOST_PATTERN.test(url))
+  return matches
+    .map(stripUrlTail)
+    .filter((url) => LEGACY_IMAGE_HOST_PATTERN.test(url))
 }
 
 function collectImageUrls(value, urls = new Set()) {
