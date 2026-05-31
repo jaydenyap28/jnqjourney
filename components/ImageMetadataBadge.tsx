@@ -21,6 +21,9 @@ export function getImageSource(url: string) {
   return 'External'
 }
 
+const IMAGE_SIZE_WARNING_BYTES = 3 * 1024 * 1024
+const IMAGE_SIZE_DANGER_BYTES = 5 * 1024 * 1024
+
 export default function ImageMetadataBadge({ url, className }: { url: string, className?: string }) {
   const [size, setSize] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
@@ -55,8 +58,19 @@ export default function ImageMetadataBadge({ url, className }: { url: string, cl
   if (source === 'ImgBB') sourceColor = 'bg-blue-600'
   if (source === 'Supabase') sourceColor = 'bg-emerald-600'
   
-  // Highlight large images (e.g., > 1MB)
-  const isLarge = size && size > 1024 * 1024
+  const sizeLevel = !size
+    ? 'normal'
+    : size > IMAGE_SIZE_DANGER_BYTES
+      ? 'danger'
+      : size > IMAGE_SIZE_WARNING_BYTES
+        ? 'warning'
+        : 'normal'
+
+  const sizeColor = sizeLevel === 'danger'
+    ? 'bg-red-500 animate-pulse'
+    : sizeLevel === 'warning'
+      ? 'bg-amber-500'
+      : 'bg-black/65'
 
   return (
     <div className={`flex flex-col gap-1 items-end pointer-events-none z-10 ${className || 'absolute top-1 right-1'}`}>
@@ -64,7 +78,7 @@ export default function ImageMetadataBadge({ url, className }: { url: string, cl
         {source}
       </div>
       {!loading && size && (
-        <div className={`rounded-sm px-1.5 py-0.5 text-[10px] text-white shadow-sm font-medium ${isLarge ? 'bg-red-500 animate-pulse' : 'bg-black/65'}`}>
+        <div className={`rounded-sm px-1.5 py-0.5 text-[10px] text-white shadow-sm font-medium ${sizeColor}`}>
           {formatBytes(size)}
         </div>
       )}
