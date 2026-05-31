@@ -421,6 +421,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   }
 
   const dedupeRawUrls = (urls: string[]) => Array.from(new Set(urls.map((url) => url.trim()).filter(Boolean)))
+  const visibleGalleryImages = formData.images
+    .map((url, index) => ({ url, index }))
+    .filter((item) => !formData.image_url || imageFingerprint(item.url) !== imageFingerprint(formData.image_url))
 
   const addPriceCustomItem = () => {
     setStructuredPriceInfo((prev) => ({
@@ -3179,9 +3182,13 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               </div>
               <p className="text-xs text-gray-500">支持直接贴 `ibb.co / imgbb` 分享页链接，系统会自动转成可显示图片。</p>
 
-              {formData.images.length > 0 ? (
+              {visibleGalleryImages.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                  {formData.images.map((url, index) => (
+                  {visibleGalleryImages.map(({ url, index }, displayIndex) => {
+                    const previousVisibleIndex = visibleGalleryImages[displayIndex - 1]?.index
+                    const nextVisibleIndex = visibleGalleryImages[displayIndex + 1]?.index
+
+                    return (
                     <div
                       key={url + '-' + index}
                       draggable
@@ -3202,7 +3209,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       <ImageMetadataBadge url={url} className="absolute top-8 right-1" />
                       <div className="absolute left-1 top-1 flex items-center gap-1 rounded-full bg-black/65 px-2 py-1 text-[11px] text-white">
                         <GripVertical className="h-3 w-3" />
-                        <span>{index + 1}</span>
+                        <span>{displayIndex + 1}</span>
                       </div>
                       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
                         <div className="flex gap-1">
@@ -3220,8 +3227,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                             size="icon"
                             variant="secondary"
                             className="h-8 w-8 bg-white/90 hover:bg-white"
-                            onClick={() => moveGalleryImage(index, index - 1)}
-                            disabled={index === 0}
+                            onClick={() => {
+                              if (previousVisibleIndex !== undefined) moveGalleryImage(index, previousVisibleIndex)
+                            }}
+                            disabled={previousVisibleIndex === undefined}
                           >
                             <ArrowUp className="h-4 w-4" />
                           </Button>
@@ -3230,8 +3239,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                             size="icon"
                             variant="secondary"
                             className="h-8 w-8 bg-white/90 hover:bg-white"
-                            onClick={() => moveGalleryImage(index, index + 1)}
-                            disabled={index === formData.images.length - 1}
+                            onClick={() => {
+                              if (nextVisibleIndex !== undefined) moveGalleryImage(index, nextVisibleIndex)
+                            }}
+                            disabled={nextVisibleIndex === undefined}
                           >
                             <ArrowDown className="h-4 w-4" />
                           </Button>
@@ -3257,8 +3268,12 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         </svg>
                       </button>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
+              ) : null}
+              {formData.image_url && formData.images.some((url) => imageFingerprint(url) === imageFingerprint(formData.image_url)) ? (
+                <p className="text-xs text-amber-600">当前封面图仍保留在图集数据中，但前台图集会自动隐藏封面，避免重复展示。</p>
               ) : null}
               <p className="text-xs text-gray-500">提示：这些图片会按当前顺序显示在详情页轮播中，可直接拖动排序，也可用上下按钮微调。</p>
             </div>

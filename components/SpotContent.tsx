@@ -212,6 +212,18 @@ function normalizeImageList(value: unknown) {
     .filter(Boolean)
 }
 
+function imageIdentity(value?: string | null) {
+  const text = String(value || '').trim()
+  if (!text) return ''
+
+  try {
+    const url = new URL(text)
+    return `${url.hostname.toLowerCase()}${url.pathname}`
+  } catch {
+    return text.split('#')[0].trim()
+  }
+}
+
 function TikTokIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -302,7 +314,12 @@ export default function SpotContent({
 
   const allImages = useMemo(() => {
     const galleryImages = normalizeImageList(location.images)
-    return Array.from(new Set([location.image_url, ...galleryImages].map((item) => String(item || '').trim()).filter(Boolean)))
+    const coverIdentity = imageIdentity(location.image_url)
+    return Array.from(new Set(
+      galleryImages
+        .map((item) => String(item || '').trim())
+        .filter((item) => item && imageIdentity(item) !== coverIdentity)
+    ))
   }, [location.image_url, location.images])
 
   const validImages = useMemo(
