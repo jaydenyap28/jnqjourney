@@ -845,56 +845,70 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     if (!files.length) return []
 
     const optimizedFiles = await Promise.all(files.map(optimizeImage))
-    const payload = new FormData()
     const selectedRegion = findRegionById(regions, Number.parseInt(formData.region_id, 10))
     const parentRegion = findRegionById(regions, selectedRegion?.parent_id || null)
     const country = getRegionCountry(selectedRegion, regions)
-
-    payload.append('category', 'locations')
-    payload.append('field', target === 'cover' ? 'image_url' : 'images')
-    payload.append('target', target)
-    if (country) payload.append('country', country)
-    if (selectedRegion?.name) payload.append('city', parentRegion?.name || selectedRegion.name)
-    if (formData.custom_slug || formData.name) payload.append('locationSlug', formData.custom_slug || formData.name)
-
-    optimizedFiles.forEach((file) => {
-      payload.append('files', file)
-    })
-
     const endpoint = '/api/upload/r2'
+    const uploadedItems: Array<{ url: string }> = []
+
     console.log(`[${target}-upload] endpoint:`, endpoint)
 
-    const response = await adminFetch(endpoint, {
-      method: 'POST',
-      body: payload,
-    })
+    for (const file of optimizedFiles) {
+      const payload = new FormData()
+      payload.append('category', 'locations')
+      payload.append('field', target === 'cover' ? 'image_url' : 'images')
+      payload.append('target', target)
+      if (country) payload.append('country', country)
+      if (selectedRegion?.name) payload.append('city', parentRegion?.name || selectedRegion.name)
+      if (formData.custom_slug || formData.name) payload.append('locationSlug', formData.custom_slug || formData.name)
+      payload.append('files', file)
 
-    const result = await response.json()
+      const response = await adminFetch(endpoint, {
+        method: 'POST',
+        body: payload,
+      })
 
-    if (!response.ok) {
-      throw new Error(result.error || '涓婁紶澶辫触锛岃绋嶅悗閲嶈瘯')
+      const responseText = await response.text()
+      let result: any = null
+
+      try {
+        result = responseText ? JSON.parse(responseText) : null
+      } catch {
+        const detail = responseText.slice(0, 180) || response.statusText
+        throw new Error(response.ok ? `Upload response was not JSON: ${detail}` : `Upload failed (${response.status}): ${detail}`)
+      }
+
+      if (!response.ok) {
+        throw new Error(result?.error || `Upload failed (${response.status}): ${response.statusText}`)
+      }
+
+      const responseItems = (Array.isArray(result?.items) ? result.items : Array.isArray(result?.files) ? result.files : [])
+        .filter((item: { url?: string }): item is { url: string } => Boolean(item?.url))
+      uploadedItems.push(...responseItems)
+
+      if (target === 'gallery') {
+        setGalleryUploadStatus(`Uploaded ${uploadedItems.length} / ${optimizedFiles.length} images to Cloudflare R2...`)
+      }
     }
 
-    const uploadedItems = Array.isArray(result.items) ? result.items : Array.isArray(result.files) ? result.files : []
     console.log('[admin-location-upload] R2 upload response', {
       target,
-      urls: uploadedItems.map((item: { url?: string }) => item.url).filter(Boolean),
-      result,
+      urls: uploadedItems.map((item) => item.url),
     })
     if (target === 'gallery') {
       console.log('[gallery-upload] endpoint:', endpoint)
-      console.log('[gallery-upload] response:', result)
+      console.log('[gallery-upload] uploaded items:', uploadedItems)
     }
 
-    const supabaseStorageUrl = uploadedItems.find((item: { url?: string }) =>
+    const supabaseStorageUrl = uploadedItems.find((item) =>
       String(item?.url || '').includes('/storage/v1/object/public/location-images/')
     )
     if (supabaseStorageUrl) {
-      throw new Error(`上传接口返回了 Supabase Storage URL，不允许保存：${supabaseStorageUrl.url}`)
+      throw new Error(`Upload returned a Supabase Storage URL, which is not allowed: ${supabaseStorageUrl.url}`)
     }
 
-    uploadedItems.forEach((item: { url?: string }) => {
-      if (item.url) assertR2ImageUrl(item.url)
+    uploadedItems.forEach((item) => {
+      assertR2ImageUrl(item.url)
     })
 
     return uploadedItems
