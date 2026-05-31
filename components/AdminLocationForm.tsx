@@ -41,6 +41,8 @@ const COUNTRY_CURRENCY: Record<string, string> = {
   Indonesia: 'IDR',
 }
 
+const MAX_DIRECT_GALLERY_UPLOAD_FILES = 60
+
 const COUNTRY_SECONDARY_CURRENCY: Record<string, string> = {
   China: 'RM',
   Japan: 'RM',
@@ -166,6 +168,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const [loading, setLoading] = useState(false)
   const [uploadingCover, setUploadingCover] = useState(false)
   const [uploadingGallery, setUploadingGallery] = useState(false)
+  const [galleryUploadStatus, setGalleryUploadStatus] = useState('')
   const [fetchingFacebookAssets, setFetchingFacebookAssets] = useState(false)
   const [importingFacebookAssets, setImportingFacebookAssets] = useState(false)
   const [regions, setRegions] = useState<RegionOption[]>([]) // Store regions
@@ -1064,10 +1067,22 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       fileCount: event.target.files?.length || 0,
     })
     const files = Array.from(event.target.files || [])
-    if (!files.length) return
+    if (!files.length) {
+      setGalleryUploadStatus('没有选择图片。')
+      return
+    }
+
+    if (files.length > MAX_DIRECT_GALLERY_UPLOAD_FILES) {
+      const errorMessage = `一次最多上传 ${MAX_DIRECT_GALLERY_UPLOAD_FILES} 张图片，请分批上传。`
+      setGalleryUploadStatus(errorMessage)
+      setMessage(`Error: ${errorMessage}`)
+      event.target.value = ''
+      return
+    }
 
     setUploadingGallery(true)
     setMessage(`正在上传 ${files.length} 张图库图片到 Cloudflare R2...`)
+    setGalleryUploadStatus(`已选择 ${files.length} 张图片，正在上传到 Cloudflare R2...`)
 
     try {
       const uploaded = await uploadFilesToStorage(files, 'gallery')
@@ -1089,9 +1104,11 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         images: dedupeImageUrls([...prev.images, ...urls]),
       }))
       setMessage(`成功上传 ${urls.length} 张图片，已加入图库。`)
+      setGalleryUploadStatus(`成功上传 ${urls.length} 张图片，已加入图库。`)
     } catch (error: any) {
       console.error('[gallery-upload] failed', error)
       setMessage(`Error: ${error.message}`)
+      setGalleryUploadStatus(`上传失败：${error.message}`)
     } finally {
       setUploadingGallery(false)
       event.target.value = ''
@@ -3120,6 +3137,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                       {uploadingGallery ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
                       批量上传图片
                     </Button>
+                    {galleryUploadStatus ? (
+                      <p className="max-w-sm text-xs text-gray-600">{galleryUploadStatus}</p>
+                    ) : null}
                   </div>
                 </div>
                 {formData.images.length > 0 ? (

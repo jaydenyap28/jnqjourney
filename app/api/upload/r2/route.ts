@@ -43,8 +43,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, error: 'No image file was provided.' }, { status: 400 })
   }
 
-  if (files.length > 12) {
-    return NextResponse.json({ success: false, error: 'You can upload at most 12 images at once.' }, { status: 400 })
+  if (files.length > 60) {
+    return NextResponse.json({ success: false, error: 'You can upload at most 60 images at once.' }, { status: 400 })
   }
 
   const category = formValue(formData, 'category')
