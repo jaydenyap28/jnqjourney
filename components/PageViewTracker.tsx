@@ -37,11 +37,21 @@ export default function PageViewTracker() {
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return
 
     const sessionId = getSessionId()
-    const dedupeKey = `pageview:${pathname}:${new Date().toISOString().slice(0, 16)}`
+    const query = typeof window !== 'undefined' ? window.location.search.replace(/^\?/, '') : ''
+    const trackedPath = query ? `${pathname}?${query}` : pathname
+    const dedupeKey = `pageview:${trackedPath}:${new Date().toISOString().slice(0, 16)}`
     if (window.sessionStorage.getItem(dedupeKey)) return
     window.sessionStorage.setItem(dedupeKey, '1')
 
     const { contentType, contentSlug } = deriveContentMeta(pathname)
+    const previousPath = window.sessionStorage.getItem('jnq_previous_path')
+    const referrer = previousPath
+      ? `${window.location.origin}${previousPath}`
+      : typeof document !== 'undefined'
+        ? document.referrer
+        : ''
+
+    window.sessionStorage.setItem('jnq_previous_path', trackedPath)
 
     void fetch('/api/page-view', {
       method: 'POST',
@@ -50,11 +60,11 @@ export default function PageViewTracker() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        path: pathname,
+        path: trackedPath,
         contentType,
         contentSlug,
         sessionId,
-        referrer: typeof document !== 'undefined' ? document.referrer : '',
+        referrer,
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
       }),
     }).catch(() => null)
