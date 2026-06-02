@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
 
@@ -392,12 +392,15 @@ export default function AdminNotesPage() {
   const [affiliateQuery, setAffiliateQuery] = useState('')
   const [klookQuery, setKlookQuery] = useState('')
   const [selectedSpotId, setSelectedSpotId] = useState<number | null>(null)
+  const [lockedSpotId, setLockedSpotId] = useState<number | null>(null)
   const [selectedSpotImageUrls, setSelectedSpotImageUrls] = useState<string[]>([])
   const [selectedAffiliateIds, setSelectedAffiliateIds] = useState<number[]>([])
   const [selectedKlookWidgetIds, setSelectedKlookWidgetIds] = useState<string[]>([])
   const [imageInsertSize, setImageInsertSize] = useState<NoteImageSize>('wide')
+  const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
+  const standaloneImageInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -482,6 +485,15 @@ export default function AdminNotesPage() {
   }, [notes, selectedSlug])
 
   const locationsById = useMemo(() => new Map(locations.map((location) => [location.id, location])), [locations])
+  const lockedSpot = lockedSpotId ? locationsById.get(lockedSpotId) || null : null
+
+  useEffect(() => {
+    if (!locations.length || lockedSpotId) return
+    const savedSpotId = Number(window.localStorage.getItem('jnqjourney-note-image-spot-id') || '')
+    if (Number.isFinite(savedSpotId) && locationsById.has(savedSpotId)) {
+      setLockedSpotId(savedSpotId)
+    }
+  }, [locations.length, locationsById, lockedSpotId])
 
   const filteredSpots = useMemo(() => {
     const keyword = spotQuery.trim().toLowerCase()
@@ -534,8 +546,26 @@ export default function AdminNotesPage() {
     rememberMarkdownSelection()
     setPickerOpen(true)
     setSpotQuery('')
-    setSelectedSpotId(null)
-    setSelectedSpotImageUrls([])
+    if (lockedSpot) {
+      setSelectedSpotId(lockedSpot.id)
+      setSelectedSpotImageUrls(getLocationImages(lockedSpot))
+    } else {
+      setSelectedSpotId(null)
+      setSelectedSpotImageUrls([])
+    }
+  }
+
+  function lockSelectedSpot() {
+    if (!selectedSpot) return
+    setLockedSpotId(selectedSpot.id)
+    window.localStorage.setItem('jnqjourney-note-image-spot-id', String(selectedSpot.id))
+    setMessage(`Pinned "${getLocationLabel(selectedSpot)}" for quick spot-image inserts.`)
+  }
+
+  function clearLockedSpot() {
+    setLockedSpotId(null)
+    window.localStorage.removeItem('jnqjourney-note-image-spot-id')
+    setMessage('Cleared pinned spot for image inserts.')
   }
 
   function openAffiliatePicker() {
@@ -550,6 +580,11 @@ export default function AdminNotesPage() {
     setKlookPickerOpen(true)
     setKlookQuery('')
     setSelectedKlookWidgetIds([])
+  }
+
+  function openStandaloneImageUpload() {
+    rememberMarkdownSelection()
+    standaloneImageInputRef.current?.click()
   }
 
   function rememberMarkdownSelection() {
@@ -596,6 +631,61 @@ export default function AdminNotesPage() {
       markdownSelectionRef.current = { start: nextCursor, end: nextCursor }
       window.scrollTo(scrollX, scrollY)
     }, 0)
+  }
+
+  async function uploadStandaloneImages(event: ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(event.target.files || [])
+    if (!files.length) return
+
+    setUploadingStandaloneImage(true)
+    setMessage(`Uploading ${files.length} image${files.length > 1 ? 's' : ''} to Cloudflare R2...`)
+
+    try {
+      const uploadedItems: Array<{ url: string; fileName?: string }> = []
+
+      for (const file of files) {
+        const payload = new FormData()
+        payload.append('category', 'notes')
+        payload.append('field', 'inline')
+        payload.append('target', 'inline')
+        payload.append('locationSlug', form.slug || slugify(form.title) || 'longform-note')
+        payload.append('files', file)
+
+        const response = await adminFetch('/api/upload/r2', {
+          method: 'POST',
+          body: payload,
+        })
+
+        const result = await response.json()
+        if (!response.ok || result?.success === false) {
+          throw new Error(result?.error || `Upload failed for ${file.name}`)
+        }
+
+        const items = (Array.isArray(result?.items) ? result.items : Array.isArray(result?.files) ? result.files : [])
+          .filter((item: { url?: string }): item is { url: string; fileName?: string } => Boolean(item?.url))
+        uploadedItems.push(...items)
+      }
+
+      if (!uploadedItems.length) {
+        throw new Error('Upload completed but no image URL was returned.')
+      }
+
+      const sizeText = imageInsertSize && imageInsertSize !== 'wide' ? `{size=${imageInsertSize}}` : ''
+      const markdown = uploadedItems
+        .map((item) => {
+          const label = String(item.fileName || 'Travel image').replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').trim() || 'Travel image'
+          return `![${label}](${item.url})${sizeText}`
+        })
+        .join('\n\n')
+
+      insertTextAtCursor(markdown)
+      setMessage(`Uploaded and inserted ${uploadedItems.length} image${uploadedItems.length > 1 ? 's' : ''} from Cloudflare R2.`)
+    } catch (error: any) {
+      setMessage(`Error: ${error?.message || 'Failed to upload image.'}`)
+    } finally {
+      setUploadingStandaloneImage(false)
+      event.target.value = ''
+    }
   }
 
   function applySpotImagesToMarkdown() {
@@ -855,21 +945,10 @@ export default function AdminNotesPage() {
 
               {/* Cover Header */}
               <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-10 ${form.coverAccent || DEFAULT_NOTE_COVER_ACCENT}`}>
-                <div className={`grid gap-8 ${form.coverImage || form.coverVideoUrl ? 'lg:grid-cols-[minmax(0,1.05fr)_520px] lg:items-center' : ''}`}>
-                  <div className="space-y-5 text-left">
-                    {getDisplayKicker(form.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(form.kicker)}</p> : null}
-                    <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl tracking-tight">{form.title || 'Your note title'}</h1>
-                    {form.tagline ? <p className="max-w-3xl text-lg leading-8 text-white/80">{form.tagline}</p> : null}
-                  </div>
-                  {form.coverVideoUrl ? (
-                    <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/30 shadow-2xl">
-                      <CoverVideoPreview url={form.coverVideoUrl} title={`${form.title || 'Note'} cover video`} />
-                    </div>
-                  ) : form.coverImage ? (
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-[34px] border border-white/10 bg-black/20 shadow-2xl">
-                      <FallbackImage src={form.coverImage} alt={`${form.title || 'Note'} cover`} fill sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" priority />
-                    </div>
-                  ) : null}
+                <div className="max-w-5xl space-y-5 text-left">
+                  {getDisplayKicker(form.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(form.kicker)}</p> : null}
+                  <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl tracking-tight">{form.title || 'Your note title'}</h1>
+                  {form.tagline ? <p className="max-w-3xl text-lg leading-8 text-white/80">{form.tagline}</p> : null}
                 </div>
               </section>
 
@@ -998,9 +1077,10 @@ export default function AdminNotesPage() {
                         size="sm"
                         variant="outline"
                         className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
-                        onClick={() => insertTextAtCursor(imageMarkdown(imageInsertSize))}
+                        onClick={openStandaloneImageUpload}
+                        disabled={uploadingStandaloneImage}
                       >
-                        独立图片
+                        {uploadingStandaloneImage ? '上传中...' : '上传独立图片'}
                       </Button>
                       <Button
                         type="button"
@@ -1044,6 +1124,15 @@ export default function AdminNotesPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4">
+                  <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_190px]">
+                  <input
+                    ref={standaloneImageInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    multiple
+                    className="hidden"
+                    onChange={uploadStandaloneImages}
+                  />
                   <Textarea
                     id="markdown-editor"
                     value={markdownText}
@@ -1056,6 +1145,62 @@ export default function AdminNotesPage() {
                     className="font-mono text-[14px] leading-7 bg-black/40 border-white/5 text-gray-100 placeholder:text-white/20 focus-visible:ring-amber-300/50 resize-y"
                     placeholder={`在此输入您的旅行故事...\n\n支持 Markdown 格式：\n## 这是一个二级标题\n这里是正文段落，可以直接写一大堆文字。\n\n> 这是一个好看的引用块\n\n点击上方的“关联已有景点图片”可以将您已收藏景点的照片瞬间插入！`}
                   />
+                  <aside className="xl:sticky xl:top-6 xl:self-start">
+                    <div className="rounded-[22px] border border-white/10 bg-black/35 p-3 shadow-[0_16px_45px_rgba(0,0,0,0.28)]">
+                      <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">Quick Insert</p>
+                      <div className="mt-3 grid gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          className="justify-start border-emerald-400/20 bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30"
+                          onClick={openMarkdownSpotPicker}
+                        >
+                          <ImageIcon className="mr-2 h-4 w-4" />
+                          景点图片
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                          onClick={openStandaloneImageUpload}
+                          disabled={uploadingStandaloneImage}
+                        >
+                          <ImageIcon className="mr-2 h-4 w-4" />
+                          {uploadingStandaloneImage ? '上传中' : '上传图片'}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                          onClick={openAffiliatePicker}
+                        >
+                          <Search className="mr-2 h-4 w-4" />
+                          Affiliate
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                          onClick={openKlookPicker}
+                        >
+                          <Search className="mr-2 h-4 w-4" />
+                          Klook
+                        </Button>
+                      </div>
+                      {lockedSpot ? (
+                        <div className="mt-3 rounded-2xl border border-amber-300/15 bg-amber-400/10 p-3 text-left">
+                          <p className="text-[10px] uppercase tracking-[0.2em] text-amber-200/70">Pinned spot</p>
+                          <p className="mt-1 line-clamp-2 text-xs font-medium text-white">{getLocationLabel(lockedSpot)}</p>
+                        </div>
+                      ) : (
+                        <p className="mt-3 px-1 text-xs leading-5 text-white/45">可在景点图片弹窗里固定常用景点。</p>
+                      )}
+                    </div>
+                  </aside>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -1136,10 +1281,24 @@ export default function AdminNotesPage() {
 
             <div className="space-y-4">
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                {lockedSpot ? (
+                  <p className="mb-2 text-xs text-amber-200/75">Pinned spot: {getLocationLabel(lockedSpot)}</p>
+                ) : null}
                 <p className="font-medium text-white">{selectedSpot ? getLocationLabel(selectedSpot) : '请先在左侧选择景点'}</p>
                 <p className="mt-1 text-sm text-white/55">
                   {selectedSpot ? '从该景点的现有相册中，勾选一张或多张图片插入到您的文章光标处。' : '此选择器会复用该景点已保存的相册及封面图。'}
                 </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" size="sm" variant="outline" className="border-amber-300/20 bg-amber-400/10 text-amber-100 hover:bg-amber-400/20" onClick={lockSelectedSpot} disabled={!selectedSpot}>
+                  设为常用景点
+                </Button>
+                {lockedSpot ? (
+                  <Button type="button" size="sm" variant="outline" className="border-white/10 bg-transparent text-white hover:bg-white/10" onClick={clearLockedSpot}>
+                    清除常用
+                  </Button>
+                ) : null}
               </div>
 
               {selectedSpot && selectedSpotImages.length ? (
