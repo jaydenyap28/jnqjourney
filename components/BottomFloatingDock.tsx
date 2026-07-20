@@ -157,7 +157,7 @@ export default function BottomFloatingDock({
             >
               {locations.length === 0 ? (
                 <div className="px-4 py-4 text-xs italic text-white/55 md:py-8 md:text-sm">
-                  No matching spots yet. Try another search / 目前没有结果，试试别的关键词。
+                  No matching spots yet. Try another search / 目前没有符合条件的景点，请换一个关键词。
                 </div>
               ) : (
                 locations.map((location, index) => {

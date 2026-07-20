@@ -9,6 +9,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { buildCanonicalUrl, buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -72,10 +73,14 @@ export default async function SpotPage({ params }: PageProps) {
     redirect(canonicalPath)
   }
 
-  const [relatedLocations, allGuides] = await Promise.all([
+  const [relatedLocations, allGuides, allPackages] = await Promise.all([
     fetchRelatedLocations(location, 6),
     readGuides(),
+    readPublishedPackages(),
   ])
+  const relatedPackages = allPackages.filter((item) =>
+    item.region_id === location.region_id || item.related_location_ids?.includes(location.id)
+  )
 
   const locationNames = new Set([
     normalizeGuideMatch(location.name),
@@ -173,6 +178,7 @@ export default async function SpotPage({ params }: PageProps) {
         mode="page"
         relatedLocations={relatedLocations}
         relatedGuides={relatedGuides}
+        relatedPackages={relatedPackages}
       />
       <SiteFooter />
     </main>

@@ -104,6 +104,7 @@ export default function AdminAuthShell({ children }: { children: React.ReactNode
           </div>
 
           <div className="flex items-center gap-3">
+            <Link href="/admin/packages" className="hidden text-xs text-white/60 transition hover:text-white md:inline">旅游配套</Link>
             {email ? <span className="hidden text-xs text-white/55 md:inline">{email}</span> : null}
             <Button type="button" variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10" onClick={handleSignOut}>
               <LogOut className="mr-2 h-4 w-4" />

@@ -6,13 +6,21 @@ import { readGuides } from '@/lib/server/guides-store'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readPublishedNotes } from '@/lib/server/notes-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
+
+function validDateOrUndefined(value?: string | null) {
+  if (!value) return undefined
+  const timestamp = Date.parse(value)
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : undefined
+}
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [locations, regions, guides, notes] = await Promise.all([
+  const [locations, regions, guides, notes, packages] = await Promise.all([
     fetchAllLocationsForSitemap(),
     fetchAllRegionsForSitemap(),
     readGuides(),
     readPublishedNotes(),
+    readPublishedPackages(),
   ])
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -20,6 +28,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/region'), changeFrequency: 'weekly', priority: 0.8 },
     { url: absoluteUrl('/guide'), changeFrequency: 'weekly', priority: 0.8 },
     { url: absoluteUrl('/notes'), changeFrequency: 'weekly', priority: 0.7 },
+    { url: absoluteUrl('/packages'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: absoluteUrl('/contact'), changeFrequency: 'yearly', priority: 0.4 },
+    { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.2 },
   ]
 
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
@@ -40,17 +51,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const guideRoutes: MetadataRoute.Sitemap = guides.map((guide) => ({
     url: absoluteUrl(`/guide/${guide.slug}`),
-    lastModified: guide.days?.length ? new Date().toISOString() : undefined,
+    lastModified: validDateOrUndefined((guide as any).updatedAt || (guide as any).createdAt || guide.sortDate),
     changeFrequency: 'weekly',
     priority: 0.8,
   }))
 
   const noteRoutes: MetadataRoute.Sitemap = notes.map((note) => ({
     url: absoluteUrl(`/notes/${note.slug}`),
-    lastModified: note.updatedAt || note.createdAt || undefined,
+    lastModified: validDateOrUndefined(note.updatedAt || note.createdAt),
     changeFrequency: 'weekly',
     priority: 0.7,
   }))
 
-  return [...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes]
+  const packageRoutes: MetadataRoute.Sitemap = packages.map((item) => ({
+    url: absoluteUrl(`/packages/${item.slug}`),
+    lastModified: validDateOrUndefined(item.updated_at || item.published_at),
+    changeFrequency: 'weekly',
+    priority: 0.8,
+  }))
+
+  return [...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes]
 }

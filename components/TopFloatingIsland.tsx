@@ -40,7 +40,7 @@ export default function TopFloatingIsland({ onSearch, onLanguageChange }: TopFlo
               <Input
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder="Search spots, regions, or tags / 搜索景点、地区、标签"
+                placeholder="Search spots, regions, or tags / 搜索景点、地区或标签"
                 className="h-8 rounded-full border border-white/10 bg-white/6 pl-8 pr-3 text-[11px] text-white placeholder:text-white/45 focus-visible:ring-1 focus-visible:ring-amber-200/50 md:h-11 md:pl-11 md:pr-4 md:text-sm"
               />
             </div>

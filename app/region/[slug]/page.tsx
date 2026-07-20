@@ -12,6 +12,9 @@ import { fetchLocationsByRegion, fetchRegionBySlug } from '@/lib/server/public-l
 import { readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
+import TravelPackageCard from '@/components/TravelPackageCard'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
+import WhatsAppButton from '@/components/WhatsAppButton'
 
 import { buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
@@ -89,6 +92,7 @@ export default async function RegionPage({ params }: PageProps) {
   }
 
   const locations = await fetchLocationsByRegion(region.id, 100)
+  const relatedPackages = (await readPublishedPackages()).filter((item) => item.region_id === region.id)
   const readableName = region.name_cn || region.name
 
   // Guides matching
@@ -242,6 +246,24 @@ export default async function RegionPage({ params }: PageProps) {
           <p className="text-gray-300 leading-relaxed text-sm md:text-base">
             {regionIntro}
           </p>
+        </section>
+
+        {relatedPackages.length > 0 ? (
+          <section className="space-y-5 rounded-[28px] border border-emerald-200/15 bg-emerald-400/[0.05] p-5 md:p-7">
+            <div>
+              <p className="text-xs uppercase text-emerald-200/70">Travel packages / 旅游配套</p>
+              <h2 className="mt-2 text-2xl font-bold text-white">{readableName} 完整旅游配套</h2>
+              <p className="mt-2 text-sm leading-7 text-white/60">想把这里的景点安排进完整行程，可查看已发布配套或通过 WhatsApp 查询。</p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact />)}
+            </div>
+          </section>
+        ) : null}
+
+        <section className="flex flex-col items-start gap-4 rounded-[24px] border border-white/10 bg-white/5 p-5 md:flex-row md:items-center md:justify-between md:p-7">
+          <div><h2 className="text-xl font-semibold">需要协助安排 {readableName} 行程？</h2><p className="mt-2 text-sm leading-7 text-white/60">告诉我们预计日期、人数和出发地点，再确认适合的现有配套。</p></div>
+          <WhatsAppButton pageType="region" region={readableName} source={`JNQ-${region.name.toUpperCase().replace(/[^A-Z0-9]+/g, '-')}-REGION`} label={`WhatsApp 咨询${readableName}配套`} position="inline" />
         </section>
 
         {/* 8. 推荐路线 / Related Guides */}

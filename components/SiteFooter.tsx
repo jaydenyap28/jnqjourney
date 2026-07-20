@@ -108,6 +108,12 @@ export default function SiteFooter() {
             <span>来Facebook私信我吧！</span>
           </a>
         </div>
+
+        <nav className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-white/45" aria-label="Footer">
+          <a href="/privacy" className="transition hover:text-white">隐私政策</a>
+          <a href="/contact" className="transition hover:text-white">联系我们</a>
+          <a href="/packages" className="transition hover:text-white">旅游配套</a>
+        </nav>
       </div>
     </footer>
   )

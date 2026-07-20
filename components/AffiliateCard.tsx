@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, Hotel, MapPin, Star, Ticket, Train, TrendingUp } from 'lucide-react'
 
-import { supabase } from '@/lib/supabase'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { getDeviceType, trackEvent } from '@/lib/analytics'
 
 interface AffiliateCardProps {
   linkIds?: number[]
@@ -83,7 +83,7 @@ const PROVIDER_NAMES: Record<string, string> = {
   klook: 'Klook',
   kkday: 'KKday',
   trip: 'Trip.com',
-  others: '精选推荐',
+  others: '\u7cbe\u9009\u63a8\u8350',
 }
 
 const LINK_TYPE_NAMES: Record<string, string> = {
@@ -186,7 +186,7 @@ export default function AffiliateCard({
   limit = 6,
   title = '预订推荐',
   description,
-  showDisclosure = false,
+  showDisclosure = true,
   className = '',
   compact = false,
   hideHeader = false,
@@ -199,46 +199,35 @@ export default function AffiliateCard({
   const fetchLinks = useCallback(async () => {
     setLoading(true)
 
-    let query = supabase
-      .from('affiliate_links')
-      .select('*, locations(name, name_cn, image_url, images), regions(name, name_cn, country, image_url)')
-      .eq('is_active', true)
-      .order('clicks', { ascending: false })
-
-    if (linkIds?.length) {
-      query = query.in('id', linkIds)
-    } else if (noteSlug) {
-      query = query.eq('note_slug', noteSlug)
-    } else if (locationId && regionId) {
-      query = query.or(`location_id.eq.${locationId},region_id.eq.${regionId}`)
-    } else if (locationId) {
-      query = query.eq('location_id', locationId)
-    } else if (regionId) {
-      query = query.eq('region_id', regionId)
-    } else {
+    if (!linkIds?.length && !noteSlug && !locationId && !regionId) {
       setLinks([])
       setLoading(false)
       return
     }
 
+    const params = new URLSearchParams()
+    params.set('limit', String(Math.max(limit * 3, 12)))
+    if (linkIds?.length) params.set('ids', linkIds.join(','))
+    if (locationId) params.set('locationId', String(locationId))
+    if (regionId) params.set('regionId', String(regionId))
+    if (noteSlug) params.set('noteSlug', noteSlug)
     if (provider && provider !== 'all') {
-      query = query.eq('provider', provider)
+      params.set('provider', provider)
     }
 
-    const { data, error } = await query.limit(Math.max(limit * 3, 12))
-
-    if (error || !data) {
+    const response = await fetch(`/api/affiliate-links?${params.toString()}`, {
+      cache: 'no-store',
+    }).catch(() => null)
+    if (!response?.ok) {
       setLinks([])
       setLoading(false)
       return
     }
 
+    const result = await response.json().catch(() => null)
+    const data = Array.isArray(result?.links) ? result.links : []
     const typePriority = getTypePriority(category)
-    const normalizedLinks = (data as any[]).map((link) => ({
-      ...link,
-      locations: Array.isArray(link.locations) ? link.locations[0] || null : link.locations || null,
-      regions: Array.isArray(link.regions) ? link.regions[0] || null : link.regions || null,
-    })) as AffiliateLink[]
+    const normalizedLinks = data as AffiliateLink[]
 
     const deduped = linkIds?.length
       ? normalizedLinks
@@ -308,18 +297,33 @@ export default function AffiliateCard({
   }, [links])
 
   const handleClick = async (link: AffiliateLink) => {
-    try {
-      await supabase.from('affiliate_clicks').insert({
-        affiliate_link_id: link.id,
-        session_id: getTrackingSessionId(),
-        user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
-        referrer: typeof document !== 'undefined' ? document.referrer : '',
-      })
+    const eventName = link.provider === 'klook' ? 'klook_click' : link.provider === 'trip' ? 'trip_click' : 'affiliate_click'
+    trackEvent(eventName, {
+      page_path: window.location.pathname,
+      page_type: noteSlug ? 'note' : locationId ? 'spot' : regionId ? 'region' : 'unknown',
+      page_title: document.title,
+      region_id: regionId,
+      spot_id: locationId,
+      affiliate_platform: link.provider,
+      affiliate_product: link.title,
+      cta_position: compact ? 'sidebar' : 'inline',
+      device_type: getDeviceType(),
+    })
 
-      await supabase
-        .from('affiliate_links')
-        .update({ clicks: (link.clicks || 0) + 1 })
-        .eq('id', link.id)
+    try {
+      await fetch('/api/affiliate-click', {
+        method: 'POST',
+        keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          affiliateLinkId: link.id,
+          sessionId: getTrackingSessionId(),
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+          referrer: typeof document !== 'undefined' ? document.referrer : '',
+        }),
+      })
     } catch {
       // Ignore tracking issues so bookings are not blocked.
     }
@@ -367,7 +371,7 @@ export default function AffiliateCard({
         {links.map((link) => {
           const providerName = PROVIDER_NAMES[link.provider] || link.provider
           const linkTypeName = LINK_TYPE_NAMES[link.link_type] || link.link_type
-          const actionLabel = LINK_TYPE_ACTIONS[link.link_type] || '打开链接'
+          const actionLabel = LINK_TYPE_ACTIONS[link.link_type] || '查看预订详情'
           const icon = PROVIDER_ICONS[link.provider] || PROVIDER_ICONS.others
           const preview = previews[link.id]
           const previewTitle = preview?.title || link.title || `通过 ${providerName} 查看${linkTypeName}`
@@ -476,7 +480,7 @@ export default function AffiliateCard({
       </CardContent>
       {showDisclosure ? (
         <CardFooter className="border-t border-white/10 pt-4 text-xs leading-6 text-white/45">
-          These are affiliate links. We may earn a small commission if you book through them, at no extra cost to you.
+          部分链接为联盟链接。通过链接预订不会增加你的费用，我们可能获得少量佣金，用于支持网站内容制作。
         </CardFooter>
       ) : null}
     </Card>

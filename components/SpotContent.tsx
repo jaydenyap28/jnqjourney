@@ -10,6 +10,9 @@ import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
 import { formatOpeningHoursDisplay, hasVisibleOpeningHours } from '@/lib/opening-hours'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
+import TravelPackageCard from '@/components/TravelPackageCard'
+import type { TravelPackage } from '@/lib/server/travel-packages'
+import WhatsAppButton from '@/components/WhatsAppButton'
 import { Button } from '@/components/ui/button'
 import {
   ChevronLeft,
@@ -82,6 +85,7 @@ interface SpotContentProps {
     shortTitle?: string
     duration?: string
   }>
+  relatedPackages?: TravelPackage[]
 }
 
 function getYouTubeID(url: string) {
@@ -295,6 +299,7 @@ export default function SpotContent({
   onClose,
   relatedLocations = [],
   relatedGuides = [],
+  relatedPackages = [],
 }: SpotContentProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
@@ -1056,6 +1061,18 @@ export default function SpotContent({
               </section>
             ) : null}
 
+            {!isDrawer && relatedPackages.length > 0 ? (
+              <section className="space-y-4 rounded-[24px] border border-emerald-200/15 bg-emerald-400/[0.05] p-5">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Trip planning / 行程咨询</p>
+                  <h3 className="mt-2 text-2xl font-bold text-white">想把这个景点安排进完整行程？</h3>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact />)}
+                </div>
+              </section>
+            ) : null}
+
             {!isDrawer && relatedLocations.length > 0 ? (
               <section className="space-y-4">
                 <div className="flex items-center justify-between gap-4">
@@ -1087,8 +1104,15 @@ export default function SpotContent({
                 category={location.category}
                 title={affiliateTitle}
                 description={affiliateDescription}
-                showDisclosure={false}
+                showDisclosure
               />
+            ) : null}
+            {!isDrawer ? (
+              <div className="rounded-2xl border border-emerald-200/15 bg-emerald-400/[0.05] p-5">
+                <p className="text-sm font-semibold text-white">想把这个景点安排进完整行程？</p>
+                <p className="mt-2 text-xs leading-6 text-white/55">WhatsApp 会预填景点名称，方便直接说明需求。</p>
+                <div className="mt-4"><WhatsAppButton pageType="spot" spotName={location.name_cn || location.name} source={`JNQ-SPOT-${location.id}`} label="询问相关旅游配套" position="sidebar" className="w-full" /></div>
+              </div>
             ) : null}
             {!isDrawer ? <SupportSidebarCard className="bg-white/5" /> : null}
 

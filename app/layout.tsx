@@ -8,6 +8,7 @@ import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { getSiteUrl } from '@/lib/site'
 import PageViewTracker from '@/components/PageViewTracker'
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ['latin'],
@@ -93,6 +94,7 @@ export default function RootLayout({
         </Suspense>
         <PageViewTracker />
         {children}
+        <WhatsAppFloatingButton />
         <Analytics />
         <SpeedInsights />
       </body>
