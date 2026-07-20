@@ -17,6 +17,7 @@ interface WhatsAppButtonProps {
   source?: string
   position?: string
   message?: string
+  compactOnMobile?: boolean
 }
 
 export default function WhatsAppButton({
@@ -30,6 +31,7 @@ export default function WhatsAppButton({
   source,
   position = 'inline',
   message,
+  compactOnMobile = false,
 }: WhatsAppButtonProps) {
   const pathname = usePathname()
   const href = buildWhatsAppUrl({ pageType, region, spotName, guideTitle, packageName, source, message })
@@ -39,6 +41,7 @@ export default function WhatsAppButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
+      title={compactOnMobile ? label : undefined}
       aria-label={`${label}，将在新窗口打开 WhatsApp`}
       onClick={() => {
         trackEvent(pageType === 'package' ? 'package_cta_click' : 'whatsapp_click', {
@@ -65,7 +68,7 @@ export default function WhatsAppButton({
       className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-[#062d18] shadow-[0_10px_30px_rgba(37,211,102,0.22)] transition hover:-translate-y-0.5 hover:bg-[#35df76] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${className}`}
     >
       <MessageCircle className="h-4 w-4" aria-hidden="true" />
-      <span>{label}</span>
+      <span className={compactOnMobile ? 'sr-only md:not-sr-only' : undefined}>{label}</span>
     </a>
   )
 }

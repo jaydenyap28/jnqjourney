@@ -39,7 +39,8 @@ export default function WhatsAppFloatingButton() {
         packageName={pageType === 'package' && pathname !== '/packages' ? slug : undefined}
         source={source}
         position="floating"
-        className="border border-white/25 px-4 shadow-[0_14px_40px_rgba(0,0,0,0.34)] md:px-5"
+        compactOnMobile
+        className="h-12 w-12 border border-white/25 px-0 shadow-[0_14px_40px_rgba(0,0,0,0.34)] md:h-auto md:w-auto md:px-5"
       />
     </div>
   )

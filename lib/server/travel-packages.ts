@@ -6,6 +6,13 @@ export interface TravelPackageDay {
   items?: string[]
 }
 
+export interface TravelPackageImage {
+  url: string
+  alt?: string
+  caption?: string
+  sort_order?: number
+}
+
 export interface TravelPackage {
   id: number
   slug: string
@@ -17,7 +24,7 @@ export interface TravelPackage {
   short_description?: string | null
   full_description?: string | null
   cover_image?: string | null
-  gallery?: string[] | null
+  gallery?: TravelPackageImage[] | null
   video_url?: string | null
   highlights?: string[] | null
   suitable_for?: string[] | null

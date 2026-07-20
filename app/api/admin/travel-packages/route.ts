@@ -21,14 +21,38 @@ function cleanStringArray(value: unknown, limit = 100) {
   return Array.isArray(value) ? value.map((item) => cleanString(item, 1000)).filter(Boolean).slice(0, limit) : []
 }
 
+function cleanGallery(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((item, index) => {
+      if (typeof item === 'string') return { url: cleanString(item, 2000), alt: '', caption: '', sort_order: index }
+      if (!item || typeof item !== 'object') return null
+      const image = item as Record<string, unknown>
+      return {
+        url: cleanString(image.url, 2000),
+        alt: cleanString(image.alt, 300),
+        caption: cleanString(image.caption, 500),
+        sort_order: Number.isFinite(Number(image.sort_order)) ? Number(image.sort_order) : index,
+      }
+    })
+    .filter((item): item is NonNullable<typeof item> => Boolean(item?.url))
+    .sort((left, right) => left.sort_order - right.sort_order)
+    .slice(0, 30)
+}
+
 export async function GET(request: Request) {
   const auth = await requireAdminRequest(request)
   if (!auth.ok) return auth.response
   const supabase = getAdminClient()
   if (!supabase) return NextResponse.json({ error: 'Missing server database configuration.' }, { status: 500 })
-  const { data, error } = await supabase.from('travel_packages').select('*').order('updated_at', { ascending: false })
+
+  const [packagesResult, regionsResult] = await Promise.all([
+    supabase.from('travel_packages').select('*').order('updated_at', { ascending: false }),
+    supabase.from('regions').select('id,name,name_cn,country').order('country').order('name'),
+  ])
+  const error = packagesResult.error || regionsResult.error
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ packages: data || [] })
+  return NextResponse.json({ packages: packagesResult.data || [], regions: regionsResult.data || [] })
 }
 
 export async function POST(request: Request) {
@@ -39,9 +63,12 @@ export async function POST(request: Request) {
 
   const body = await request.json()
   const status = ['draft', 'published', 'archived'].includes(body.status) ? body.status : 'draft'
+  const id = Number.isInteger(Number(body.id)) && Number(body.id) > 0 ? Number(body.id) : null
+  const slug = cleanString(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
+  const gallery = cleanGallery(body.gallery)
   const payload = {
-    ...(Number.isInteger(Number(body.id)) && Number(body.id) > 0 ? { id: Number(body.id) } : {}),
-    slug: cleanString(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''),
+    ...(id ? { id } : {}),
+    slug,
     title_zh: cleanString(body.title_zh, 240),
     title_en: cleanString(body.title_en, 240) || null,
     destination: cleanString(body.destination, 160) || null,
@@ -50,7 +77,7 @@ export async function POST(request: Request) {
     short_description: cleanString(body.short_description, 1000) || null,
     full_description: cleanString(body.full_description, 10000) || null,
     cover_image: cleanString(body.cover_image, 2000) || null,
-    gallery: cleanStringArray(body.gallery, 30),
+    gallery,
     video_url: cleanString(body.video_url, 2000) || null,
     highlights: cleanStringArray(body.highlights),
     suitable_for: cleanStringArray(body.suitable_for),
@@ -68,20 +95,56 @@ export async function POST(request: Request) {
     seo_title: cleanString(body.seo_title, 240) || null,
     seo_description: cleanString(body.seo_description, 500) || null,
     canonical_url: cleanString(body.canonical_url, 500) || null,
-    related_location_ids: cleanStringArray(body.related_location_ids).map(Number).filter((id) => Number.isInteger(id) && id > 0),
+    related_location_ids: cleanStringArray(body.related_location_ids).map(Number).filter((value) => Number.isInteger(value) && value > 0),
     related_guide_slugs: cleanStringArray(body.related_guide_slugs),
     related_note_slugs: cleanStringArray(body.related_note_slugs),
-    affiliate_link_ids: cleanStringArray(body.affiliate_link_ids).map(Number).filter((id) => Number.isInteger(id) && id > 0),
+    affiliate_link_ids: cleanStringArray(body.affiliate_link_ids).map(Number).filter((value) => Number.isInteger(value) && value > 0),
     updated_at: new Date().toISOString(),
     published_at: status === 'published' ? cleanString(body.published_at) || new Date().toISOString() : null,
   }
 
-  if (!payload.slug || !payload.title_zh) return NextResponse.json({ error: 'Slug and Chinese title are required.' }, { status: 400 })
-  if (status === 'published' && (!payload.cover_image || !payload.highlights.length || !payload.itinerary_days.length || !payload.included_items.length)) {
-    return NextResponse.json({ error: '发布前必须填写封面、亮点、行程和包含项目。' }, { status: 400 })
+  if (!payload.slug || !payload.title_zh) {
+    return NextResponse.json({ error: 'Slug 和中文标题为必填项。' }, { status: 400 })
   }
 
-  const { data, error } = await supabase.from('travel_packages').upsert(payload).select('*').single()
+  const { data: slugOwner, error: slugError } = await supabase
+    .from('travel_packages')
+    .select('id')
+    .eq('slug', payload.slug)
+    .maybeSingle()
+  if (slugError) return NextResponse.json({ error: slugError.message }, { status: 500 })
+  if (slugOwner && slugOwner.id !== id) {
+    return NextResponse.json({ error: '这个页面 Slug 已被其他旅游配套使用。' }, { status: 409 })
+  }
+
+  if (status === 'published') {
+    const missing: string[] = []
+    let validRegion = false
+    if (payload.region_id) {
+      const { data: region } = await supabase.from('regions').select('name,country').eq('id', payload.region_id).maybeSingle()
+      validRegion = Boolean(region)
+      if (payload.slug.startsWith('batam-')) {
+        validRegion = String(region?.name || '').toLowerCase() === 'batam' && String(region?.country || '').toLowerCase() === 'indonesia'
+      }
+    }
+    if (!validRegion) missing.push('正确地区')
+    if (!payload.title_zh) missing.push('标题')
+    if (!payload.short_description) missing.push('简短介绍')
+    if (!payload.included_items.length) missing.push('配套包含')
+    if (!payload.excluded_items.length) missing.push('不包含项目')
+    if (!payload.whatsapp_message || !payload.source_code) missing.push('WhatsApp CTA')
+    if (!payload.cover_image) missing.push('封面图')
+    if (payload.gallery.length < 3) missing.push('至少 3 张实拍图')
+    if (!payload.itinerary_days.length) missing.push('行程概览')
+    if (missing.length) {
+      return NextResponse.json({ error: `暂时无法发布，请先补齐：${missing.join('、')}。` }, { status: 400 })
+    }
+  }
+
+  const query = id
+    ? supabase.from('travel_packages').update(payload).eq('id', id)
+    : supabase.from('travel_packages').insert(payload)
+  const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ package: data })
 }

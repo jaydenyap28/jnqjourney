@@ -58,22 +58,72 @@ ON public.travel_packages FOR ALL TO authenticated
 USING (true) WITH CHECK (true);
 
 INSERT INTO public.travel_packages (
-  slug, title_zh, title_en, destination, duration, short_description,
-  price_note, source_code, status, featured, sort_order
+  slug, title_zh, title_en, destination, region_id, duration,
+  short_description, full_description, highlights, suitable_for,
+  itinerary_days, included_items, excluded_items, notes, price_display,
+  price_note, whatsapp_message, source_code, status, featured, sort_order,
+  seo_title, seo_description, canonical_url, related_location_ids,
+  related_guide_slugs, related_note_slugs, affiliate_link_ids
 )
 VALUES (
   'batam-3d2n',
   '巴淡岛 3天2夜旅游配套',
   'Batam 3D2N Travel Package',
-  'Batam',
+  'Batam, Indonesia',
+  (SELECT id FROM public.regions WHERE lower(name) = 'batam' AND lower(country) = 'indonesia' ORDER BY id LIMIT 1),
   '3天2夜',
-  '适合情侣、家庭及朋友团体，可查询不同出发日期、人数与码头安排。',
-  '最新价格会根据出发日期、人数、房型及出发码头调整，请通过 WhatsApp 查询。',
+  '适合情侣、家庭、朋友及小型团体的巴淡岛 3天2夜配套，包含来回船票、酒店住宿、指定餐食、按摩体验及中文司机／导游安排。实际价格会根据出发日期、人数、房型及出发码头调整。',
+  E'想轻松安排一趟巴淡岛短途旅行，又不想自己分别处理船票、酒店、交通和行程，可以通过 JnQ Journey 查询巴淡岛 3天2夜旅游配套。\n\n配套适合情侣、家庭、朋友团体及小型团体，行程结合住宿、指定餐食、当地景点、按摩体验以及中文司机／导游安排。\n\n不同出发日期、人数、房型和码头可能会影响最终价格。提交预计日期和人数后，我们会协助确认最新报价与可安排情况。',
+  '["来回船票与 2 晚酒店住宿", "指定餐食与按摩体验", "中文司机／导游安排", "彩虹桥、粉色沙滩及当地体验"]'::jsonb,
+  '["情侣出游", "家庭旅行", "朋友团体", "小型公司团体", "不想自行安排船票、住宿和当地交通的旅客", "从新山或新加坡附近出发的短途旅客"]'::jsonb,
+  '[{"title":"抵达巴淡岛","summary":"从指定码头出发前往巴淡岛，抵达后由当地司机／导游接待，开始安排景点、美食或体验行程，并入住酒店。"},{"title":"巴淡岛当地体验","summary":"继续游览巴淡岛当地景点，并根据最终确认行程安排指定餐食、按摩及其他体验。"},{"title":"返程","summary":"早餐后进行最后一段行程或自由活动，之后前往码头搭船返回。"}]'::jsonb,
+  '["来回船票", "2 晚 IBIS Styles Batam 酒店住宿", "2 次早餐", "1 次午餐", "1 次晚餐", "90 分钟全身按摩", "30 分钟洗头按摩", "中文司机／导游", "彩虹桥行程", "粉色沙滩行程", "咖啡体验", "千层糕试吃"]'::jsonb,
+  '["去程 Fuel Tax", "回程 Fuel Tax", "个人消费", "单人房差", "旺季或指定日期附加费", "未在“配套包含”内明确列出的费用", "旅游保险"]'::jsonb,
+  '["实际景点顺序、餐食、按摩时段及船班会根据出发日期、供应商安排和当地情况调整，最终以出发前确认的行程为准。", "去程 Fuel Tax 历史参考：RM17／人；回程 Fuel Tax 历史参考：Rp65,000／人。实际费用以出发时码头或供应商最新公布为准。", "历史询价参考：2026年6月22日至24日，8位成人，周末成人报价 RM726／人。儿童参考：6岁或以下 RM345／人。不足4人参考附加费：RM60／人。单人房差参考：RM180／人，两晚。以上仅为历史报价资料，公开发布或回复客户前必须向供应商重新确认。", "可查询出发码头：Stulang Laut、Puteri Harbour、Singapore HarbourFront。Puteri Harbour 历史配套曾有 RM60／人附加费，实际报价前必须重新确认。"]'::jsonb,
+  '请查询最新价格',
+  '价格会根据出发日期、人数、房型、周末／平日及出发码头调整，请通过 WhatsApp 提供日期与人数以获取最新报价。',
+  E'你好，我们从 JnQ Journey 看到巴淡岛 3天2夜旅游配套，想查询最新价格和可出发日期。\n\n预计日期：\n成人：\n儿童：\n出发码头：\n房间数量：\n其他要求：\n\n来源：JNQ-BATAM-PACKAGE',
   'JNQ-BATAM-PACKAGE',
   'draft',
   true,
-  10
+  10,
+  '巴淡岛3天2夜旅游配套｜酒店、船票、按摩与中文司机｜JnQ Journey',
+  '查询巴淡岛3天2夜旅游配套，包括来回船票、2晚酒店、指定餐食、按摩体验及中文司机／导游。价格根据日期、人数、房型和出发码头调整。',
+  'https://jnqjourney.com/packages/batam-3d2n',
+  ARRAY[276, 278]::bigint[],
+  ARRAY[]::text[],
+  ARRAY[]::text[],
+  ARRAY[]::bigint[]
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+  title_zh = EXCLUDED.title_zh,
+  title_en = EXCLUDED.title_en,
+  destination = EXCLUDED.destination,
+  region_id = EXCLUDED.region_id,
+  duration = EXCLUDED.duration,
+  short_description = EXCLUDED.short_description,
+  full_description = EXCLUDED.full_description,
+  highlights = EXCLUDED.highlights,
+  suitable_for = EXCLUDED.suitable_for,
+  itinerary_days = EXCLUDED.itinerary_days,
+  included_items = EXCLUDED.included_items,
+  excluded_items = EXCLUDED.excluded_items,
+  notes = EXCLUDED.notes,
+  price_display = EXCLUDED.price_display,
+  price_note = EXCLUDED.price_note,
+  whatsapp_message = EXCLUDED.whatsapp_message,
+  source_code = EXCLUDED.source_code,
+  status = 'draft',
+  featured = EXCLUDED.featured,
+  sort_order = EXCLUDED.sort_order,
+  seo_title = EXCLUDED.seo_title,
+  seo_description = EXCLUDED.seo_description,
+  canonical_url = EXCLUDED.canonical_url,
+  related_location_ids = EXCLUDED.related_location_ids,
+  related_guide_slugs = EXCLUDED.related_guide_slugs,
+  related_note_slugs = EXCLUDED.related_note_slugs,
+  affiliate_link_ids = EXCLUDED.affiliate_link_ids,
+  published_at = NULL,
+  updated_at = now();
 
 COMMIT;

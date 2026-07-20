@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Check, ChevronRight, X } from 'lucide-react'
+import { Check, ChevronRight, ImageOff, X } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import PackageViewTracker from '@/components/PackageViewTracker'
@@ -31,10 +31,18 @@ export default async function PackagePage({ params }: { params: { slug: string }
   const item = await readPublishedPackage(params.slug)
   if (!item) notFound()
   const canonicalPath = item.canonical_url || `/packages/${item.slug}`
+  const gallery = (item.gallery || [])
+    .map((image, index) => typeof image === 'string'
+      ? { url: image, alt: '', caption: '', sort_order: index }
+      : { ...image, sort_order: image.sort_order ?? index })
+    .filter((image) => image.url)
+    .sort((left, right) => left.sort_order - right.sort_order)
+  const coverAlt = gallery.find((image) => image.url === item.cover_image)?.alt || item.title_zh
   const cta = (label: string, position: string) => (
     <WhatsAppButton pageType="package" packageName={item.title_zh} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label={label} position={position} />
   )
   const jsonLd = [
+    { '@context': 'https://schema.org', '@type': 'WebPage', name: item.title_zh, description: item.short_description, url: absoluteUrl(canonicalPath), primaryImageOfPage: item.cover_image ? { '@type': 'ImageObject', url: item.cover_image } : undefined },
     { '@context': 'https://schema.org', '@type': 'TouristTrip', name: item.title_zh, description: item.short_description, image: item.cover_image || undefined, url: absoluteUrl(canonicalPath), touristType: item.suitable_for || undefined },
     { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'JnQ Journey', item: absoluteUrl('/') },
@@ -48,7 +56,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
       <PackageViewTracker packageId={item.id} packageName={item.title_zh} sourceCode={item.source_code} />
       {jsonLd.map((data, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />)}
       <section className="relative flex min-h-[78svh] items-end overflow-hidden">
-        {item.cover_image ? <FallbackImage src={item.cover_image} alt={item.title_zh} fill priority className="object-cover" /> : <div className="absolute inset-0 bg-[linear-gradient(135deg,#122238,#08101d_55%,#050816)]" />}
+        {item.cover_image ? <FallbackImage src={item.cover_image} alt={coverAlt} fill priority className="object-cover" /> : <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(135deg,#122238,#08101d_55%,#050816)] text-white/25"><ImageOff className="h-12 w-12" aria-hidden="true" /></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/55 to-black/15" />
         <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-36 md:px-8 md:pb-20">
           <nav className="mb-7 flex items-center gap-2 text-xs text-white/55"><Link href="/">首页</Link><ChevronRight className="h-3 w-3" /><Link href="/packages">旅游配套</Link></nav>
@@ -61,6 +69,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
       </section>
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
+        {gallery.length ? <section><h2 className="text-3xl font-semibold">旅程照片</h2><div className="mt-6 grid gap-4 md:grid-cols-2">{gallery.map((image, index) => <figure key={`${image.url}-${index}`} className="overflow-hidden rounded-lg border border-white/10 bg-white/5"><div className="relative aspect-[4/3]"><FallbackImage src={image.url} alt={image.alt || `${item.title_zh} 实拍照片 ${index + 1}`} fill className="object-cover" /></div>{image.caption ? <figcaption className="px-4 py-3 text-sm text-white/60">{image.caption}</figcaption> : null}</figure>)}</div></section> : null}
         {item.highlights?.length ? <section><h2 className="text-3xl font-semibold">配套亮点</h2><div className="mt-6 grid gap-3 md:grid-cols-2">{item.highlights.map((text) => <div key={text} className="flex gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Check className="mt-1 h-4 w-4 shrink-0 text-emerald-300" /><span className="leading-7 text-white/72">{text}</span></div>)}</div><div className="mt-7">{cta('查询巴淡岛配套价格', 'inline')}</div></section> : null}
         {item.suitable_for?.length ? <section><h2 className="text-3xl font-semibold">适合谁</h2><div className="mt-5 flex flex-wrap gap-2">{item.suitable_for.map((text) => <span key={text} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70">{text}</span>)}</div></section> : null}
         {item.itinerary_days?.length ? <section><h2 className="text-3xl font-semibold">行程摘要</h2><div className="mt-7 space-y-4">{item.itinerary_days.map((day, index) => <article key={`${day.title}-${index}`} className="grid gap-4 border-l border-amber-200/30 pl-5 md:grid-cols-[7rem_1fr]"><p className="text-sm font-semibold text-amber-200">Day {index + 1}</p><div><h3 className="text-xl font-semibold">{day.title}</h3>{day.summary ? <p className="mt-2 leading-7 text-white/65">{day.summary}</p> : null}{day.items?.length ? <ul className="mt-3 space-y-2 text-sm text-white/60">{day.items.map((entry) => <li key={entry}>· {entry}</li>)}</ul> : null}</div></article>)}</div><div className="mt-8">{cta('WhatsApp 确认日期', 'after_itinerary')}</div></section> : null}
