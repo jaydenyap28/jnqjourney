@@ -9,7 +9,11 @@ export async function GET() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
-    return NextResponse.json({ error: 'Public data configuration is unavailable.' }, { status: 503 })
+    console.error('[public-locations] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.')
+    return NextResponse.json(
+      { error: 'Public data configuration is unavailable.' },
+      { status: 503, headers: { 'Cache-Control': 'private, no-store, max-age=0' } }
+    )
   }
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
@@ -28,9 +32,18 @@ export async function GET() {
   ])
 
   if (locationsError || regionsError) {
-    console.error('[public-locations]', locationsError?.message || regionsError?.message)
-    return NextResponse.json({ error: 'Unable to load travel spots right now.' }, { status: 502 })
+    console.error('[public-locations]', {
+      locations: locationsError?.message || null,
+      regions: regionsError?.message || null,
+    })
+    return NextResponse.json(
+      { error: 'Unable to load travel spots right now.' },
+      { status: 502, headers: { 'Cache-Control': 'private, no-store, max-age=0' } }
+    )
   }
 
-  return NextResponse.json({ locations: locations || [], regions: regions || [] })
+  return NextResponse.json(
+    { locations: locations || [], regions: regions || [] },
+    { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } }
+  )
 }

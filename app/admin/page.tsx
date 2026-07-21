@@ -6,6 +6,7 @@ import Fuse from 'fuse.js'
 import {
   ArrowUpDown,
   BookOpen,
+  Briefcase,
   CalendarDays,
   CheckCircle2,
   ChevronLeft,
@@ -477,9 +478,10 @@ export default function AdminDashboard() {
             <Link href="/admin/regions"><Button variant="outline"><MapPin className="mr-2 h-4 w-4" />地区管理</Button></Link>
             <Link href="/admin/guides"><Button variant="outline" className="border-amber-200 bg-amber-50 text-amber-900 hover:bg-amber-100"><BookOpen className="mr-2 h-4 w-4" />游记管理</Button></Link>
             <Link href="/admin/notes"><Button variant="outline" className="border-fuchsia-200 bg-fuchsia-50 text-fuchsia-900 hover:bg-fuchsia-100"><BookOpen className="mr-2 h-4 w-4" />长文笔记</Button></Link>
-            <Link href="/admin/reports"><Button variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"><CalendarDays className="mr-2 h-4 w-4" />数据报表</Button></Link>
+            <Link href="/admin/packages"><Button variant="outline" className="border-cyan-200 bg-cyan-50 text-cyan-900 hover:bg-cyan-100"><Briefcase className="mr-2 h-4 w-4" />旅游配套</Button></Link>
             <Link href="/admin/affiliate"><Button variant="outline" className="border-sky-200 bg-sky-50 text-sky-900 hover:bg-sky-100"><Link2 className="mr-2 h-4 w-4" />联盟管理</Button></Link>
             <Link href="/admin/klook-widgets"><Button variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"><Link2 className="mr-2 h-4 w-4" />Klook Widgets</Button></Link>
+            <Link href="/admin/reports"><Button variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-900 hover:bg-emerald-100"><CalendarDays className="mr-2 h-4 w-4" />数据报表</Button></Link>
             <Link href="/admin/add"><Button className="bg-orange-500 text-white hover:bg-orange-600"><Plus className="mr-2 h-4 w-4" />录入新景点</Button></Link>
           </div>
         </div>

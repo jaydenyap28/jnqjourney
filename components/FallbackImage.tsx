@@ -6,6 +6,15 @@ import { parseImageFocus } from '@/lib/image-focus'
 
 const FALLBACK_SRC = '/placeholder-image.jpg'
 
+function bypassOptimizationForDynamicHost(src: string) {
+  try {
+    const hostname = new URL(src).hostname.toLowerCase()
+    return hostname.endsWith('.fbcdn.net') || hostname === 'fbcdn.net'
+  } catch {
+    return false
+  }
+}
+
 type FallbackImageProps = Omit<ImageProps, 'src'> & {
   src?: string | null
   fallbackSrc?: string
@@ -29,6 +38,10 @@ export default function FallbackImage({
   }, [fallbackSrc, hasError, src])
 
   const resolvedImage = useMemo(() => parseImageFocus(resolvedSrc), [resolvedSrc])
+  const bypassOptimization = useMemo(
+    () => bypassOptimizationForDynamicHost(resolvedImage.src || fallbackSrc),
+    [fallbackSrc, resolvedImage.src]
+  )
   const mergedStyle = useMemo(
     () => ({
       ...(props.style || {}),
@@ -42,7 +55,7 @@ export default function FallbackImage({
       {...props}
       src={resolvedImage.src || fallbackSrc}
       alt={alt}
-      unoptimized={props.unoptimized ?? true}
+      unoptimized={props.unoptimized ?? bypassOptimization}
       style={mergedStyle}
       onError={(event) => {
         if (!hasError) {

@@ -18,6 +18,7 @@ interface WhatsAppButtonProps {
   position?: string
   message?: string
   compactOnMobile?: boolean
+  track?: boolean
 }
 
 export default function WhatsAppButton({
@@ -32,6 +33,7 @@ export default function WhatsAppButton({
   position = 'inline',
   message,
   compactOnMobile = false,
+  track = true,
 }: WhatsAppButtonProps) {
   const pathname = usePathname()
   const href = buildWhatsAppUrl({ pageType, region, spotName, guideTitle, packageName, source, message })
@@ -44,6 +46,7 @@ export default function WhatsAppButton({
       title={compactOnMobile ? label : undefined}
       aria-label={`${label}，将在新窗口打开 WhatsApp`}
       onClick={() => {
+        if (!track) return
         trackEvent(pageType === 'package' ? 'package_cta_click' : 'whatsapp_click', {
           page_path: pathname,
           page_type: pageType,

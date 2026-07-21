@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, MapPinned } from 'lucide-react'
+import { ArrowRight, Compass, MapPinned } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import SiteFooter from '@/components/SiteFooter'
@@ -42,9 +42,20 @@ export default async function PackagesPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 p-6">
-            <p className="font-semibold">配套资料正在整理中</p>
-            <p className="mt-2 text-sm leading-7 text-white/60">在行程、包含项目和照片确认之前，我们不会公开不完整的配套页面。</p>
+          <div className="mt-12 border-y border-white/10 py-10 md:py-14">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-amber-200/20 bg-amber-200/10 text-amber-100"><Compass className="h-5 w-5" /></div>
+            <h2 className="mt-5 text-2xl font-semibold md:text-3xl">旅游配套正在整理中</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60 md:text-base">Jayden &amp; Qing 正在整理实拍行程、住宿和交通资料，完整配套确认后会陆续上线。</p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <WhatsAppButton
+                pageType="package"
+                source="JNQ-PACKAGES-EMPTY"
+                message={'你好，我从 JnQ Journey 网站看到你们，想咨询旅游配套。\n\n预计日期：\n人数：\n目的地：\n其他要求：\n\n来源：JNQ-PACKAGES-EMPTY'}
+                label="WhatsApp 咨询旅行配套"
+                position="empty_state"
+              />
+              <Link href="/guide" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">浏览旅游攻略 <ArrowRight className="h-4 w-4" /></Link>
+            </div>
           </div>
         )}
       </section>

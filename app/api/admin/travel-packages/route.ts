@@ -46,13 +46,24 @@ export async function GET(request: Request) {
   const supabase = getAdminClient()
   if (!supabase) return NextResponse.json({ error: 'Missing server database configuration.' }, { status: 500 })
 
+  const id = Number(new URL(request.url).searchParams.get('id') || 0)
+  const packagesQuery = id > 0
+    ? supabase.from('travel_packages').select('*').eq('id', id)
+    : supabase.from('travel_packages').select('*').order('updated_at', { ascending: false })
   const [packagesResult, regionsResult] = await Promise.all([
-    supabase.from('travel_packages').select('*').order('updated_at', { ascending: false }),
+    packagesQuery,
     supabase.from('regions').select('id,name,name_cn,country').order('country').order('name'),
   ])
   const error = packagesResult.error || regionsResult.error
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ packages: packagesResult.data || [], regions: regionsResult.data || [] })
+  if (id > 0 && !(packagesResult.data || []).length) {
+    return NextResponse.json({ error: '找不到这项旅游配套。' }, { status: 404 })
+  }
+  return NextResponse.json({
+    packages: packagesResult.data || [],
+    package: id > 0 ? packagesResult.data?.[0] || null : undefined,
+    regions: regionsResult.data || [],
+  })
 }
 
 export async function POST(request: Request) {
@@ -117,7 +128,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: '这个页面 Slug 已被其他旅游配套使用。' }, { status: 409 })
   }
 
-  if (status === 'published') {
+  if (status === 'published' || body.action === 'validate') {
     const missing: string[] = []
     let validRegion = false
     if (payload.region_id) {
@@ -141,10 +152,41 @@ export async function POST(request: Request) {
     }
   }
 
+  if (body.action === 'validate') {
+    return NextResponse.json({ ok: true, message: '发布检查通过。' })
+  }
+
   const query = id
     ? supabase.from('travel_packages').update(payload).eq('id', id)
     : supabase.from('travel_packages').insert(payload)
   const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ package: data })
+}
+
+export async function DELETE(request: Request) {
+  const auth = await requireAdminRequest(request)
+  if (!auth.ok) return auth.response
+  const supabase = getAdminClient()
+  if (!supabase) return NextResponse.json({ error: 'Missing server database configuration.' }, { status: 500 })
+
+  const body = await request.json()
+  const id = Number(body.id)
+  const confirmSlug = cleanString(body.confirmSlug, 160)
+  if (!Number.isInteger(id) || id <= 0 || !confirmSlug) {
+    return NextResponse.json({ error: '缺少删除确认资料。' }, { status: 400 })
+  }
+
+  const { data: existing, error: readError } = await supabase
+    .from('travel_packages')
+    .select('id,slug')
+    .eq('id', id)
+    .maybeSingle()
+  if (readError) return NextResponse.json({ error: readError.message }, { status: 500 })
+  if (!existing) return NextResponse.json({ error: '找不到这项旅游配套。' }, { status: 404 })
+  if (existing.slug !== confirmSlug) return NextResponse.json({ error: '删除确认不匹配。' }, { status: 409 })
+
+  const { error } = await supabase.from('travel_packages').delete().eq('id', id).eq('slug', confirmSlug)
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ ok: true })
 }

@@ -5,7 +5,8 @@ import { readGuides } from '@/lib/server/guides-store'
 import { readPublishedNotes } from '@/lib/server/notes-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
-export const revalidate = 600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 function createPublicSupabaseClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL

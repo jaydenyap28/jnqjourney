@@ -21,7 +21,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-white">网站分析与 Cookie</h2>
             <p className="mt-2">我们可能使用 Google Analytics、Vercel Analytics 和必要 Cookie，统计页面浏览、设备类别以及按钮点击。分析事件不会包含 WhatsApp 预填内容、姓名、电话号码或其他个人资料。</p>
           </section>
-          <section>
+          <section id="affiliate-links" className="scroll-mt-24">
             <h2 className="text-xl font-semibold text-white">联盟链接</h2>
             <p className="mt-2">部分 Klook、Trip.com 或其他预订链接属于联盟链接。通过这些链接预订不会增加你的费用，我们可能获得少量佣金，用于支持网站内容制作。</p>
           </section>
