@@ -32,11 +32,12 @@ export async function middleware(request: NextRequest) {
     const rows = (await response.json()) as Array<{ id: number }>
     if (rows.length > 0) return NextResponse.next()
 
-    const notFoundUrl = request.nextUrl.clone()
-    notFoundUrl.pathname = '/__jnq-package-not-found__'
-    return NextResponse.rewrite(notFoundUrl, {
+    return new NextResponse('Not Found', {
       status: 404,
-      headers: { 'X-Robots-Tag': 'noindex, nofollow' },
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow',
+      },
     })
   } catch (error) {
     console.error('[package-visibility]', error)
