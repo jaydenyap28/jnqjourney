@@ -13,6 +13,40 @@ export interface TravelPackageImage {
   sort_order?: number
 }
 
+export type TravelPackageOptionStatus = 'active' | 'inactive' | 'archived'
+
+export interface TravelPackageOption {
+  id: number
+  package_id: number
+  slug: string
+  name_zh: string
+  name_en?: string | null
+  accommodation_name: string
+  accommodation_type?: string | null
+  village_name?: string | null
+  short_description?: string | null
+  suitable_for?: string[] | null
+  price_from?: number | null
+  price_currency?: string | null
+  price_unit: 'person' | 'room' | 'package' | 'group'
+  price_display: string
+  price_rows?: Array<{ label: string; price: string }> | null
+  included_items?: string[] | null
+  excluded_items?: string[] | null
+  notes?: string[] | null
+  validity_label?: string | null
+  valid_until?: string | null
+  brochure_image?: TravelPackageImage | null
+  gallery?: TravelPackageImage[] | null
+  whatsapp_message?: string | null
+  source_code?: string | null
+  featured?: boolean
+  sort_order?: number
+  status: TravelPackageOptionStatus
+  created_at?: string
+  updated_at?: string
+}
+
 export interface TravelPackage {
   id: number
   slug: string
@@ -88,4 +122,20 @@ export async function readPublishedPackage(slug: string) {
     return null
   }
   return data as TravelPackage | null
+}
+
+export async function readPublishedPackageOptions(packageId: number) {
+  const supabase = createServerClient()
+  if (!supabase || !Number.isInteger(packageId) || packageId <= 0) return []
+  const { data, error } = await supabase
+    .from('travel_package_options')
+    .select('*')
+    .eq('package_id', packageId)
+    .eq('status', 'active')
+    .order('sort_order', { ascending: true })
+  if (error) {
+    if (!error.message.includes('travel_package_options')) console.error('[travel-package-options]', error.message)
+    return []
+  }
+  return (data || []) as TravelPackageOption[]
 }

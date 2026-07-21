@@ -6,6 +6,8 @@ export type AnalyticsEventName =
   | 'package_cta_click'
   | 'package_brochure_view'
   | 'package_comparison_view'
+  | 'package_option_view'
+  | 'package_option_select'
   | 'klook_click'
   | 'trip_click'
   | 'affiliate_click'

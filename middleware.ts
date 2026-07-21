@@ -4,6 +4,12 @@ export async function middleware(request: NextRequest) {
   const slug = request.nextUrl.pathname.split('/').filter(Boolean)[1]
   if (!slug) return NextResponse.next()
 
+  if (['tioman-aman-resort-3d2n', 'tioman-paya-beach-resort-3d2n', 'tioman-barat-resort-3d2n'].includes(slug)) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/packages/tioman-3d2n'
+    return NextResponse.redirect(redirectUrl, 308)
+  }
+
   const endpoint = new URL(`/api/package-visibility/${encodeURIComponent(slug)}`, request.url)
 
   try {

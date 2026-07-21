@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { getTiomanComparison, isTiomanPackageSlug, isTiomanRegion } from '@/lib/tioman-packages'
+import { isTiomanMainPackageSlug, isTiomanPackage, isTiomanRegion } from '@/lib/tioman-packages'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -61,22 +61,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: '找不到这项旅游配套。' }, { status: 404 })
   }
   const selectedPackage = id > 0 ? packagesResult.data?.[0] || null : null
-  let comparisonPackages: unknown[] = []
-  if (selectedPackage && isTiomanPackageSlug(selectedPackage.slug) && selectedPackage.region_id) {
+  let options: unknown[] = []
+  if (selectedPackage && isTiomanMainPackageSlug(selectedPackage.slug)) {
     const { data, error: comparisonError } = await supabase
-      .from('travel_packages')
+      .from('travel_package_options')
       .select('*')
-      .eq('region_id', selectedPackage.region_id)
-      .in('slug', ['tioman-aman-resort-3d2n', 'tioman-paya-beach-resort-3d2n', 'tioman-barat-resort-3d2n'])
+      .eq('package_id', selectedPackage.id)
       .order('sort_order', { ascending: true })
     if (comparisonError) return NextResponse.json({ error: comparisonError.message }, { status: 500 })
-    comparisonPackages = data || []
+    options = data || []
   }
 
   return NextResponse.json({
     packages: packagesResult.data || [],
     package: selectedPackage || undefined,
-    comparisonPackages,
+    options,
     regions: regionsResult.data || [],
   })
 }
@@ -145,6 +144,7 @@ export async function POST(request: Request) {
 
   if (status === 'published' || body.action === 'validate') {
     const missing: string[] = []
+    const isTiomanMainPackage = isTiomanMainPackageSlug(payload.slug)
     let validRegion = false
     if (payload.region_id) {
       const { data: region } = await supabase.from('regions').select('name,name_cn,country').eq('id', payload.region_id).maybeSingle()
@@ -152,29 +152,32 @@ export async function POST(request: Request) {
       if (payload.slug.startsWith('batam-')) {
         validRegion = String(region?.name || '').toLowerCase() === 'batam' && String(region?.country || '').toLowerCase() === 'indonesia'
       }
-      if (isTiomanPackageSlug(payload.slug)) validRegion = isTiomanRegion(region)
+      if (isTiomanPackage(payload.slug)) validRegion = isTiomanRegion(region)
     }
     if (!validRegion) missing.push('正确地区')
     if (!payload.title_zh) missing.push('标题')
     if (!payload.short_description) missing.push('简短介绍')
-    if (!payload.included_items.length) missing.push('配套包含')
-    if (!payload.excluded_items.length) missing.push('不包含项目')
+    if (!isTiomanMainPackage && !payload.included_items.length) missing.push('配套包含')
+    if (!isTiomanMainPackage && !payload.excluded_items.length) missing.push('不包含项目')
     if (!payload.whatsapp_message || !payload.source_code) missing.push('WhatsApp CTA')
     if (!payload.cover_image) missing.push('封面图')
-    const isTiomanPackage = isTiomanPackageSlug(payload.slug)
-    if (payload.gallery.length < (isTiomanPackage ? 1 : 3)) missing.push(isTiomanPackage ? '已上传的原始配套海报' : '至少 3 张实拍图')
+    if (!isTiomanMainPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
     if (!payload.itinerary_days.length) missing.push('行程概览')
-    if (isTiomanPackage) {
-      const comparison = getTiomanComparison(payload.slug)
-      const priceDisplay = payload.price_display || ''
-      const priceNote = payload.price_note || ''
-      const expectedUnit = comparison?.priceUnit.replace('起', '').replace('（双人房）', '') || ''
-      if (!comparison || !priceDisplay.includes(comparison.priceFrom) || !priceDisplay.includes(expectedUnit)) missing.push('正确的价格单位')
-      if (!priceNote.includes(comparison?.pricePeriod || '')) missing.push('价格有效期或价格期间')
-      if (!priceNote.includes('最终') || !priceNote.includes('确认')) missing.push('最终确认说明')
-      if (!payload.gallery[0]?.alt) missing.push('海报 alt text')
-      if (payload.slug === 'tioman-aman-resort-3d2n' && !payload.notes.some((note: string) => note.includes('儿童年龄区间'))) missing.push('儿童年龄区间确认提醒')
-      if (payload.slug === 'tioman-barat-resort-3d2n' && !priceDisplay.includes('每房')) missing.push('The Barat 每房价格标示')
+    if (isTiomanMainPackage) {
+      if (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人')) missing.push('主配套最低每人价格')
+      if (!payload.price_note?.includes('最终') || !payload.price_note.includes('确认')) missing.push('最终确认说明')
+      const { data: activeOptions, error: optionsError } = await supabase
+        .from('travel_package_options')
+        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,slug')
+        .eq('package_id', id || 0)
+        .eq('status', 'active')
+      if (optionsError) return NextResponse.json({ error: optionsError.message }, { status: 500 })
+      if (!(activeOptions || []).length) missing.push('至少一个 active option')
+      for (const option of activeOptions || []) {
+        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.some((note: string) => note.includes('最终确认')) || !option.gallery?.[0]?.url) missing.push(`完整 option：${option.name_zh || option.slug}`)
+        if (option.slug === 'the-barat-tioman' && option.price_unit !== 'room') missing.push('The Barat 每房价格单位')
+        if (option.slug === 'aman-tioman' && !option.notes?.some((note: string) => note.includes('年龄区间'))) missing.push('Aman 儿童年龄区间提醒')
+      }
     }
     if (missing.length) {
       return NextResponse.json({ error: `暂时无法发布，请先补齐：${missing.join('、')}。` }, { status: 400 })

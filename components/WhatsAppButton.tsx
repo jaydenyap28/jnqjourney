@@ -15,6 +15,10 @@ interface WhatsAppButtonProps {
   guideTitle?: string
   packageName?: string
   packageId?: number
+  optionId?: number
+  optionName?: string
+  accommodationName?: string
+  villageName?: string
   resortName?: string
   regionName?: string
   priceFrom?: string
@@ -35,6 +39,10 @@ export default function WhatsAppButton({
   guideTitle,
   packageName,
   packageId,
+  optionId,
+  optionName,
+  accommodationName,
+  villageName,
   resortName,
   regionName,
   priceFrom,
@@ -63,6 +71,10 @@ export default function WhatsAppButton({
           page_title: typeof document === 'undefined' ? undefined : document.title,
           package_name: packageName,
           package_id: packageId,
+          option_id: optionId,
+          option_name: optionName,
+          accommodation_name: accommodationName,
+          village_name: villageName,
           resort_name: resortName,
           region_name: regionName,
           price_from: priceFrom,
@@ -78,6 +90,10 @@ export default function WhatsAppButton({
             page_type: pageType,
             package_name: packageName,
             package_id: packageId,
+            option_id: optionId,
+            option_name: optionName,
+            accommodation_name: accommodationName,
+            village_name: villageName,
             resort_name: resortName,
             region_name: regionName,
             price_from: priceFrom,

@@ -6,6 +6,9 @@ export const TIOMAN_PACKAGE_SLUGS = [
   'tioman-barat-resort-3d2n',
 ] as const
 
+export const TIOMAN_MAIN_PACKAGE_SLUG = 'tioman-3d2n'
+export const TIOMAN_LEGACY_PACKAGE_SLUGS = TIOMAN_PACKAGE_SLUGS
+
 export type TiomanPackageSlug = typeof TIOMAN_PACKAGE_SLUGS[number]
 
 export type TiomanComparison = {
@@ -62,6 +65,14 @@ const TIOMAN_COMPARISON: Record<TiomanPackageSlug, TiomanComparison> = {
 
 export function isTiomanPackageSlug(value: string | null | undefined): value is TiomanPackageSlug {
   return TIOMAN_PACKAGE_SLUGS.includes(String(value || '') as TiomanPackageSlug)
+}
+
+export function isTiomanPackage(value: string | null | undefined) {
+  return value === TIOMAN_MAIN_PACKAGE_SLUG || isTiomanPackageSlug(value)
+}
+
+export function isTiomanMainPackageSlug(value: string | null | undefined) {
+  return value === TIOMAN_MAIN_PACKAGE_SLUG
 }
 
 export function getTiomanComparison(value: Pick<TravelPackage, 'slug'> | string | null | undefined) {

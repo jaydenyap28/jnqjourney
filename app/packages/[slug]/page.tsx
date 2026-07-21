@@ -4,8 +4,9 @@ import { notFound } from 'next/navigation'
 import PackageViewTracker from '@/components/PackageViewTracker'
 import SiteFooter from '@/components/SiteFooter'
 import TravelPackageDetail from '@/components/TravelPackageDetail'
+import TiomanPackageDetail from '@/components/TiomanPackageDetail'
 import { absoluteUrl } from '@/lib/site'
-import { readPublishedPackage } from '@/lib/server/travel-packages'
+import { readPublishedPackage, readPublishedPackageOptions } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -28,6 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function PackagePage({ params }: { params: { slug: string } }) {
   const item = await readPublishedPackage(params.slug)
   if (!item) notFound()
+  const options = item.slug === 'tioman-3d2n' ? await readPublishedPackageOptions(item.id) : []
   const canonicalPath = item.canonical_url || `/packages/${item.slug}`
   const jsonLd = [
     { '@context': 'https://schema.org', '@type': 'WebPage', name: item.title_zh, description: item.short_description, url: absoluteUrl(canonicalPath), primaryImageOfPage: item.cover_image ? { '@type': 'ImageObject', url: item.cover_image } : undefined },
@@ -43,7 +45,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
     <>
       <PackageViewTracker packageId={item.id} packageName={item.title_zh} sourceCode={item.source_code} />
       {jsonLd.map((data, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />)}
-      <TravelPackageDetail item={item} />
+      {item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} /> : <TravelPackageDetail item={item} />}
       <SiteFooter />
     </>
   )
