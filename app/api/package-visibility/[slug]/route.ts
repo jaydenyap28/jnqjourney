@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const NO_STORE_HEADERS = {
   'Cache-Control': 'private, no-store, max-age=0',
   'X-Robots-Tag': 'noindex, nofollow',
