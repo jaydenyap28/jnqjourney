@@ -126,14 +126,13 @@ export async function fetchRelatedLocations(location: PublicLocationRecord, limi
 
 export async function fetchRegionBySlug(slug: string) {
   const regionId = extractRegionIdFromSlug(slug)
-  if (!regionId) return null
 
   const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
+  let query = supabase
     .from('regions')
     .select('id,name,name_cn,country,description,image_url,parent_id')
-    .eq('id', regionId)
-    .single()
+  query = regionId ? query.eq('id', regionId) : query.eq('slug', String(slug || '').trim())
+  const { data, error } = await query.single()
 
   if (error || !data) return null
   return data as RegionRecord
