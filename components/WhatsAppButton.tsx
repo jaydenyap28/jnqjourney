@@ -14,6 +14,11 @@ interface WhatsAppButtonProps {
   spotName?: string
   guideTitle?: string
   packageName?: string
+  packageId?: number
+  resortName?: string
+  regionName?: string
+  priceFrom?: string
+  priceUnit?: string
   source?: string
   position?: string
   message?: string
@@ -29,6 +34,11 @@ export default function WhatsAppButton({
   spotName,
   guideTitle,
   packageName,
+  packageId,
+  resortName,
+  regionName,
+  priceFrom,
+  priceUnit,
   source,
   position = 'inline',
   message,
@@ -52,6 +62,11 @@ export default function WhatsAppButton({
           page_type: pageType,
           page_title: typeof document === 'undefined' ? undefined : document.title,
           package_name: packageName,
+          package_id: packageId,
+          resort_name: resortName,
+          region_name: regionName,
+          price_from: priceFrom,
+          price_unit: priceUnit,
           cta_position: position,
           cta_text: label,
           device_type: getDeviceType(),
@@ -62,6 +77,11 @@ export default function WhatsAppButton({
             page_path: pathname,
             page_type: pageType,
             package_name: packageName,
+            package_id: packageId,
+            resort_name: resortName,
+            region_name: regionName,
+            price_from: priceFrom,
+            price_unit: priceUnit,
             cta_position: position,
             device_type: getDeviceType(),
             source_code: source,

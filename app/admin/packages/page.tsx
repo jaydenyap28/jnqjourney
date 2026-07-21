@@ -7,6 +7,7 @@ import { ArrowDown, ArrowUp, ClipboardCheck, Copy, Eye, ImagePlus, Loader2, Plus
 import FallbackImage from '@/components/FallbackImage'
 import { adminFetch } from '@/lib/admin-fetch'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
+import { isTiomanPackageSlug } from '@/lib/tioman-packages'
 
 type PackageStatus = 'draft' | 'published' | 'archived'
 type GalleryImage = { url: string; alt: string; caption: string; sort_order: number }
@@ -111,8 +112,9 @@ export default function AdminPackagesPage() {
       const data = new FormData()
       Array.from(files).forEach((file) => data.append('files', file))
       data.append('category', 'packages')
-      data.append('country', 'Indonesia')
-      data.append('city', form.destination || 'travel-package')
+      const isTioman = isTiomanPackageSlug(form.slug)
+      data.append('country', isTioman ? 'Malaysia' : 'Indonesia')
+      data.append('city', isTioman ? 'Pulau Tioman' : form.destination || 'travel-package')
       data.append('locationSlug', form.slug || 'travel-package')
       data.append('field', target)
       const response = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
@@ -186,14 +188,15 @@ export default function AdminPackagesPage() {
 
           <div className="mt-4 space-y-3">{loading ? <Loader2 className="h-5 w-5 animate-spin" /> : filteredRows.map((row) => {
             const missingCover = !row.cover_image
-            const missingGallery = normalizeGallery(row.gallery).length < 3
+            const missingGallery = normalizeGallery(row.gallery).length < (isTiomanPackageSlug(row.slug) ? 1 : 3)
             return <article key={row.id} className={`rounded-lg border p-4 ${row.id === selectedId ? 'border-emerald-300/45 bg-emerald-400/10' : 'border-white/10 bg-white/5'}`}><button type="button" onClick={() => selectRow(row)} className="w-full text-left"><div className="flex items-start justify-between gap-3"><div><h2 className="font-semibold">{row.title_zh}</h2>{row.title_en ? <p className="mt-1 text-xs text-white/45">{row.title_en}</p> : null}</div><span className={`rounded-full px-2 py-1 text-[10px] uppercase ${row.status === 'published' ? 'bg-emerald-300/15 text-emerald-200' : 'bg-amber-300/15 text-amber-100'}`}>{row.status === 'draft' ? '草稿 Draft' : row.status}</span></div><p className="mt-2 text-xs text-white/40">{row.destination || '未设置目的地'} · {formatUpdated(row.updated_at)}</p><div className="mt-3 flex flex-wrap gap-1.5 text-[10px]">{missingCover ? <span className="rounded bg-rose-300/10 px-2 py-1 text-rose-200">缺少封面图</span> : null}{missingGallery ? <span className="rounded bg-amber-300/10 px-2 py-1 text-amber-100">缺少至少 3 张图集</span> : null}{row.status !== 'published' ? <span className="rounded bg-white/5 px-2 py-1 text-white/45">尚未发布</span> : null}</div></button><div className="mt-4 flex flex-wrap gap-1.5"><button type="button" onClick={() => selectRow(row)} className="rounded-lg border border-white/10 p-2" title="编辑"><Save className="h-4 w-4" /></button><Link href={`/admin/packages/${row.id}/preview`} className="rounded-lg border border-white/10 p-2" title="草稿预览"><Eye className="h-4 w-4" /></Link><button type="button" onClick={() => void copyWhatsApp(row)} className="rounded-lg border border-white/10 p-2" title="复制 WhatsApp 测试链接"><Copy className="h-4 w-4" /></button><button type="button" onClick={() => void runPublishCheck(row)} className="rounded-lg border border-white/10 p-2" title="发布检查"><ClipboardCheck className="h-4 w-4" /></button><button type="button" onClick={() => void deletePackage(row)} className="rounded-lg border border-rose-300/20 p-2 text-rose-200" title="删除"><Trash2 className="h-4 w-4" /></button></div></article>
           })}{!loading && !filteredRows.length ? <p className="rounded-lg border border-dashed border-white/15 p-5 text-sm text-white/40">没有符合筛选条件的旅游配套。</p> : null}</div>
         </aside>
 
         <section className="rounded-lg border border-white/10 bg-white/5 p-5 md:p-7">
           <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-xl font-semibold">{selectedId ? `编辑配套 #${selectedId}` : '建立旅游配套'}</h2>{selectedId ? <Link href={`/admin/packages/${selectedId}/preview`} className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-white/15 px-3 text-sm text-emerald-100"><Eye className="h-4 w-4" />安全草稿预览</Link> : null}</div>
-          {(!form.cover_image || form.gallery.length < 3) ? <div className="mt-5 rounded-lg border border-amber-300/25 bg-amber-300/10 p-4 text-sm text-amber-50">请上传至少 1 张封面图和 3 张真实照片后再发布。当前状态应保持 draft。</div> : null}
+          {(!form.cover_image || form.gallery.length < (isTiomanPackageSlug(form.slug) ? 1 : 3)) ? <div className="mt-5 rounded-lg border border-amber-300/25 bg-amber-300/10 p-4 text-sm text-amber-50">{isTiomanPackageSlug(form.slug) ? '请上传原始 Tioman 配套海报并保留完整竖版比例；当前状态应保持 draft。' : '请上传至少 1 张封面图和 3 张真实照片后再发布。当前状态应保持 draft。'}</div> : null}
+          {form.slug === 'tioman-aman-resort-3d2n' ? <div className="mt-3 rounded-lg border border-amber-300/25 bg-amber-300/10 p-4 text-sm text-amber-50">海报中的儿童年龄 4 岁存在区间重叠。请在向旅行社确认前保持 draft；公开说明将提示儿童年龄及收费以最终确认资料为准。</div> : null}
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
             {[['slug','Slug'],['title_zh','中文标题'],['title_en','英文标题'],['destination','目的地'],['duration','天数'],['source_code','WhatsApp 来源代码'],['video_url','影片 URL'],['price_display','公开价格文字'],['canonical_url','Canonical URL'],['seo_title','SEO 标题']].map(([key,label]) => <label key={key}><span className="mb-1 block text-xs text-white/55">{label}</span><input value={form[key] || ''} onChange={(event) => set(key,event.target.value)} className="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-sm" /></label>)}

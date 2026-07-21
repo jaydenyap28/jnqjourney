@@ -10,6 +10,7 @@ import type { TravelPackage } from '@/lib/server/travel-packages'
 
 export default function AdminPackagePreviewClient({ packageId }: { packageId: number }) {
   const [item, setItem] = useState<TravelPackage | null>(null)
+  const [comparisonPackages, setComparisonPackages] = useState<TravelPackage[]>([])
   const [error, setError] = useState('')
   const [checkMessage, setCheckMessage] = useState('')
 
@@ -20,7 +21,10 @@ export default function AdminPackagePreviewClient({ packageId }: { packageId: nu
         const response = await adminFetch(`/api/admin/travel-packages?id=${packageId}`, { cache: 'no-store' })
         const payload = await response.json()
         if (!response.ok) throw new Error(payload.error || '无法读取旅游配套。')
-        if (active) setItem(payload.package)
+        if (active) {
+          setItem(payload.package)
+          setComparisonPackages(payload.comparisonPackages || [])
+        }
       } catch (loadError) {
         if (active) setError(loadError instanceof Error ? loadError.message : '无法读取旅游配套。')
       }
@@ -44,5 +48,5 @@ export default function AdminPackagePreviewClient({ packageId }: { packageId: nu
   if (error) return <main className="flex min-h-[70vh] items-center justify-center bg-[#050816] px-5 text-white"><div className="max-w-md rounded-lg border border-rose-300/20 bg-rose-300/10 p-5 text-sm text-rose-50">{error}</div></main>
   if (!item) return <main className="flex min-h-[70vh] items-center justify-center bg-[#050816] text-white"><Loader2 className="h-6 w-6 animate-spin" /><span className="ml-3 text-sm text-white/60">载入草稿预览</span></main>
 
-  return <><TravelPackageDetail item={item} preview publishCheckMessage={checkMessage} onPublishCheck={() => void runPublishCheck()} /><SiteFooter /></>
+  return <><TravelPackageDetail item={item} preview comparisonPackages={comparisonPackages} publishCheckMessage={checkMessage} onPublishCheck={() => void runPublishCheck()} /><SiteFooter /></>
 }

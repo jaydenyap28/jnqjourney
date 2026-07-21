@@ -4,6 +4,8 @@ export type AnalyticsEventName =
   | 'whatsapp_click'
   | 'package_view'
   | 'package_cta_click'
+  | 'package_brochure_view'
+  | 'package_comparison_view'
   | 'klook_click'
   | 'trip_click'
   | 'affiliate_click'
