@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { Check, ChevronRight, ImageOff, ShieldCheck, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Check, ChevronRight, ImageOff, Maximize2, ShieldCheck, X } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -15,6 +16,7 @@ interface TravelPackageDetailProps {
 }
 
 export default function TravelPackageDetail({ item, preview = false, publishCheckMessage, onPublishCheck }: TravelPackageDetailProps) {
+  const [activeGalleryIndex, setActiveGalleryIndex] = useState<number | null>(null)
   const gallery = (item.gallery || [])
     .map((image, index) => typeof image === 'string'
       ? { url: image, alt: '', caption: '', sort_order: index }
@@ -22,6 +24,18 @@ export default function TravelPackageDetail({ item, preview = false, publishChec
     .filter((image) => image.url)
     .sort((left, right) => left.sort_order - right.sort_order)
   const coverAlt = gallery.find((image) => image.url === item.cover_image)?.alt || item.title_zh
+  const activeGalleryImage = activeGalleryIndex === null ? null : gallery[activeGalleryIndex]
+
+  useEffect(() => {
+    if (!activeGalleryImage) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveGalleryIndex(null)
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [activeGalleryImage])
   const cta = (label: string, position: string) => (
     <WhatsAppButton
       pageType="package"
@@ -65,13 +79,14 @@ export default function TravelPackageDetail({ item, preview = false, publishChec
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
         {item.full_description ? <section><h2 className="text-3xl font-semibold">配套介绍</h2><div className="mt-5 max-w-4xl whitespace-pre-line text-base leading-8 text-white/65">{item.full_description}</div></section> : null}
-        {gallery.length ? <section><h2 className="text-3xl font-semibold">旅程照片</h2><div className="mt-6 grid gap-4 md:grid-cols-2">{gallery.map((image, index) => <figure key={`${image.url}-${index}`} className="overflow-hidden rounded-lg border border-white/10 bg-white/5"><div className="relative aspect-[4/3]"><FallbackImage src={image.url} alt={image.alt || `${item.title_zh} 实拍照片 ${index + 1}`} fill className="object-cover" /></div>{image.caption ? <figcaption className="px-4 py-3 text-sm text-white/60">{image.caption}</figcaption> : null}</figure>)}</div></section> : preview ? <section className="border-y border-white/10 py-7"><p className="text-sm text-white/45">尚未上传图集。补齐至少 3 张真实照片后才可发布。</p></section> : null}
+        {gallery.length ? <section><h2 className="text-3xl font-semibold">旅程照片</h2><div className="mt-6 grid gap-4 md:grid-cols-2">{gallery.map((image, index) => <button type="button" key={`${image.url}-${index}`} onClick={() => setActiveGalleryIndex(index)} className="group relative overflow-hidden rounded-lg border border-white/10 bg-black/25 text-left transition hover:border-white/25" aria-label={`查看 ${item.title_zh} 实拍照片 ${index + 1} 完整图片`}><div className="relative aspect-[4/3] bg-black/30"><FallbackImage src={image.url} alt={image.alt || `${item.title_zh} 实拍照片 ${index + 1}`} fill className="object-contain p-1.5" /></div><span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-md bg-black/65 px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100 group-focus-visible:opacity-100"><Maximize2 className="h-3.5 w-3.5" />查看全图</span>{image.caption ? <span className="block px-4 py-3 text-sm text-white/60">{image.caption}</span> : null}</button>)}</div></section> : preview ? <section className="border-y border-white/10 py-7"><p className="text-sm text-white/45">尚未上传图集。补齐至少 3 张真实照片后才可发布。</p></section> : null}
         {item.highlights?.length ? <section><h2 className="text-3xl font-semibold">配套亮点</h2><div className="mt-6 grid gap-3 md:grid-cols-2">{item.highlights.map((text) => <div key={text} className="flex gap-3 rounded-lg border border-white/10 bg-white/5 p-4"><Check className="mt-1 h-4 w-4 shrink-0 text-emerald-300" /><span className="leading-7 text-white/72">{text}</span></div>)}</div><div className="mt-7">{cta('查询巴淡岛配套价格', 'inline')}</div></section> : null}
         {item.suitable_for?.length ? <section><h2 className="text-3xl font-semibold">适合谁</h2><div className="mt-5 flex flex-wrap gap-2">{item.suitable_for.map((text) => <span key={text} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/70">{text}</span>)}</div></section> : null}
         {item.itinerary_days?.length ? <section><h2 className="text-3xl font-semibold">行程摘要</h2><div className="mt-7 space-y-4">{item.itinerary_days.map((day, index) => <article key={`${day.title}-${index}`} className="grid gap-4 border-l border-amber-200/30 pl-5 md:grid-cols-[7rem_1fr]"><p className="text-sm font-semibold text-amber-200">Day {index + 1}</p><div><h3 className="text-xl font-semibold">{day.title}</h3>{day.summary ? <p className="mt-2 leading-7 text-white/65">{day.summary}</p> : null}{day.items?.length ? <ul className="mt-3 space-y-2 text-sm text-white/60">{day.items.map((entry) => <li key={entry}>· {entry}</li>)}</ul> : null}</div></article>)}</div><div className="mt-8">{cta('WhatsApp 确认日期', 'after_itinerary')}</div></section> : null}
         {(item.included_items?.length || item.excluded_items?.length) ? <section className="grid gap-8 md:grid-cols-2"><div><h2 className="text-2xl font-semibold">配套包含</h2><ul className="mt-5 space-y-3">{item.included_items?.map((text) => <li key={text} className="flex gap-3 text-white/70"><Check className="mt-1 h-4 w-4 shrink-0 text-emerald-300" />{text}</li>)}</ul></div><div><h2 className="text-2xl font-semibold">配套不包含</h2><ul className="mt-5 space-y-3">{item.excluded_items?.map((text) => <li key={text} className="flex gap-3 text-white/70"><X className="mt-1 h-4 w-4 shrink-0 text-rose-300" />{text}</li>)}</ul></div></section> : null}
         <section className="rounded-lg border border-white/10 bg-white/5 p-6 md:p-8"><h2 className="text-2xl font-semibold">价格与确认</h2>{item.price_display ? <p className="mt-4 text-2xl text-amber-100">{item.price_display}</p> : null}<p className="mt-3 max-w-3xl leading-7 text-white/65">{item.price_note || '最新价格会根据出发日期、人数、房型及出发码头调整，请通过 WhatsApp 查询。'}</p><div className="mt-6">{cta('查看是否有位', 'page_bottom')}</div></section>
       </div>
+      {activeGalleryImage ? <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8" role="dialog" aria-modal="true" aria-label={`${item.title_zh} 完整照片`} onMouseDown={() => setActiveGalleryIndex(null)}><div className="relative flex h-full w-full max-w-6xl flex-col" onMouseDown={(event) => event.stopPropagation()}><div className="relative min-h-0 flex-1"><FallbackImage src={activeGalleryImage.url} alt={activeGalleryImage.alt || `${item.title_zh} 实拍照片 ${(activeGalleryIndex || 0) + 1}`} fill className="object-contain" priority /></div><div className="flex shrink-0 items-center justify-between gap-4 pt-3"><p className="text-sm text-white/70">{activeGalleryImage.caption || `旅程照片 ${(activeGalleryIndex || 0) + 1} / ${gallery.length}`}</p><button type="button" onClick={() => setActiveGalleryIndex(null)} className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/20 bg-black/40 text-white transition hover:bg-white/10" aria-label="关闭完整图片"><X className="h-5 w-5" /></button></div></div></div> : null}
     </main>
   )
 }
