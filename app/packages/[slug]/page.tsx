@@ -11,7 +11,7 @@ export const revalidate = 600
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const item = await readPublishedPackage(params.slug)
-  if (!item) return { title: '旅游配套未找到', robots: { index: false, follow: false } }
+  if (!item) notFound()
   const title = item.seo_title || item.title_zh
   const description = item.seo_description || item.short_description || 'JnQ Journey 旅游配套详情。'
   const canonical = item.canonical_url || `/packages/${item.slug}`
