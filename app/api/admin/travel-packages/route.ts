@@ -174,7 +174,9 @@ export async function POST(request: Request) {
       if (optionsError) return NextResponse.json({ error: optionsError.message }, { status: 500 })
       if (!(activeOptions || []).length) missing.push('至少一个 active option')
       for (const option of activeOptions || []) {
-        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.some((note: string) => note.includes('最终确认')) || !option.gallery?.[0]?.url) missing.push(`完整 option：${option.name_zh || option.slug}`)
+        // Final-confirmation language is rendered consistently on the public detail page.
+        // Do not reject an otherwise complete option because a supplier uses different wording.
+        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.length || !option.gallery?.[0]?.url) missing.push(`完整 option：${option.name_zh || option.slug}`)
         if (option.slug === 'the-barat-tioman' && option.price_unit !== 'room') missing.push('The Barat 每房价格单位')
         if (option.slug === 'aman-tioman' && !option.notes?.some((note: string) => note.includes('年龄区间'))) missing.push('Aman 儿童年龄区间提醒')
       }

@@ -67,7 +67,9 @@ export async function POST(request: Request) {
   if (!priceUnit || !payload.price_display) missing.push('price unit and display')
   if (!payload.included_items.length || !payload.excluded_items.length) missing.push('included and excluded items')
   if (!payload.source_code || !payload.whatsapp_message || !payload.validity_label) missing.push('WhatsApp source and validity')
-  if (!payload.notes.some((note) => note.includes('最终确认'))) missing.push('final confirmation notice')
+  // The public Tioman detail page always displays the final-confirmation notice.
+  // Option notes must be present, but existing supplier wording must not block edits.
+  if (!payload.notes.length) missing.push('option notes')
   if (payload.status === 'active' && !gallery[0]?.url) missing.push('brochure image')
   if (payload.slug === 'the-barat-tioman' && payload.price_unit !== 'room') missing.push('The Barat room unit')
   if (payload.slug === 'aman-tioman' && !payload.notes.some((note) => note.includes('年龄区间'))) missing.push('Aman child age overlap warning')
