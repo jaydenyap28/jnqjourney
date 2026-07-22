@@ -15,7 +15,9 @@ import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 
-export const revalidate = 600 // Cache for 10 minutes
+// Linked spot cards must reflect a cover change immediately after it is saved.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface PageProps {
   params: {
