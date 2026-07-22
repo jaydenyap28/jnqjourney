@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import ImageMetadataBadge from '@/components/ImageMetadataBadge'
 const COUNTRY_CURRENCY: Record<string, string> = {
   Malaysia: 'RM',
@@ -151,6 +152,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const [enrichmentSuggestion, setEnrichmentSuggestion] = useState<EnrichmentSuggestionState | null>(null)
   const [googleHoursDraft, setGoogleHoursDraft] = useState('')
   const [draggedGalleryIndex, setDraggedGalleryIndex] = useState<number | null>(null)
+  const [galleryPreviewUrl, setGalleryPreviewUrl] = useState('')
   const [resolvingExternalImages, setResolvingExternalImages] = useState(false)
   const openingHoursMode = structuredHours.isUnknown ? 'unknown' : structuredHours.is24Hours ? 'always' : 'custom'
   const coverFocus = parseImageFocus(formData.image_url || '')
@@ -2563,6 +2565,11 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                         setDraggedGalleryIndex(null)
                       }}
                       onDragEnd={() => setDraggedGalleryIndex(null)}
+                      onDoubleClick={(event) => {
+                        if ((event.target as HTMLElement).closest('button')) return
+                        setGalleryPreviewUrl(url)
+                      }}
+                      title="双击查看完整图片"
                       className={[
                         'group relative aspect-video overflow-hidden rounded-md bg-gray-100 ring-offset-2 transition',
                         draggedGalleryIndex === index ? 'ring-2 ring-amber-400' : '',
@@ -2788,6 +2795,14 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             </Button>
           </div>
         </form>
+        <Dialog open={Boolean(galleryPreviewUrl)} onOpenChange={(open) => { if (!open) setGalleryPreviewUrl('') }}>
+          <DialogContent className="max-h-[94vh] max-w-[96vw] overflow-hidden border-white/10 bg-slate-950 p-3 text-white sm:max-w-6xl">
+            <DialogHeader className="sr-only"><DialogTitle>图集图片预览</DialogTitle></DialogHeader>
+            <div className="relative h-[min(78vh,900px)] w-[min(92vw,1200px)] bg-black">
+              {galleryPreviewUrl ? <FallbackImage src={galleryPreviewUrl} alt="图集完整图片" fill className="object-contain" priority /> : null}
+            </div>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   )
