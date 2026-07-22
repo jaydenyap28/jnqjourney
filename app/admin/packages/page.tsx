@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowDown, ArrowUp, ClipboardCheck, Copy, Eye, ImagePlus, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
+import { ArrowDown, ArrowUp, ClipboardCheck, Copy, Eye, ImagePlus, ImageUp, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import TiomanOptionsEditor from '@/components/TiomanOptionsEditor'
@@ -52,6 +52,7 @@ export default function AdminPackagesPage() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState<'cover' | 'gallery' | ''>('')
   const [message, setMessage] = useState('')
+  const [coverUrlDraft, setCoverUrlDraft] = useState('')
   const [itineraryJson, setItineraryJson] = useState('[]')
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -70,8 +71,9 @@ export default function AdminPackagesPage() {
     }), [destinationFilter, rows, search, sortDirection, statusFilter])
 
   const selectRow = useCallback((row: PackageRow) => {
-    const next = { ...emptyForm, ...row, gallery: normalizeGallery(row.gallery) }
+    const next: PackageRow = { ...emptyForm, ...row, gallery: normalizeGallery(row.gallery) }
     setForm(next)
+    setCoverUrlDraft(next.cover_image || '')
     setItineraryJson(JSON.stringify(row.itinerary_days || [], null, 2))
     setMessage('')
   }, [])
@@ -97,6 +99,22 @@ export default function AdminPackagesPage() {
 
   const set = (key: string, value: unknown) => setForm((current) => ({ ...current, [key]: value }))
   const updateGallery = (index: number, patch: Partial<GalleryImage>) => set('gallery', form.gallery.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item))
+  const setCoverImage = (value: string) => {
+    const nextCover = value.trim()
+    setCoverUrlDraft(nextCover)
+    setForm((current) => {
+      const previousCover = String(current.cover_image || '').trim()
+      if (previousCover === nextCover) return current
+
+      const galleryWithoutNewCover = current.gallery.filter((image) => image.url !== nextCover)
+      const oldCoverInGallery = galleryWithoutNewCover.some((image) => image.url === previousCover)
+      const nextGallery = previousCover && previousCover !== nextCover && !oldCoverInGallery
+        ? [...galleryWithoutNewCover, { url: previousCover, alt: `${current.title_zh || '旅游配套'} 原封面`, caption: '原封面图', sort_order: galleryWithoutNewCover.length }]
+        : galleryWithoutNewCover
+
+      return { ...current, cover_image: nextCover, gallery: nextGallery.map((image, sort_order) => ({ ...image, sort_order })) }
+    })
+  }
   const moveGallery = (index: number, direction: -1 | 1) => {
     const target = index + direction
     if (target < 0 || target >= form.gallery.length) return
@@ -122,7 +140,7 @@ export default function AdminPackagesPage() {
       const payload = await response.json()
       if (!response.ok) throw new Error(payload.error || '图片上传失败。')
       const urls = Array.isArray(payload.urls) ? payload.urls : payload.url ? [payload.url] : []
-      if (target === 'cover') set('cover_image', urls[0] || '')
+      if (target === 'cover') setCoverImage(urls[0] || '')
       else {
         const start = form.gallery.length
         set('gallery', [...form.gallery, ...urls.map((url: string, index: number) => ({ url, alt: '', caption: '', sort_order: start + index }))])
@@ -176,7 +194,7 @@ export default function AdminPackagesPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 text-white md:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs uppercase text-emerald-300/70">Content management</p><h1 className="mt-2 text-3xl font-semibold">旅游配套管理</h1><p className="mt-2 text-sm text-white/45">草稿、图片与发布检查集中管理</p></div><button type="button" onClick={() => { setForm(emptyForm); setItineraryJson('[]'); setMessage('') }} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/15 px-4 text-sm"><Plus className="h-4 w-4" />新增草稿</button></div>
+      <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs uppercase text-emerald-300/70">Content management</p><h1 className="mt-2 text-3xl font-semibold">旅游配套管理</h1><p className="mt-2 text-sm text-white/45">草稿、图片与发布检查集中管理</p></div><button type="button" onClick={() => { setForm(emptyForm); setCoverUrlDraft(''); setItineraryJson('[]'); setMessage('') }} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/15 px-4 text-sm"><Plus className="h-4 w-4" />新增草稿</button></div>
 
       <div className="mt-7 grid gap-6 lg:grid-cols-[23rem_1fr]">
         <aside>
@@ -206,7 +224,7 @@ export default function AdminPackagesPage() {
             {[['short_description','短简介'],['full_description','完整说明'],['price_note','价格说明'],['whatsapp_message','WhatsApp 文案']].map(([key,label]) => <label key={key} className="md:col-span-2"><span className="mb-1 block text-xs text-white/55">{label}</span><textarea value={form[key] || ''} onChange={(event) => set(key,event.target.value)} rows={key === 'full_description' || key === 'whatsapp_message' ? 7 : 3} className="w-full rounded-lg border border-white/10 bg-black/25 p-3 text-sm" /></label>)}
           </div>
 
-          <div className="mt-8 border-t border-white/10 pt-6"><h3 className="text-lg font-semibold">图片</h3><div className="mt-4 grid gap-5 md:grid-cols-[14rem_1fr]"><div><p className="text-xs text-white/55">封面图</p><div className="relative mt-2 aspect-[4/3] overflow-hidden rounded-lg border border-white/10 bg-black/25">{form.cover_image ? <FallbackImage src={form.cover_image} alt={form.title_zh || '旅游配套封面'} fill className="object-cover" /> : <div className="flex h-full items-center justify-center text-white/30"><ImagePlus className="h-8 w-8" /></div>}</div><label className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'cover' ? '上传中' : '上传封面'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'cover')} disabled={Boolean(uploading)} /></label><input value={form.cover_image || ''} onChange={(event) => set('cover_image', event.target.value)} placeholder="或输入封面 URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div><div className="flex items-center justify-between gap-3"><p className="text-xs text-white/55">实拍图集</p><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><ImagePlus className="h-4 w-4" />{uploading === 'gallery' ? '上传中' : '添加图片'}<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'gallery')} disabled={Boolean(uploading)} /></label></div><div className="mt-3 space-y-3">{form.gallery.map((image, index) => <div key={`${image.url}-${index}`} className="grid gap-3 rounded-lg border border-white/10 bg-black/20 p-3 sm:grid-cols-[7rem_1fr_auto]"><div className="relative aspect-square overflow-hidden rounded-lg bg-black/30"><FallbackImage src={image.url} alt={image.alt || `图集照片 ${index + 1}`} fill className="object-cover" /></div><div className="space-y-2"><input value={image.url} onChange={(event) => updateGallery(index, { url: event.target.value })} aria-label={`图片 ${index + 1} URL`} className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.alt} onChange={(event) => updateGallery(index, { alt: event.target.value })} placeholder="Alt text" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.caption} onChange={(event) => updateGallery(index, { caption: event.target.value })} placeholder="图片说明" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div className="flex gap-1 sm:flex-col"><button type="button" title="向前移动" onClick={() => moveGallery(index, -1)} className="rounded-lg border border-white/10 p-2" disabled={index === 0}><ArrowUp className="h-4 w-4" /></button><button type="button" title="向后移动" onClick={() => moveGallery(index, 1)} className="rounded-lg border border-white/10 p-2" disabled={index === form.gallery.length - 1}><ArrowDown className="h-4 w-4" /></button><button type="button" title="删除图片" onClick={() => set('gallery', form.gallery.filter((_, itemIndex) => itemIndex !== index).map((item, sort_order) => ({ ...item, sort_order })))} className="rounded-lg border border-rose-300/20 p-2 text-rose-200"><Trash2 className="h-4 w-4" /></button></div></div>)}{!form.gallery.length ? <p className="rounded-lg border border-dashed border-white/15 p-5 text-sm text-white/40">尚未上传实拍图。</p> : null}</div></div></div></div>
+          <div className="mt-8 border-t border-white/10 pt-6"><h3 className="text-lg font-semibold">图片</h3><div className="mt-4 grid gap-5 md:grid-cols-[14rem_1fr]"><div><p className="text-xs text-white/55">封面图</p><div className="relative mt-2 aspect-[4/3] overflow-hidden rounded-lg border border-white/10 bg-black/25">{form.cover_image ? <FallbackImage src={form.cover_image} alt={form.title_zh || '旅游配套封面'} fill className="object-cover" /> : <div className="flex h-full items-center justify-center text-white/30"><ImagePlus className="h-8 w-8" /></div>}</div><label className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'cover' ? '上传中' : '上传封面'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'cover')} disabled={Boolean(uploading)} /></label><input value={coverUrlDraft} onChange={(event) => setCoverUrlDraft(event.target.value)} onBlur={() => setCoverImage(coverUrlDraft)} placeholder="或输入封面 URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div><div className="flex items-center justify-between gap-3"><p className="text-xs text-white/55">实拍图集</p><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><ImagePlus className="h-4 w-4" />{uploading === 'gallery' ? '上传中' : '添加图片'}<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'gallery')} disabled={Boolean(uploading)} /></label></div><div className="mt-3 space-y-3">{form.gallery.map((image, index) => <div key={`${image.url}-${index}`} className="grid gap-3 rounded-lg border border-white/10 bg-black/20 p-3 sm:grid-cols-[7rem_1fr_auto]"><div className="relative aspect-square overflow-hidden rounded-lg bg-black/30"><FallbackImage src={image.url} alt={image.alt || `图集照片 ${index + 1}`} fill className="object-cover" /></div><div className="space-y-2"><input value={image.url} onChange={(event) => updateGallery(index, { url: event.target.value })} aria-label={`图片 ${index + 1} URL`} className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.alt} onChange={(event) => updateGallery(index, { alt: event.target.value })} placeholder="Alt text" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.caption} onChange={(event) => updateGallery(index, { caption: event.target.value })} placeholder="图片说明" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div className="flex gap-1 sm:flex-col"><button type="button" title="设为封面" aria-label={`将图集照片 ${index + 1} 设为封面`} onClick={() => setCoverImage(image.url)} className="rounded-lg border border-emerald-300/30 p-2 text-emerald-100"><ImageUp className="h-4 w-4" /></button><button type="button" title="向前移动" onClick={() => moveGallery(index, -1)} className="rounded-lg border border-white/10 p-2" disabled={index === 0}><ArrowUp className="h-4 w-4" /></button><button type="button" title="向后移动" onClick={() => moveGallery(index, 1)} className="rounded-lg border border-white/10 p-2" disabled={index === form.gallery.length - 1}><ArrowDown className="h-4 w-4" /></button><button type="button" title="删除图片" onClick={() => set('gallery', form.gallery.filter((_, itemIndex) => itemIndex !== index).map((item, sort_order) => ({ ...item, sort_order })))} className="rounded-lg border border-rose-300/20 p-2 text-rose-200"><Trash2 className="h-4 w-4" /></button></div></div>)}{!form.gallery.length ? <p className="rounded-lg border border-dashed border-white/15 p-5 text-sm text-white/40">尚未上传实拍图。</p> : null}</div></div></div></div>
 
           <div className="mt-8 grid gap-4 border-t border-white/10 pt-6 md:grid-cols-2">{arrayFields.map(([key, label]) => <label key={key}><span className="mb-1 block text-xs text-white/55">{label}（每行一项）</span><textarea value={lines(form[key])} onChange={(event) => set(key,parseLines(event.target.value))} rows={5} className="w-full rounded-lg border border-white/10 bg-black/25 p-3 text-sm" /></label>)}<label className="md:col-span-2"><span className="mb-1 block text-xs text-white/55">Day 1 / Day 2 / Day 3 行程 JSON：title、summary、items[]</span><textarea value={itineraryJson} onChange={(event) => setItineraryJson(event.target.value)} rows={12} spellCheck={false} className="w-full rounded-lg border border-white/10 bg-black/25 p-3 font-mono text-xs" /></label><label><span className="mb-1 block text-xs text-white/55">状态</span><select value={form.status} onChange={(event) => set('status',event.target.value)} className="h-11 w-full rounded-lg border border-white/10 bg-[#111827] px-3"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select></label><label><span className="mb-1 block text-xs text-white/55">排序</span><input type="number" value={form.sort_order || 0} onChange={(event) => set('sort_order',Number(event.target.value))} className="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3" /></label><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={Boolean(form.featured)} onChange={(event) => set('featured',event.target.checked)} />首页推荐</label></div>
           {form.slug === 'tioman-3d2n' && form.id ? <TiomanOptionsEditor packageId={Number(form.id)} /> : null}
