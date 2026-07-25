@@ -10,6 +10,7 @@ import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -561,10 +562,18 @@ export default async function GuideDetailPage({ params }: PageProps) {
     headline: guide.title,
     description: guide.summary || guide.tagline || guide.title,
     image: guideCoverImage || undefined,
-    author: {
-      '@type': 'Person',
-      name: 'Jayden & Qing 一起看世界',
-    },
+    author: [
+      {
+        '@type': 'Person',
+        name: 'Jayden Yap',
+        url: absoluteUrl('/about#jayden'),
+      },
+      {
+        '@type': 'Person',
+        name: 'Connie Qing',
+        url: absoluteUrl('/about#qing'),
+      },
+    ],
     publisher: {
       '@type': 'Organization',
       name: 'JnQ Journey',
@@ -1060,6 +1069,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 </div>
               </section>
             )}
+
+            <AuthorTrustBlock />
 
             {/* 11. Related Guides */}
             {relatedGuides.length > 0 && (

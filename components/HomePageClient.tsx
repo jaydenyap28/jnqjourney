@@ -651,6 +651,7 @@ export default function HomePageClient({
   return (
     <main className="bg-[radial-gradient(circle_at_14%_16%,rgba(245,158,11,0.18),transparent_18%),radial-gradient(circle_at_84%_18%,rgba(56,189,248,0.14),transparent_18%),linear-gradient(180deg,#020617_0%,#09111f_36%,#0b1324_100%)] min-h-screen text-white">
       <section className="relative min-h-[100svh] overflow-hidden">
+        <h1 className="sr-only">JnQ Journey 旅游地图、景点资料与完整旅行攻略</h1>
         <div className="absolute inset-0 z-0">
           <MapView
             ref={mapRef}

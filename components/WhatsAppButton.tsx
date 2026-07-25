@@ -3,7 +3,7 @@
 import { MessageCircle } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
-import { getDeviceType, trackEvent } from '@/lib/analytics'
+import { getDeviceType, trackEvent, type AnalyticsEventName } from '@/lib/analytics'
 import { buildWhatsAppUrl, type WhatsAppPageType } from '@/lib/whatsapp'
 
 interface WhatsAppButtonProps {
@@ -28,6 +28,7 @@ interface WhatsAppButtonProps {
   message?: string
   compactOnMobile?: boolean
   track?: boolean
+  eventName?: AnalyticsEventName
 }
 
 export default function WhatsAppButton({
@@ -52,6 +53,7 @@ export default function WhatsAppButton({
   message,
   compactOnMobile = false,
   track = true,
+  eventName,
 }: WhatsAppButtonProps) {
   const pathname = usePathname()
   const href = buildWhatsAppUrl({ pageType, region, spotName, guideTitle, packageName, source, message })
@@ -65,7 +67,7 @@ export default function WhatsAppButton({
       aria-label={`${label}，将在新窗口打开 WhatsApp`}
       onClick={() => {
         if (!track) return
-        trackEvent(pageType === 'package' ? 'package_cta_click' : 'whatsapp_click', {
+        trackEvent(eventName || (pageType === 'package' ? 'package_cta_click' : 'whatsapp_click'), {
           page_path: pathname,
           page_type: pageType,
           page_title: typeof document === 'undefined' ? undefined : document.title,

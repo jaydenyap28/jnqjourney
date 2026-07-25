@@ -31,6 +31,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/packages'), changeFrequency: 'weekly', priority: 0.8 },
     { url: absoluteUrl('/contact'), changeFrequency: 'yearly', priority: 0.4 },
     { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.2 },
+    { url: absoluteUrl('/about'), changeFrequency: 'yearly', priority: 0.5 },
+    { url: absoluteUrl('/editorial-policy'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/affiliate-disclosure'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: absoluteUrl('/copyright'), changeFrequency: 'yearly', priority: 0.2 },
   ]
 
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(

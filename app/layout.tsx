@@ -9,6 +9,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { getSiteUrl } from '@/lib/site'
 import PageViewTracker from '@/components/PageViewTracker'
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
+import SiteStructuredData from '@/components/SiteStructuredData'
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ['latin'],
@@ -89,6 +90,7 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
+        <SiteStructuredData />
         <Suspense fallback={null}>
           <GoogleAnalytics measurementId={googleAnalyticsId} />
         </Suspense>

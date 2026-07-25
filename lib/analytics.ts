@@ -2,6 +2,10 @@
 
 export type AnalyticsEventName =
   | 'whatsapp_click'
+  | 'about_whatsapp_click'
+  | 'contact_whatsapp_click'
+  | 'policy_link_click'
+  | 'social_link_click'
   | 'package_view'
   | 'package_cta_click'
   | 'package_brochure_view'

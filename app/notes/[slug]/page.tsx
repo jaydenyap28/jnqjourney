@@ -9,11 +9,12 @@ import FallbackImage from '@/components/FallbackImage'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInteractiveReader'
+import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
-import { buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
+import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 
 interface PageProps {
@@ -158,11 +159,11 @@ function CoverVideoEmbed({ url, title }: { url?: string | null; title: string })
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const note = await readNoteBySlug(params.slug)
   if (!note) {
-    return { title: buildPageTitle('Note not found') }
+    return { title: 'Note not found' }
   }
 
   const description = buildMetaDescription(getTextExcerpt(note), `Read this travel note about ${note.title}.`)
-  const title = buildPageTitle(note.title)
+  const title = note.title
   const path = `/notes/${note.slug}`
   const image = note.coverImage || absoluteUrl('/icon.png')
 
@@ -415,8 +416,36 @@ export default async function NoteDetailPage({ params }: PageProps) {
       content: block.content || '',
     }))
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: note.title,
+        description: buildMetaDescription(textExcerpt, `Read this travel note about ${note.title}.`),
+        image: note.coverImage || undefined,
+        mainEntityOfPage: absoluteUrl(`/notes/${note.slug}`),
+        author: [
+          { '@type': 'Person', name: 'Jayden Yap', url: absoluteUrl('/about#jayden') },
+          { '@type': 'Person', name: 'Connie Qing', url: absoluteUrl('/about#qing') },
+        ],
+        publisher: { '@id': absoluteUrl('/#organization') },
+        inLanguage: ['zh-CN', 'en'],
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: absoluteUrl('/') },
+          { '@type': 'ListItem', position: 2, name: 'Notes', item: absoluteUrl('/notes') },
+          { '@type': 'ListItem', position: 3, name: note.title, item: absoluteUrl(`/notes/${note.slug}`) },
+        ],
+      },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#101418_0%,#05070a_52%,#000000_100%)] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       {/* Dynamic Reading Progress Bar & Immersive Full-Screen Lightbox Image Viewer */}
       <NoteInteractiveReader headings={headings} />
 
@@ -456,6 +485,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
                 ))}
               </div>
             ) : null}
+
+            <AuthorTrustBlock compact />
           </article>
 
           <aside className="space-y-4 lg:sticky lg:top-6">

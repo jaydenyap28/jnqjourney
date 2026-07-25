@@ -1,7 +1,7 @@
 export const DEFAULT_WHATSAPP_NUMBER = '60109639228'
 export const DEFAULT_WHATSAPP_MESSAGE = '你好，我们从 JnQ Journey 网站看到你们，想咨询旅游配套或行程。'
 
-export type WhatsAppPageType = 'home' | 'region' | 'spot' | 'guide' | 'package' | 'note' | 'contact'
+export type WhatsAppPageType = 'home' | 'region' | 'spot' | 'guide' | 'package' | 'note' | 'contact' | 'about'
 
 interface WhatsAppUrlOptions {
   phone?: string
