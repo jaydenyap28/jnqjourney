@@ -2,19 +2,21 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { ArrowRight, BedDouble, CalendarDays, ExternalLink, Film, MapPin, MapPinned, Navigation, Wallet } from 'lucide-react'
+import { ArrowRight, BedDouble, CalendarDays, ExternalLink, Film, MapPin, MapPinned, Navigation } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import GuideQuickNav from '@/components/GuideQuickNav'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
+import GuideBudgetSection from '@/components/GuideBudgetSection'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
+import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -285,31 +287,16 @@ function formatVisitDate(value: string) {
   }).format(date)
 }
 
-function formatGuideMoney(value?: string | null, fallbackCurrency = 'RM') {
-  const text = String(value || '').trim()
-  if (!text) return ''
-  if (/^(rm|cny|jpy|thb|idr|usd|rmb|¥|￥|\$)/i.test(text)) return text
-  return `${fallbackCurrency} ${text}`
-}
-
 function parseGuideMoney(value?: string | null) {
   const parsed = Number(String(value || '').replace(/[^0-9.-]/g, ''))
   return Number.isFinite(parsed) ? parsed : 0
 }
 
-function budgetScopeLabel(scope?: string) {
-  switch (scope) {
-    case 'per_person':
-      return '每人预算'
-    case 'per_room':
-      return '每房预算'
-    case 'per_group':
-      return '每组预算'
-    case 'total_trip':
-      return '整趟总预算'
-    default:
-      return '总预算'
-  }
+function formatGuideMoney(value?: string | null, fallbackCurrency = 'RM') {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  if (/^(rm|cny|jpy|thb|idr|usd|rmb|¥|￥|\$)/i.test(text)) return text
+  return `${fallbackCurrency} ${text}`
 }
 
 function splitGuideParagraphs(value?: string | null) {
@@ -418,6 +405,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
   if (params.slug !== guide.slug) {
     redirect(`/guide/${guide.slug}`)
   }
+
+  const actualSpend = await readPublishedGuideBudget(guide.slug)
 
   const allLinkedNames = Array.from(
     new Set([
@@ -683,8 +672,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ],
   }
 
-  const budgetDenominator = declaredBudgetTotal || budgetItemsTotal
-
   return (
     <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.10),transparent_20%),linear-gradient(180deg,#0a101b_0%,#050912_48%,#020409_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
@@ -781,7 +768,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         guideSlug={guide.slug}
         days={datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
         hasMap={routeMapPoints.length > 0}
-        hasBudget={Boolean(guide.budget || guide.budgetItems.length)}
+        hasBudget={Boolean(guide.budget || guide.budgetItems.length || actualSpend)}
       />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 md:px-8 md:py-16">
@@ -815,47 +802,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {guide.budget || guide.budgetItems.length ? (
-          <section id="budget" className="scroll-mt-24">
-            <div className="border-b border-white/10 pb-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Budget / 预算</p>
-              <h2 className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">预算拆解</h2>
-            </div>
-            <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(260px,0.82fr)_minmax(0,2.18fr)]">
-              {guide.budget ? (
-                <div className="flex min-h-44 flex-col justify-between border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.17),transparent_45%),#0b111d] p-5 md:p-6">
-                  <div className="flex items-center gap-2 text-amber-100/75">
-                    <Wallet className="h-4 w-4" />
-                    <p className="text-xs uppercase tracking-[0.22em]">{budgetScopeLabel(guide.budgetScope)}</p>
-                  </div>
-                  <p className="mt-5 text-[clamp(2rem,5vw,3.7rem)] font-semibold leading-none tabular-nums text-white">{formatGuideMoney(guide.budget)}</p>
-                </div>
-              ) : null}
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                {guide.budgetItems.map((item, index) => {
-                  const amount = parseGuideMoney(item.amount)
-                  const percentage = budgetDenominator ? Math.min(100, Math.max(0, (amount / budgetDenominator) * 100)) : 0
-                  const visiblePercentage = percentage > 0 ? Math.max(2, percentage) : 0
-                  return (
-                    <div key={`${item.label || 'budget-item'}-${item.amount}-${index}`} className="flex min-h-36 flex-col border border-white/10 bg-[#0b111d] p-4">
-                      <p className="text-xs leading-5 text-white/60">{item.label || '预算项'}</p>
-                      <p className="mt-3 text-xl font-semibold tabular-nums text-white md:text-2xl">
-                        {item.currency ? [item.currency, item.amount].filter(Boolean).join(' ') : formatGuideMoney(item.amount)}
-                      </p>
-                      <div className="mt-4 h-1 overflow-hidden bg-white/8" aria-hidden="true">
-                        <div className="h-full bg-amber-300/75" style={{ width: `${visiblePercentage}%` }} />
-                      </div>
-                      {item.note ? <p className="mt-3 text-xs leading-5 text-white/48">{item.note}</p> : null}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            <p className="mt-4 border-l border-amber-300/35 pl-4 text-sm leading-7 text-white/58">
-              预算根据当次行程记录整理，实际费用会因日期、汇率、房型和个人消费而不同。
-            </p>
-          </section>
-        ) : null}
+        <GuideBudgetSection guide={guide} actualSpend={actualSpend} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
         <section aria-labelledby="itinerary-heading" className="min-w-0">

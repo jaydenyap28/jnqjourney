@@ -20,6 +20,7 @@ import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type TravelGuide } from '@/lib/guides'
 import FallbackImage from '@/components/FallbackImage'
+import AdminGuideActualSpendPanel from '@/components/AdminGuideActualSpendPanel'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -1142,6 +1143,8 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 </div>
               </CardContent>
             </Card>
+
+            <AdminGuideActualSpendPanel guide={form} />
 
             <Card className="border-slate-200 bg-white shadow-sm">
               <CardHeader>
