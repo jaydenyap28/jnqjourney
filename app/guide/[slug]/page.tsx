@@ -297,6 +297,21 @@ function parseGuideMoney(value?: string | null) {
   return Number.isFinite(parsed) ? parsed : 0
 }
 
+function budgetScopeLabel(scope?: string) {
+  switch (scope) {
+    case 'per_person':
+      return '每人预算'
+    case 'per_room':
+      return '每房预算'
+    case 'per_group':
+      return '每组预算'
+    case 'total_trip':
+      return '整趟总预算'
+    default:
+      return '总预算'
+  }
+}
+
 function splitGuideParagraphs(value?: string | null) {
   const text = String(value || '').trim()
   if (!text) return []
@@ -491,6 +506,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const selectedSidebarLinks = await fetchGuideAffiliateLinks(guide.sidebarAffiliateLinkIds || guide.featuredAffiliateLinkIds || [])
   const selectedSidebarAffiliateIds = selectedSidebarLinks.map((link) => link.id)
   const guideKlookWidgetCode = String(guide.klookWidgetCode || '').trim()
+  const hasGuideBookingContent = Boolean(guideKlookWidgetCode || selectedSidebarAffiliateIds.length)
   const relatedPackages = (await readPublishedPackages()).filter((item) => item.related_guide_slugs?.includes(guide.slug))
 
 
@@ -805,33 +821,35 @@ export default async function GuideDetailPage({ params }: PageProps) {
               <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Budget / 预算</p>
               <h2 className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">预算拆解</h2>
             </div>
-            <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-4">
+            <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(260px,0.82fr)_minmax(0,2.18fr)]">
               {guide.budget ? (
-                <div className="col-span-2 flex min-h-44 flex-col justify-between bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.17),transparent_45%),#0b111d] p-5 md:p-6">
+                <div className="flex min-h-44 flex-col justify-between border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.17),transparent_45%),#0b111d] p-5 md:p-6">
                   <div className="flex items-center gap-2 text-amber-100/75">
                     <Wallet className="h-4 w-4" />
-                    <p className="text-xs uppercase tracking-[0.22em]">总预算</p>
+                    <p className="text-xs uppercase tracking-[0.22em]">{budgetScopeLabel(guide.budgetScope)}</p>
                   </div>
                   <p className="mt-5 text-[clamp(2rem,5vw,3.7rem)] font-semibold leading-none tabular-nums text-white">{formatGuideMoney(guide.budget)}</p>
-                  <p className="mt-4 text-xs leading-6 text-white/50">未有明确人数口径，因此不标示为“每人预算”。</p>
                 </div>
               ) : null}
-              {guide.budgetItems.map((item, index) => {
-                const amount = parseGuideMoney(item.amount)
-                const percentage = budgetDenominator ? Math.min(100, Math.max(0, (amount / budgetDenominator) * 100)) : 0
-                return (
-                  <div key={`${item.label || 'budget-item'}-${item.amount}-${index}`} className="flex min-h-44 flex-col bg-[#0b111d] p-4 md:p-5">
-                    <p className="min-h-10 text-xs leading-5 text-white/60">{item.label || '预算项'}</p>
-                    <p className="mt-3 text-xl font-semibold tabular-nums text-white md:text-2xl">
-                      {item.currency ? [item.currency, item.amount].filter(Boolean).join(' ') : formatGuideMoney(item.amount)}
-                    </p>
-                    <div className="mt-4 h-1 overflow-hidden bg-white/8" aria-hidden="true">
-                      <div className="h-full bg-amber-300/75" style={{ width: `${percentage}%` }} />
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {guide.budgetItems.map((item, index) => {
+                  const amount = parseGuideMoney(item.amount)
+                  const percentage = budgetDenominator ? Math.min(100, Math.max(0, (amount / budgetDenominator) * 100)) : 0
+                  const visiblePercentage = percentage > 0 ? Math.max(2, percentage) : 0
+                  return (
+                    <div key={`${item.label || 'budget-item'}-${item.amount}-${index}`} className="flex min-h-36 flex-col border border-white/10 bg-[#0b111d] p-4">
+                      <p className="text-xs leading-5 text-white/60">{item.label || '预算项'}</p>
+                      <p className="mt-3 text-xl font-semibold tabular-nums text-white md:text-2xl">
+                        {item.currency ? [item.currency, item.amount].filter(Boolean).join(' ') : formatGuideMoney(item.amount)}
+                      </p>
+                      <div className="mt-4 h-1 overflow-hidden bg-white/8" aria-hidden="true">
+                        <div className="h-full bg-amber-300/75" style={{ width: `${visiblePercentage}%` }} />
+                      </div>
+                      {item.note ? <p className="mt-3 text-xs leading-5 text-white/48">{item.note}</p> : null}
                     </div>
-                    {item.note ? <p className="mt-3 text-xs leading-5 text-white/48">{item.note}</p> : null}
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
             <p className="mt-4 border-l border-amber-300/35 pl-4 text-sm leading-7 text-white/58">
               预算根据当次行程记录整理，实际费用会因日期、汇率、房型和个人消费而不同。
@@ -839,26 +857,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        {guideKlookWidgetCode || selectedSidebarAffiliateIds.length ? (
-          <aside aria-label="路线预订精选" className="grid gap-4 md:grid-cols-2">
-            {guideKlookWidgetCode ? (
-              <KlookWidgetEmbed code={guideKlookWidgetCode} title="Klook 路线预订" description="与这篇路线相关的活动入口" className="bg-white/[0.035]" />
-            ) : null}
-            {selectedSidebarAffiliateIds.length ? (
-              <AffiliateCard
-                linkIds={selectedSidebarAffiliateIds}
-                limit={Math.max(selectedSidebarAffiliateIds.length, 1)}
-                title="路线预订精选"
-                guideSlug={guide.slug}
-                className="bg-white/[0.035]"
-                hideHeader
-                singleColumn
-              />
-            ) : null}
-          </aside>
-        ) : null}
-
-        <section aria-labelledby="itinerary-heading">
+        <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
+        <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>
             <h2 id="itinerary-heading" className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">每日行程</h2>
@@ -1035,6 +1035,35 @@ export default async function GuideDetailPage({ params }: PageProps) {
             })}
           </div>
         </section>
+
+        {hasGuideBookingContent ? (
+          <aside id="guide-bookings" aria-labelledby="guide-booking-heading" className="min-w-0 scroll-mt-24 border-y border-white/10 py-6 lg:sticky lg:top-20 lg:border lg:bg-white/[0.025] lg:p-5">
+            <div className="mb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/68">Useful bookings / 实用预订</p>
+              <h2 id="guide-booking-heading" className="mt-2 text-2xl font-semibold text-white">实用预订</h2>
+              <p className="mt-2 text-sm leading-6 text-white/56">以下为这条路线可能用到的交通、住宿或活动预订入口。</p>
+            </div>
+            <div className="grid gap-4">
+              {guideKlookWidgetCode ? (
+                <KlookWidgetEmbed code={guideKlookWidgetCode} title="Klook 路线预订" description="后台明确绑定的路线活动" className="bg-white/[0.035]" />
+              ) : null}
+              {selectedSidebarAffiliateIds.length ? (
+                <AffiliateCard
+                  linkIds={selectedSidebarAffiliateIds}
+                  limit={Math.max(selectedSidebarAffiliateIds.length, 1)}
+                  title="实用预订"
+                  guideSlug={guide.slug}
+                  ctaPosition="guide_booking_sidebar"
+                  className="border-0 bg-transparent shadow-none"
+                  compact
+                  hideHeader
+                  singleColumn
+                />
+              ) : null}
+            </div>
+          </aside>
+        ) : null}
+        </div>
 
         <AuthorTrustBlock />
 

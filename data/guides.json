@@ -15,6 +15,7 @@
     "summary": "",
     "duration": "10 Days / 9 Nights",
     "budget": "RM 1,512",
+    "budgetScope": "unspecified",
     "travelStyle": "自驾游",
     "route": [
       {
@@ -48,7 +49,7 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "住宿 Accomodation",
+        "label": "住宿 Accommodation",
         "amount": "718",
         "note": "关丹、登嘉楼、吉兰丹住宿酒店人均花费。"
       },
@@ -90,7 +91,7 @@
       {
         "dayLabel": "Day 1",
         "title": "柔佛沿海公路自驾到关丹",
-        "summary": "",
+        "summary": "从柔佛出发，沿东海岸方向一路前往关丹。路线先经过兴楼云冰大桥与 Pantai Hiburan，在天乐茶室停留后，继续串联 Pantai Saujana Biru、Pantai Lagenda 和 Jambatan Cherok Paloh 等沿海地点。进入关丹市区后，以 888 Food Court 和关丹艺术街收尾，让第一天从长途移动自然过渡到城市散步。",
         "highlights": [],
         "linkedSpots": [
           "兴楼云冰大桥",
@@ -110,7 +111,7 @@
       {
         "dayLabel": "Day 2",
         "title": "关丹瀑布与海边",
-        "summary": "",
+        "summary": "这一天以关丹的自然景观和市区休闲为主，先到 Sungai Pandan Waterfall，再经 Mohd Chan Restaurant 前往 Pantai Teluk Cempedak。接着沿海边依序走访 Loteng Cafe、Pantai Pelindung 与 Ms Elliot at Hock Bee，最后回到关丹河畔公园，为瀑布、海滩与市区散步留出完整段落。",
         "highlights": [],
         "linkedSpots": [
           "Sungai Pandan Waterfall",
@@ -129,7 +130,7 @@
       {
         "dayLabel": "Day 3",
         "title": "林明与洞窟路线",
-        "summary": "",
+        "summary": "从联兴海南茶室开始林明一日路线，之后前往 Gua Charas，再以家传食谱林明面衔接小镇行程。下午依序走过彩虹吊桥、林明吊桥、林明博物馆、Kolong Pahat 3 与 Pasir Puteri，并把林明天后宫和顺风饭店放在后段。这一天的重点，是从洞窟走入林明的桥梁、街区与地方记忆。",
         "highlights": [],
         "linkedSpots": [
           "联兴海南茶室",
@@ -151,7 +152,7 @@
       {
         "dayLabel": "Day 4",
         "title": "彩虹瀑布转登嘉楼",
-        "summary": "",
+        "summary": "早段从 Sunrise Hill 与林明彩虹瀑布展开，完成林明的山林路线后继续向北。离开林明后，依序经过 Ombok Cherating Surf Cafe、Pantai Teluk Mak Nik（Monica Bay）和 Steven’s Coffee House，再前往登嘉楼住宿。当天从山林转入海岸，也正式衔接下一段登嘉楼行程。",
         "highlights": [],
         "linkedSpots": [
           "Sunrise Hill",
@@ -168,7 +169,7 @@
       {
         "dayLabel": "Day 5",
         "title": "登嘉楼最美沿海公路",
-        "summary": "",
+        "summary": "从文荣茶餐室出发后，路线沿登嘉楼海岸向北，先走过 Teluk Kalong、Penunjuk Kijal、Old Cruise Ship Jetty 与 Kemasik 一带，再经 Bukit Tebuk 前往 Teluk Bidara、Batu Pelanduk 和 Jambu Bongkok。之后由 Tengku Tengah Zaharah Mosque 进入瓜拉登嘉楼，傍晚以唐人街、海龟巷和炭烧瓦煲鸡收尾。",
         "highlights": [],
         "linkedSpots": [
           "文荣茶餐室",
@@ -193,7 +194,7 @@
       {
         "dayLabel": "Day 6",
         "title": "登嘉楼市区景点",
-        "summary": "",
+        "summary": "这一天把重点留给瓜拉登嘉楼市区，先从水晶清真寺与 Zahon Cafe 开始，再到 Terengganu State Museum 梳理地方文化。后段转往 Mayang Mall、Pesisir Payang 一带，并以 Kuala Terengganu Drawbridge 结束当天路线。景点类型从宗教建筑、博物馆到商场与河岸，适合作为连续沿海自驾后的城市段落。",
         "highlights": [],
         "linkedSpots": [
           "水晶清真寺",
@@ -211,7 +212,7 @@
       {
         "dayLabel": "Day 7",
         "title": "Pulau Kapas 棉花岛一日游",
-        "summary": "",
+        "summary": "当天集中安排 Pulau Kapas 棉花岛路线，以岛屿本身为主要停留，再连接 Bukit Singa 与 Marang Wave Breaker。行程围绕岛屿、步行地点和 Marang 一带展开，三处地点组成相对集中的一日路线。海况、浮潜条件和现场活动会受当天情况影响，因此这里不预设未记录的体验。",
         "highlights": [],
         "linkedSpots": [
           "Pulau Kapas",
@@ -223,7 +224,7 @@
       {
         "dayLabel": "Day 8",
         "title": "吉兰丹乡野景点",
-        "summary": "",
+        "summary": "从登嘉楼方向进入吉兰丹后，先到 SRZ Ternak 农场与 Jeram Mengaji，再沿路线前往 KTMB Guillemard Bridge。接着依序走访北京清真寺、Selera Tepi Sungai、Wat Uttamaram 与 Senok Beach，最后在 Hattori Coffee 结束当天安排并进入哥打巴鲁。这一天把乡野地点、宗教建筑与海边串在同一条北上路线中。",
         "highlights": [],
         "linkedSpots": [
           "SRZ Ternak (Ladang Tenusu Jeram Mengaji)",
@@ -243,7 +244,7 @@
       {
         "dayLabel": "Day 9",
         "title": "吉兰丹佛寺路线",
-        "summary": "",
+        "summary": "从 Bukit Keluang 与 Masjid Lapan Kubah 开始后，当天路线转向吉兰丹一带的宗教建筑。行程依序连接 Wat Phothivihan、坐佛寺、立佛寺和龙船寺，再前往 Pantai Mek Mas 与郑和坊。不同形式的寺院与当地文化地点集中在同一天，路线顺序也保持与现有地点资料一致。",
         "highlights": [],
         "linkedSpots": [
           "Bukit Keluang",
@@ -263,7 +264,7 @@
       {
         "dayLabel": "Day 10",
         "title": "哥打巴鲁收尾",
-        "summary": "",
+        "summary": "东海岸路线最后一天保留给哥打巴鲁的双龙寺。相较前几天密集的沿海、公路与宗教建筑路线，这一天的已记录地点较少，行程也更集中。现有资料没有保存返程方式、出发时间或其他安排，因此以双龙寺作为这趟路线最后一个确认过的地点。",
         "highlights": [],
         "linkedSpots": [
           "双龙寺"
@@ -287,8 +288,7 @@
     "sidebarAffiliateLinkIds": [
       232,
       262
-    ],
-    "klookWidgetCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253577\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"2\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>"
+    ]
   },
   {
     "slug": "china-harbin-xuegu-changbai-beijing-11d10n",

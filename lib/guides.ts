@@ -5,6 +5,13 @@ export interface GuideBudgetItem {
   note?: string
 }
 
+export type GuideBudgetScope =
+  | 'per_person'
+  | 'per_room'
+  | 'per_group'
+  | 'total_trip'
+  | 'unspecified'
+
 export interface GuideRouteStop {
   stopLabel?: string
   name: string
@@ -48,6 +55,7 @@ export interface TravelGuide {
   summary: string
   duration: string
   budget: string
+  budgetScope?: GuideBudgetScope
   travelStyle: string
   route: GuideRouteStop[]
   coverAccent: string
@@ -78,6 +86,7 @@ export const EMPTY_GUIDE: TravelGuide = {
   summary: '',
   duration: '',
   budget: '',
+  budgetScope: 'unspecified',
   travelStyle: 'Free & Easy',
   route: [],
   coverAccent: DEFAULT_GUIDE_COVER_ACCENT,

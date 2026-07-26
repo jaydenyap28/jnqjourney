@@ -60,6 +60,9 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     summary: String(value?.summary || '').trim(),
     duration: String(value?.duration || '').trim(),
     budget: String(value?.budget || '').trim(),
+    budgetScope: ['per_person', 'per_room', 'per_group', 'total_trip'].includes(String(value?.budgetScope || ''))
+      ? value.budgetScope
+      : 'unspecified',
     travelStyle: String(value?.travelStyle || '').trim(),
     route: Array.isArray(value?.route)
       ? value.route

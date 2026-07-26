@@ -103,14 +103,14 @@ const LINK_TYPE_NAMES: Record<string, string> = {
 }
 
 const LINK_TYPE_ACTIONS: Record<string, string> = {
-  hotel: 'View Stay',
-  ticket: 'Book Now',
-  tour: 'View Tour',
-  transport: 'View Transport',
-  food: 'View Offer',
-  insurance: 'View Insurance',
-  sim: 'View SIM',
-  others: 'Open Link',
+  hotel: '查看酒店房型',
+  ticket: '查看当前价格',
+  tour: '查看活动选择',
+  transport: '查看交通安排',
+  food: '查看当前优惠',
+  insurance: '查看保险方案',
+  sim: '查看 eSIM 方案',
+  others: '查看预订详情',
 }
 
 const PROVIDER_ACCENTS: Record<string, string> = {

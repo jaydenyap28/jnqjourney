@@ -1110,6 +1110,21 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                   <Input value={form.budget} onChange={(e) => updateField('budget', e.target.value)} placeholder="RM 4.3k" />
                 </div>
                 <div className="space-y-2">
+                  <Label htmlFor="guideBudgetScope">Budget Scope</Label>
+                  <select
+                    id="guideBudgetScope"
+                    value={form.budgetScope || 'unspecified'}
+                    onChange={(event) => updateField('budgetScope', event.target.value as TravelGuide['budgetScope'])}
+                    className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
+                  >
+                    <option value="unspecified">未指定</option>
+                    <option value="per_person">每人</option>
+                    <option value="per_room">每房</option>
+                    <option value="per_group">每组</option>
+                    <option value="total_trip">整趟总额</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
                   <Label>Travel Style</Label>
                   <Input value={form.travelStyle} onChange={(e) => updateField('travelStyle', e.target.value)} />
                 </div>
@@ -1241,6 +1256,11 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 {form.budget ? (
                   <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-900">
                     当前总预算会显示在前台预算拆解最上方。<span className="ml-2 font-semibold">{form.budget}</span>
+                  </div>
+                ) : null}
+                {(form.budgetScope || 'unspecified') === 'unspecified' ? (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-900">
+                    预算尚未标记为每人、每组或整趟总额，请确认后再标示单位。
                   </div>
                 ) : null}
                 {form.budgetItems.length ? (
@@ -1392,7 +1412,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                     const currentStaySpan = Math.max(1, stayEnd - dayNumber + 1)
                     const completenessIssues = [
                       !day.date ? '缺日期' : '',
-                      !day.summary ? '缺描述' : '',
+                      !day.summary ? '缺少每日介绍' : '',
                       !(day.linkedSpots || []).length ? '缺地点' : '',
                       day.gallery?.some((image) => !image.alt) ? '图集缺 alt' : '',
                     ].filter(Boolean)
