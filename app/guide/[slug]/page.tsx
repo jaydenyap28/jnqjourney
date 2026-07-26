@@ -9,9 +9,10 @@ import GuideRouteMap from '@/components/GuideRouteMap'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
-import WhatsAppButton from '@/components/WhatsAppButton'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
+import TravelPackageCard from '@/components/TravelPackageCard'
 import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -460,6 +461,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const selectedSidebarLinks = await fetchGuideAffiliateLinks(guide.sidebarAffiliateLinkIds || guide.featuredAffiliateLinkIds || [])
   const selectedSidebarAffiliateIds = selectedSidebarLinks.map((link) => link.id)
   const guideKlookWidgetCode = String(guide.klookWidgetCode || '').trim()
+  const relatedPackages = (await readPublishedPackages()).filter((item) => item.related_guide_slugs?.includes(guide.slug))
 
 
   const datedDayPlans = guide.days.map((day, index) => {
@@ -1072,6 +1074,18 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
             <AuthorTrustBlock />
 
+            {relatedPackages.length > 0 ? (
+              <section className="space-y-4 border-t border-emerald-200/15 pt-8">
+                <div>
+                  <p className="section-kicker text-xs text-emerald-200/75">Related travel packages / 相关旅游配套</p>
+                  <h2 className="font-display mt-2 text-3xl leading-tight text-white">把这段路线安排成完整旅程</h2>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
+                </div>
+              </section>
+            ) : null}
+
             {/* 11. Related Guides */}
             {relatedGuides.length > 0 && (
               <section className="space-y-5">
@@ -1114,10 +1128,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 singleColumn
               />
             ) : null}
-            <div className="rounded-[24px] border border-emerald-200/15 bg-emerald-400/[0.05] p-5">
-              <p className="text-sm font-semibold text-white">想咨询类似路线或旅游配套？</p>
-              <div className="mt-4"><WhatsAppButton pageType="guide" guideTitle={guide.shortTitle || guide.title} source={`JNQ-ITINERARY-${guide.slug}`} label="WhatsApp 咨询行程" position="sidebar" className="w-full" /></div>
-            </div>
             <SupportSidebarCard className="bg-white/5" />
             <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
               <p className="section-kicker text-xs text-amber-300/80">{'Next Step / \u7ee7\u7eed\u63a2\u7d22'}</p>

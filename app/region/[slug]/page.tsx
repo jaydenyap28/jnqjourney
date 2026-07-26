@@ -15,7 +15,6 @@ import { getVisibleLocationTags } from '@/lib/tag-utils'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import TiomanPackageComparison from '@/components/TiomanPackageComparison'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
-import WhatsAppButton from '@/components/WhatsAppButton'
 
 import { buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
@@ -262,11 +261,6 @@ export default async function RegionPage({ params }: PageProps) {
           </section>
         ) : null}
         {region.name.toLowerCase() === 'pulau tioman' && relatedPackages.length > 1 ? <TiomanPackageComparison packages={relatedPackages} /> : null}
-
-        <section className="flex flex-col items-start gap-4 rounded-[24px] border border-white/10 bg-white/5 p-5 md:flex-row md:items-center md:justify-between md:p-7">
-          <div><h2 className="text-xl font-semibold">需要协助安排 {readableName} 行程？</h2><p className="mt-2 text-sm leading-7 text-white/60">告诉我们预计日期、人数和出发地点，再确认适合的现有配套。</p></div>
-          <WhatsAppButton pageType="region" region={readableName} source={`JNQ-${region.name.toUpperCase().replace(/[^A-Z0-9]+/g, '-')}-REGION`} label={`WhatsApp 咨询${readableName}配套`} position="inline" />
-        </section>
 
         {/* 8. 推荐路线 / Related Guides */}
         {relatedGuides.length > 0 && (

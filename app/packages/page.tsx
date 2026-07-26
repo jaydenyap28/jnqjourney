@@ -5,6 +5,7 @@ import { ArrowRight, Compass, MapPinned } from 'lucide-react'
 import FallbackImage from '@/components/FallbackImage'
 import SiteFooter from '@/components/SiteFooter'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
@@ -60,6 +61,7 @@ export default async function PackagesPage() {
           </div>
         )}
       </section>
+      <WhatsAppFloatingButton pageType="package" source="JNQ-PACKAGES-FLOATING" />
       <SiteFooter />
     </main>
   )

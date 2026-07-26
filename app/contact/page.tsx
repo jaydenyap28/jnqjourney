@@ -1,20 +1,20 @@
 import type { Metadata } from 'next'
-import { BookOpenCheck, BriefcaseBusiness, CircleHelp, MessageCircle, ShieldCheck } from 'lucide-react'
+import { BookOpenCheck, BriefcaseBusiness, MessageCircle, ShieldCheck } from 'lucide-react'
 
 import PolicyPageLayout from '@/components/PolicyPageLayout'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { absoluteUrl } from '@/lib/site'
 
 const title = '联系 JnQ Journey'
-const description = '通过 WhatsApp 联系 Jayden & Qing，进行旅游配套咨询、内容更正、商业合作、版权问题或一般查询。'
+const description = '通过 WhatsApp 联系 Jayden & Qing，进行旅游配套查询、报价、内容更正、商业合作或版权问题。'
 
 const contactTypes = [
   { title: '旅游配套咨询', description: '请提供目的地、预计日期、出发地、成人与儿童人数。', icon: MessageCircle },
   { title: '内容更正', description: '请附上页面链接、需要更正的段落与可核对来源。', icon: BookOpenCheck },
   { title: '商业合作', description: '请说明品牌、合作形式、内容范围与预计时间。', icon: BriefcaseBusiness },
   { title: '版权问题', description: '请提供相关页面、作品说明、权利关系与期望处理方式。', icon: ShieldCheck },
-  { title: '一般问题', description: '网站使用、内容建议或其他非紧急事项。', icon: CircleHelp },
 ] as const
 
 export const metadata: Metadata = {
@@ -55,7 +55,7 @@ export default function ContactPage() {
       <PolicyPageLayout
         eyebrow="Contact"
         title={title}
-        introduction={<p>请选择与你的问题最接近的类型，并通过 WhatsApp 告诉我们必要资料。我们没有在本站公开电邮；请勿发送与查询无关的敏感个人资料。</p>}
+        introduction={<p>WhatsApp 主要用于旅游配套查询、报价及商业合作。一般景点开放时间、门票和交通资料，请先参考网站页面或景点官方最新公告。</p>}
         sections={[
           {
             title: '查询类型',
@@ -96,6 +96,7 @@ export default function ContactPage() {
           },
         ]}
       />
+      <WhatsAppFloatingButton pageType="contact" source="JNQ-CONTACT-FLOATING" />
     </>
   )
 }

@@ -7,6 +7,7 @@ export type AnalyticsEventName =
   | 'policy_link_click'
   | 'social_link_click'
   | 'package_view'
+  | 'package_whatsapp_click'
   | 'package_cta_click'
   | 'package_brochure_view'
   | 'package_comparison_view'

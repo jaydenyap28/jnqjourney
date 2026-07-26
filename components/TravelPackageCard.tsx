@@ -5,7 +5,14 @@ import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 
-export default function TravelPackageCard({ item, compact = false }: { item: TravelPackage; compact?: boolean }) {
+interface TravelPackageCardProps {
+  item: TravelPackage
+  compact?: boolean
+  showWhatsApp?: boolean
+  detailLabel?: string
+}
+
+export default function TravelPackageCard({ item, compact = false, showWhatsApp = true, detailLabel = '查看详情' }: TravelPackageCardProps) {
   return (
     <article className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,31,50,0.96),rgba(8,15,28,0.98))]">
       <div className={`relative ${compact ? 'aspect-[16/8]' : 'aspect-[16/9]'} bg-[#0d1726]`}>
@@ -17,8 +24,8 @@ export default function TravelPackageCard({ item, compact = false }: { item: Tra
         <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/65">{item.short_description}</p>
         {item.price_display ? <p className="mt-4 text-lg font-semibold text-amber-100">{item.price_display}</p> : null}
         <div className="mt-5 flex flex-wrap gap-2.5">
-          <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">查看详情 <ArrowRight className="h-4 w-4" /></Link>
-          <WhatsAppButton pageType="package" packageName={item.title_zh} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" />
+          <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black">{detailLabel} <ArrowRight className="h-4 w-4" /></Link>
+          {showWhatsApp ? <WhatsAppButton pageType="package" packageName={item.title_zh} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" /> : null}
         </div>
       </div>
     </article>

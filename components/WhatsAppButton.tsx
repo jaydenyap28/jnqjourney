@@ -56,7 +56,15 @@ export default function WhatsAppButton({
   eventName,
 }: WhatsAppButtonProps) {
   const pathname = usePathname()
-  const href = buildWhatsAppUrl({ pageType, region, spotName, guideTitle, packageName, source, message })
+  const href = buildWhatsAppUrl({
+    pageType,
+    region,
+    spotName,
+    guideTitle,
+    packageName,
+    source,
+    message: pageType === 'contact' ? undefined : message,
+  })
 
   return (
     <a
@@ -67,7 +75,7 @@ export default function WhatsAppButton({
       aria-label={`${label}，将在新窗口打开 WhatsApp`}
       onClick={() => {
         if (!track) return
-        trackEvent(eventName || (pageType === 'package' ? 'package_cta_click' : 'whatsapp_click'), {
+        trackEvent(eventName || (pageType === 'package' ? 'package_whatsapp_click' : pageType === 'contact' ? 'contact_whatsapp_click' : 'whatsapp_click'), {
           page_path: pathname,
           page_type: pageType,
           page_title: typeof document === 'undefined' ? undefined : document.title,

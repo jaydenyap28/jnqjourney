@@ -1,8 +1,7 @@
 import Link from 'next/link'
-import { BookOpenText, Facebook, Instagram, MessageCircle, Music2, Youtube } from 'lucide-react'
+import { BookOpenText, Facebook, Instagram, Music2, Youtube } from 'lucide-react'
 
 import TrackedLink from '@/components/TrackedLink'
-import WhatsAppButton from '@/components/WhatsAppButton'
 import { SOCIAL_LINKS } from '@/lib/brand'
 
 const socialIcons = {
@@ -96,22 +95,11 @@ export default function SiteFooter() {
           <section className="col-span-2 border-t border-white/10 pt-7 lg:col-span-1 lg:border-t-0 lg:pt-0">
             <h2 className="text-sm font-semibold text-white">联系 Jayden &amp; Qing</h2>
             <p className="mt-5 text-sm leading-7 text-white/55">
-              旅游配套、内容更正、商业合作或版权问题，可通过 WhatsApp 联系我们。
+              旅游配套、报价及商业合作，请从联系页面选择合适的查询类型。
             </p>
-            <div className="mt-5">
-              <WhatsAppButton
-                pageType="contact"
-                source="JNQ-FOOTER"
-                message={'你好，我从 JnQ Journey 网站看到你们，想进行查询。\n\n查询类型：\n问题说明：\n\n来源：JNQ-FOOTER'}
-                label="WhatsApp 咨询"
-                position="footer"
-                className="w-full sm:w-auto"
-              />
-            </div>
-            <p className="mt-3 flex items-center gap-2 text-xs text-white/38">
-              <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
-              将在新窗口打开 WhatsApp
-            </p>
+            <Link href="/contact" className="mt-5 inline-flex min-h-10 items-center text-sm font-medium text-white/75 transition hover:text-white">
+              联系我们
+            </Link>
           </section>
         </div>
 

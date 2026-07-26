@@ -5,6 +5,7 @@ import PackageViewTracker from '@/components/PackageViewTracker'
 import SiteFooter from '@/components/SiteFooter'
 import TravelPackageDetail from '@/components/TravelPackageDetail'
 import TiomanPackageDetail from '@/components/TiomanPackageDetail'
+import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { absoluteUrl } from '@/lib/site'
 import { readPublishedPackage, readPublishedPackageOptions } from '@/lib/server/travel-packages'
 
@@ -46,6 +47,13 @@ export default async function PackagePage({ params }: { params: { slug: string }
       <PackageViewTracker packageId={item.id} packageName={item.title_zh} sourceCode={item.source_code} />
       {jsonLd.map((data, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />)}
       {item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} /> : <TravelPackageDetail item={item} />}
+      <WhatsAppFloatingButton
+        pageType="package"
+        packageName={item.title_zh}
+        packageId={item.id}
+        source={`${item.source_code || `JNQ-PACKAGE-${item.id}`}-FLOATING`}
+        message={item.whatsapp_message || undefined}
+      />
       <SiteFooter />
     </>
   )

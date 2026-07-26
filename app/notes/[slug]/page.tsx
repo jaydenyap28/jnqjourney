@@ -10,9 +10,11 @@ import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInteractiveReader'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
+import TravelPackageCard from '@/components/TravelPackageCard'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readNoteBySlug } from '@/lib/server/notes-store'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
@@ -396,13 +398,15 @@ export default async function NoteDetailPage({ params }: PageProps) {
     return data as AffiliateData[]
   }
 
-  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets, noteAffiliateLinks] = await Promise.all([
+  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets, noteAffiliateLinks, publishedPackages] = await Promise.all([
     fetchLocationsByIds(spotIds),
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
     getActiveKlookWidgetsForTargets({ noteSlug: note.slug }),
     fetchAffiliateLinksForNoteSlug(note.slug),
+    readPublishedPackages(),
   ])
+  const relatedPackages = publishedPackages.filter((item) => item.related_note_slugs?.includes(note.slug))
 
   const locationsById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
   const affiliateById = new Map(affiliateLinks.map((link) => [link.id, link]))
@@ -487,6 +491,18 @@ export default async function NoteDetailPage({ params }: PageProps) {
             ) : null}
 
             <AuthorTrustBlock compact />
+
+            {relatedPackages.length ? (
+              <section className="mt-10 space-y-4 border-t border-emerald-200/15 pt-8">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.22em] text-emerald-200/75">Related travel packages / 相关旅游配套</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-white">把这段旅程延伸成完整行程</h2>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
+                </div>
+              </section>
+            ) : null}
           </article>
 
           <aside className="space-y-4 lg:sticky lg:top-6">
