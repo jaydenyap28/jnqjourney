@@ -144,6 +144,22 @@ function linesToArray(value: string) {
     .filter(Boolean)
 }
 
+function galleryToLines(value?: TravelGuide['days'][number]['gallery']) {
+  return Array.isArray(value)
+    ? value.map((image) => [image.url, image.alt, image.caption || ''].join(' | ')).join('\n')
+    : ''
+}
+
+function linesToGallery(value: string) {
+  return String(value || '')
+    .split(/\r?\n/)
+    .map((line) => {
+      const [url = '', alt = '', ...captionParts] = line.split('|').map((part) => part.trim())
+      return { url, alt, caption: captionParts.join(' | ') || undefined }
+    })
+    .filter((image) => image.url && image.alt)
+}
+
 function moveArrayItem<T>(items: T[], index: number, direction: 'up' | 'down') {
   const targetIndex = direction === 'up' ? index - 1 : index + 1
   if (targetIndex < 0 || targetIndex >= items.length) return items
@@ -647,6 +663,7 @@ export default function AdminGuidesPage() {
       ...form.days,
       {
         dayLabel: `Day ${form.days.length + 1}`,
+        date: '',
         title: '',
         summary: '',
         highlights: [],
@@ -655,6 +672,8 @@ export default function AdminGuidesPage() {
         transport: '',
         transportPrice: '',
         stay: '',
+        gallery: [],
+        reminder: '',
       },
     ])
   }
@@ -1371,6 +1390,12 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                     const isContinuous = Boolean(day.stay) && stayEnd > defaultStart
                     const maxStaySpan = Math.max(1, form.days.length - dayNumber + 1)
                     const currentStaySpan = Math.max(1, stayEnd - dayNumber + 1)
+                    const completenessIssues = [
+                      !day.date ? '缺日期' : '',
+                      !day.summary ? '缺描述' : '',
+                      !(day.linkedSpots || []).length ? '缺地点' : '',
+                      day.gallery?.some((image) => !image.alt) ? '图集缺 alt' : '',
+                    ].filter(Boolean)
 
                     return (
                       <div key={`day-${index}`} className="rounded-2xl border border-slate-200 p-4">
@@ -1401,6 +1426,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                           <div className="space-y-2">
                             <Label>Day Label</Label>
                             <Input value={day.dayLabel} onChange={(e) => updateDay(index, { dayLabel: e.target.value })} />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Date</Label>
+                            <Input type="date" value={day.date || ''} onChange={(e) => updateDay(index, { date: e.target.value })} />
                           </div>
                           <div className="space-y-2">
                             <Label>Title</Label>
@@ -1510,6 +1539,25 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                           <div className="space-y-2 md:col-span-2">
                             <Label>YouTube Video</Label>
                             <Input value={day.videoUrl || ''} onChange={(e) => updateDay(index, { videoUrl: e.target.value })} placeholder="Paste the day-specific YouTube link" />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label>Day Gallery</Label>
+                            <Textarea
+                              rows={4}
+                              value={galleryToLines(day.gallery)}
+                              onChange={(e) => updateDay(index, { gallery: linesToGallery(e.target.value) })}
+                              placeholder="Image URL | Alt text | Optional caption&#10;One real photo per line"
+                            />
+                            <p className="text-xs text-slate-500">每行必须包含图片 URL 与 alt；没有真实图片时保持为空。</p>
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <Label>Optional Reminder</Label>
+                            <Textarea rows={2} value={day.reminder || ''} onChange={(e) => updateDay(index, { reminder: e.target.value })} placeholder="Only add a reminder when it is supported by saved trip information." />
+                          </div>
+                          <div className="md:col-span-2">
+                            <div className={`rounded-xl border px-3 py-2 text-xs ${completenessIssues.length ? 'border-amber-200 bg-amber-50 text-amber-900' : 'border-emerald-200 bg-emerald-50 text-emerald-800'}`}>
+                              {completenessIssues.length ? `内容完整度：${completenessIssues.join('、')}` : '内容完整度：日期、描述、地点与图集 alt 检查通过'}
+                            </div>
                           </div>
 
                           <div className="space-y-3 md:col-span-2">

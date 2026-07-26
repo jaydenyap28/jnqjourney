@@ -2,10 +2,13 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { ArrowRight, ExternalLink, MapPinned, CalendarDays } from 'lucide-react'
+import { ArrowRight, BedDouble, CalendarDays, ExternalLink, Film, MapPin, MapPinned, Navigation, Wallet } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
+import GuideQuickNav from '@/components/GuideQuickNav'
+import GuideVideoCard from '@/components/GuideVideoCard'
+import GuideGallery from '@/components/GuideGallery'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
@@ -289,6 +292,37 @@ function formatGuideMoney(value?: string | null, fallbackCurrency = 'RM') {
   return `${fallbackCurrency} ${text}`
 }
 
+function parseGuideMoney(value?: string | null) {
+  const parsed = Number(String(value || '').replace(/[^0-9.-]/g, ''))
+  return Number.isFinite(parsed) ? parsed : 0
+}
+
+function splitGuideParagraphs(value?: string | null) {
+  const text = String(value || '').trim()
+  if (!text) return []
+
+  const sentences = text.match(/[^。！？!?；;\n]+[。！？!?；;]?|\n+/g)?.map((part) => part.trim()).filter(Boolean) || [text]
+  const paragraphs: string[] = []
+  let current = ''
+
+  for (const sentence of sentences) {
+    if (!current || current.length + sentence.length <= 190) {
+      current += sentence
+      continue
+    }
+    paragraphs.push(current)
+    current = sentence
+  }
+
+  if (current) paragraphs.push(current)
+  return paragraphs
+}
+
+function routeStartDay(stopLabel?: string | null, fallback = 1) {
+  const match = String(stopLabel || '').match(/\d+/)
+  return match ? Number(match[0]) : fallback
+}
+
 function spotTypeLabel(category?: string | null) {
   if (category === 'food') return '\u7f8e\u98df'
   if (category === 'accommodation') return '\u4f4f\u5bbf'
@@ -454,10 +488,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     })
   )
 
-  const affiliateRegions = routeRegions.filter(
-    (stop, index, list) => stop.regionId && list.findIndex((item) => item.regionId === stop.regionId) === index
-  )
-  const selectedAffiliateLinks = await fetchGuideAffiliateLinks(guide.featuredAffiliateLinkIds || [])
   const selectedSidebarLinks = await fetchGuideAffiliateLinks(guide.sidebarAffiliateLinkIds || guide.featuredAffiliateLinkIds || [])
   const selectedSidebarAffiliateIds = selectedSidebarLinks.map((link) => link.id)
   const guideKlookWidgetCode = String(guide.klookWidgetCode || '').trim()
@@ -489,12 +519,13 @@ export default async function GuideDetailPage({ params }: PageProps) {
       return normalized && !matchedSpotKeys.has(normalized)
     })
 
-    const formattedDate = orderedSpots.find((spot) => spot.visit_date)?.visit_date
-      ? formatVisitDate(String(orderedSpots.find((spot) => spot.visit_date)?.visit_date))
+    const persistedDate = String(day.date || orderedSpots.find((spot) => spot.visit_date)?.visit_date || '').trim()
+    const formattedDate = persistedDate
+      ? formatVisitDate(persistedDate)
       : ''
 
     return {
-      date: orderedSpots.find((spot) => spot.visit_date)?.visit_date || '',
+      date: persistedDate,
       formattedDate,
       dayNumber,
       title: day.title || `${orderedSpots[0]?.regions?.name_cn || orderedSpots[0]?.regions?.name || '旅行日'} 行程`,
@@ -503,7 +534,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
       transport: day.transport,
       transportPrice: day.transportPrice,
       stay: staySource?.stay || day.stay,
+      stayStartDay: Number(
+        staySource?.stayRangeStart ??
+          parseDayRange(staySource?.dayLabel)?.start ??
+          dayNumber
+      ),
       stayNote: day.stayNote || '',
+      gallery: day.gallery || [],
+      reminder: day.reminder || '',
       highlights: day.highlights || [],
       spots: orderedSpots,
       unresolvedSpotNames,
@@ -523,9 +561,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
-  const coveredSpots: LinkedSpot[] = []
-  const foodSpots: LinkedSpot[] = []
-
   const routeMapPoints = routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
     const longitude = typeof stop.longitude === 'number' ? Number(stop.longitude) : null
@@ -542,6 +577,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         latitude: Number(latitude),
         longitude: Number(longitude),
         regionLabel: stop.secondaryLabel || undefined,
+        dayNumber: routeStartDay(stop.stopLabel, index + 1),
       },
     ]
   })
@@ -550,6 +586,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const relatedGuides = allGuides
     .filter(g => g.slug !== guide.slug)
     .slice(0, 3)
+
+  const budgetItemsTotal = guide.budgetItems.reduce((total, item) => total + parseGuideMoney(item.amount), 0)
+  const declaredBudgetTotal = parseGuideMoney(guide.budget)
+  if (process.env.NODE_ENV !== 'production' && declaredBudgetTotal && budgetItemsTotal !== declaredBudgetTotal) {
+    console.warn(
+      `[guide:${guide.slug}] Budget mismatch: declared ${declaredBudgetTotal}, item total ${budgetItemsTotal}.`
+    )
+  }
 
   const itemListElement = routeRegions.map((stop, index) => ({
     '@type': 'ListItem',
@@ -623,529 +667,442 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ],
   }
 
+  const budgetDenominator = declaredBudgetTotal || budgetItemsTotal
+
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.18),transparent_18%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_20%),linear-gradient(180deg,#0b1220_0%,#050913_55%,#020308_100%)] text-white">
+    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.10),transparent_20%),linear-gradient(180deg,#0a101b_0%,#050912_48%,#020409_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
 
-      <section className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-4 py-6 md:px-8 md:py-12">
-          <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-white/70">
-            <Link href="/" className="transition hover:text-white">Home</Link>
-            <span>›</span>
-            <Link href="/guide" className="transition hover:text-white">Travel Guides</Link>
-            <span>›</span>
-            <span className="text-white/40">{guide.title}</span>
-          </div>
-          <div
-            className={`overflow-hidden rounded-[34px] border border-white/10 p-4 shadow-[0_36px_120px_rgba(0,0,0,0.32)] md:rounded-[42px] md:p-10 ${guide.coverAccent}`}
-            style={
-              guideCoverImage
-                ? {
-                    backgroundImage: `linear-gradient(120deg,rgba(2,6,23,0.88),rgba(2,6,23,0.6) 45%,rgba(2,6,23,0.34)), url(${guideCoverImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }
-                : undefined
-            }
-          >
-            <div className="relative z-10 space-y-4 md:space-y-6">
-              <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:items-start">
-                <div className="space-y-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <p className="section-kicker text-xs text-amber-100/80">{'Travel Guide / 游记'}</p>
-                    {guide.duration ? (
-                      <span className="rounded-full border border-amber-300/30 bg-amber-400/10 px-2 py-0.5 text-[10px] text-amber-200">{guide.duration}</span>
-                    ) : null}
-                    {guide.travelStyle ? (
-                      <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] text-white/90">{guide.travelStyle}</span>
-                    ) : null}
-                  </div>
-                  <h1 className="font-display max-w-4xl text-[2.35rem] leading-[0.96] text-white md:text-[5.4rem]">
-                    {guide.title}｜完整自由行攻略
-                  </h1>
-                  <p className="max-w-3xl text-sm leading-7 text-white/82 md:text-xl md:leading-9">{guide.tagline}</p>
-                  <p className="max-w-3xl text-sm leading-7 text-white/66 md:text-base md:leading-8">{guide.summary}</p>
+      <header className="border-b border-white/10">
+        <div className="mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-8">
+          <nav aria-label="Breadcrumb" className="mb-4 flex min-w-0 items-center gap-2 overflow-hidden text-xs text-white/58 md:text-sm">
+            <Link href="/" className="shrink-0 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">Home</Link>
+            <span aria-hidden="true">›</span>
+            <Link href="/guide" className="shrink-0 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">Travel Guides</Link>
+            <span aria-hidden="true">›</span>
+            <span className="truncate text-white/38">{guide.title}</span>
+          </nav>
+
+          <div className={`relative isolate overflow-hidden rounded-[24px] border border-white/12 ${guide.coverAccent} md:rounded-[32px]`}>
+            {guideCoverImage ? (
+              <FallbackImage
+                src={guideCoverImage}
+                alt={`${guide.title} 完整路线攻略封面`}
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 1280px"
+                className="object-cover"
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(2,6,18,0.90)_0%,rgba(2,6,18,0.70)_52%,rgba(2,6,18,0.48)_100%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(255,255,255,0.12),transparent_30%)]" />
+
+            <div className="relative grid gap-7 px-5 py-7 md:px-9 md:py-10 lg:grid-cols-[minmax(0,1.75fr)_minmax(280px,0.85fr)] lg:items-end">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-100/82">Travel Guide / 游记</p>
+                  {guide.duration ? <span className="rounded-full border border-white/16 bg-black/22 px-2.5 py-1 text-[10px] text-white/85">{guide.duration}</span> : null}
+                  {guide.travelStyle ? <span className="rounded-full border border-white/16 bg-black/22 px-2.5 py-1 text-[10px] text-white/85">{guide.travelStyle}</span> : null}
                 </div>
+                <h1 className="mt-5 max-w-[15ch] text-balance font-display text-[clamp(2.35rem,6vw,5.25rem)] leading-[0.98] tracking-[-0.035em] text-white">
+                  {guide.title}
+                </h1>
+                <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-white/90 md:text-xl md:leading-8">
+                  {[guide.duration, guide.travelStyle, '完整攻略'].filter(Boolean).join(' · ')}
+                </p>
+                {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{guide.tagline}</p> : null}
+                {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
 
-                <div className="rounded-[26px] border border-white/10 bg-black/20 p-4 backdrop-blur-md md:p-5">
-                  <p className="section-kicker text-xs text-amber-300/80">{'Route / 路线'}</p>
-                  <h3 className="mt-3 text-2xl font-semibold text-white">{'路线总览'}</h3>
-                  <div className="mt-4 space-y-3">
+                <dl className="mt-6 grid max-w-2xl grid-cols-3 divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3">
+                  <div className="px-3 first:pl-0">
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">行程</dt>
+                    <dd className="mt-1 text-sm font-semibold text-white">{guide.duration || '待补充'}</dd>
+                  </div>
+                  <div className="px-3">
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">地区</dt>
+                    <dd className="mt-1 text-sm font-semibold text-white">{routeRegions.length} 个主要地区</dd>
+                  </div>
+                  <div className="px-3 pr-0">
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">总预算</dt>
+                    <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">{guide.budget ? formatGuideMoney(guide.budget) : '待补充'}</dd>
+                  </div>
+                </dl>
+              </div>
+
+              {routeRegions.length ? (
+                <section aria-labelledby="hero-route-heading" className="border-l border-white/16 bg-black/20 p-4 backdrop-blur-md md:p-5">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Route / 路线</p>
+                  <h2 id="hero-route-heading" className="mt-2 text-xl font-semibold text-white">路线总览</h2>
+                  <ol className="mt-4 space-y-1">
                     {routeRegions.map((stop, index) => {
-                      const content = (
-                        <>
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-sm font-semibold text-white">
-                            {stop.stopLabel || index + 1}
-                          </div>
-                          <div className="flex-1 rounded-[18px] border border-white/10 bg-black/20 px-4 py-3 text-sm text-white">
-                            <div className="font-medium text-white">{stop.primaryLabel || stop.name}</div>
-                            {stop.secondaryLabel ? (
-                              <div className="mt-1 text-xs uppercase tracking-[0.2em] text-white/45">{stop.secondaryLabel}</div>
-                            ) : null}
-                          </div>
-                        </>
-                      )
-
-                      return stop.href ? (
-                        <Link key={stop.name} href={stop.href} className="flex items-center gap-3 transition hover:translate-x-1">
-                          {content}
-                        </Link>
-                      ) : (
-                        <div key={stop.name} className="flex items-center gap-3">
-                          {content}
-                        </div>
+                      const startDay = routeStartDay(stop.stopLabel, index + 1)
+                      return (
+                        <li key={`${stop.name}-${index}`}>
+                          <a
+                            href={`#day-${startDay}`}
+                            className="group grid min-h-12 grid-cols-[4.5rem_1fr_auto] items-center gap-2 border-t border-white/10 py-2.5 text-sm transition first:border-t-0 hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                          >
+                            <span className="font-semibold tabular-nums text-amber-200/80">{stop.stopLabel || `D${startDay}`}</span>
+                            <span className="min-w-0">
+                              <span className="block truncate font-medium text-white">{stop.primaryLabel || stop.name}</span>
+                              {stop.secondaryLabel ? <span className="mt-0.5 block truncate text-[10px] uppercase tracking-[0.18em] text-white/40">{stop.secondaryLabel}</span> : null}
+                            </span>
+                            <ArrowRight className="h-3.5 w-3.5 text-white/38 transition group-hover:translate-x-0.5 group-hover:text-amber-200" />
+                          </a>
+                        </li>
                       )
                     })}
-                  </div>
-                </div>
-              </div>
+                  </ol>
+                </section>
+              ) : null}
             </div>
           </div>
         </div>
-      </section>
+      </header>
 
-      <section className="mx-auto max-w-7xl px-4 py-7 md:px-8 md:py-14">
-        <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start">
-          <div className="space-y-8 md:space-y-12">
-            {routeMapPoints.length ? (
-              <section className="space-y-5">
-                <div>
-                  <p className="section-kicker text-xs text-amber-300/80">{'Route Map / \u8def\u7ebf\u5730\u56fe'}</p>
-                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.8rem]">{'\u8def\u7ebf\u5730\u56fe'}</h2>
-                </div>
-                <div className="overflow-hidden rounded-[34px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-4 shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
-                  <GuideRouteMap
-                    points={routeMapPoints}
-                    theme="dark"
-                    showCards={false}
-                    className="space-y-4"
-                    emptyMessage={'\u8fd9\u7bc7\u653b\u7565\u76ee\u524d\u8fd8\u6ca1\u6709\u8db3\u591f\u7684\u5750\u6807\u8d44\u6599\u6765\u7ed8\u5236\u8def\u7ebf\u5730\u56fe\u3002'}
-                  />
-                </div>
-              </section>
-            ) : null}
+      <GuideQuickNav
+        guideSlug={guide.slug}
+        days={datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
+        hasMap={routeMapPoints.length > 0}
+        hasBudget={Boolean(guide.budget || guide.budgetItems.length)}
+      />
 
-            <section className="space-y-5">
+      <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 md:px-8 md:py-16">
+        {routeMapPoints.length ? (
+          <section id="route-map" className="scroll-mt-24">
+            <div className="grid gap-3 border-b border-white/10 pb-5 md:grid-cols-[1fr_auto] md:items-end">
               <div>
-                <p className="section-kicker text-xs text-amber-300/80">{'Budget / \u9884\u7b97'}</p>
-                <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">{'\u9884\u7b97\u62c6\u89e3'}</h2>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Route Map / 路线地图</p>
+                <h2 className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">路线地图</h2>
               </div>
-              <div className="grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
-                {guide.budget ? (
-                  <div className="rounded-[20px] border border-amber-300/20 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))] p-3.5 md:rounded-[26px] md:p-5">
-                    <p className="text-sm text-amber-100/70">Budget / 总预算</p>
-                    <p className="mt-2 text-3xl font-semibold text-white md:text-[2.1rem]">{formatGuideMoney(guide.budget)}</p>
+              <p className="max-w-md text-sm leading-6 text-white/55">点击路线节点查看地区与对应天数；地图不可用时，仍可沿下方文字路线阅读。</p>
+            </div>
+            <div className="mt-6 border border-white/10 bg-white/[0.025] p-2 md:p-3">
+              <GuideRouteMap
+                points={routeMapPoints}
+                guideSlug={guide.slug}
+                theme="dark"
+                showCards
+                className="space-y-4"
+                emptyMessage="这篇攻略目前还没有足够的坐标资料来绘制路线地图；请参考文字路线与每日行程。"
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/68">
+              {routeRegions.map((stop, index) => (
+                <span key={`${stop.name}-route-text`} className="inline-flex items-center gap-3">
+                  <span>{stop.primaryLabel || stop.name}</span>
+                  {index < routeRegions.length - 1 ? <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-amber-200/55" /> : null}
+                </span>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {guide.budget || guide.budgetItems.length ? (
+          <section id="budget" className="scroll-mt-24">
+            <div className="border-b border-white/10 pb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Budget / 预算</p>
+              <h2 className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">预算拆解</h2>
+            </div>
+            <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 md:grid-cols-4">
+              {guide.budget ? (
+                <div className="col-span-2 flex min-h-44 flex-col justify-between bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.17),transparent_45%),#0b111d] p-5 md:p-6">
+                  <div className="flex items-center gap-2 text-amber-100/75">
+                    <Wallet className="h-4 w-4" />
+                    <p className="text-xs uppercase tracking-[0.22em]">总预算</p>
                   </div>
-                ) : null}
-                {guide.budgetItems.map((item, index) => (
-                  <div
-                    key={`${item.label || 'budget-item'}-${item.amount}-${index}`}
-                    className="rounded-[20px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-3.5 md:rounded-[26px] md:p-5"
-                  >
-                    <p className="text-sm text-white/58">{item.label || 'Budget Item / 预算项'}</p>
-                    <p className="mt-2 text-2xl font-semibold text-white md:text-[1.9rem]">
+                  <p className="mt-5 text-[clamp(2rem,5vw,3.7rem)] font-semibold leading-none tabular-nums text-white">{formatGuideMoney(guide.budget)}</p>
+                  <p className="mt-4 text-xs leading-6 text-white/50">未有明确人数口径，因此不标示为“每人预算”。</p>
+                </div>
+              ) : null}
+              {guide.budgetItems.map((item, index) => {
+                const amount = parseGuideMoney(item.amount)
+                const percentage = budgetDenominator ? Math.min(100, Math.max(0, (amount / budgetDenominator) * 100)) : 0
+                return (
+                  <div key={`${item.label || 'budget-item'}-${item.amount}-${index}`} className="flex min-h-44 flex-col bg-[#0b111d] p-4 md:p-5">
+                    <p className="min-h-10 text-xs leading-5 text-white/60">{item.label || '预算项'}</p>
+                    <p className="mt-3 text-xl font-semibold tabular-nums text-white md:text-2xl">
                       {item.currency ? [item.currency, item.amount].filter(Boolean).join(' ') : formatGuideMoney(item.amount)}
                     </p>
-                    {item.note ? <p className="mt-3 text-sm leading-6 text-gray-300">{item.note}</p> : null}
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-5">
-              <div className="space-y-4">
-                {(datedDayPlans.length ? datedDayPlans : []).map((day) => (
-                  <div
-                    key={`${day.date}-${day.dayNumber}`}
-                    className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] shadow-[0_24px_70px_rgba(0,0,0,0.18)] md:rounded-[32px]"
-                  >
-                    <div className="px-4 py-4 md:px-6 md:py-7">
-                        <div className="flex flex-col items-center gap-3 text-center md:flex-row md:items-end md:justify-between md:text-left">
-                          <div>
-                            <p className="section-kicker text-xs text-amber-300/80">{`Day ${day.dayNumber}`}</p>
-                            <h3 className="mt-2 text-[1.5rem] font-semibold leading-tight text-white md:text-[2rem]">{day.title}</h3>
-                          </div>
-                          <div className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-white/60 md:text-xs">
-                            {day.formattedDate || 'Travel Day'}
-                          </div>
-                        </div>
-                        {shouldShowDaySummary(day.summary) ? <p className="mt-3 text-sm leading-7 text-gray-300">{day.summary}</p> : null}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {day.highlights.map((highlight) => (
-                            <span key={highlight} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-white/90">
-                              {highlight}
-                            </span>
-                          ))}
-                        </div>
-
-                        {day.displaySpots.length || day.unresolvedSpotNames.length ? (
-                          <div className="mt-4 rounded-[22px] border border-amber-400/15 bg-black/20 p-3 md:mt-6 md:rounded-[26px] md:p-5">
-                            <div className="flex items-end justify-between gap-4">
-                              <div>
-                                <p className="text-xs uppercase tracking-[0.24em] text-amber-200/75">{'\u5f53\u5929\u76f8\u5173\u5730\u70b9'}</p>
-                              </div>
-                              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/65">
-                                {day.displaySpots.length + day.unresolvedSpotNames.length} {'\u4e2a\u5730\u70b9'}
-                              </span>
-                            </div>
-                            <div className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3">
-                              {day.displaySpots.map((spot) => {
-                                const orderIndex = day.orderedSpotIds.indexOf(spot.id)
-
-                                return (
-                                  <Link
-                                    key={spot.id}
-                                    href={buildLocationPath(spot.name, spot.id)}
-                                    className="group overflow-hidden rounded-[16px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:rounded-[24px]"
-                                  >
-                                    <div className="relative aspect-square overflow-hidden bg-black/20 md:aspect-[16/10]">
-                                      <FallbackImage
-                                        src={getSpotCover(spot)}
-                                        alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅游照片'}`.trim()}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 320px"
-                                        className="object-cover transition duration-500 group-hover:scale-105"
-                                      />
-                                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                                      <div className="absolute left-3 top-3 flex items-center gap-2">
-                                        <span className="rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] text-white/90">
-                                          {spotTypeLabel(spot.category)}
-                                        </span>
-                                        {orderIndex >= 0 ? (
-                                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-300 text-[11px] font-semibold text-slate-950">
-                                            {orderIndex + 1}
-                                          </span>
-                                        ) : null}
-                                      </div>
-                                    </div>
-                                    <div className="space-y-1 p-2.5 md:space-y-2 md:p-4">
-                                      <div className="line-clamp-2 text-sm font-medium leading-5 text-white md:text-base md:leading-6">{spot.name_cn || spot.name}</div>
-                                      <div className="text-xs text-white/55">
-                                        {spot.regions?.name_cn || spot.regions?.name || 'Yunnan'}
-                                      </div>
-                                    </div>
-                                  </Link>
-                                )
-                              })}
-                              {day.unresolvedSpotNames.map((spotName) => (
-                                <div
-                                  key={`pending-${day.dayNumber}-${spotName}`}
-                                  className="rounded-[24px] border border-dashed border-white/10 bg-white/[0.03] p-4"
-                                >
-                                  <div className="rounded-full border border-white/10 bg-black/30 px-3 py-1 text-[11px] text-white/80 inline-flex">
-                                    {'已关联景点'}
-                                  </div>
-                                  <div className="mt-4 font-medium text-white">{spotName}</div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ) : null}
-
-                        <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                          {day.transport ? (
-                            <div className="rounded-[20px] border border-white/10 bg-black/20 p-4 md:min-h-[220px] md:rounded-[24px] md:p-5">
-                              <p className="text-xs uppercase tracking-[0.22em] text-white/45">{'\u4ea4\u901a'}</p>
-                              <p className="mt-3 text-sm leading-7 text-white">{day.transport}</p>
-                              {day.transportPrice ? <p className="mt-3 text-sm font-medium text-amber-200">{day.transportPrice}</p> : null}
-                            </div>
-                          ) : null}
-                        </div>
-
-                        {day.staySpot || day.stay ? (
-                          <div className="mt-3 rounded-[20px] border border-sky-400/15 bg-sky-500/10 p-3 md:mt-5 md:rounded-[26px] md:p-5">
-                            <div className="flex items-end justify-between gap-4">
-                              <div>
-                                <p className="text-xs uppercase tracking-[0.24em] text-sky-200/80">{'\u5f53\u65e5\u4f4f\u5bbf'}</p>
-                              </div>
-                            </div>
-                            {day.staySpot ? (
-                              <Link
-                                href={buildLocationPath(day.staySpot.name, day.staySpot.id)}
-                                className="group mt-3 grid overflow-hidden rounded-[18px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:mt-4 md:rounded-[24px] md:grid-cols-[120px_minmax(0,1fr)]"
-                              >
-                                <div className="relative min-h-[84px] overflow-hidden bg-black/20 md:min-h-[108px]">
-                                  <FallbackImage
-                                    src={getSpotCover(day.staySpot)}
-                                    alt={`${day.staySpot.name_cn || day.staySpot.name} ${day.staySpot.regions?.name_cn || day.staySpot.regions?.name || ''} 旅游照片`.trim()}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, 220px"
-                                    className="object-cover transition duration-500 group-hover:scale-105"
-                                  />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                                  <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] text-white/90">
-                                    {'\u4f4f\u5bbf'}
-                                  </div>
-                                </div>
-                                <div className="flex min-w-0 flex-col justify-center space-y-1 p-3 md:space-y-2 md:p-4">
-                                  <div className="font-medium text-white">{day.staySpot.name_cn || day.staySpot.name}</div>
-                                  <div className="text-xs text-white/55">
-                                    {day.staySpot.regions?.name_cn || day.staySpot.regions?.name || 'Yunnan'}
-                                  </div>
-                                </div>
-                              </Link>
-                            ) : null}
-                            {day.stayNote ? (
-                              <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 px-3 py-2.5 text-sm leading-6 text-white/82 md:mt-4 md:px-4 md:py-3 md:leading-7">
-                                {day.stayNote}
-                              </div>
-                            ) : null}
-                            {day.stay && !day.staySpot ? (
-                              <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 p-3 text-sm leading-6 text-white/82 md:mt-4 md:p-4 md:leading-7">
-                                {day.stay}
-                              </div>
-                            ) : null}
-                          </div>
-                        ) : null}
-
-                        {day.staySpot ? (
-                          <div className="mt-4">
-                            <AffiliateCard
-                              locationId={day.staySpot.id}
-                              regionId={day.staySpot.region_id || undefined}
-                              category="accommodation"
-                              limit={1}
-                              title={'\u70b9\u51fb\u8fd9\u91cc\u9884\u8ba2'}
-                              className="bg-white/5"
-                              compact
-                              hideHeader
-                            />
-                          </div>
-
-                        ) : null}
-
-
-                        {day.videoUrl && getYouTubeID(day.videoUrl) ? (
-                          <div className="mt-5 rounded-[26px] border border-red-400/15 bg-red-500/10 p-4 md:p-5">
-                            <p className="text-xs uppercase tracking-[0.24em] text-red-200/80">{'\u5f53\u65e5\u5f71\u7247'}</p>
-                            <div className="mt-4 overflow-hidden rounded-[22px] border border-white/10 bg-black/30">
-                              <div className="aspect-video">
-                                <iframe
-                                  src={`https://www.youtube.com/embed/${getYouTubeID(day.videoUrl)}?rel=0`}
-                                  title={`${day.title} YouTube video`}
-                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                  allowFullScreen
-                                  className="h-full w-full"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ) : null}
-
-                        {day.transport && day.primaryRegionId ? (
-                          <div className="mt-5">
-                            <AffiliateCard
-                              regionId={day.primaryRegionId}
-                              limit={2}
-                              title={'\u4ea4\u901a\u4e0e\u9884\u8ba2\u63a8\u8350'}
-                              className="bg-white/5"
-                            />
-                          </div>
-                        ) : null}
+                    <div className="mt-4 h-1 overflow-hidden bg-white/8" aria-hidden="true">
+                      <div className="h-full bg-amber-300/75" style={{ width: `${percentage}%` }} />
                     </div>
+                    {item.note ? <p className="mt-3 text-xs leading-5 text-white/48">{item.note}</p> : null}
                   </div>
-                ))}
-                {!datedDayPlans.length
-                  ? guide.days.map((day) => {
-                      const daySpots = (day.linkedSpots || [])
-                        .map((name) => spotMap.get(name.trim().toLowerCase()))
-                        .filter((spot): spot is LinkedSpot => Boolean(spot))
+                )
+              })}
+            </div>
+            <p className="mt-4 border-l border-amber-300/35 pl-4 text-sm leading-7 text-white/58">
+              预算根据当次行程记录整理，实际费用会因日期、汇率、房型和个人消费而不同。
+            </p>
+          </section>
+        ) : null}
 
-                      return (
-                        <div key={day.dayLabel} className="rounded-[30px] border border-white/10 bg-white/5 p-6">
-                          <div className="grid gap-5 lg:grid-cols-[120px_minmax(0,1fr)]">
-                            <div>
-                              <p className="section-kicker text-xs text-amber-300/80">{day.dayLabel}</p>
-                            </div>
-                            <div>
-                              <h3 className="text-2xl font-semibold text-white">{day.title}</h3>
-                              {shouldShowDaySummary(day.summary) ? <p className="mt-3 text-sm leading-7 text-gray-300">{day.summary}</p> : null}
-                              <div className="mt-4 flex flex-wrap gap-2">
-                                {day.highlights.map((highlight) => (
-                                  <span key={highlight} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-white/90">
-                                    {highlight}
-                                  </span>
-                                ))}
-                              </div>
-                              {daySpots.length ? (
-                                <div className="mt-5 rounded-[24px] border border-amber-400/15 bg-black/20 p-4">
-                                  <p className="text-xs uppercase tracking-[0.24em] text-amber-200/75">{'\u76f8\u5173\u666f\u70b9'}</p>
-                                  <div className="mt-3 flex flex-wrap gap-2">
-                                    {daySpots.map((spot) => (
-                                      <Link
-                                        key={spot.id}
-                                        href={buildLocationPath(spot.name, spot.id)}
-                                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white transition hover:bg-white/10"
-                                      >
-                                        {spot.name_cn || spot.name}
-                                        <ExternalLink className="h-3.5 w-3.5" />
-                                      </Link>
-                                    ))}
-                                  </div>
-                                </div>
-                              ) : null}
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })
-                  : null}
-              </div>
-            </section>
-
-            {false && (
-              <section className="space-y-5">
-                <div>
-                  <p className="section-kicker text-xs text-amber-300/80">Spots Covered / 涵盖景点</p>
-                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">涵盖景点</h2>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                  {coveredSpots.map((spot) => (
-                    <Link
-                      key={spot.id}
-                      href={buildLocationPath(spot.name, spot.id)}
-                      className="group overflow-hidden rounded-[20px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
-                        <FallbackImage
-                          src={getSpotCover(spot)}
-                          alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} 旅游照片`.trim()}
-                          fill
-                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                        />
-                        {spot.category && (
-                          <div className="absolute left-3 top-3">
-                            <span className="rounded-full border border-white/10 bg-black/45 px-3 py-1 text-[11px] text-white/90">
-                              {spotTypeLabel(spot.category)}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3 md:p-4">
-                        <div className="line-clamp-1 font-medium text-white">{spot.name_cn || spot.name}</div>
-                        <div className="text-xs text-white/55 mt-1">
-                          {spot.regions?.name_cn || spot.regions?.name || '地点'}
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* 7. Food & Cafe */}
-            {false && (
-              <section className="space-y-5">
-                <div>
-                  <p className="section-kicker text-xs text-amber-300/80">Food & Cafe / 美食咖啡</p>
-                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">路线周边美食</h2>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-                  {foodSpots.map((spot) => (
-                    <Link
-                      key={spot.id}
-                      href={buildLocationPath(spot.name, spot.id)}
-                      className="group overflow-hidden rounded-[20px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
-                    >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
-                        <FallbackImage
-                          src={getSpotCover(spot)}
-                          alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} 美食或环境照片`.trim()}
-                          fill
-                          sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                          className="object-cover transition duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute left-3 top-3">
-                          <span className="rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-[11px] text-amber-100">
-                            美食打卡
-                          </span>
-                        </div>
-                      </div>
-                      <div className="p-3 md:p-4">
-                        <div className="line-clamp-1 font-medium text-white">{spot.name_cn || spot.name}</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            <AuthorTrustBlock />
-
-            {relatedPackages.length > 0 ? (
-              <section className="space-y-4 border-t border-emerald-200/15 pt-8">
-                <div>
-                  <p className="section-kicker text-xs text-emerald-200/75">Related travel packages / 相关旅游配套</p>
-                  <h2 className="font-display mt-2 text-3xl leading-tight text-white">把这段路线安排成完整旅程</h2>
-                </div>
-                <div className="grid gap-4 md:grid-cols-2">
-                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
-                </div>
-              </section>
-            ) : null}
-
-            {/* 11. Related Guides */}
-            {relatedGuides.length > 0 && (
-              <section className="space-y-5">
-                <div>
-                  <p className="section-kicker text-xs text-amber-300/80">Related Guides / 相关游记路线</p>
-                  <h2 className="font-display mt-2 text-4xl leading-tight text-white md:text-[2.6rem]">探索更多路线</h2>
-                </div>
-                <div className="grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {relatedGuides.map(g => (
-                    <Link key={g.slug} href={`/guide/${g.slug}`} className="block rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] p-4 md:p-5 transition hover:-translate-y-1 hover:bg-white/10">
-                      <div className="flex items-center gap-2 mb-2.5 text-xs text-amber-400">
-                        <CalendarDays className="w-4 h-4" />
-                        <span>{g.duration || '行程参考'}</span>
-                      </div>
-                      <h3 className="font-semibold text-white line-clamp-2 leading-snug">{g.title}</h3>
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-          </div>
-
-          <aside className="space-y-5 xl:self-start">
+        {guideKlookWidgetCode || selectedSidebarAffiliateIds.length ? (
+          <aside aria-label="路线预订精选" className="grid gap-4 md:grid-cols-2">
             {guideKlookWidgetCode ? (
-              <KlookWidgetEmbed
-                code={guideKlookWidgetCode}
-                title={'Klook Booking Widget'}
-                description={'Live widget for this route'}
-                className="bg-white/5"
-              />
+              <KlookWidgetEmbed code={guideKlookWidgetCode} title="Klook 路线预订" description="与这篇路线相关的活动入口" className="bg-white/[0.035]" />
             ) : null}
             {selectedSidebarAffiliateIds.length ? (
               <AffiliateCard
                 linkIds={selectedSidebarAffiliateIds}
                 limit={Math.max(selectedSidebarAffiliateIds.length, 1)}
-                title={'\u8def\u7ebf\u9884\u8ba2\u7cbe\u9009'}
-                className="bg-white/5"
+                title="路线预订精选"
+                guideSlug={guide.slug}
+                className="bg-white/[0.035]"
                 hideHeader
                 singleColumn
               />
             ) : null}
-            <SupportSidebarCard className="bg-white/5" />
-            <div className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-5">
-              <p className="section-kicker text-xs text-amber-300/80">{'Next Step / \u7ee7\u7eed\u63a2\u7d22'}</p>
-              <h3 className="mt-3 text-2xl font-semibold text-white">{'\u7ee7\u7eed\u63a2\u7d22'}</h3>
-              <div className="mt-4 space-y-3">
-                <Link href="/guide" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white transition hover:bg-white/10">
-                  {'\u67e5\u770b\u66f4\u591a\u653b\u7565'}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link href="/region" className="flex items-center justify-between rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white transition hover:bg-white/10">
-                  {'\u6309\u5730\u533a\u7ee7\u7eed\u627e\u666f\u70b9'}
-                  <MapPinned className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
           </aside>
-        </div>
-      </section>
+        ) : null}
+
+        <section aria-labelledby="itinerary-heading">
+          <div className="border-b border-white/10 pb-5">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>
+            <h2 id="itinerary-heading" className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">每日行程</h2>
+          </div>
+
+          <div className="divide-y divide-white/10">
+            {datedDayPlans.map((day) => {
+              const videoId = day.videoUrl ? getYouTubeID(day.videoUrl) : null
+              const regionName = day.displaySpots.find((spot) => spot.regions)?.regions?.name_cn || day.displaySpots.find((spot) => spot.regions)?.regions?.name
+              const isContinuedStay = Boolean(day.stay && day.dayNumber > day.stayStartDay)
+
+              return (
+                <article id={`day-${day.dayNumber}`} key={`${day.date}-${day.dayNumber}`} className="scroll-mt-24 py-10 md:py-14">
+                  <header className="grid gap-3 md:grid-cols-[7rem_minmax(0,1fr)_auto] md:items-end">
+                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-amber-200">Day {day.dayNumber}</p>
+                    <h3 className="text-3xl font-semibold leading-tight text-white md:text-4xl">{day.title}</h3>
+                    {day.formattedDate ? <time dateTime={day.date} className="text-sm tabular-nums text-white/55">{day.formattedDate}</time> : null}
+                  </header>
+
+                  <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/68">
+                    {day.displaySpots.length ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><MapPin className="h-3.5 w-3.5" />{day.displaySpots.length} 个地点</span> : null}
+                    {regionName ? <span className="border border-white/10 bg-white/[0.035] px-3 py-1.5">{regionName}</span> : null}
+                    {day.stay ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><BedDouble className="h-3.5 w-3.5" />{isContinuedStay ? '继续入住' : '有住宿'}</span> : null}
+                    {videoId ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><Film className="h-3.5 w-3.5" />有影片</span> : null}
+                  </div>
+
+                  {day.displaySpots.length > 1 ? (
+                    <nav aria-label={`Day ${day.dayNumber} 今日路线`} className="mt-6 border-y border-white/10 py-4">
+                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
+                        <Navigation className="h-3.5 w-3.5" /> 今日路线
+                      </div>
+                      <ol className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                        {day.displaySpots.map((spot, index) => (
+                          <li key={`route-${day.dayNumber}-${spot.id}`} className="flex min-w-0 items-center gap-2">
+                            <Link href={buildLocationPath(spot.name, spot.id)} className="truncate text-sm text-white/82 transition hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+                              {spot.name_cn || spot.name}
+                            </Link>
+                            {index < day.displaySpots.length - 1 ? <ArrowRight className="h-3.5 w-3.5 shrink-0 rotate-90 text-amber-200/45 sm:rotate-0" /> : null}
+                          </li>
+                        ))}
+                      </ol>
+                    </nav>
+                  ) : null}
+
+                  {shouldShowDaySummary(day.summary) ? (
+                    <div className="mt-6 max-w-[800px] space-y-4 text-[15px] leading-[1.85] text-white/76 md:text-base">
+                      {splitGuideParagraphs(day.summary).map((paragraph, index) => <p key={`${day.dayNumber}-summary-${index}`}>{paragraph}</p>)}
+                    </div>
+                  ) : null}
+
+                  {day.highlights.length ? (
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {day.highlights.map((highlight) => <span key={highlight} className="border-l border-amber-300/40 bg-white/[0.035] px-3 py-1.5 text-xs text-white/78">{highlight}</span>)}
+                    </div>
+                  ) : null}
+
+                  {day.displaySpots.length || day.unresolvedSpotNames.length ? (
+                    <section aria-label={`Day ${day.dayNumber} 相关地点`} className="mt-7">
+                      <div className="flex items-end justify-between gap-4">
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/48">当天相关地点</p>
+                        <span className="text-xs tabular-nums text-white/48">{day.displaySpots.length} 张资料卡</span>
+                      </div>
+                      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {day.displaySpots.map((spot) => {
+                          const orderIndex = day.orderedSpotIds.indexOf(spot.id)
+                          return (
+                            <Link
+                              key={spot.id}
+                              href={buildLocationPath(spot.name, spot.id)}
+                              className="group overflow-hidden border border-white/10 bg-white/[0.035] transition hover:border-white/22 hover:bg-white/[0.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                            >
+                              <div className="relative aspect-[4/3] overflow-hidden bg-black/25">
+                                <FallbackImage
+                                  src={getSpotCover(spot)}
+                                  alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅行照片'}`.trim()}
+                                  fill
+                                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+                                  className="object-cover transition duration-500 group-hover:scale-[1.025]"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                                <div className="absolute left-3 top-3 flex items-center gap-2">
+                                  {orderIndex >= 0 ? <span className="flex h-7 w-7 items-center justify-center bg-amber-300 text-xs font-bold text-slate-950">{orderIndex + 1}</span> : null}
+                                  <span className="bg-black/62 px-2.5 py-1 text-[10px] text-white/88 backdrop-blur">{spotTypeLabel(spot.category)}</span>
+                                </div>
+                              </div>
+                              <div className="p-4">
+                                <p className="text-base font-medium leading-6 text-white">{spot.name_cn || spot.name}</p>
+                                <p className="mt-1 text-xs text-white/50">{spot.regions?.name_cn || spot.regions?.name || '地点'}</p>
+                              </div>
+                            </Link>
+                          )
+                        })}
+                      </div>
+                      {day.unresolvedSpotNames.length ? (
+                        <div className="mt-3 border-l-2 border-amber-300/45 bg-amber-300/[0.05] px-4 py-3 text-sm leading-6 text-white/68">
+                          待补完整景点资料：{day.unresolvedSpotNames.join('、')}
+                        </div>
+                      ) : null}
+                    </section>
+                  ) : null}
+
+                  {day.transport ? (
+                    <section aria-label={`Day ${day.dayNumber} 交通`} className="mt-7 border-l border-white/15 pl-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">交通</p>
+                      <p className="mt-2 max-w-3xl text-sm leading-7 text-white/75">{day.transport}</p>
+                      {day.transportPrice ? <p className="mt-2 text-sm font-medium tabular-nums text-amber-100">{day.transportPrice}</p> : null}
+                    </section>
+                  ) : null}
+
+                  {day.staySpot || day.stay ? (
+                    <section aria-label={`Day ${day.dayNumber} 当日住宿`} className="mt-7 border border-sky-200/15 bg-sky-300/[0.055] p-4 md:p-5">
+                      <div className="flex items-center gap-2 text-sky-100/82">
+                        <BedDouble className="h-4 w-4" />
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em]">{isContinuedStay ? '继续入住' : '当日住宿'}</p>
+                      </div>
+                      {day.staySpot ? (
+                        <Link href={buildLocationPath(day.staySpot.name, day.staySpot.id)} className={`group mt-4 grid gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 ${isContinuedStay ? 'grid-cols-[72px_minmax(0,1fr)] items-center' : 'md:grid-cols-[180px_minmax(0,1fr)]'}`}>
+                          <div className={`relative overflow-hidden bg-black/20 ${isContinuedStay ? 'h-16' : 'aspect-[4/3] md:aspect-[3/2]'}`}>
+                            <FallbackImage
+                              src={getSpotCover(day.staySpot)}
+                              alt={`${day.staySpot.name_cn || day.staySpot.name} ${day.staySpot.regions?.name_cn || day.staySpot.regions?.name || ''} 住宿照片`.trim()}
+                              fill
+                              sizes={isContinuedStay ? '72px' : '(max-width: 768px) 100vw, 180px'}
+                              className="object-cover transition duration-500 group-hover:scale-[1.025]"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-medium text-white">{day.staySpot.name_cn || day.staySpot.name}</p>
+                            <p className="mt-1 text-xs text-white/52">{day.staySpot.regions?.name_cn || day.staySpot.regions?.name || '住宿地点'}</p>
+                            {day.stayNote ? <p className="mt-2 text-sm leading-6 text-white/65">{day.stayNote}</p> : null}
+                            <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-sky-100">查看酒店详情 <ExternalLink className="h-3 w-3" /></span>
+                          </div>
+                        </Link>
+                      ) : (
+                        <div className="mt-3 text-sm leading-7 text-white/78">
+                          <p>{day.stay}</p>
+                          {day.stayNote ? <p className="mt-2 text-white/58">{day.stayNote}</p> : null}
+                        </div>
+                      )}
+                      {day.staySpot ? (
+                        <AffiliateCard
+                          locationId={day.staySpot.id}
+                          regionId={day.staySpot.region_id || undefined}
+                          category="accommodation"
+                          limit={1}
+                          guideSlug={guide.slug}
+                          dayNumber={day.dayNumber}
+                          ctaPosition="day_accommodation"
+                          actionLabel="查看这家酒店当前房价"
+                          className="mt-4 border-0 bg-transparent shadow-none"
+                          minimal
+                          hideHeader
+                        />
+                      ) : null}
+                    </section>
+                  ) : null}
+
+                  {videoId ? (
+                    <section aria-label={`Day ${day.dayNumber} 当日影片`} className="mt-7">
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/48">当日影片</p>
+                      <GuideVideoCard videoId={videoId} title={day.title} guideSlug={guide.slug} dayNumber={day.dayNumber} />
+                    </section>
+                  ) : null}
+
+                  {day.gallery.length ? <GuideGallery images={day.gallery} guideSlug={guide.slug} dayNumber={day.dayNumber} /> : null}
+
+                  {day.reminder ? (
+                    <aside className="mt-6 border-l-2 border-amber-300/40 bg-white/[0.03] px-4 py-3 text-sm leading-7 text-white/68">
+                      {day.reminder}
+                    </aside>
+                  ) : null}
+                </article>
+              )
+            })}
+          </div>
+        </section>
+
+        <AuthorTrustBlock />
+
+        {relatedGuides.length ? (
+          <section aria-labelledby="related-guides-heading">
+            <div className="border-b border-white/10 pb-5">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Related Guides / 相关游记路线</p>
+              <h2 id="related-guides-heading" className="mt-2 font-display text-4xl leading-none text-white md:text-5xl">探索更多路线</h2>
+            </div>
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {relatedGuides.map((relatedGuide) => (
+                <Link key={relatedGuide.slug} href={`/guide/${relatedGuide.slug}`} className="group overflow-hidden border border-white/10 bg-white/[0.035] transition hover:border-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+                  <div className="relative aspect-[16/9] bg-black/25">
+                    <FallbackImage src={relatedGuide.coverImage || '/placeholder-image.jpg'} alt={`${relatedGuide.title} 攻略封面`} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-[1.025]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                  </div>
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 text-xs text-amber-100/72"><CalendarDays className="h-3.5 w-3.5" />{relatedGuide.duration || '行程参考'}</div>
+                    <h3 className="mt-3 text-lg font-semibold leading-6 text-white">{relatedGuide.title}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/55">{relatedGuide.tagline || relatedGuide.summary}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {routeRegions.some((stop) => stop.href) ? (
+          <section aria-labelledby="related-regions-heading" className="border-y border-white/10 py-7">
+            <h2 id="related-regions-heading" className="text-xl font-semibold text-white">相关地区与景点</h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {routeRegions.filter((stop) => stop.href).map((stop) => (
+                <Link key={`${stop.name}-region`} href={String(stop.href)} className="inline-flex min-h-10 items-center gap-2 border border-white/10 bg-white/[0.035] px-4 text-sm text-white/72 transition hover:border-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+                  <MapPinned className="h-3.5 w-3.5" /> {stop.primaryLabel || stop.name}
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {relatedPackages.length ? (
+          <section aria-labelledby="related-packages-heading" className="space-y-5">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-emerald-200/72">Related travel packages / 相关旅游配套</p>
+              <h2 id="related-packages-heading" className="mt-2 font-display text-4xl leading-none text-white">查看相关旅游配套</h2>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
+            </div>
+          </section>
+        ) : null}
+
+        <section className="grid gap-5 border-t border-white/10 pt-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/42">Continue Exploring</p>
+            <h2 className="mt-2 text-2xl font-semibold text-white">继续探索 JnQ Journey</h2>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href="/guide" className="inline-flex min-h-11 items-center gap-2 border border-white/12 px-4 text-sm text-white transition hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+                查看更多攻略 <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/region" className="inline-flex min-h-11 items-center gap-2 border border-white/12 px-4 text-sm text-white transition hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
+                按地区找景点 <MapPinned className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+          <SupportSidebarCard className="bg-white/[0.025] shadow-none" />
+        </section>
+      </div>
 
       <SiteFooter />
     </main>

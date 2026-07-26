@@ -1,0 +1,4 @@
+interface:
+  display_name: "JnQ SEO Performance"
+  short_description: "JnQ page SEO media loading and build health workflow"
+  default_prompt: "Use $jnq-seo-performance to audit SEO structure, media loading, and build health for a JnQ Journey page."

@@ -93,6 +93,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
       ? value.days
           .map((item: any) => ({
             dayLabel: String(item?.dayLabel || '').trim(),
+            date: String(item?.date || '').trim() || undefined,
             title: String(item?.title || '').trim(),
             summary: String(item?.summary || '').trim(),
             highlights: normalizeStringArray(item?.highlights),
@@ -104,6 +105,16 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             stayNote: String(item?.stayNote || '').trim() || undefined,
             stayRangeStart: normalizePositiveNumber(item?.stayRangeStart),
             stayRangeEnd: normalizePositiveNumber(item?.stayRangeEnd),
+            gallery: Array.isArray(item?.gallery)
+              ? item.gallery
+                  .map((image: any) => ({
+                    url: String(image?.url || '').trim(),
+                    alt: String(image?.alt || '').trim(),
+                    caption: String(image?.caption || '').trim() || undefined,
+                  }))
+                  .filter((image: any) => image.url && image.alt)
+              : [],
+            reminder: String(item?.reminder || '').trim() || undefined,
           }))
           .filter((item: any) => item.dayLabel && item.title)
       : [],

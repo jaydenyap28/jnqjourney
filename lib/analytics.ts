@@ -19,6 +19,15 @@ export type AnalyticsEventName =
   | 'package_enquiry_start'
   | 'package_enquiry_copy'
   | 'phone_number_copy'
+  | 'guide_day_jump'
+  | 'guide_day_view'
+  | 'guide_route_map_interaction'
+  | 'guide_location_click'
+  | 'guide_gallery_open'
+  | 'guide_video_click'
+  | 'hotel_affiliate_click'
+  | 'related_guide_click'
+  | 'budget_section_view'
 
 export type AnalyticsEventParams = Record<string, string | number | boolean | null | undefined>
 

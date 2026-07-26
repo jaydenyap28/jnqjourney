@@ -1,0 +1,4 @@
+interface:
+  display_name: "JnQ Guide Design"
+  short_description: "JnQ Guide visual system and mobile reading workflow"
+  default_prompt: "Use $jnq-guide-design to review and refine the JnQ Journey Guide template without changing factual content."

@@ -14,8 +14,15 @@ export interface GuideRouteStop {
   longitude?: number
 }
 
+export interface GuideDayImage {
+  url: string
+  alt: string
+  caption?: string
+}
+
 export interface GuideDayPlan {
   dayLabel: string
+  date?: string
   title: string
   summary: string
   highlights: string[]
@@ -27,6 +34,8 @@ export interface GuideDayPlan {
   stayNote?: string
   stayRangeStart?: number
   stayRangeEnd?: number
+  gallery?: GuideDayImage[]
+  reminder?: string
 }
 
 export interface TravelGuide {

@@ -1,0 +1,4 @@
+interface:
+  display_name: "JnQ Browser QA"
+  short_description: "JnQ Guide multi-viewport visual regression workflow"
+  default_prompt: "Use $jnq-browser-qa to run visual and functional regression QA for all published JnQ Journey Guides."

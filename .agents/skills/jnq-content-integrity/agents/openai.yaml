@@ -1,0 +1,4 @@
+interface:
+  display_name: "JnQ Content Integrity"
+  short_description: "JnQ Guide itinerary and data consistency audit workflow"
+  default_prompt: "Use $jnq-content-integrity to audit a JnQ Journey Guide for factual and relational consistency."

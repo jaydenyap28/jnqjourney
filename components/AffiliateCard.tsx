@@ -23,6 +23,11 @@ interface AffiliateCardProps {
   compact?: boolean
   hideHeader?: boolean
   singleColumn?: boolean
+  minimal?: boolean
+  guideSlug?: string
+  dayNumber?: number
+  ctaPosition?: string
+  actionLabel?: string
 }
 
 interface AffiliateLink {
@@ -191,6 +196,11 @@ export default function AffiliateCard({
   compact = false,
   hideHeader = false,
   singleColumn = false,
+  minimal = false,
+  guideSlug,
+  dayNumber,
+  ctaPosition,
+  actionLabel,
 }: AffiliateCardProps) {
   const [links, setLinks] = useState<AffiliateLink[]>([])
   const [loading, setLoading] = useState(true)
@@ -297,16 +307,25 @@ export default function AffiliateCard({
   }, [links])
 
   const handleClick = async (link: AffiliateLink) => {
-    const eventName = link.provider === 'klook' ? 'klook_click' : link.provider === 'trip' ? 'trip_click' : 'affiliate_click'
+    const eventName =
+      category === 'accommodation' && link.link_type === 'hotel'
+        ? 'hotel_affiliate_click'
+        : link.provider === 'klook'
+          ? 'klook_click'
+          : link.provider === 'trip'
+            ? 'trip_click'
+            : 'affiliate_click'
     trackEvent(eventName, {
       page_path: window.location.pathname,
-      page_type: noteSlug ? 'note' : locationId ? 'spot' : regionId ? 'region' : 'unknown',
+      page_type: guideSlug ? 'guide' : noteSlug ? 'note' : locationId ? 'spot' : regionId ? 'region' : 'unknown',
       page_title: document.title,
+      guide_slug: guideSlug,
+      day_number: dayNumber,
       region_id: regionId,
       spot_id: locationId,
       affiliate_platform: link.provider,
       affiliate_product: link.title,
-      cta_position: compact ? 'sidebar' : 'inline',
+      cta_position: ctaPosition || (compact ? 'sidebar' : 'inline'),
       device_type: getDeviceType(),
     })
 
@@ -371,7 +390,7 @@ export default function AffiliateCard({
         {links.map((link) => {
           const providerName = PROVIDER_NAMES[link.provider] || link.provider
           const linkTypeName = LINK_TYPE_NAMES[link.link_type] || link.link_type
-          const actionLabel = LINK_TYPE_ACTIONS[link.link_type] || '查看预订详情'
+          const resolvedActionLabel = actionLabel || LINK_TYPE_ACTIONS[link.link_type] || '查看预订详情'
           const icon = PROVIDER_ICONS[link.provider] || PROVIDER_ICONS.others
           const preview = previews[link.id]
           const previewTitle = preview?.title || link.title || `通过 ${providerName} 查看${linkTypeName}`
@@ -381,6 +400,28 @@ export default function AffiliateCard({
               : link.locations?.image_url || link.locations?.images?.[0] || link.regions?.image_url || String(preview?.image || '')
           const hostname = preview?.hostname || providerName
           const accentClassName = PROVIDER_ACCENTS[link.provider] || PROVIDER_ACCENTS.others
+
+          if (minimal) {
+            return (
+              <div key={link.id} className="flex flex-col gap-3 border-t border-white/10 pt-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge className="border border-white/10 bg-white/10 px-2 py-0 text-[10px] text-white">{providerName}</Badge>
+                    <span className="text-xs text-white/48">第三方价格与房况会随时变动</span>
+                  </div>
+                  <p className="mt-2 line-clamp-1 text-sm text-white/72">{previewTitle}</p>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => handleClick(link)}
+                  className="min-h-10 shrink-0 rounded-full bg-white px-4 text-xs text-black hover:bg-amber-50"
+                >
+                  {resolvedActionLabel}
+                  <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                </Button>
+              </div>
+            )
+          }
 
           if (compact) {
             return (
@@ -420,7 +461,7 @@ export default function AffiliateCard({
                         onClick={() => handleClick(link)}
                         className="h-8 shrink-0 rounded-full bg-white px-3 text-xs text-black hover:bg-amber-50"
                       >
-                        {actionLabel}
+                        {resolvedActionLabel}
                         <ExternalLink className="ml-1 h-3 w-3" />
                       </Button>
                     </div>
@@ -469,7 +510,7 @@ export default function AffiliateCard({
                     onClick={() => handleClick(link)}
                     className="shrink-0 rounded-full bg-white text-black hover:bg-amber-50"
                   >
-                    {actionLabel}
+                    {resolvedActionLabel}
                     <ExternalLink className="ml-1 h-3 w-3" />
                   </Button>
                 </div>
