@@ -408,6 +408,13 @@ export default async function GuideDetailPage({ params }: PageProps) {
   }
 
   const actualSpend = await readPublishedGuideBudget(guide.slug)
+  const declaredGuideBudget = parseGuideMoney(guide.budget)
+  const categorizedGuideBudget = guide.budgetItems.reduce(
+    (total, item) => total + parseGuideMoney(item.amount),
+    0
+  )
+  const legacyGuideBudgetTotal = declaredGuideBudget || categorizedGuideBudget
+  const hasLegacyGuideBudget = legacyGuideBudgetTotal > 0
   const publicActualSpend = actualSpend
     ? {
         currency: actualSpend.currency,
@@ -735,7 +742,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{guide.tagline}</p> : null}
                 {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
 
-                <dl className="mt-6 grid max-w-2xl grid-cols-3 divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3">
+                <dl className={`mt-6 grid max-w-2xl ${actualSpend || hasLegacyGuideBudget ? 'grid-cols-3' : 'grid-cols-2'} divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3`}>
                   <div className="px-3 first:pl-0">
                     <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">行程</dt>
                     <dd className="mt-1 text-sm font-semibold text-white">{guide.duration || '待补充'}</dd>
@@ -744,16 +751,18 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">地区</dt>
                     <dd className="mt-1 text-sm font-semibold text-white">{routeRegions.length} 个主要地区</dd>
                   </div>
-                  <div className="px-3 pr-0">
-                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">{actualSpend ? '实际总支出' : '总预算'}</dt>
-                    <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">
-                      {actualSpend
-                        ? formatSnapshotMoney(actualSpend.currency, actualSpend.total)
-                        : guide.budget
-                          ? formatGuideMoney(guide.budget)
-                          : '待补充'}
-                    </dd>
-                  </div>
+                  {actualSpend || hasLegacyGuideBudget ? (
+                    <div className="px-3 pr-0">
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">{actualSpend ? '实际总支出' : '总预算'}</dt>
+                      <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">
+                        {actualSpend
+                          ? formatSnapshotMoney(actualSpend.currency, actualSpend.total)
+                          : declaredGuideBudget > 0
+                            ? formatGuideMoney(guide.budget)
+                            : formatSnapshotMoney('RM', legacyGuideBudgetTotal)}
+                      </dd>
+                    </div>
+                  ) : null}
                 </dl>
               </div>
 
@@ -792,7 +801,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         guideSlug={guide.slug}
         days={datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
         hasMap={routeMapPoints.length > 0}
-        hasBudget={Boolean(guide.budget || guide.budgetItems.length || actualSpend)}
+        hasBudget={Boolean(hasLegacyGuideBudget || actualSpend)}
       />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 md:px-8 md:py-16">

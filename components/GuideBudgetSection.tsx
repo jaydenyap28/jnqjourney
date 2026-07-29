@@ -120,16 +120,16 @@ export default function GuideBudgetSection({
   actualSpend: TripCostSnapshot | null
   showAdminSourceNote?: boolean
 }) {
-  const hasEstimated = Boolean(guide.budget || guide.budgetItems.length)
-  const hasActual = Boolean(actualSpend)
-  if (!hasEstimated && !hasActual) return null
-
   const estimatedItems = guide.budgetItems.map((item) => ({
     label: item.label || '预算项目',
     amount: parseMoney(item.amount),
     note: item.note,
-  }))
-  const estimatedTotal = parseMoney(guide.budget) || estimatedItems.reduce((sum, item) => sum + item.amount, 0)
+  })).filter((item) => item.amount > 0)
+  const declaredEstimatedTotal = parseMoney(guide.budget)
+  const estimatedTotal = declaredEstimatedTotal || estimatedItems.reduce((sum, item) => sum + item.amount, 0)
+  const hasEstimated = declaredEstimatedTotal > 0 || estimatedItems.length > 0
+  const hasActual = Boolean(actualSpend)
+  if (!hasEstimated && !hasActual) return null
   const actualCategories = actualSpend
     ? Object.entries(actualSpend.categories)
         .map(([key, value]) => ({
@@ -150,7 +150,7 @@ export default function GuideBudgetSection({
   const totalLabel = actualSpend ? '实际总支出' : estimatedScopeLabel(guide.budgetScope) || '预算总额'
   const totalDisplay = actualSpend
     ? formatSnapshotMoney(actualSpend.currency, actualSpend.total)
-    : guide.budget
+    : declaredEstimatedTotal > 0
       ? formatEstimatedMoney(guide.budget)
       : formatSnapshotMoney('RM', estimatedTotal)
 
