@@ -5,7 +5,9 @@ import test from 'node:test'
 import {
   attractionIdFromPriceSlug,
   formatPriceHighlightAmount,
+  isGuideDayCostPriceHighlight,
   isPublishableGuidePrice,
+  matchesAttractionPriceHighlight,
   toPublicGuidePriceHighlight,
   type GuidePriceHighlight,
 } from '../lib/guide-price-highlights.ts'
@@ -23,11 +25,15 @@ test('uses unique IDs and integer minor-unit amounts', () => {
   }
 })
 
-test('maps every candidate to the Northeast Guide, a Day, and an attraction', () => {
+test('maps every candidate to the Northeast Guide, a Day, and an explicit display target', () => {
   for (const record of records) {
     assert.equal(record.guideSlug, guideSlug)
     assert.equal(Number.isInteger(record.dayNumber) && record.dayNumber > 0, true)
-    assert.equal(attractionIdFromPriceSlug(record.attractionSlug) !== null, true)
+    assert.equal(Boolean(record.displayTargetId), true)
+    if (record.displayTargetType === 'attraction') {
+      assert.equal(record.displayTargetId, record.attractionSlug)
+      assert.equal(attractionIdFromPriceSlug(record.displayTargetId) !== null, true)
+    }
   }
 })
 
@@ -81,6 +87,7 @@ test('sanitizes internal evidence fields from approved public records', () => {
   assert.equal('reviewStatus' in publicRecord, false)
   assert.equal('conflictDetails' in publicRecord, false)
   assert.equal('note' in publicRecord, false)
+  assert.equal('priceType' in publicRecord, false)
 })
 
 test('formats minor-unit amounts without floating-point arithmetic', () => {
@@ -109,4 +116,40 @@ test('keeps unresolved candidate IDs pending', () => {
       'mutianyu-shuttle-listed-2025',
     ]
   )
+})
+
+test('keeps transport prices out of attraction cards and routes them to day cost notes', () => {
+  const charter = records.find((record) => record.id === 'harbin-to-snow-valley-charter-2025')
+  assert.ok(charter)
+  assert.equal(charter.displayTargetType, 'route')
+  assert.equal(charter.priceCategory, 'transport')
+  assert.equal(matchesAttractionPriceHighlight(charter, 'xue-gu-xuegu-497'), false)
+  assert.equal(isGuideDayCostPriceHighlight(charter, guideSlug, 3), true)
+  assert.equal(charter.isKeyPrice, false)
+})
+
+test('requires an exact attraction slug and never infers an attraction from only a day', () => {
+  const iceWorld = records.find((record) => record.id === 'harbin-ice-world-ticket-2025')
+  assert.ok(iceWorld)
+  assert.equal(matchesAttractionPriceHighlight(iceWorld, 'bing-xue-da-shi-jie-harbin-511'), true)
+  assert.equal(matchesAttractionPriceHighlight(iceWorld, 'yang-cao-shan-xuegu-498'), false)
+  const dayOnly = {
+    ...iceWorld,
+    displayTargetType: 'day' as const,
+    displayTargetId: `${guideSlug}:day-2`,
+    attractionSlug: undefined,
+  }
+  assert.equal(matchesAttractionPriceHighlight(dayOnly, 'bing-xue-da-shi-jie-harbin-511'), false)
+  assert.equal(isGuideDayCostPriceHighlight(dayOnly, guideSlug, 2), true)
+})
+
+test('keeps Yangcaoshan together and prevents North Slope and hot spring cross-mapping', () => {
+  const yang = records.filter((record) => record.displayTargetId === 'yang-cao-shan-xuegu-498')
+  assert.deepEqual(yang.map((record) => record.optionLabelZh).sort(), ['羊草山门票', '马拉爬犁', '雪地摩托'].sort())
+  const north = records.find((record) => record.id === 'changbai-north-slope-net-package-2025')
+  const hotSpring = records.find((record) => record.id === 'lanjing-hot-spring-2025')
+  assert.ok(north)
+  assert.ok(hotSpring)
+  assert.equal(matchesAttractionPriceHighlight(north, hotSpring.displayTargetId), false)
+  assert.equal(matchesAttractionPriceHighlight(hotSpring, north.displayTargetId), false)
 })

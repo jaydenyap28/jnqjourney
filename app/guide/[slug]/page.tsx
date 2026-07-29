@@ -10,7 +10,7 @@ import GuideQuickNav from '@/components/GuideQuickNav'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
 import GuideBudgetSection from '@/components/GuideBudgetSection'
-import GuidePriceHighlightsSection, { GuideSpotPriceHighlights } from '@/components/GuidePriceHighlightsSection'
+import GuidePriceHighlightsSection, { GuideDayCostNote, GuideSpotPriceHighlights } from '@/components/GuidePriceHighlightsSection'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
@@ -21,7 +21,7 @@ import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { formatSnapshotMoney } from '@/lib/guide-budget'
-import { attractionIdFromPriceSlug } from '@/lib/guide-price-highlights'
+import { attractionIdFromPriceSlug, isGuideDayCostPriceHighlight, matchesAttractionPriceHighlight } from '@/lib/guide-price-highlights'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -896,6 +896,12 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     </div>
                   ) : null}
 
+                  <GuideDayCostNote
+                    highlights={approvedPriceHighlights.filter((item) =>
+                      isGuideDayCostPriceHighlight(item, guide.slug, day.dayNumber)
+                    )}
+                  />
+
                   {day.highlights.length ? (
                     <div className="mt-5 flex flex-wrap gap-2">
                       {day.highlights.map((highlight) => <span key={highlight} className="border-l border-amber-300/40 bg-white/[0.035] px-3 py-1.5 text-xs text-white/78">{highlight}</span>)}
@@ -914,7 +920,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
                           const spotPriceHighlights = approvedPriceHighlights.filter(
                             (item) =>
                               item.dayNumber === day.dayNumber &&
-                              attractionIdFromPriceSlug(item.attractionSlug) === spot.id
+                              matchesAttractionPriceHighlight(item, item.attractionSlug || '') &&
+                              attractionIdFromPriceSlug(item.displayTargetId) === spot.id
                           )
                           return (
                             <Link

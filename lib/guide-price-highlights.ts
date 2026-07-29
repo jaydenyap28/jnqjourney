@@ -25,10 +25,29 @@ export const GUIDE_PRICE_REVIEW_STATUSES = [
   'rejected',
 ] as const
 
+export const GUIDE_PRICE_DISPLAY_TARGET_TYPES = [
+  'attraction',
+  'route',
+  'day',
+  'accommodation',
+] as const
+
+export const GUIDE_PRICE_CATEGORIES = [
+  'admission',
+  'activity',
+  'transport',
+  'accommodation',
+  'food',
+  'package',
+  'other',
+] as const
+
 export type GuidePriceType = (typeof GUIDE_PRICE_TYPES)[number]
 export type GuidePriceUnit = (typeof GUIDE_PRICE_UNITS)[number]
 export type GuidePriceEvidenceStatus = (typeof GUIDE_PRICE_EVIDENCE_STATUSES)[number]
 export type GuidePriceReviewStatus = (typeof GUIDE_PRICE_REVIEW_STATUSES)[number]
+export type GuidePriceDisplayTargetType = (typeof GUIDE_PRICE_DISPLAY_TARGET_TYPES)[number]
+export type GuidePriceCategory = (typeof GUIDE_PRICE_CATEGORIES)[number]
 
 export interface GuidePriceSource {
   sourceType: 'obsidian_note' | 'moneybot_ledger' | 'video_script' | 'subtitle' | 'manual_review'
@@ -42,8 +61,14 @@ export interface GuidePriceHighlight {
   titleEn?: string
   optionLabelZh?: string
   optionLabelEn?: string
-  dayDisplayLabelZh?: string
-  attractionSlug: string
+  attractionSlug?: string
+  displayTargetType: GuidePriceDisplayTargetType
+  displayTargetId: string
+  priceCategory: GuidePriceCategory
+  topCardLayout?: 'standard' | 'wide_options'
+  routeLabelZh?: string
+  dayCostLabelZh?: string
+  displayDetailsZh?: string[]
   guideSlug: string
   dayNumber: number
   priceType: GuidePriceType
@@ -69,14 +94,15 @@ export interface GuidePriceHighlight {
 
 export type PublicGuidePriceHighlight = Omit<
   GuidePriceHighlight,
-  'sources' | 'confidence' | 'evidenceStatus' | 'reviewStatus' | 'conflictGroup' | 'conflictDetails' | 'note'
+  | 'sources'
+  | 'confidence'
+  | 'evidenceStatus'
+  | 'reviewStatus'
+  | 'conflictGroup'
+  | 'conflictDetails'
+  | 'note'
+  | 'priceType'
 >
-
-const priceTypeLabels: Record<GuidePriceType, string> = {
-  actual_paid: '我们当时实付',
-  listed_at_the_time: '当时标价',
-  current_reference: '当前参考',
-}
 
 const priceUnitLabels: Record<GuidePriceUnit, string> = {
   per_person: '／人',
@@ -96,15 +122,15 @@ export function formatPriceHighlightAmount(currency: string, amountMinor: number
   return `${String(currency || '').toUpperCase()} ${sign}${whole.toLocaleString('en-US')}.${fraction}`
 }
 
-export function guidePriceTypeLabel(value: GuidePriceType) {
-  return priceTypeLabels[value]
-}
-
 export function guidePriceUnitLabel(value: GuidePriceUnit) {
   return priceUnitLabels[value]
 }
 
 export function isPublishableGuidePrice(record: GuidePriceHighlight) {
+  const hasValidTarget =
+    Boolean(record.displayTargetId) &&
+    (record.displayTargetType !== 'attraction' ||
+      Boolean(record.attractionSlug) && record.displayTargetId === record.attractionSlug)
   return Boolean(
     record.reviewStatus === 'approved' &&
       record.evidenceStatus === 'confirmed' &&
@@ -113,9 +139,34 @@ export function isPublishableGuidePrice(record: GuidePriceHighlight) {
       record.currency &&
       record.unit !== 'unspecified' &&
       record.paidDate &&
-      record.attractionSlug &&
+      hasValidTarget &&
       record.guideSlug &&
       record.dayNumber > 0
+  )
+}
+
+export function matchesAttractionPriceHighlight(
+  record: Pick<GuidePriceHighlight, 'displayTargetType' | 'displayTargetId' | 'attractionSlug'>,
+  attractionSlug: string
+) {
+  return (
+    record.displayTargetType === 'attraction' &&
+    Boolean(record.attractionSlug) &&
+    record.displayTargetId === record.attractionSlug &&
+    record.attractionSlug === attractionSlug
+  )
+}
+
+export function isGuideDayCostPriceHighlight(
+  record: Pick<GuidePriceHighlight, 'displayTargetType' | 'displayTargetId' | 'dayNumber' | 'guideSlug'>,
+  guideSlug: string,
+  dayNumber: number
+) {
+  return (
+    record.guideSlug === guideSlug &&
+    record.dayNumber === dayNumber &&
+    ['route', 'day', 'accommodation'].includes(record.displayTargetType) &&
+    Boolean(record.displayTargetId)
   )
 }
 
@@ -131,6 +182,7 @@ export function toPublicGuidePriceHighlight(
     conflictGroup: _conflictGroup,
     conflictDetails: _conflictDetails,
     note: _note,
+    priceType: _priceType,
     ...publicRecord
   } = record
   return publicRecord

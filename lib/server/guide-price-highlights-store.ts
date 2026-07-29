@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 
 import {
   GUIDE_PRICE_EVIDENCE_STATUSES,
+  GUIDE_PRICE_CATEGORIES,
+  GUIDE_PRICE_DISPLAY_TARGET_TYPES,
   GUIDE_PRICE_REVIEW_STATUSES,
   GUIDE_PRICE_TYPES,
   GUIDE_PRICE_UNITS,
@@ -58,6 +60,12 @@ export function normalizeGuidePriceHighlight(value: any): GuidePriceHighlight {
   const amountMinor = Number(value?.amountMinor)
   const dayNumber = Number(value?.dayNumber)
   const displayPriority = Number(value?.displayPriority)
+  const displayTargetType = GUIDE_PRICE_DISPLAY_TARGET_TYPES.includes(value?.displayTargetType)
+    ? value.displayTargetType
+    : 'attraction'
+  const priceCategory = GUIDE_PRICE_CATEGORIES.includes(value?.priceCategory)
+    ? value.priceCategory
+    : 'other'
 
   return {
     id: String(value?.id || '').trim(),
@@ -65,8 +73,14 @@ export function normalizeGuidePriceHighlight(value: any): GuidePriceHighlight {
     titleEn: String(value?.titleEn || '').trim() || undefined,
     optionLabelZh: String(value?.optionLabelZh || '').trim() || undefined,
     optionLabelEn: String(value?.optionLabelEn || '').trim() || undefined,
-    dayDisplayLabelZh: String(value?.dayDisplayLabelZh || '').trim() || undefined,
-    attractionSlug: String(value?.attractionSlug || '').trim(),
+    attractionSlug: String(value?.attractionSlug || '').trim() || undefined,
+    displayTargetType,
+    displayTargetId: String(value?.displayTargetId || '').trim(),
+    priceCategory,
+    topCardLayout: value?.topCardLayout === 'wide_options' ? 'wide_options' : 'standard',
+    routeLabelZh: String(value?.routeLabelZh || '').trim() || undefined,
+    dayCostLabelZh: String(value?.dayCostLabelZh || '').trim() || undefined,
+    displayDetailsZh: normalizeStringArray(value?.displayDetailsZh),
     guideSlug: String(value?.guideSlug || '').trim(),
     dayNumber: Number.isInteger(dayNumber) && dayNumber > 0 ? dayNumber : 0,
     priceType,
@@ -105,8 +119,11 @@ export function validateGuidePriceHighlights(records: GuidePriceHighlight[]) {
   for (const record of records) {
     if (!record.id || seen.has(record.id)) throw new Error('Price highlight IDs must be unique.')
     seen.add(record.id)
-    if (!record.titleZh || !record.guideSlug || !record.attractionSlug || record.dayNumber < 1) {
-      throw new Error(`Price highlight ${record.id} is missing its Guide or attraction mapping.`)
+    if (!record.titleZh || !record.guideSlug || !record.displayTargetId || record.dayNumber < 1) {
+      throw new Error(`Price highlight ${record.id} is missing its Guide or display target mapping.`)
+    }
+    if (record.displayTargetType === 'attraction' && record.displayTargetId !== record.attractionSlug) {
+      throw new Error(`Attraction price highlight ${record.id} must exactly match its attraction slug.`)
     }
     if (!Number.isSafeInteger(record.amountMinor) || record.amountMinor < 0) {
       throw new Error(`Price highlight ${record.id} must use an integer amountMinor.`)
@@ -163,7 +180,12 @@ export async function readApprovedGuidePriceHighlights(guideSlug: string) {
 
 export async function readApprovedPriceHighlightsForAttraction(attractionSlug: string) {
   return (await readGuidePriceHighlights())
-    .filter((record) => record.attractionSlug === attractionSlug)
+    .filter(
+      (record) =>
+        record.displayTargetType === 'attraction' &&
+        record.displayTargetId === attractionSlug &&
+        record.attractionSlug === attractionSlug
+    )
     .map(toPublicGuidePriceHighlight)
     .filter((record): record is NonNullable<typeof record> => Boolean(record))
 }
