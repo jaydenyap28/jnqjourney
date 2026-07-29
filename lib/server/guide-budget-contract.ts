@@ -6,7 +6,6 @@ import {
   type MoneyBotBudgetSnapshot,
 } from '../guide-budget.ts'
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/
 const CURRENCY = /^[A-Z]{3}$/
 const CHECKSUM = /^[a-f0-9]{64}$/
 
@@ -45,20 +44,18 @@ function canonicalSnapshotPayload(snapshot: Omit<MoneyBotBudgetSnapshot, 'checks
       .map(([key, value]) => [key, centsToMoney(moneyToCents(value, `categories.${key}`))])
   )
   return JSON.stringify({
-    event_key: snapshot.event_key,
+    source: snapshot.source,
+    source_project_key: snapshot.source_project_key,
+    source_project_name: snapshot.source_project_name,
     guide_slug: snapshot.guide_slug,
-    title: snapshot.title,
     currency: snapshot.currency,
     scope: snapshot.scope,
     traveller_count: snapshot.traveller_count,
     total: centsToMoney(moneyToCents(snapshot.total, 'total')),
     categories,
     transaction_count: snapshot.transaction_count,
-    date_from: snapshot.date_from,
-    date_to: snapshot.date_to,
     generated_at: snapshot.generated_at,
     confirmed_at: snapshot.confirmed_at,
-    source: snapshot.source,
     snapshot_version: snapshot.snapshot_version,
   })
 }
@@ -73,32 +70,33 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   }
   const value = input as Record<string, unknown>
   const allowed = new Set([
-    'event_key',
+    'source',
+    'source_project_key',
+    'source_project_name',
     'guide_slug',
-    'title',
     'currency',
     'scope',
     'traveller_count',
     'total',
     'categories',
     'transaction_count',
-    'date_from',
-    'date_to',
     'generated_at',
     'confirmed_at',
-    'source',
     'snapshot_version',
     'checksum',
   ])
   const unknown = Object.keys(value).filter((key) => !allowed.has(key))
   if (unknown.length) throw new BudgetContractError(`Unknown snapshot fields: ${unknown.join(', ')}`)
 
-  const eventKey = cleanText(value.event_key, 'event_key', 120)
-  const guideSlug = cleanText(value.guide_slug, 'guide_slug', 160)
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(eventKey) || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(guideSlug)) {
-    throw new BudgetContractError('event_key and guide_slug must be lowercase slugs.')
+  if (value.source !== 'moneybot_project') {
+    throw new BudgetContractError('source must be moneybot_project.')
   }
-  const title = cleanText(value.title, 'title', 200)
+  const sourceProjectKey = cleanText(value.source_project_key, 'source_project_key', 160)
+  const sourceProjectName = cleanText(value.source_project_name, 'source_project_name', 200)
+  const guideSlug = cleanText(value.guide_slug, 'guide_slug', 160)
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(guideSlug)) {
+    throw new BudgetContractError('guide_slug must be a lowercase slug.')
+  }
   const currency = cleanText(value.currency, 'currency', 3).toUpperCase()
   if (!CURRENCY.test(currency)) throw new BudgetContractError('currency must be an ISO-style 3-letter code.')
   const scope = String(value.scope || '') as MoneyBotBudgetSnapshot['scope']
@@ -118,18 +116,11 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   if (!Number.isInteger(snapshotVersion) || snapshotVersion < 1) {
     throw new BudgetContractError('snapshot_version is invalid.')
   }
-  const dateFrom = cleanText(value.date_from, 'date_from', 10)
-  const dateTo = cleanText(value.date_to, 'date_to', 10)
-  if (!ISO_DATE.test(dateFrom) || !ISO_DATE.test(dateTo) || dateFrom > dateTo) {
-    throw new BudgetContractError('The trip date range is invalid.')
-  }
   const generatedAt = cleanText(value.generated_at, 'generated_at', 40)
   const confirmedAt = cleanText(value.confirmed_at, 'confirmed_at', 40)
   if (!Number.isFinite(Date.parse(generatedAt)) || !Number.isFinite(Date.parse(confirmedAt))) {
     throw new BudgetContractError('generated_at and confirmed_at must be ISO timestamps.')
   }
-  if (value.source !== 'moneybot') throw new BudgetContractError('source must be moneybot.')
-
   if (!value.categories || typeof value.categories !== 'object' || Array.isArray(value.categories)) {
     throw new BudgetContractError('categories must be an object.')
   }
@@ -151,20 +142,20 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   if (!CHECKSUM.test(checksum)) throw new BudgetContractError('checksum is invalid.')
 
   const normalized: MoneyBotBudgetSnapshot = {
-    event_key: eventKey,
+    source: 'moneybot_project',
+    source_project_key: sourceProjectKey,
+    source_project_name: sourceProjectName,
     guide_slug: guideSlug,
-    title,
     currency,
     scope,
     traveller_count: travellerCount,
     total,
     categories,
     transaction_count: transactionCount,
-    date_from: dateFrom,
-    date_to: dateTo,
-    generated_at: new Date(generatedAt).toISOString(),
-    confirmed_at: new Date(confirmedAt).toISOString(),
-    source: 'moneybot',
+    // Preserve the signed ISO representation. Normalising to milliseconds here
+    // would invalidate a valid MoneyBot checksum that includes microseconds.
+    generated_at: generatedAt,
+    confirmed_at: confirmedAt,
     snapshot_version: snapshotVersion,
     checksum,
   }

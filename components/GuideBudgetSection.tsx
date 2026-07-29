@@ -1,11 +1,13 @@
-import { CalendarDays, ReceiptText, RefreshCw, Users, Wallet } from 'lucide-react'
+'use client'
+
+import { ReceiptText, RefreshCw, Users, Wallet } from 'lucide-react'
 
 import type { TravelGuide } from '@/lib/guides'
 import {
   PUBLIC_BUDGET_CATEGORY_LABELS,
+  divideSnapshotMoney,
   formatSnapshotMoney,
-  guideBudgetScopeLabel,
-  type GuideBudgetSnapshotRecord,
+  type GuideBudgetDisplaySnapshot,
 } from '@/lib/guide-budget'
 
 function parseMoney(value?: string | null) {
@@ -33,13 +35,6 @@ function estimatedScopeLabel(scope?: string) {
     default:
       return '预算口径未指定'
   }
-}
-
-function tripDays(snapshot: GuideBudgetSnapshotRecord) {
-  const start = Date.parse(`${snapshot.trip_date_from}T00:00:00Z`)
-  const end = Date.parse(`${snapshot.trip_date_to}T00:00:00Z`)
-  if (!Number.isFinite(start) || !Number.isFinite(end) || end < start) return null
-  return Math.round((end - start) / 86_400_000) + 1
 }
 
 function formatDate(value: string) {
@@ -94,14 +89,14 @@ export default function GuideBudgetSection({
   guide,
   actualSpend,
 }: {
-  guide: TravelGuide
-  actualSpend: GuideBudgetSnapshotRecord | null
+  guide: Pick<TravelGuide, 'budget' | 'budgetItems' | 'budgetScope'>
+  actualSpend: GuideBudgetDisplaySnapshot | null
 }) {
   const hasEstimated = Boolean(guide.budget || guide.budgetItems.length)
   const hasActual = Boolean(actualSpend)
   if (!hasEstimated && !hasActual) return null
 
-  const heading = hasEstimated && hasActual ? '预算与实际花费' : hasActual ? '实际花费拆解' : '预算拆解'
+  const heading = hasActual ? '实际花费拆解' : '预算拆解'
   const estimatedItems = guide.budgetItems.map((item) => ({
     label: item.label || '预算项目',
     amount: parseMoney(item.amount),
@@ -117,7 +112,10 @@ export default function GuideBudgetSection({
         .filter((item) => Number.isFinite(item.amount) && item.amount !== 0)
     : []
   const actualTotal = actualSpend ? Number(actualSpend.total) : 0
-  const days = actualSpend ? tripDays(actualSpend) : null
+  const averagePerTraveller =
+    actualSpend?.traveller_count && actualSpend.traveller_count > 0
+      ? divideSnapshotMoney(actualSpend.total, actualSpend.traveller_count)
+      : null
 
   return (
     <section id="budget" className="scroll-mt-24">
@@ -141,20 +139,19 @@ export default function GuideBudgetSection({
                   {formatSnapshotMoney(actualSpend.currency, actualSpend.total)}
                 </p>
                 <p className="mt-3 text-sm leading-6 text-white/62">
-                  {guideBudgetScopeLabel(actualSpend.scope, actualSpend.traveller_count)}
+                  实际总支出
                 </p>
+                {averagePerTraveller !== null ? (
+                  <p className="mt-2 text-sm leading-6 text-emerald-100/72">
+                    平均约 {formatSnapshotMoney(actualSpend.currency, averagePerTraveller)}／人
+                  </p>
+                ) : null}
               </div>
               <dl className="grid grid-cols-2 gap-x-4 gap-y-4 text-sm sm:grid-cols-4">
                 {actualSpend.traveller_count && actualSpend.scope !== 'unspecified' ? (
                   <div>
-                    <dt className="flex items-center gap-1.5 text-white/42"><Users className="h-3.5 w-3.5" />人数</dt>
-                    <dd className="mt-1 font-medium text-white">{actualSpend.traveller_count} 人</dd>
-                  </div>
-                ) : null}
-                {days ? (
-                  <div>
-                    <dt className="flex items-center gap-1.5 text-white/42"><CalendarDays className="h-3.5 w-3.5" />旅程天数</dt>
-                    <dd className="mt-1 font-medium text-white">{days} 天</dd>
+                    <dt className="flex items-center gap-1.5 text-white/42"><Users className="h-3.5 w-3.5" />旅客</dt>
+                    <dd className="mt-1 font-medium text-white">{actualSpend.traveller_count} 位旅客</dd>
                   </div>
                 ) : null}
                 <div>
@@ -168,7 +165,7 @@ export default function GuideBudgetSection({
               </dl>
             </div>
             <p className="mt-5 border-t border-white/8 pt-4 text-xs text-white/45">
-              根据 MoneyBot 记账整理
+              实际花费根据 MoneyBot「{actualSpend.source_project_name}」项目记账整理。
             </p>
           </div>
 
@@ -188,9 +185,8 @@ export default function GuideBudgetSection({
         </div>
       ) : null}
 
-      {hasEstimated ? (
-        <div className={actualSpend ? 'mt-10 border-t border-white/10 pt-8' : 'mt-6'}>
-          {actualSpend ? <h3 className="mb-4 text-xl font-semibold text-white">原有预算</h3> : null}
+      {hasEstimated && !actualSpend ? (
+        <div className="mt-6">
           <div className="border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.13),transparent_38%),#0b111d] p-5 md:p-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>

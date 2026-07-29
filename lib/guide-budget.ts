@@ -18,20 +18,18 @@ export const GUIDE_BUDGET_REVIEW_STATUSES = [
 export type GuideBudgetReviewStatus = (typeof GUIDE_BUDGET_REVIEW_STATUSES)[number]
 
 export interface MoneyBotBudgetSnapshot {
-  event_key: string
+  source: 'moneybot_project'
+  source_project_key: string
+  source_project_name: string
   guide_slug: string
-  title: string
   currency: string
   scope: GuideBudgetScope
   traveller_count: number | null
   total: string
   categories: Record<string, string>
   transaction_count: number
-  date_from: string
-  date_to: string
   generated_at: string
   confirmed_at: string
-  source: 'moneybot'
   snapshot_version: number
   checksum: string
 }
@@ -39,8 +37,9 @@ export interface MoneyBotBudgetSnapshot {
 export interface GuideBudgetSnapshotRecord {
   id: string
   guide_slug: string
-  source: 'moneybot'
-  source_event_key: string
+  source: 'moneybot_project'
+  source_project_key: string
+  source_project_name: string
   snapshot_version: number
   currency: string
   scope: GuideBudgetScope
@@ -49,14 +48,25 @@ export interface GuideBudgetSnapshotRecord {
   categories: Record<string, string>
   unclassified_amount: string
   transaction_count: number
-  trip_date_from: string
-  trip_date_to: string
   generated_at: string
   confirmed_at: string
   received_at: string
   review_status: GuideBudgetReviewStatus
   published_at: string | null
   checksum: string
+}
+
+// Deliberately omits storage and sync identifiers. This is the only actual-spend
+// shape that presentation components are allowed to receive.
+export interface GuideBudgetDisplaySnapshot {
+  source_project_name: string
+  currency: string
+  scope: GuideBudgetScope
+  traveller_count: number | null
+  total: string
+  categories: Record<string, string>
+  transaction_count: number
+  received_at: string
 }
 
 export const PUBLIC_BUDGET_CATEGORIES = [
@@ -96,7 +106,7 @@ export function guideBudgetScopeLabel(scope: GuideBudgetScope, travellerCount?: 
     case 'total_trip':
       return travellerCount ? `本次旅程共 ${travellerCount} 人` : '整趟旅程总花费'
     default:
-      return '本次旅程实际总花费'
+      return '实际总支出'
   }
 }
 
@@ -106,4 +116,19 @@ export function formatSnapshotMoney(currency: string, value: string | number) {
     ? new Intl.NumberFormat('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)
     : String(value)
   return `${currency} ${formatted}`
+}
+
+export function divideSnapshotMoney(total: string | number, divisor: number) {
+  if (!Number.isInteger(divisor) || divisor <= 0) return null
+  const match = String(total).trim().match(/^(-?)(\d+)(?:\.(\d{1,2}))?$/)
+  if (!match) return null
+
+  const sign = match[1] === '-' ? -1 : 1
+  const cents = Number(match[2]) * 100 + Number((match[3] || '').padEnd(2, '0'))
+  if (!Number.isSafeInteger(cents)) return null
+  // Round half up in cents without a floating-point conversion.
+  const roundedCents = Math.floor((cents * 2 + divisor) / (divisor * 2))
+  const absolute = String(roundedCents).padStart(3, '0')
+  const formatted = `${absolute.slice(0, -2)}.${absolute.slice(-2)}`
+  return sign < 0 ? `-${formatted}` : formatted
 }

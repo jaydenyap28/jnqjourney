@@ -18,6 +18,7 @@ import TravelPackageCard from '@/components/TravelPackageCard'
 import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
 import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
+import { formatSnapshotMoney } from '@/lib/guide-budget'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -727,8 +728,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     <dd className="mt-1 text-sm font-semibold text-white">{routeRegions.length} 个主要地区</dd>
                   </div>
                   <div className="px-3 pr-0">
-                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">总预算</dt>
-                    <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">{guide.budget ? formatGuideMoney(guide.budget) : '待补充'}</dd>
+                    <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">{actualSpend ? '实际总支出' : '总预算'}</dt>
+                    <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">
+                      {actualSpend
+                        ? formatSnapshotMoney(actualSpend.currency, actualSpend.total)
+                        : guide.budget
+                          ? formatGuideMoney(guide.budget)
+                          : '待补充'}
+                    </dd>
                   </div>
                 </dl>
               </div>

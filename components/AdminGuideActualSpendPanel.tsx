@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { Check, Loader2, RefreshCw, RotateCcw, Send, ShieldAlert, X } from 'lucide-react'
 
 import { adminFetch } from '@/lib/admin-fetch'
@@ -122,7 +123,9 @@ export default function AdminGuideActualSpendPanel({ guide }: { guide: TravelGui
                       <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
                         {statusLabel(snapshot.review_status)}
                       </span>
-                      <span className="text-xs text-slate-500">MoneyBot · v{snapshot.snapshot_version}</span>
+                      <span className="text-xs text-slate-500">
+                        MoneyBot Project「{snapshot.source_project_name}」· v{snapshot.snapshot_version}
+                      </span>
                     </div>
                     <p className="mt-3 text-2xl font-semibold tabular-nums text-slate-950">
                       {formatSnapshotMoney(snapshot.currency, snapshot.total)}
@@ -167,9 +170,14 @@ export default function AdminGuideActualSpendPanel({ guide }: { guide: TravelGui
                     </Button>
                   ) : null}
                   {snapshot.review_status === 'reviewed' ? (
-                    <Button type="button" size="sm" onClick={() => act(snapshot, 'publish')} disabled={busy}>
-                      <Send className="mr-2 h-4 w-4" />发布
-                    </Button>
+                    <>
+                      <Link href={`/admin/guides/${encodeURIComponent(guide.slug)}/actual-spend-preview`}>
+                        <Button type="button" size="sm" variant="outline">审核预览</Button>
+                      </Link>
+                      <Button type="button" size="sm" onClick={() => act(snapshot, 'publish')} disabled={busy}>
+                        <Send className="mr-2 h-4 w-4" />发布
+                      </Button>
+                    </>
                   ) : null}
                   {snapshot.review_status === 'reviewed' && snapshots.some((item) => item.review_status === 'published') ? (
                     <Button type="button" size="sm" variant="outline" onClick={() => act(snapshot, 'restore')} disabled={busy}>

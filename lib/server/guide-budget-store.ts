@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 import type {
   GuideBudgetReviewStatus,
+  GuideBudgetDisplaySnapshot,
   GuideBudgetSnapshotRecord,
   MoneyBotBudgetSnapshot,
 } from '@/lib/guide-budget'
@@ -13,12 +14,26 @@ function getBudgetAdminClient() {
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 }
 
+function toDisplaySnapshot(value: GuideBudgetSnapshotRecord): GuideBudgetDisplaySnapshot {
+  return {
+    source_project_name: value.source_project_name,
+    currency: value.currency,
+    scope: value.scope,
+    traveller_count: value.traveller_count,
+    total: value.total,
+    categories: value.categories,
+    transaction_count: value.transaction_count,
+    received_at: value.received_at,
+  }
+}
+
 function normalizeRecord(value: any): GuideBudgetSnapshotRecord {
   return {
     id: String(value.id),
     guide_slug: String(value.guide_slug),
-    source: 'moneybot',
-    source_event_key: String(value.source_event_key),
+    source: 'moneybot_project',
+    source_project_key: String(value.source_project_key),
+    source_project_name: String(value.source_project_name),
     snapshot_version: Number(value.snapshot_version),
     currency: String(value.currency),
     scope: value.scope,
@@ -27,8 +42,6 @@ function normalizeRecord(value: any): GuideBudgetSnapshotRecord {
     categories: value.categories || {},
     unclassified_amount: String(value.unclassified_amount || '0.00'),
     transaction_count: Number(value.transaction_count),
-    trip_date_from: String(value.trip_date_from),
-    trip_date_to: String(value.trip_date_to),
     generated_at: String(value.generated_at),
     confirmed_at: String(value.confirmed_at),
     received_at: String(value.received_at),
@@ -62,7 +75,8 @@ export async function importBudgetSnapshot(snapshot: MoneyBotBudgetSnapshot) {
   const row = {
     guide_slug: snapshot.guide_slug,
     source: snapshot.source,
-    source_event_key: snapshot.event_key,
+    source_project_key: snapshot.source_project_key,
+    source_project_name: snapshot.source_project_name,
     snapshot_version: snapshot.snapshot_version,
     currency: snapshot.currency,
     scope: snapshot.scope,
@@ -71,8 +85,6 @@ export async function importBudgetSnapshot(snapshot: MoneyBotBudgetSnapshot) {
     categories,
     unclassified_amount: unclassifiedAmount,
     transaction_count: snapshot.transaction_count,
-    trip_date_from: snapshot.date_from,
-    trip_date_to: snapshot.date_to,
     generated_at: snapshot.generated_at,
     confirmed_at: snapshot.confirmed_at,
     review_status: 'imported',
@@ -80,7 +92,7 @@ export async function importBudgetSnapshot(snapshot: MoneyBotBudgetSnapshot) {
   }
   const { data, error } = await client
     .from('guide_budget_snapshots')
-    .upsert(row, { onConflict: 'source,source_event_key,snapshot_version', ignoreDuplicates: true })
+    .upsert(row, { onConflict: 'source,source_project_key,snapshot_version', ignoreDuplicates: true })
     .select('*')
     .maybeSingle()
   if (error) throw new Error(error.message)
@@ -90,7 +102,7 @@ export async function importBudgetSnapshot(snapshot: MoneyBotBudgetSnapshot) {
     .from('guide_budget_snapshots')
     .select('*')
     .eq('source', snapshot.source)
-    .eq('source_event_key', snapshot.event_key)
+    .eq('source_project_key', snapshot.source_project_key)
     .eq('snapshot_version', snapshot.snapshot_version)
     .single()
   if (existingError || !existing) throw new Error(existingError?.message || 'Imported snapshot could not be read.')
@@ -127,6 +139,12 @@ export async function readPublishedGuideBudget(guideSlug: string) {
     .maybeSingle()
   if (error || !data) return null
   return normalizeRecord(data)
+}
+
+export async function readReviewedGuideBudgetDisplay(guideSlug: string) {
+  const snapshots = await listGuideBudgetSnapshots(guideSlug)
+  const reviewed = snapshots.find((snapshot) => snapshot.review_status === 'reviewed')
+  return reviewed ? toDisplaySnapshot(reviewed) : null
 }
 
 export async function updateGuideBudgetSnapshot(
