@@ -65,6 +65,7 @@ export function normalizeGuidePriceHighlight(value: any): GuidePriceHighlight {
     titleEn: String(value?.titleEn || '').trim() || undefined,
     optionLabelZh: String(value?.optionLabelZh || '').trim() || undefined,
     optionLabelEn: String(value?.optionLabelEn || '').trim() || undefined,
+    dayDisplayLabelZh: String(value?.dayDisplayLabelZh || '').trim() || undefined,
     attractionSlug: String(value?.attractionSlug || '').trim(),
     guideSlug: String(value?.guideSlug || '').trim(),
     dayNumber: Number.isInteger(dayNumber) && dayNumber > 0 ? dayNumber : 0,

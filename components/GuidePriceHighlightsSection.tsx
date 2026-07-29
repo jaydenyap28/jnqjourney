@@ -8,11 +8,11 @@ import {
   type PublicGuidePriceHighlight,
 } from '@/lib/guide-price-highlights'
 
-function formatPriceMonth(value?: string | null) {
+function formatPriceDate(value?: string | null) {
   if (!value) return ''
-  const match = value.match(/^(\d{4})-(\d{2})/)
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/)
   if (!match) return ''
-  return `${match[1]}年${Number(match[2])}月`
+  return `${match[1]}年${Number(match[2])}月${Number(match[3])}日`
 }
 
 function groupHighlights(highlights: PublicGuidePriceHighlight[]) {
@@ -68,7 +68,7 @@ export default function GuidePriceHighlightsSection({
       <div className="mt-5 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {groups.map((items) => {
           const primary = items[0]
-          const month = formatPriceMonth(primary.paidDate)
+          const recordedDate = formatPriceDate(primary.paidDate)
           return (
             <article
               key={primary.attractionSlug}
@@ -88,10 +88,10 @@ export default function GuidePriceHighlightsSection({
 
               <div className="mt-4 space-y-2 border-t border-white/8 pt-3 text-xs leading-5 text-white/48">
                 <p>{guidePriceTypeLabel(primary.priceType)}</p>
-                {month ? (
+                {recordedDate ? (
                   <p className="flex items-center gap-1.5 tabular-nums">
                     <CalendarDays className="h-3.5 w-3.5" />
-                    {month}
+                    {recordedDate}
                   </p>
                 ) : null}
                 {primary.includes[0] ? <p className="text-white/58">{primary.includes[0]}</p> : null}
@@ -124,12 +124,12 @@ export function GuideSpotPriceHighlights({
   if (!highlights.length) return null
   const sorted = [...highlights].sort((left, right) => left.displayPriority - right.displayPriority)
   const primary = sorted[0]
-  const month = formatPriceMonth(primary.paidDate)
+  const recordedDate = formatPriceDate(primary.paidDate)
 
   return (
     <div className="mt-3 border-t border-white/8 pt-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-200/64">
-        {guidePriceTypeLabel(primary.priceType)}
+        {primary.dayDisplayLabelZh || guidePriceTypeLabel(primary.priceType)}
       </p>
       <div className="mt-2 space-y-2">
         {sorted.map((item) => (
@@ -142,7 +142,7 @@ export function GuideSpotPriceHighlights({
           </div>
         ))}
       </div>
-      {month ? <p className="mt-2 text-[11px] tabular-nums text-white/36">{month}</p> : null}
+      {recordedDate ? <p className="mt-2 text-[11px] tabular-nums text-white/36">{recordedDate}</p> : null}
     </div>
   )
 }

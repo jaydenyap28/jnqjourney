@@ -31,9 +31,25 @@ test('maps every candidate to the Northeast Guide, a Day, and an attraction', ()
   }
 })
 
-test('keeps all extracted candidates out of the public read path before review', () => {
-  assert.equal(records.some((record) => record.reviewStatus === 'approved'), false)
-  assert.deepEqual(records.map(toPublicGuidePriceHighlight).filter(Boolean), [])
+test('publishes only the explicitly approved, evidence-complete records', () => {
+  const publicRecords = records
+    .map(toPublicGuidePriceHighlight)
+    .filter((record): record is NonNullable<typeof record> => Boolean(record))
+  assert.equal(publicRecords.length, 10)
+  assert.deepEqual(
+    publicRecords
+      .filter((record) => record.isKeyPrice)
+      .sort((left, right) => left.displayPriority - right.displayPriority)
+      .map((record) => record.dayNumber),
+    [2, 4, 4, 4, 6, 6, 7, 9, 11]
+  )
+  assert.equal(
+    publicRecords.some((record) => record.id === 'harbin-to-snow-valley-charter-2025' && record.isKeyPrice),
+    false
+  )
+  for (const record of records.filter((record) => record.evidenceStatus !== 'confirmed')) {
+    assert.equal(toPublicGuidePriceHighlight(record), null)
+  }
 })
 
 test('does not publish conflict or missing evidence even if review status is changed', () => {
@@ -64,6 +80,7 @@ test('sanitizes internal evidence fields from approved public records', () => {
   assert.equal('confidence' in publicRecord, false)
   assert.equal('reviewStatus' in publicRecord, false)
   assert.equal('conflictDetails' in publicRecord, false)
+  assert.equal('note' in publicRecord, false)
 })
 
 test('formats minor-unit amounts without floating-point arithmetic', () => {
@@ -77,4 +94,19 @@ test('retains the expected evidence review distribution', () => {
     return total
   }, {})
   assert.deepEqual(counts, { confirmed: 10, conflict: 2, missing: 3 })
+})
+
+test('keeps unresolved candidate IDs pending', () => {
+  assert.deepEqual(
+    records
+      .filter((record) => record.reviewStatus === 'pending')
+      .map((record) => record.id),
+    [
+      'snow-village-admission-ledger-2025',
+      'snow-village-admission-note-2025',
+      'changbai-waterfall-snowmobile-2025',
+      'mutianyu-admission-listed-2025',
+      'mutianyu-shuttle-listed-2025',
+    ]
+  )
 })

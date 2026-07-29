@@ -42,6 +42,7 @@ export interface GuidePriceHighlight {
   titleEn?: string
   optionLabelZh?: string
   optionLabelEn?: string
+  dayDisplayLabelZh?: string
   attractionSlug: string
   guideSlug: string
   dayNumber: number
@@ -68,7 +69,7 @@ export interface GuidePriceHighlight {
 
 export type PublicGuidePriceHighlight = Omit<
   GuidePriceHighlight,
-  'sources' | 'confidence' | 'evidenceStatus' | 'reviewStatus' | 'conflictGroup' | 'conflictDetails'
+  'sources' | 'confidence' | 'evidenceStatus' | 'reviewStatus' | 'conflictGroup' | 'conflictDetails' | 'note'
 >
 
 const priceTypeLabels: Record<GuidePriceType, string> = {
@@ -129,6 +130,7 @@ export function toPublicGuidePriceHighlight(
     reviewStatus: _reviewStatus,
     conflictGroup: _conflictGroup,
     conflictDetails: _conflictDetails,
+    note: _note,
     ...publicRecord
   } = record
   return publicRecord
