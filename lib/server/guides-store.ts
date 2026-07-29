@@ -143,6 +143,11 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
             media: Array.isArray(item?.media) ? item.media.map((media: any) => ({ label: String(media?.label || '').trim(), url: String(media?.url || '').trim() || undefined })).filter((media: any) => media.label) : [],
+            practicalTips: normalizeStringArray(item?.practicalTips),
+            actualExperiences: normalizeStringArray(item?.actualExperiences),
+            pendingItems: normalizeStringArray(item?.pendingItems),
+            priceCandidateIds: normalizeStringArray(item?.priceCandidateIds),
+            imageMatches: Array.isArray(item?.imageMatches) ? item.imageMatches.map((image: any) => ({ level: ['attraction', 'route', 'city'].includes(String(image?.level)) ? image.level : 'city', label: String(image?.label || '').trim(), note: String(image?.note || '').trim() || undefined })).filter((image: any) => image.label) : [],
             globalDayMappingStatus: ['confirmed', 'pending'].includes(String(item?.globalDayMappingStatus)) ? item.globalDayMappingStatus : undefined,
           }))
           .filter((item: any) => item.id && item.dayStart && item.dayEnd && item.dayEnd >= item.dayStart && item.dateStart && item.dateEnd && item.city && item.title)

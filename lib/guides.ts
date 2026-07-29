@@ -69,6 +69,11 @@ export interface GuideItinerarySegment {
   accommodationNote?: string
   transport?: string
   media?: Array<{ label: string; url?: string }>
+  practicalTips?: string[]
+  actualExperiences?: string[]
+  pendingItems?: string[]
+  priceCandidateIds?: string[]
+  imageMatches?: Array<{ level: 'attraction' | 'route' | 'city'; label: string; note?: string }>
   globalDayMappingStatus?: 'confirmed' | 'pending'
 }
 
