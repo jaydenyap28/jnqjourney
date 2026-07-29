@@ -10,6 +10,7 @@ import GuideQuickNav from '@/components/GuideQuickNav'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
 import GuideBudgetSection from '@/components/GuideBudgetSection'
+import GuidePriceHighlightsSection, { GuideSpotPriceHighlights } from '@/components/GuidePriceHighlightsSection'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
@@ -17,8 +18,10 @@ import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
 import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
+import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { formatSnapshotMoney } from '@/lib/guide-budget'
+import { attractionIdFromPriceSlug } from '@/lib/guide-price-highlights'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -407,7 +410,10 @@ export default async function GuideDetailPage({ params }: PageProps) {
     redirect(`/guide/${guide.slug}`)
   }
 
-  const actualSpend = await readPublishedGuideBudget(guide.slug)
+  const [actualSpend, approvedPriceHighlights] = await Promise.all([
+    readPublishedGuideBudget(guide.slug),
+    readApprovedGuidePriceHighlights(guide.slug),
+  ])
   const declaredGuideBudget = parseGuideMoney(guide.budget)
   const categorizedGuideBudget = guide.budgetItems.reduce(
     (total, item) => total + parseGuideMoney(item.amount),
@@ -836,6 +842,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         ) : null}
 
         <GuideBudgetSection guide={budgetGuide} actualSpend={publicActualSpend} />
+        <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
@@ -904,6 +911,11 @@ export default async function GuideDetailPage({ params }: PageProps) {
                       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {day.displaySpots.map((spot) => {
                           const orderIndex = day.orderedSpotIds.indexOf(spot.id)
+                          const spotPriceHighlights = approvedPriceHighlights.filter(
+                            (item) =>
+                              item.dayNumber === day.dayNumber &&
+                              attractionIdFromPriceSlug(item.attractionSlug) === spot.id
+                          )
                           return (
                             <Link
                               key={spot.id}
@@ -927,6 +939,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                               <div className="p-4">
                                 <p className="text-base font-medium leading-6 text-white">{spot.name_cn || spot.name}</p>
                                 <p className="mt-1 text-xs text-white/50">{spot.regions?.name_cn || spot.regions?.name || '地点'}</p>
+                                <GuideSpotPriceHighlights highlights={spotPriceHighlights} />
                               </div>
                             </Link>
                           )

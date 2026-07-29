@@ -1,0 +1,545 @@
+[
+  {
+    "id": "harbin-ice-world-ticket-2025",
+    "titleZh": "哈尔滨冰雪大世界",
+    "titleEn": "Harbin Ice and Snow World",
+    "optionLabelZh": "成人门票",
+    "optionLabelEn": "Adult admission",
+    "attractionSlug": "bing-xue-da-shi-jie-harbin-511",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 2,
+    "priceType": "actual_paid",
+    "amountMinor": 19885,
+    "currency": "MYR",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-01",
+    "includes": ["冰雪大世界成人门票"],
+    "excludes": [],
+    "note": "购票记录明确注明单人金额，两位旅客合计与 Ledger 一致。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-01",
+        "context": "脱敏核对：门票记录为 MYR 397.70，两位旅客，单人 MYR 198.85。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 10,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "yangcaoshan-horse-sledge-2025",
+    "titleZh": "羊草山穿越",
+    "titleEn": "Yangcaoshan Crossing",
+    "optionLabelZh": "马拉爬犁",
+    "optionLabelEn": "Horse-drawn sledge",
+    "attractionSlug": "yang-cao-shan-xuegu-498",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 4,
+    "priceType": "actual_paid",
+    "amountMinor": 10000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-08",
+    "includes": ["约 5 公里马拉爬犁路段"],
+    "excludes": ["羊草山门票", "雪地摩托", "雪乡门票"],
+    "note": "发布文案以真实花费列出；与 Ledger 的穿越交通组合总额交叉一致。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\北京发布文案\\2025-12-17｜🇨🇳 中国冬日东北北京之旅 🇨🇳.md",
+        "context": "真实花费与价值：穿越交通为马拉爬犁 100 元加雪地摩托 300 元。"
+      },
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜羊草山与雪乡｜徒步穿越攻略.md",
+        "context": "省力模式记录前 5 公里马拉爬犁约 100 元。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 20,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "yangcaoshan-snowmobile-2025",
+    "titleZh": "羊草山穿越",
+    "titleEn": "Yangcaoshan Crossing",
+    "optionLabelZh": "雪地摩托",
+    "optionLabelEn": "Snowmobile",
+    "attractionSlug": "yang-cao-shan-xuegu-498",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 4,
+    "priceType": "actual_paid",
+    "amountMinor": 30000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-08",
+    "includes": ["约 5 公里上山雪地摩托路段"],
+    "excludes": ["羊草山门票", "马拉爬犁", "雪乡门票"],
+    "note": "发布文案以真实花费列出；与 Ledger 的穿越交通组合总额交叉一致。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\北京发布文案\\2025-12-17｜🇨🇳 中国冬日东北北京之旅 🇨🇳.md",
+        "context": "真实花费与价值：穿越交通为马拉爬犁 100 元加雪地摩托 300 元。"
+      },
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-08",
+        "context": "脱敏核对：羊草山交通组合为每人 CNY 400，与 100 加 300 的记录一致。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 21,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "yangcaoshan-admission-2025",
+    "titleZh": "羊草山穿越",
+    "titleEn": "Yangcaoshan Crossing",
+    "optionLabelZh": "羊草山门票",
+    "optionLabelEn": "Yangcaoshan admission",
+    "attractionSlug": "yang-cao-shan-xuegu-498",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 4,
+    "priceType": "actual_paid",
+    "amountMinor": 4000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-08",
+    "includes": ["羊草山穿越门票"],
+    "excludes": ["马拉爬犁", "雪地摩托", "雪乡门票"],
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\北京发布文案\\2025-12-17｜🇨🇳 中国冬日东北北京之旅 🇨🇳.md",
+        "context": "真实花费列出羊草山门票 40 元。"
+      },
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-08",
+        "context": "脱敏核对：羊草山门票为两位旅客 CNY 80，单人 CNY 40。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 22,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "snow-village-admission-ledger-2025",
+    "titleZh": "中国雪乡",
+    "titleEn": "China Snow Town",
+    "optionLabelZh": "景区门票",
+    "optionLabelEn": "Admission",
+    "attractionSlug": "zhong-guo-xue-xiang-xuegu-500",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 4,
+    "priceType": "actual_paid",
+    "amountMinor": 11500,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-08",
+    "includes": ["中国雪乡景区门票"],
+    "excludes": [],
+    "note": "与 Obsidian 发布文案的 CNY 120 不一致，暂不公开。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-08",
+        "context": "脱敏核对：门票记录为两位旅客 CNY 230，单人 CNY 115。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "conflict",
+    "reviewStatus": "pending",
+    "conflictGroup": "snow-village-admission-2025",
+    "conflictDetails": ["MoneyBot：CNY 115／人", "Obsidian 发布文案：CNY 120／人"],
+    "displayPriority": 30,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "snow-village-admission-note-2025",
+    "titleZh": "中国雪乡",
+    "titleEn": "China Snow Town",
+    "optionLabelZh": "景区门票",
+    "optionLabelEn": "Admission",
+    "attractionSlug": "zhong-guo-xue-xiang-xuegu-500",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 4,
+    "priceType": "listed_at_the_time",
+    "amountMinor": 12000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": null,
+    "travellerCount": 2,
+    "paidDate": "2025-01-08",
+    "includes": ["中国雪乡景区门票"],
+    "excludes": [],
+    "note": "与 MoneyBot 实付记录的 CNY 115 不一致，暂不公开。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\北京发布文案\\2025-12-17｜🇨🇳 中国冬日东北北京之旅 🇨🇳.md",
+        "context": "真实花费段落列出雪乡门票 120 元。"
+      }
+    ],
+    "confidence": "medium",
+    "evidenceStatus": "conflict",
+    "reviewStatus": "pending",
+    "conflictGroup": "snow-village-admission-2025",
+    "conflictDetails": ["Obsidian 发布文案：CNY 120／人", "MoneyBot：CNY 115／人"],
+    "displayPriority": 31,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "changbai-west-slope-rafting-2025",
+    "titleZh": "西坡雾凇漂流",
+    "titleEn": "West Slope Rime Rafting",
+    "optionLabelZh": "漂流体验",
+    "optionLabelEn": "Rafting experience",
+    "attractionSlug": "xi-po-wu-song-piao-changbai-mountain-492",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 7,
+    "priceType": "actual_paid",
+    "amountMinor": 17689,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-11",
+    "includes": ["约 30–40 分钟雾凇漂流"],
+    "excludes": ["预订定金已单独记录，不重复计入单人展示价"],
+    "note": "完整实付金额由 Ledger 核对；Obsidian 路线稿确认体验内容与时长。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-11",
+        "context": "脱敏核对：两位旅客 CNY 353.78，单人 CNY 176.89。"
+      },
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜长白山｜Day 3｜西坡雾凇与市集漫步.md",
+        "context": "路线稿确认西坡原生态第一漂，漂流约 30–40 分钟。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 40,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "changbai-north-slope-net-package-2025",
+    "titleZh": "长白山北坡景区",
+    "titleEn": "Changbai Mountain North Slope",
+    "optionLabelZh": "北坡套票净额",
+    "optionLabelEn": "North Slope package net",
+    "attractionSlug": "changbai-mountain-north-slope-490",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 6,
+    "priceType": "actual_paid",
+    "amountMinor": 14062,
+    "currency": "MYR",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-04",
+    "includes": ["长白山北坡景区套票净额"],
+    "excludes": ["天池项目退款部分"],
+    "note": "Ledger 明确记录退款后的单人净额；套票内部交通尚未拆分。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-04",
+        "context": "脱敏核对：两位旅客净额 MYR 281.24，单人 MYR 140.62；天池部分已退款。"
+      },
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜长白山｜Day 2｜北景区全体验.md",
+        "context": "路线稿记录成人门票 CNY 225，但未说明与套票净额的完整对应关系。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 50,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "changbai-waterfall-snowmobile-2025",
+    "titleZh": "长白山北坡景区",
+    "titleEn": "Changbai Mountain North Slope",
+    "optionLabelZh": "长白瀑布雪地摩托往返",
+    "optionLabelEn": "Waterfall snowmobile return",
+    "attractionSlug": "changbai-mountain-north-slope-490",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 6,
+    "priceType": "listed_at_the_time",
+    "amountMinor": 5000,
+    "currency": "CNY",
+    "unit": "unspecified",
+    "quantity": null,
+    "travellerCount": null,
+    "paidDate": null,
+    "includes": ["长白瀑布上山雪地摩托往返"],
+    "excludes": [],
+    "note": "路线稿没有明确单位和记录日期，不得公开。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜长白山｜Day 2｜北景区全体验.md",
+        "context": "下车后可步行或乘坐雪地摩托，往返标价 CNY 50。"
+      }
+    ],
+    "confidence": "medium",
+    "evidenceStatus": "missing",
+    "reviewStatus": "pending",
+    "displayPriority": 51,
+    "isKeyPrice": false,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "lanjing-hot-spring-2025",
+    "titleZh": "蓝景聚龙温泉",
+    "titleEn": "Lanjing Julong Hot Spring",
+    "optionLabelZh": "温泉门票",
+    "optionLabelEn": "Hot spring admission",
+    "attractionSlug": "lan-jing-ju-long-wen-changbai-mountain-491",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 6,
+    "priceType": "actual_paid",
+    "amountMinor": 21500,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-09",
+    "includes": ["蓝景聚龙温泉门票"],
+    "excludes": ["现场其他个人消费"],
+    "note": "Obsidian 票价与 Ledger 两人门票合计一致。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜长白山｜Day 2｜北景区全体验.md",
+        "context": "蓝景温泉票价约 CNY 215。"
+      },
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-09",
+        "context": "脱敏核对：两位旅客门票 CNY 430，单人 CNY 215。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 60,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "universal-beijing-ticket-2025",
+    "titleZh": "北京环球影城",
+    "titleEn": "Universal Beijing Resort",
+    "optionLabelZh": "成人门票",
+    "optionLabelEn": "Adult admission",
+    "attractionSlug": "bei-jing-huan-qiu-beijing-479",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 9,
+    "priceType": "actual_paid",
+    "amountMinor": 31632,
+    "currency": "MYR",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2024-12-27",
+    "includes": ["北京环球影城成人门票"],
+    "excludes": ["园内餐饮", "园内交通与购物"],
+    "note": "购票日期早于入园日期；Ledger 明确注明单人金额。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2024-12-27",
+        "context": "脱敏核对：两位旅客门票 MYR 632.64，单人 MYR 316.32。"
+      },
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜北京｜Day 2｜环球影城.md",
+        "context": "路线稿确认当天项目为北京环球影城，但没有文字价格。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 70,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "mutianyu-ticket-cable-slide-package-2025",
+    "titleZh": "慕田峪长城",
+    "titleEn": "Mutianyu Great Wall",
+    "optionLabelZh": "门票＋缆车上＋滑道下",
+    "optionLabelEn": "Admission, cable car up, slide down",
+    "attractionSlug": "mutianyu-great-wall-484",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 11,
+    "priceType": "actual_paid",
+    "amountMinor": 23000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-15",
+    "includes": ["景区门票", "缆车上山", "滑道下山"],
+    "excludes": ["往返包车", "餐饮"],
+    "note": "Ledger 的套票单人金额与实际路线内容一致。",
+    "sources": [
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-15",
+        "context": "脱敏核对：两位旅客套票 CNY 460，单人 CNY 230。"
+      },
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜北京｜Day 4｜慕田峪长城与CBD夜景.md",
+        "context": "路线稿确认缆车上至 14 号烽火台，并从 5 号烽火台坐滑道下山。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 80,
+    "isKeyPrice": true,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "mutianyu-admission-listed-2025",
+    "titleZh": "慕田峪长城",
+    "titleEn": "Mutianyu Great Wall",
+    "optionLabelZh": "成人门票",
+    "optionLabelEn": "Adult admission",
+    "attractionSlug": "mutianyu-great-wall-484",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 11,
+    "priceType": "listed_at_the_time",
+    "amountMinor": 4500,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": null,
+    "travellerCount": null,
+    "paidDate": null,
+    "includes": ["成人门票"],
+    "excludes": ["摆渡车", "缆车", "滑道"],
+    "note": "路线稿未记录价格日期，暂不公开。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜北京｜Day 4｜慕田峪长城与CBD夜景.md",
+        "context": "攻略记录成人门票 CNY 45。"
+      }
+    ],
+    "confidence": "medium",
+    "evidenceStatus": "missing",
+    "reviewStatus": "pending",
+    "displayPriority": 81,
+    "isKeyPrice": false,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "mutianyu-shuttle-listed-2025",
+    "titleZh": "慕田峪长城",
+    "titleEn": "Mutianyu Great Wall",
+    "optionLabelZh": "摆渡车",
+    "optionLabelEn": "Shuttle bus",
+    "attractionSlug": "mutianyu-great-wall-484",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 11,
+    "priceType": "listed_at_the_time",
+    "amountMinor": 1500,
+    "currency": "CNY",
+    "unit": "unspecified",
+    "quantity": null,
+    "travellerCount": null,
+    "paidDate": null,
+    "includes": ["景区摆渡车"],
+    "excludes": ["景区门票", "缆车", "滑道"],
+    "note": "路线稿未记录单位和价格日期，暂不公开。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜北京｜Day 4｜慕田峪长城与CBD夜景.md",
+        "context": "攻略记录摆渡车 CNY 15，但未注明单位。"
+      }
+    ],
+    "confidence": "medium",
+    "evidenceStatus": "missing",
+    "reviewStatus": "pending",
+    "displayPriority": 82,
+    "isKeyPrice": false,
+    "lastVerifiedAt": "2026-07-29"
+  },
+  {
+    "id": "harbin-to-snow-valley-charter-2025",
+    "titleZh": "哈尔滨至雪谷包车",
+    "titleEn": "Harbin to Snow Valley charter",
+    "optionLabelZh": "十座车分摊",
+    "optionLabelEn": "Ten-seat vehicle share",
+    "attractionSlug": "xue-gu-xuegu-497",
+    "guideSlug": "china-harbin-xuegu-changbai-beijing-11d10n",
+    "dayNumber": 3,
+    "priceType": "actual_paid",
+    "amountMinor": 13000,
+    "currency": "CNY",
+    "unit": "per_person",
+    "quantity": 2,
+    "travellerCount": 2,
+    "paidDate": "2025-01-07",
+    "includes": ["哈尔滨至雪谷包车", "过路费", "油费"],
+    "excludes": [],
+    "note": "整车 CNY 1,300，可坐 10 人；本记录按实际分摊显示每人 CNY 130。",
+    "sources": [
+      {
+        "sourceType": "obsidian_note",
+        "sourceReference": "D:\\Obsidian\\一起看世界\\中国旅游\\2025-01-04｜东北＋北京冬季之旅\\90｜待整理资料\\路线资料\\中国东北北京冬季游｜雪谷｜深度游.md",
+        "context": "包车参考约 CNY 1,300／辆，可坐 10 人，含过路费和油费。"
+      },
+      {
+        "sourceType": "moneybot_ledger",
+        "sourceReference": "MoneyBot Project [中国_哈尔滨北京], 2025-01-07",
+        "context": "脱敏核对：两位旅客分摊 CNY 260，单人 CNY 130。"
+      }
+    ],
+    "confidence": "high",
+    "evidenceStatus": "confirmed",
+    "reviewStatus": "pending",
+    "displayPriority": 90,
+    "isKeyPrice": false,
+    "lastVerifiedAt": "2026-07-29"
+  }
+]
