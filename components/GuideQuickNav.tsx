@@ -15,7 +15,7 @@ export default function GuideQuickNav({ guideSlug, days, hasMap, hasBudget }: Gu
   const items = useMemo(
     () => [
       ...(hasMap ? [{ id: 'route-map', label: '路线地图', shortLabel: '路线' }] : []),
-      ...(hasBudget ? [{ id: 'budget', label: '预算拆解', shortLabel: '预算' }] : []),
+      ...(hasBudget ? [{ id: 'budget', label: '旅程花费', shortLabel: '花费' }] : []),
       ...days.map((day) => ({
         id: `day-${day.dayNumber}`,
         label: `Day ${day.dayNumber} · ${day.title}`,

@@ -54,5 +54,11 @@ export default function AdminReviewedActualSpendPreview({ guideSlug }: { guideSl
     )
   }
 
-  return <GuideBudgetSection guide={payload.guide} actualSpend={payload.snapshot} />
+  return (
+    <GuideBudgetSection
+      guide={payload.guide}
+      actualSpend={payload.snapshot}
+      showAdminSourceNote
+    />
+  )
 }

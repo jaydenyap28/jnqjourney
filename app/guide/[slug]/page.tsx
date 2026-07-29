@@ -408,6 +408,17 @@ export default async function GuideDetailPage({ params }: PageProps) {
   }
 
   const actualSpend = await readPublishedGuideBudget(guide.slug)
+  const publicActualSpend = actualSpend
+    ? {
+        currency: actualSpend.currency,
+        scope: actualSpend.scope,
+        traveller_count: actualSpend.traveller_count,
+        total: actualSpend.total,
+        categories: actualSpend.categories,
+        transaction_count: actualSpend.transaction_count,
+        received_at: actualSpend.received_at,
+      }
+    : null
   // Keep the legacy estimate out of the client/RSC payload once a published
   // actual-spend snapshot takes precedence. The canonical Guide record remains
   // unchanged in storage for history and for routes without actual spend.
@@ -815,7 +826,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        <GuideBudgetSection guide={budgetGuide} actualSpend={actualSpend} />
+        <GuideBudgetSection guide={budgetGuide} actualSpend={publicActualSpend} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
