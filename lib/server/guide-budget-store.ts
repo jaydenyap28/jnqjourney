@@ -138,7 +138,7 @@ export async function readPublishedGuideBudget(guideSlug: string) {
     .limit(1)
     .maybeSingle()
   if (error || !data) return null
-  return normalizeRecord(data)
+  return toDisplaySnapshot(normalizeRecord(data))
 }
 
 export async function readReviewedGuideBudgetDisplay(guideSlug: string) {
