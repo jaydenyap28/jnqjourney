@@ -121,6 +121,32 @@ export function normalizeGuidePayload(value: any): TravelGuide {
           }))
           .filter((item: any) => item.dayLabel && item.title)
       : [],
+    itineraryMode: value?.itineraryMode === 'segment' ? 'segment' : value?.itineraryMode === 'daily' ? 'daily' : undefined,
+    itinerarySegments: Array.isArray(value?.itinerarySegments)
+      ? value.itinerarySegments
+          .map((item: any) => ({
+            id: String(item?.id || '').trim(),
+            dayStart: normalizePositiveNumber(item?.dayStart),
+            dayEnd: normalizePositiveNumber(item?.dayEnd),
+            dateStart: String(item?.dateStart || '').trim(),
+            dateEnd: String(item?.dateEnd || '').trim(),
+            city: String(item?.city || '').trim(),
+            title: String(item?.title || '').trim(),
+            summary: String(item?.summary || '').trim(),
+            verifiedRoutes: Array.isArray(item?.verifiedRoutes)
+              ? item.verifiedRoutes.map((route: any) => ({ title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              : [],
+            referenceRoutes: Array.isArray(item?.referenceRoutes)
+              ? item.referenceRoutes.map((route: any) => ({ title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              : [],
+            accommodation: String(item?.accommodation || '').trim() || undefined,
+            accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
+            transport: String(item?.transport || '').trim() || undefined,
+            media: Array.isArray(item?.media) ? item.media.map((media: any) => ({ label: String(media?.label || '').trim(), url: String(media?.url || '').trim() || undefined })).filter((media: any) => media.label) : [],
+            globalDayMappingStatus: ['confirmed', 'pending'].includes(String(item?.globalDayMappingStatus)) ? item.globalDayMappingStatus : undefined,
+          }))
+          .filter((item: any) => item.id && item.dayStart && item.dayEnd && item.dayEnd >= item.dayStart && item.dateStart && item.dateEnd && item.city && item.title)
+      : [],
     bestFor: normalizeStringArray(value?.bestFor),
     notes: normalizeStringArray(value?.notes),
     featuredSpotNames: normalizeStringArray(value?.featuredSpotNames),

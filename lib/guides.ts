@@ -45,6 +45,33 @@ export interface GuideDayPlan {
   reminder?: string
 }
 
+export type GuideItineraryMode = 'daily' | 'segment'
+
+export interface GuideItineraryRoute {
+  title: string
+  summary?: string
+  linkedSpots?: string[]
+  status?: 'visited' | 'reference' | 'pending'
+}
+
+export interface GuideItinerarySegment {
+  id: string
+  dayStart: number
+  dayEnd: number
+  dateStart: string
+  dateEnd: string
+  city: string
+  title: string
+  summary: string
+  verifiedRoutes: GuideItineraryRoute[]
+  referenceRoutes?: GuideItineraryRoute[]
+  accommodation?: string
+  accommodationNote?: string
+  transport?: string
+  media?: Array<{ label: string; url?: string }>
+  globalDayMappingStatus?: 'confirmed' | 'pending'
+}
+
 export interface TravelGuide {
   slug: string
   aliases?: string[]
@@ -64,6 +91,8 @@ export interface TravelGuide {
   heroBullets: string[]
   budgetItems: GuideBudgetItem[]
   days: GuideDayPlan[]
+  itineraryMode?: GuideItineraryMode
+  itinerarySegments?: GuideItinerarySegment[]
   bestFor: string[]
   notes: string[]
   featuredSpotNames?: string[]
