@@ -612,13 +612,16 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
-  const segmentMapPoints = (guide.itinerarySegments || []).flatMap((segment) =>
+  const segmentMapPointCandidates = (guide.itinerarySegments || []).flatMap((segment) =>
     segment.verifiedRoutes.flatMap((route) => (route.linkedSpots || []).map((name) => ({ segment, name })))
   ).flatMap(({ segment, name }, index) => {
     const spot = segmentSpotsBySegment[segment.id]?.[name]
     if (!spot || !Number.isFinite(spot.latitude) || !Number.isFinite(spot.longitude)) return []
     return [{ id: index + 1, label: spot.name_cn || spot.name, stopLabel: `Day ${segment.dayStart}`, latitude: Number(spot.latitude), longitude: Number(spot.longitude), regionLabel: spot.regions?.name_cn || spot.regions?.name || undefined, dayNumber: segment.dayStart, href: buildLocationPath(spot.name, spot.id), image: spot.image_url || spot.images?.[0] || undefined }]
   })
+  const segmentMapPoints = Array.from(
+    new Map(segmentMapPointCandidates.map((point) => [point.href, point])).values()
+  ).map((point, index) => ({ ...point, id: index + 1 }))
   const routeMapPoints = (isSegmentItinerary ? segmentMapPoints : routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
     const longitude = typeof stop.longitude === 'number' ? Number(stop.longitude) : null
