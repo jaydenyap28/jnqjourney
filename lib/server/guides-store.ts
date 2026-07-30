@@ -154,7 +154,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
                     note: String(stay?.note || '').trim() || undefined,
                   }))
                   .filter((stay: any) => stay.dayStart && stay.dayEnd && stay.dayEnd >= stay.dayStart && stay.accommodationId)
-              : [],
+              : undefined,
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
             media: Array.isArray(item?.media) ? item.media.map((media: any) => ({ label: String(media?.label || '').trim(), url: String(media?.url || '').trim() || undefined })).filter((media: any) => media.label) : [],

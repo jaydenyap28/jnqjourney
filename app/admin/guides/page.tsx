@@ -305,7 +305,7 @@ function buildGuideDaysFromVisitDates(locations: LocationOption[], routeNames: s
   })
 }
 
-function segmentDaysForEditor(guide: TravelGuide): TravelGuide['days'] {
+function segmentDaysForEditor(guide: TravelGuide, locations: LocationOption[] = []): TravelGuide['days'] {
   if (guide.days.length || guide.itineraryMode !== 'segment') return guide.days
   return (guide.itinerarySegments || []).flatMap((segment) =>
     segment.verifiedRoutes
@@ -314,6 +314,9 @@ function segmentDaysForEditor(guide: TravelGuide): TravelGuide['days'] {
         const dayNumber = route.dayNumber as number
         const date = new Date(`${segment.dateStart}T00:00:00Z`)
         date.setUTCDate(date.getUTCDate() + dayNumber - segment.dayStart)
+        const stay = segment.accommodationStays?.find((item) => dayNumber >= item.dayStart && dayNumber <= item.dayEnd)
+        const staySpot = stay ? locations.find((location) => location.id === stay.accommodationId) : null
+        const hasManagedStays = Array.isArray(segment.accommodationStays)
         return {
           dayLabel: `Day ${dayNumber}`,
           date: date.toISOString().slice(0, 10),
@@ -322,10 +325,12 @@ function segmentDaysForEditor(guide: TravelGuide): TravelGuide['days'] {
           highlights: [],
           linkedSpots: route.linkedSpots || [],
           transport: dayNumber === segment.dayStart ? segment.transport : undefined,
-          stay: segment.accommodation,
-          stayNote: segment.accommodationNote,
-          stayRangeStart: segment.dayStart,
-          stayRangeEnd: segment.dayEnd,
+          // An explicit empty array means an admin deleted the stay. It must not
+          // fall back to the legacy static display value.
+          stay: staySpot ? locationDisplayName(staySpot) : hasManagedStays ? '' : segment.accommodation,
+          stayNote: stay?.note || (hasManagedStays ? undefined : segment.accommodationNote),
+          stayRangeStart: stay?.dayStart,
+          stayRangeEnd: stay?.dayEnd,
           reminder: dayNumber === segment.dayEnd ? segment.practicalTips?.join('\n') : undefined,
           videoUrl: dayNumber === segment.dayEnd ? segment.media?.find((item) => item.url)?.url : undefined,
           gallery: [],
@@ -334,20 +339,50 @@ function segmentDaysForEditor(guide: TravelGuide): TravelGuide['days'] {
   )
 }
 
-function applyEditorDaysToSegments(guide: TravelGuide, days: TravelGuide['days']) {
+function applyEditorDaysToSegments(guide: TravelGuide, days: TravelGuide['days'], locations: LocationOption[]) {
   if (guide.itineraryMode !== 'segment') return guide.itinerarySegments
   const byDay = new Map(days.map((day, index) => [parseGuideDayNumber(day.dayLabel) || index + 1, day]))
-  return (guide.itinerarySegments || []).map((segment) => ({
-    ...segment,
-    verifiedRoutes: segment.verifiedRoutes.map((route) => {
+  return (guide.itinerarySegments || []).map((segment) => {
+    const startDay = byDay.get(segment.dayStart)
+    const endDay = byDay.get(segment.dayEnd)
+    const resolvedStays = Array.from({ length: segment.dayEnd - segment.dayStart + 1 }, (_, index): { dayNumber: number; accommodationId: number; note?: string } | null => {
+      const dayNumber = segment.dayStart + index
+      const day = byDay.get(dayNumber)
+      const stayName = String(day?.stay || '').trim()
+      const location = locations.find((candidate) => matchesLocationIdentity(candidate, stayName))
+      return location ? { dayNumber, accommodationId: location.id, note: String(day?.stayNote || '').trim() || undefined } : null
+    }).filter((stay): stay is { dayNumber: number; accommodationId: number; note?: string } => stay !== null)
+    const accommodationStays = resolvedStays.reduce<Array<{ dayStart: number; dayEnd: number; accommodationId: number; note?: string }>>((ranges, stay) => {
+      const previous = ranges[ranges.length - 1]
+      if (previous && previous.accommodationId === stay.accommodationId && previous.note === stay.note && previous.dayEnd + 1 === stay.dayNumber) {
+        previous.dayEnd = stay.dayNumber
+      } else {
+        ranges.push({ dayStart: stay.dayNumber, dayEnd: stay.dayNumber, accommodationId: stay.accommodationId, note: stay.note })
+      }
+      return ranges
+    }, [])
+
+    return {
+      ...segment,
+      verifiedRoutes: segment.verifiedRoutes.map((route) => {
       const day = typeof route.dayNumber === 'number' ? byDay.get(route.dayNumber) : null
       return day ? { ...route, title: day.title, summary: day.summary, linkedSpots: day.linkedSpots || [] } : route
-    }),
-    transport: byDay.get(segment.dayStart)?.transport || segment.transport,
-    accommodation: byDay.get(segment.dayStart)?.stay || segment.accommodation,
-    accommodationNote: byDay.get(segment.dayStart)?.stayNote || segment.accommodationNote,
-    practicalTips: byDay.get(segment.dayEnd)?.reminder ? byDay.get(segment.dayEnd)?.reminder?.split('\n').filter(Boolean) : segment.practicalTips,
-  }))
+      }),
+      // Every save writes the exact per-day stay state. In particular, [] is a
+      // durable deletion marker and prevents legacy seed data from returning.
+      accommodationStays,
+      accommodation: undefined,
+      accommodationSpotName: undefined,
+      accommodationNote: undefined,
+      transport: startDay ? String(startDay.transport || '').trim() || undefined : segment.transport,
+      practicalTips: endDay ? String(endDay.reminder || '').split('\n').map((item) => item.trim()).filter(Boolean) : segment.practicalTips,
+      media: endDay
+        ? (String(endDay.videoUrl || '').trim()
+            ? [{ label: segment.media?.[0]?.label || `Day ${segment.dayEnd} 行程影片`, url: String(endDay.videoUrl).trim() }]
+            : [])
+        : segment.media,
+    }
+  })
 }
 
 function categoryLabel(category?: string | null) {
@@ -583,7 +618,7 @@ export default function AdminGuidesPage() {
       if (preferredSlug) {
         const matched = nextGuides.find((guide) => guide.slug === preferredSlug)
         if (matched) {
-          setForm({ ...matched, days: segmentDaysForEditor(matched) })
+          setForm({ ...matched, days: segmentDaysForEditor(matched, nextLocations) })
           setSelectedSlug(matched.slug)
           setOriginalSlug(matched.slug)
           setActiveDayEditor(0)
@@ -593,7 +628,7 @@ export default function AdminGuidesPage() {
 
       if (nextGuides.length) {
         const current = nextGuides.find((guide) => guide.slug === selectedSlug) || nextGuides[0]
-        setForm({ ...current, days: segmentDaysForEditor(current) })
+        setForm({ ...current, days: segmentDaysForEditor(current, nextLocations) })
         setSelectedSlug(current.slug)
         setOriginalSlug(current.slug)
         setActiveDayEditor(0)
@@ -666,7 +701,7 @@ export default function AdminGuidesPage() {
   }
 
   function selectGuide(guide: TravelGuide) {
-    setForm({ ...guide, days: segmentDaysForEditor(guide) })
+    setForm({ ...guide, days: segmentDaysForEditor(guide, locations) })
     setSelectedSlug(guide.slug)
     setOriginalSlug(guide.slug)
     setMessage(null)
@@ -890,7 +925,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
           stayRangeEnd: day.stay ? Number(day.stayRangeEnd || day.stayRangeStart || dayNumber) : undefined,
         }
       }),
-      itinerarySegments: applyEditorDaysToSegments(form, form.days),
+      itinerarySegments: applyEditorDaysToSegments(form, form.days, locations),
       previousSlug: originalSlug || undefined,
     }
 

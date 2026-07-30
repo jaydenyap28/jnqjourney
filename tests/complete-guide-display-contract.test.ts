@@ -27,12 +27,14 @@ test('binds Jiangnan stays by exact accommodation IDs and keeps names public-rea
   assert.ok(segments.every((segment) => !/待核对|待确认/.test(segment.accommodation || '')))
 })
 
-test('puts Bishan Village and Xiuli Water Town on verified Day 11 only', () => {
+test('keeps Yixian actual visits in the confirmed Day 9–11 order', () => {
   const yixian = (jiangnanGuideDraft.itinerarySegments || []).find((segment) => segment.id === 'yixian')
   assert.ok(yixian)
+  const day9 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 9)
   const day10 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 10)
   const day11 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 11)
-  assert.deepEqual(day10?.linkedSpots, ['宏村', '南湖', '卢村', '塔川'])
-  assert.deepEqual(day11?.linkedSpots, ['碧山村', '秀里水镇'])
+  assert.deepEqual(day9?.linkedSpots, ['宏村', '南湖'])
+  assert.deepEqual(day10?.linkedSpots, ['碧山村', '卢村'])
+  assert.deepEqual(day11?.linkedSpots, ['秀里水镇', '塔川'])
   assert.deepEqual(yixian?.referenceRoutes?.[0]?.linkedSpots, ['奇墅湖'])
 })

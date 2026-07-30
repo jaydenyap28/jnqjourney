@@ -58,11 +58,11 @@ const segments: GuideItinerarySegment[] = [
   },
   {
     id: 'yixian', dayStart: 9, dayEnd: 11, dateStart: '2025-11-12', dateEnd: '2025-11-14', city: '宏村／黟县', title: '宏村／黟县｜古村与秋色',
-    summary: '已证实到访宏村、卢村观景点与塔川入口一带；付费景区未进入。部分附近地点仅作顺路参考，不计入主行程。',
+    summary: '已证实到访宏村、卢村观景点、塔川入口、碧山村与秀里水镇一带；付费景区未进入。',
     verifiedRoutes: [
-      { dayNumber: 9, title: '杭州→黟县', summary: '转往黟县并办理入住。', linkedSpots: [], status: 'visited' },
-      { dayNumber: 10, title: '宏村、卢村与塔川入口', summary: '宏村、南湖与周边步行；卢村观景点与塔川入口。', linkedSpots: ['宏村', '南湖', '卢村', '塔川'], status: 'visited' },
-      { dayNumber: 11, title: '碧山村、秀里水镇与古村秋色', summary: '碧山村、秀里水镇与周边慢行。', linkedSpots: ['碧山村', '秀里水镇'], status: 'visited' },
+      { dayNumber: 9, title: '杭州→黟县与宏村', summary: '转往黟县并办理入住，游览宏村、南湖与周边步行。', linkedSpots: ['宏村', '南湖'], status: 'visited' },
+      { dayNumber: 10, title: '碧山村与卢村观景点', summary: '碧山村与卢村观景点慢行。', linkedSpots: ['碧山村', '卢村'], status: 'visited' },
+      { dayNumber: 11, title: '秀里水镇与塔川入口', summary: '秀里水镇、塔川入口与周边慢行。', linkedSpots: ['秀里水镇', '塔川'], status: 'visited' },
     ],
     referenceRoutes: [{ title: '附近延伸选择', summary: '奇墅湖等资料中出现的地点，未确认实际到访，不进入路线地图。', linkedSpots: ['奇墅湖'], status: 'reference' }],
     accommodation: '有巢别院', accommodationStays: [{ dayStart: 9, dayEnd: 11, accommodationId: 807 }],

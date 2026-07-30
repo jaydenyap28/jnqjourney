@@ -47,6 +47,8 @@ export async function POST(request: Request) {
     revalidatePath('/')
     revalidatePath('/guide')
     revalidatePath(`/guide/${payload.slug}`)
+    revalidatePath('/admin/guides')
+    revalidatePath(`/admin/guides/${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/guide/${previousSlug}`)
     return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString() })
   } catch (error: any) {
