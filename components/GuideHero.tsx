@@ -44,9 +44,10 @@ export default function GuideHero({
               <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-white/90 md:text-xl md:leading-8">{[guide.duration, guide.travelStyle, '完整攻略'].filter(Boolean).join(' · ')}</p>
               {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{guide.tagline}</p> : null}
               {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
-              <dl className="mt-6 grid max-w-2xl grid-cols-2 divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3">
+              <dl className={`mt-6 grid max-w-2xl ${guide.heroBullets[0] ? 'grid-cols-3' : 'grid-cols-2'} divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3`}>
                 <div className="px-3 first:pl-0"><dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">行程</dt><dd className="mt-1 text-sm font-semibold text-white">{guide.duration}</dd></div>
                 <div className="px-3"><dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">地区</dt><dd className="mt-1 text-sm font-semibold text-white">{routeStops.length} 个主要地区</dd></div>
+                {guide.heroBullets[0] ? <div className="px-3 pr-0"><dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">日期</dt><dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">{guide.heroBullets[0]}</dd></div> : null}
               </dl>
             </div>
 
