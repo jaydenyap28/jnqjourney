@@ -612,17 +612,25 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
-  const segmentMapPointCandidates = (guide.itinerarySegments || []).flatMap((segment) =>
-    segment.verifiedRoutes.flatMap((route) => (route.linkedSpots || []).map((name) => ({ segment, name })))
-  ).flatMap(({ segment, name }, index) => {
-    const spot = segmentSpotsBySegment[segment.id]?.[name]
-    if (!spot || !Number.isFinite(spot.latitude) || !Number.isFinite(spot.longitude)) return []
-    return [{ id: index + 1, label: spot.name_cn || spot.name, stopLabel: `Day ${segment.dayStart}`, latitude: Number(spot.latitude), longitude: Number(spot.longitude), regionLabel: spot.regions?.name_cn || spot.regions?.name || undefined, dayNumber: segment.dayStart, href: buildLocationPath(spot.name, spot.id), image: spot.image_url || spot.images?.[0] || undefined }]
+  // Segment guides use the same map component, but their overview is deliberately
+  // city-level: detailed Spot cards remain in the itinerary sections below.
+  const segmentOverviewMapPoints = (guide.itinerarySegments || []).flatMap((segment, index) => {
+    const firstLocatedSpot = segment.verifiedRoutes
+      .flatMap((route) => route.linkedSpots || [])
+      .map((name) => segmentSpotsBySegment[segment.id]?.[name])
+      .find((spot) => spot && Number.isFinite(spot.latitude) && Number.isFinite(spot.longitude))
+
+    if (!firstLocatedSpot) return []
+    return [{
+      id: index + 1,
+      label: segment.city,
+      stopLabel: segment.dayEnd > segment.dayStart ? `Day ${segment.dayStart}–${segment.dayEnd}` : `Day ${segment.dayStart}`,
+      latitude: Number(firstLocatedSpot.latitude),
+      longitude: Number(firstLocatedSpot.longitude),
+      dayNumber: segment.dayStart,
+    }]
   })
-  const segmentMapPoints = Array.from(
-    new Map(segmentMapPointCandidates.map((point) => [point.href, point])).values()
-  ).map((point, index) => ({ ...point, id: index + 1 }))
-  const routeMapPoints = (isSegmentItinerary ? segmentMapPoints : routeRegions.flatMap((stop, index) => {
+  const routeMapPoints = (isSegmentItinerary ? segmentOverviewMapPoints : routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
     const longitude = typeof stop.longitude === 'number' ? Number(stop.longitude) : null
 
@@ -850,19 +858,19 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 points={routeMapPoints}
                 guideSlug={guide.slug}
                 theme="dark"
-                showCards
+                showCards={!isSegmentItinerary}
                 className="space-y-4"
                 emptyMessage="这篇攻略目前还没有足够的坐标资料来绘制路线地图；请参考文字路线与每日行程。"
               />
             </div>
-            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/68">
+            {!isSegmentItinerary ? <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/68">
               {routeRegions.map((stop, index) => (
                 <span key={`${stop.name}-route-text`} className="inline-flex items-center gap-3">
                   <span>{stop.primaryLabel || stop.name}</span>
                   {index < routeRegions.length - 1 ? <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 text-amber-200/55" /> : null}
                 </span>
               ))}
-            </div>
+            </div> : null}
           </section>
         ) : null}
 
