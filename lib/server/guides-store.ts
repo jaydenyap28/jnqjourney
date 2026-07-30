@@ -317,13 +317,9 @@ function withPublishedStaticGuides(guides: TravelGuide[]) {
     savedJiangnan
       ? normalizeGuidePayload({
           ...jiangnanGuideDraft,
-          coverImage: savedJiangnan.coverImage || jiangnanGuideDraft.coverImage,
-          budget: savedJiangnan.budget || jiangnanGuideDraft.budget,
-          budgetItems: savedJiangnan.budgetItems?.length ? savedJiangnan.budgetItems : jiangnanGuideDraft.budgetItems,
-          budgetScope: savedJiangnan.budgetScope || jiangnanGuideDraft.budgetScope,
-          tripStartDate: savedJiangnan.tripStartDate || jiangnanGuideDraft.tripStartDate,
-          tripEndDate: savedJiangnan.tripEndDate || jiangnanGuideDraft.tripEndDate,
-          publishedAt: savedJiangnan.publishedAt || jiangnanGuideDraft.publishedAt,
+          // The static draft seeds a newly published guide only. Once an
+          // administrator saves it, Storage is the authoritative record.
+          ...savedJiangnan,
         })
       : jiangnanGuideDraft
   )

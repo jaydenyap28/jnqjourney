@@ -1,6 +1,7 @@
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
-import { normalizeGuidePayload, readGuides, saveGuides } from '@/lib/server/guides-store'
+import { revalidatePath } from 'next/cache'
+import { normalizeGuidePayload, readGuideBySlug, readGuides, saveGuides } from '@/lib/server/guides-store'
 
 export const runtime = 'nodejs'
 
@@ -38,9 +39,15 @@ export async function POST(request: Request) {
       guides.unshift(payload)
     }
 
-    const savedGuides = await saveGuides(guides)
-    const savedGuide =
-      savedGuides.find((item) => item.slug === payload.slug || (previousSlug && item.slug === previousSlug)) || payload
+    await saveGuides(guides)
+    const savedGuide = await readGuideBySlug(payload.slug)
+    if (!savedGuide || savedGuide.title !== payload.title) {
+      return NextResponse.json({ error: 'Guide was not persisted by the authoritative store.' }, { status: 409 })
+    }
+    revalidatePath('/')
+    revalidatePath('/guide')
+    revalidatePath(`/guide/${payload.slug}`)
+    if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/guide/${previousSlug}`)
     return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString() })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存攻略失败。' }, { status: 500 })
