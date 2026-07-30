@@ -7,6 +7,7 @@ import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import GuideQuickNav from '@/components/GuideQuickNav'
+import GuideSegmentItinerarySection from '@/components/GuideSegmentItinerarySection'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
 import GuideBudgetSection from '@/components/GuideBudgetSection'
@@ -410,6 +411,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
     redirect(`/guide/${guide.slug}`)
   }
 
+  const isSegmentItinerary = guide.itineraryMode === 'segment' && Boolean(guide.itinerarySegments?.length)
+
   const [actualSpend, approvedPriceHighlights] = await Promise.all([
     readPublishedGuideBudget(guide.slug),
     readApprovedGuidePriceHighlights(guide.slug),
@@ -805,7 +808,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
       <GuideQuickNav
         guideSlug={guide.slug}
-        days={datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
+        days={isSegmentItinerary ? (guide.itinerarySegments || []).map((segment) => ({ dayNumber: segment.dayStart, title: segment.city })) : datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
         hasMap={routeMapPoints.length > 0}
         hasBudget={Boolean(hasLegacyGuideBudget || actualSpend)}
       />
@@ -845,6 +848,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
+        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} /> : <>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>
@@ -1035,6 +1039,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
             })}
           </div>
         </section>
+        </>}
 
         {hasGuideBookingContent ? (
           <aside id="guide-bookings" aria-labelledby="guide-booking-heading" className="min-w-0 scroll-mt-24 border-y border-white/10 py-6 lg:sticky lg:top-20 lg:border lg:bg-white/[0.025] lg:p-5">

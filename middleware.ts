@@ -5,18 +5,6 @@ export async function middleware(request: NextRequest) {
   const slug = pathParts[1]
   if (!slug) return NextResponse.next()
 
-  // Draft Guides have protected administrator previews only. Keep the public
-  // route fail-closed even if a draft slug is requested directly.
-  if (pathParts[0] === 'guide' && slug === 'china-jiangnan-autumn-15d14n') {
-    return new NextResponse('Not Found', {
-      status: 404,
-      headers: {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'X-Robots-Tag': 'noindex, nofollow',
-      },
-    })
-  }
-
   if (['tioman-aman-resort-3d2n', 'tioman-paya-beach-resort-3d2n', 'tioman-barat-resort-3d2n'].includes(slug)) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/packages/tioman-3d2n'
@@ -53,5 +41,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/packages/:path*', '/guide/china-jiangnan-autumn-15d14n'],
+  matcher: ['/packages/:path*'],
 }

@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
+import { jiangnanGuideDraft } from '@/lib/guide-drafts'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -290,10 +291,16 @@ function sortGuides(guides: TravelGuide[]) {
   })
 }
 
+function withPublishedStaticGuides(guides: TravelGuide[]) {
+  const merged = new Map(guides.map((guide) => [guide.slug, guide]))
+  merged.set(jiangnanGuideDraft.slug, jiangnanGuideDraft)
+  return sortGuides(Array.from(merged.values()))
+}
+
 export async function readGuides() {
   const now = Date.now()
   if (cachedGuides && now - lastFetchTime < CACHE_TTL) {
-    return sortGuides(cachedGuides)
+    return withPublishedStaticGuides(cachedGuides)
   }
 
   const storageGuides = await readStorageGuides()
@@ -303,7 +310,7 @@ export async function readGuides() {
     try {
       await writeLocalGuides(storageGuides)
     } catch {}
-    return sortGuides(storageGuides)
+    return withPublishedStaticGuides(storageGuides)
   }
 
   const localGuides = await readLocalGuides()
@@ -311,7 +318,7 @@ export async function readGuides() {
     cachedGuides = localGuides
     lastFetchTime = now
   }
-  return sortGuides(localGuides)
+  return withPublishedStaticGuides(localGuides)
 }
 
 export async function readGuideBySlug(slug: string) {
