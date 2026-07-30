@@ -1,8 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  const slug = request.nextUrl.pathname.split('/').filter(Boolean)[1]
+  const pathParts = request.nextUrl.pathname.split('/').filter(Boolean)
+  const slug = pathParts[1]
   if (!slug) return NextResponse.next()
+
+  // Draft Guides have protected administrator previews only. Keep the public
+  // route fail-closed even if a draft slug is requested directly.
+  if (pathParts[0] === 'guide' && slug === 'china-jiangnan-autumn-15d14n') {
+    return new NextResponse('Not Found', {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'X-Robots-Tag': 'noindex, nofollow',
+      },
+    })
+  }
 
   if (['tioman-aman-resort-3d2n', 'tioman-paya-beach-resort-3d2n', 'tioman-barat-resort-3d2n'].includes(slug)) {
     const redirectUrl = request.nextUrl.clone()
@@ -40,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/packages/:path*'],
+  matcher: ['/packages/:path*', '/guide/:path*'],
 }
