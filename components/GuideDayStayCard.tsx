@@ -3,6 +3,7 @@ import { BedDouble, ExternalLink } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import { buildLocationPath } from '@/lib/location-routing'
+import { formatShortText } from '@/lib/short-text'
 
 export interface GuideStaySpot {
   id: number
@@ -41,7 +42,7 @@ export default function GuideDayStayCard({
       <div className="min-w-0">
         <p className="font-medium text-white">{name}</p>
         <p className="mt-1 text-xs text-white/52">{region}</p>
-        {note ? <p className="mt-2 text-sm leading-6 text-white/65">{note}</p> : null}
+        {note ? <p className="mt-2 text-sm leading-6 text-white/65">{formatShortText(note)}</p> : null}
         {staySpot ? <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-sky-100">查看酒店详情 <ExternalLink className="h-3 w-3" /></span> : null}
       </div>
     </>

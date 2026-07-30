@@ -67,6 +67,8 @@ export interface GuideItinerarySegment {
   verifiedRoutes: GuideItineraryRoute[]
   referenceRoutes?: GuideItineraryRoute[]
   accommodation?: string
+  /** Exact existing accommodation entity name; resolved with the segment city. */
+  accommodationSpotName?: string
   accommodationNote?: string
   transport?: string
   media?: Array<{ label: string; url?: string }>

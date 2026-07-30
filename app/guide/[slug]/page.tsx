@@ -368,16 +368,22 @@ function shouldShowDaySummary(summary?: string | null) {
   )
 }
 
-function resolveStaySpotByName(stayName: string, allSpots: LinkedSpot[]) {
+function resolveStaySpotByName(stayName: string, allSpots: LinkedSpot[], expectedCity?: string) {
   const normalized = normalizeText(stayName)
   if (!normalized) return null
+  const expectedRegions = String(expectedCity || '')
+    .split(/[／/]/)
+    .map(normalizeText)
+    .filter(Boolean)
 
   const accommodationSpots = allSpots.filter((spot) => String(spot.category || '').toLowerCase() === 'accommodation')
 
   for (const spot of accommodationSpots) {
     const name = normalizeText(spot.name)
     const nameCn = normalizeText(spot.name_cn)
-    if (name === normalized || nameCn === normalized) return spot
+    const region = normalizeText(spot.regions?.name_cn || spot.regions?.name)
+    const regionMatches = !expectedRegions.length || expectedRegions.includes(region)
+    if (regionMatches && (name === normalized || nameCn === normalized)) return spot
   }
 
   return null
@@ -451,6 +457,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
       ...guide.days.flatMap((day) => (day.stay ? [day.stay] : [])),
       ...guide.route.flatMap((stop) => (stop.mapSpotName ? [stop.mapSpotName] : [])),
       ...(guide.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes.flatMap((route) => route.linkedSpots || [])),
+      ...(guide.itinerarySegments || []).flatMap((segment) => (segment.accommodationSpotName ? [segment.accommodationSpotName] : [])),
     ])
   )
 
@@ -527,7 +534,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   )
   const segmentStaysByDay = Object.fromEntries(
     (guide.itinerarySegments || []).flatMap((segment) => {
-      const staySpot = resolveStaySpotByName(String(segment.accommodation || ''), allGuideSpots)
+      const staySpot = resolveStaySpotByName(String(segment.accommodationSpotName || ''), allGuideSpots, segment.city)
       return Array.from({ length: segment.dayEnd - segment.dayStart + 1 }, (_, index) => [segment.dayStart + index, staySpot])
     })
   )

@@ -144,6 +144,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
               ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             accommodation: String(item?.accommodation || '').trim() || undefined,
+            accommodationSpotName: String(item?.accommodationSpotName || '').trim() || undefined,
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
             media: Array.isArray(item?.media) ? item.media.map((media: any) => ({ label: String(media?.label || '').trim(), url: String(media?.url || '').trim() || undefined })).filter((media: any) => media.label) : [],
