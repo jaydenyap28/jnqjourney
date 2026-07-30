@@ -138,10 +138,10 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             title: String(item?.title || '').trim(),
             summary: String(item?.summary || '').trim(),
             verifiedRoutes: Array.isArray(item?.verifiedRoutes)
-              ? item.verifiedRoutes.map((route: any) => ({ title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.verifiedRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             referenceRoutes: Array.isArray(item?.referenceRoutes)
-              ? item.referenceRoutes.map((route: any) => ({ title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             accommodation: String(item?.accommodation || '').trim() || undefined,
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,

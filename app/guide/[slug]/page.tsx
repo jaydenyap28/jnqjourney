@@ -2,12 +2,13 @@ import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
-import { ArrowRight, BedDouble, CalendarDays, ExternalLink, Film, MapPin, MapPinned, Navigation } from 'lucide-react'
+import { ArrowRight, BedDouble, CalendarDays, Film, MapPin, MapPinned, Navigation } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import GuideQuickNav from '@/components/GuideQuickNav'
 import GuideSegmentItinerarySection from '@/components/GuideSegmentItinerarySection'
+import GuideDayStayCard from '@/components/GuideDayStayCard'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
 import GuideBudgetSection from '@/components/GuideBudgetSection'
@@ -524,6 +525,12 @@ export default async function GuideDetailPage({ params }: PageProps) {
       ),
     ])
   )
+  const segmentStaysByDay = Object.fromEntries(
+    (guide.itinerarySegments || []).flatMap((segment) => {
+      const staySpot = resolveStaySpotByName(String(segment.accommodation || ''), allGuideSpots)
+      return Array.from({ length: segment.dayEnd - segment.dayStart + 1 }, (_, index) => [segment.dayStart + index, staySpot])
+    })
+  )
   const guideCoverImage =
     guide.coverImage ||
     linkedSpots.map((spot) => spot.image_url || spot.images?.[0]).find(Boolean) ||
@@ -878,7 +885,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
-        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} /> : <>
+        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} staysByDay={segmentStaysByDay} /> : <>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>
@@ -1002,36 +1009,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     </section>
                   ) : null}
 
-                  {day.staySpot || day.stay ? (
-                    <section aria-label={`Day ${day.dayNumber} 当日住宿`} className="mt-7 border border-sky-200/15 bg-sky-300/[0.055] p-4 md:p-5">
-                      <div className="flex items-center gap-2 text-sky-100/82">
-                        <BedDouble className="h-4 w-4" />
-                        <p className="text-xs font-semibold uppercase tracking-[0.22em]">{isContinuedStay ? '继续入住' : '当日住宿'}</p>
-                      </div>
-                      {day.staySpot ? (
-                        <Link href={buildLocationPath(day.staySpot.name, day.staySpot.id)} className={`group mt-4 grid gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 ${isContinuedStay ? 'grid-cols-[72px_minmax(0,1fr)] items-center' : 'md:grid-cols-[180px_minmax(0,1fr)]'}`}>
-                          <div className={`relative overflow-hidden bg-black/20 ${isContinuedStay ? 'h-16' : 'aspect-[4/3] md:aspect-[3/2]'}`}>
-                            <FallbackImage
-                              src={getSpotCover(day.staySpot)}
-                              alt={`${day.staySpot.name_cn || day.staySpot.name} ${day.staySpot.regions?.name_cn || day.staySpot.regions?.name || ''} 住宿照片`.trim()}
-                              fill
-                              sizes={isContinuedStay ? '72px' : '(max-width: 768px) 100vw, 180px'}
-                              className="object-cover transition duration-500 group-hover:scale-[1.025]"
-                            />
-                          </div>
-                          <div className="min-w-0">
-                            <p className="font-medium text-white">{day.staySpot.name_cn || day.staySpot.name}</p>
-                            <p className="mt-1 text-xs text-white/52">{day.staySpot.regions?.name_cn || day.staySpot.regions?.name || '住宿地点'}</p>
-                            {day.stayNote ? <p className="mt-2 text-sm leading-6 text-white/65">{day.stayNote}</p> : null}
-                            <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-sky-100">查看酒店详情 <ExternalLink className="h-3 w-3" /></span>
-                          </div>
-                        </Link>
-                      ) : (
-                        <div className="mt-3 text-sm leading-7 text-white/78">
-                          <p>{day.stay}</p>
-                          {day.stayNote ? <p className="mt-2 text-white/58">{day.stayNote}</p> : null}
-                        </div>
-                      )}
+                  {day.staySpot || day.stay ? (<>
+                    <GuideDayStayCard dayNumber={day.dayNumber} stay={day.stay} staySpot={day.staySpot} note={day.stayNote} continued={isContinuedStay} />
                       {day.staySpot ? (
                         <AffiliateCard
                           locationId={day.staySpot.id}
@@ -1047,8 +1026,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                           hideHeader
                         />
                       ) : null}
-                    </section>
-                  ) : null}
+                  </>) : null}
 
                   {videoId ? (
                     <section aria-label={`Day ${day.dayNumber} 当日影片`} className="mt-7">

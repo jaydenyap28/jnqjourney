@@ -48,6 +48,7 @@ export interface GuideDayPlan {
 export type GuideItineraryMode = 'daily' | 'segment'
 
 export interface GuideItineraryRoute {
+  dayNumber?: number
   title: string
   summary?: string
   linkedSpots?: string[]
