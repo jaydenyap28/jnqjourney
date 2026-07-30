@@ -53,5 +53,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/packages/:path*', '/guide/:path*'],
+  matcher: ['/packages/:path*', '/guide/china-jiangnan-autumn-15d14n'],
 }
