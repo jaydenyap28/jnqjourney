@@ -26,6 +26,7 @@ import { attractionIdFromPriceSlug, isGuideDayCostPriceHighlight, matchesAttract
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
+import { resolveSegmentSpot, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
 
 // Linked spot cards must reflect a cover change immediately after it is saved.
 export const dynamic = 'force-dynamic'
@@ -448,6 +449,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
       ...guide.days.flatMap((day) => day.linkedSpots || []),
       ...guide.days.flatMap((day) => (day.stay ? [day.stay] : [])),
       ...guide.route.flatMap((stop) => (stop.mapSpotName ? [stop.mapSpotName] : [])),
+      ...(guide.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes.flatMap((route) => route.linkedSpots || [])),
     ])
   )
 
@@ -511,6 +513,16 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const regionSpots = await fetchGuideRegionSpots(supplementalRegionIds)
   const allGuideSpots = Array.from(
     new Map([...linkedSpots, ...regionSpots].map((spot) => [spot.id, spot])).values()
+  )
+  const segmentSpotsBySegment = Object.fromEntries(
+    (guide.itinerarySegments || []).map((segment) => [
+      segment.id,
+      Object.fromEntries(
+        Array.from(new Set(segment.verifiedRoutes.flatMap((route) => route.linkedSpots || [])))
+          .map((name) => [name, resolveSegmentSpot(guide.slug, segment, name, allGuideSpots as GuideSegmentSpot[])])
+          .filter((entry): entry is [string, GuideSegmentSpot] => Boolean(entry[1]))
+      ),
+    ])
   )
   const guideCoverImage =
     guide.coverImage ||
@@ -600,7 +612,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
     }
   })
 
-  const routeMapPoints = routeRegions.flatMap((stop, index) => {
+  const segmentMapPoints = (guide.itinerarySegments || []).flatMap((segment) =>
+    segment.verifiedRoutes.flatMap((route) => (route.linkedSpots || []).map((name) => ({ segment, name })))
+  ).flatMap(({ segment, name }, index) => {
+    const spot = segmentSpotsBySegment[segment.id]?.[name]
+    if (!spot || !Number.isFinite(spot.latitude) || !Number.isFinite(spot.longitude)) return []
+    return [{ id: index + 1, label: spot.name_cn || spot.name, stopLabel: `Day ${segment.dayStart}`, latitude: Number(spot.latitude), longitude: Number(spot.longitude), regionLabel: spot.regions?.name_cn || spot.regions?.name || undefined, dayNumber: segment.dayStart, href: buildLocationPath(spot.name, spot.id), image: spot.image_url || spot.images?.[0] || undefined }]
+  })
+  const routeMapPoints = (isSegmentItinerary ? segmentMapPoints : routeRegions.flatMap((stop, index) => {
     const latitude = typeof stop.latitude === 'number' ? Number(stop.latitude) : null
     const longitude = typeof stop.longitude === 'number' ? Number(stop.longitude) : null
 
@@ -619,7 +638,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         dayNumber: routeStartDay(stop.stopLabel, index + 1),
       },
     ]
-  })
+  }))
 
   const allGuides = await readGuides()
   const relatedGuides = allGuides
@@ -848,7 +867,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
-        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} /> : <>
+        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} /> : <>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>

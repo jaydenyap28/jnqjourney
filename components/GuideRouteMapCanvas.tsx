@@ -1,8 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
 import MapboxMap, { Layer, Marker, NavigationControl, Popup, Source } from 'react-map-gl/mapbox'
 import { trackEvent } from '@/lib/analytics'
+import FallbackImage from '@/components/FallbackImage'
 
 export interface GuideRouteMapPoint {
   id: number
@@ -12,6 +14,8 @@ export interface GuideRouteMapPoint {
   longitude: number
   regionLabel?: string
   dayNumber?: number
+  href?: string
+  image?: string
 }
 
 const routeLineLayer = {
@@ -160,11 +164,10 @@ export default function GuideRouteMapCanvas({
       {showCards ? (
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {mapPoints.map((point, index) => (
-            <div key={`${point.id}-${index}`} className="border-l border-amber-300/35 bg-white/[0.035] px-4 py-3">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-white/45">{point.stopLabel || `Point ${index + 1}`}</p>
-              <p className="mt-2 text-sm font-semibold text-white">{point.label}</p>
-              {point.regionLabel ? <p className="mt-1 text-xs text-white/55">{point.regionLabel}</p> : null}
-            </div>
+            <Link key={`${point.id}-${index}`} href={point.href || '#route-map'} className="group overflow-hidden border-l border-amber-300/35 bg-white/[0.035] transition hover:bg-white/[0.06]">
+              {point.image ? <div className="relative aspect-[16/8] overflow-hidden bg-black/20"><FallbackImage src={point.image} alt={`${point.label} 地点照片`} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.025]" /></div> : null}
+              <div className="px-4 py-3"><p className="text-[11px] uppercase tracking-[0.22em] text-white/45">{point.stopLabel || `Point ${index + 1}`}</p><p className="mt-2 text-sm font-semibold text-white">{point.label}</p>{point.regionLabel ? <p className="mt-1 text-xs text-white/55">{point.regionLabel}</p> : null}</div>
+            </Link>
           ))}
         </div>
       ) : null}
