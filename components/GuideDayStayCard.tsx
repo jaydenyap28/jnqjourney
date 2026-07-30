@@ -4,6 +4,7 @@ import { BedDouble, ExternalLink } from 'lucide-react'
 import FallbackImage from '@/components/FallbackImage'
 import { buildLocationPath } from '@/lib/location-routing'
 import { formatShortText } from '@/lib/short-text'
+import { getGuideSpotCover } from '@/lib/guide-segment-spots'
 
 export interface GuideStaySpot {
   id: number
@@ -15,7 +16,7 @@ export interface GuideStaySpot {
 }
 
 export function getGuideStayCover(stay?: GuideStaySpot | null) {
-  return stay?.image_url || stay?.images?.find(Boolean) || '/placeholder-image.jpg'
+  return getGuideSpotCover(stay)
 }
 
 export default function GuideDayStayCard({

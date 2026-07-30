@@ -145,6 +145,16 @@ export function normalizeGuidePayload(value: any): TravelGuide {
               : [],
             accommodation: String(item?.accommodation || '').trim() || undefined,
             accommodationSpotName: String(item?.accommodationSpotName || '').trim() || undefined,
+            accommodationStays: Array.isArray(item?.accommodationStays)
+              ? item.accommodationStays
+                  .map((stay: any) => ({
+                    dayStart: normalizePositiveNumber(stay?.dayStart),
+                    dayEnd: normalizePositiveNumber(stay?.dayEnd),
+                    accommodationId: normalizePositiveNumber(stay?.accommodationId),
+                    note: String(stay?.note || '').trim() || undefined,
+                  }))
+                  .filter((stay: any) => stay.dayStart && stay.dayEnd && stay.dayEnd >= stay.dayStart && stay.accommodationId)
+              : [],
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
             media: Array.isArray(item?.media) ? item.media.map((media: any) => ({ label: String(media?.label || '').trim(), url: String(media?.url || '').trim() || undefined })).filter((media: any) => media.label) : [],

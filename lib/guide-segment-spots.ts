@@ -36,6 +36,6 @@ export function resolveSegmentSpot(guideSlug: string, segment: GuideItinerarySeg
   return matches.length === 1 ? matches[0] : null
 }
 
-export function getGuideSpotCover(spot?: GuideSegmentSpot | null) {
+export function getGuideSpotCover(spot?: Pick<GuideSegmentSpot, 'image_url' | 'images'> | null) {
   return spot?.image_url || spot?.images?.find(Boolean) || '/placeholder-image.jpg'
 }

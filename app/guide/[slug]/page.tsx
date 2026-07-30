@@ -28,6 +28,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { resolveSegmentSpot, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
+import { formatShortText } from '@/lib/short-text'
 
 // Linked spot cards must reflect a cover change immediately after it is saved.
 export const dynamic = 'force-dynamic'
@@ -389,6 +390,12 @@ function resolveStaySpotByName(stayName: string, allSpots: LinkedSpot[], expecte
   return null
 }
 
+function resolveStaySpotById(accommodationId: number | undefined, allSpots: LinkedSpot[]) {
+  if (!accommodationId) return null
+  const spot = allSpots.find((candidate) => candidate.id === accommodationId)
+  return spot?.category === 'accommodation' ? spot : null
+}
+
 function resolveMatchingRegionSpot(stopName: string, spots: LinkedSpot[]) {
   const normalizedStop = normalizeText(stopName)
   if (!normalizedStop) return null
@@ -534,6 +541,13 @@ export default async function GuideDetailPage({ params }: PageProps) {
   )
   const segmentStaysByDay = Object.fromEntries(
     (guide.itinerarySegments || []).flatMap((segment) => {
+      const exactStays = segment.accommodationStays || []
+      if (exactStays.length) {
+        return exactStays.flatMap((stay) => {
+          const staySpot = resolveStaySpotById(stay.accommodationId, allGuideSpots)
+          return Array.from({ length: stay.dayEnd - stay.dayStart + 1 }, (_, index) => [stay.dayStart + index, staySpot])
+        })
+      }
       const staySpot = resolveStaySpotByName(String(segment.accommodationSpotName || ''), allGuideSpots, segment.city)
       return Array.from({ length: segment.dayEnd - segment.dayStart + 1 }, (_, index) => [segment.dayStart + index, staySpot])
     })
@@ -792,7 +806,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-white/90 md:text-xl md:leading-8">
                   {[guide.duration, guide.travelStyle, '完整攻略'].filter(Boolean).join(' · ')}
                 </p>
-                {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{guide.tagline}</p> : null}
+                {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{formatShortText(guide.tagline)}</p> : null}
                 {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
 
                 <dl className={`mt-6 grid max-w-2xl ${actualSpend || hasLegacyGuideBudget ? 'grid-cols-3' : 'grid-cols-2'} divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3`}>
@@ -1011,7 +1025,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                   {day.transport ? (
                     <section aria-label={`Day ${day.dayNumber} 交通`} className="mt-7 border-l border-white/15 pl-4">
                       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/45">交通</p>
-                      <p className="mt-2 max-w-3xl text-sm leading-7 text-white/75">{day.transport}</p>
+                      <p className="mt-2 max-w-3xl text-sm leading-7 text-white/75">{formatShortText(day.transport)}</p>
                       {day.transportPrice ? <p className="mt-2 text-sm font-medium tabular-nums text-amber-100">{day.transportPrice}</p> : null}
                     </section>
                   ) : null}
@@ -1103,7 +1117,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                   <div className="p-4">
                     <div className="flex items-center gap-2 text-xs text-amber-100/72"><CalendarDays className="h-3.5 w-3.5" />{relatedGuide.duration || '行程参考'}</div>
                     <h3 className="mt-3 text-lg font-semibold leading-6 text-white">{relatedGuide.title}</h3>
-                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/55">{relatedGuide.tagline || relatedGuide.summary}</p>
+                    <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/55">{formatShortText(relatedGuide.tagline || relatedGuide.summary)}</p>
                   </div>
                 </Link>
               ))}

@@ -55,6 +55,14 @@ export interface GuideItineraryRoute {
   status?: 'visited' | 'reference' | 'pending'
 }
 
+export interface GuideItineraryStay {
+  dayStart: number
+  dayEnd: number
+  /** Exact locations.id for the accommodation entity. */
+  accommodationId: number
+  note?: string
+}
+
 export interface GuideItinerarySegment {
   id: string
   dayStart: number
@@ -67,8 +75,10 @@ export interface GuideItinerarySegment {
   verifiedRoutes: GuideItineraryRoute[]
   referenceRoutes?: GuideItineraryRoute[]
   accommodation?: string
-  /** Exact existing accommodation entity name; resolved with the segment city. */
+  /** Legacy display fallback. Complete guides should use accommodationStays. */
   accommodationSpotName?: string
+  /** Exact accommodation entities by day; avoids cross-city name matching. */
+  accommodationStays?: GuideItineraryStay[]
   accommodationNote?: string
   transport?: string
   media?: Array<{ label: string; url?: string }>
