@@ -858,7 +858,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 points={routeMapPoints}
                 guideSlug={guide.slug}
                 theme="dark"
-                showCards={!isSegmentItinerary}
+                mode={isSegmentItinerary ? 'overview' : 'detailed'}
                 className="space-y-4"
                 emptyMessage="这篇攻略目前还没有足够的坐标资料来绘制路线地图；请参考文字路线与每日行程。"
               />

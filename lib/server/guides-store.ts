@@ -55,6 +55,9 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     slug: String(value?.slug || '').trim(),
     aliases: normalizeStringArray(value?.aliases),
     sortDate: String(value?.sortDate || '').trim() || undefined,
+    tripStartDate: String(value?.tripStartDate || '').trim() || undefined,
+    tripEndDate: String(value?.tripEndDate || '').trim() || undefined,
+    publishedAt: String(value?.publishedAt || '').trim() || undefined,
     title: String(value?.title || '').trim(),
     shortTitle: String(value?.shortTitle || '').trim(),
     tagline: String(value?.tagline || '').trim(),
@@ -274,8 +277,10 @@ async function writeStorageGuides(guides: TravelGuide[]) {
 
 function sortGuides(guides: TravelGuide[]) {
   return [...guides].sort((left, right) => {
-    const leftDate = left.sortDate ? Date.parse(left.sortDate) : NaN
-    const rightDate = right.sortDate ? Date.parse(right.sortDate) : NaN
+    // Public ordering follows when a trip happened, not JSON insertion order.
+    // Legacy sortDate is kept only for older records without the new dates.
+    const leftDate = Date.parse(left.tripStartDate || left.publishedAt || left.sortDate || '')
+    const rightDate = Date.parse(right.tripStartDate || right.publishedAt || right.sortDate || '')
     const leftHasDate = Number.isFinite(leftDate)
     const rightHasDate = Number.isFinite(rightDate)
 
@@ -293,7 +298,24 @@ function sortGuides(guides: TravelGuide[]) {
 
 function withPublishedStaticGuides(guides: TravelGuide[]) {
   const merged = new Map(guides.map((guide) => [guide.slug, guide]))
-  merged.set(jiangnanGuideDraft.slug, jiangnanGuideDraft)
+  const savedJiangnan = merged.get(jiangnanGuideDraft.slug)
+  // The editorial draft remains the content source; durable admin edits such
+  // as an approved cover or budget must not be overwritten on every read.
+  merged.set(
+    jiangnanGuideDraft.slug,
+    savedJiangnan
+      ? normalizeGuidePayload({
+          ...jiangnanGuideDraft,
+          coverImage: savedJiangnan.coverImage || jiangnanGuideDraft.coverImage,
+          budget: savedJiangnan.budget || jiangnanGuideDraft.budget,
+          budgetItems: savedJiangnan.budgetItems?.length ? savedJiangnan.budgetItems : jiangnanGuideDraft.budgetItems,
+          budgetScope: savedJiangnan.budgetScope || jiangnanGuideDraft.budgetScope,
+          tripStartDate: savedJiangnan.tripStartDate || jiangnanGuideDraft.tripStartDate,
+          tripEndDate: savedJiangnan.tripEndDate || jiangnanGuideDraft.tripEndDate,
+          publishedAt: savedJiangnan.publishedAt || jiangnanGuideDraft.publishedAt,
+        })
+      : jiangnanGuideDraft
+  )
   return sortGuides(Array.from(merged.values()))
 }
 

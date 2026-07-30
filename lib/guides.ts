@@ -81,6 +81,10 @@ export interface TravelGuide {
   slug: string
   aliases?: string[]
   sortDate?: string
+  /** ISO travel dates drive public guide ordering; management dates are a fallback only. */
+  tripStartDate?: string
+  tripEndDate?: string
+  publishedAt?: string
   title: string
   shortTitle: string
   tagline: string

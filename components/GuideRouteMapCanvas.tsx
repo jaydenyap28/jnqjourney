@@ -37,13 +37,15 @@ export default function GuideRouteMapCanvas({
   className,
   emptyMessage = '先关联带坐标的真实景点，这里就会显示路线地图预览。',
   theme = 'dark',
-  showCards = true,
+  mode = 'detailed',
+  showCards,
   guideSlug,
 }: {
   points: GuideRouteMapPoint[]
   className?: string
   emptyMessage?: string
   theme?: 'dark' | 'light'
+  mode?: 'overview' | 'detailed'
   showCards?: boolean
   guideSlug?: string
 }) {
@@ -161,7 +163,7 @@ export default function GuideRouteMapCanvas({
         </div>
       </div>
 
-      {showCards ? (
+      {(showCards ?? mode === 'detailed') ? (
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {mapPoints.map((point, index) => (
             <Link key={`${point.id}-${index}`} href={point.href || '#route-map'} className="group overflow-hidden border-l border-amber-300/35 bg-white/[0.035] transition hover:bg-white/[0.06]">

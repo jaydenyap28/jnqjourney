@@ -1,6 +1,6 @@
 ﻿'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
   ArrowDown,
@@ -13,6 +13,7 @@ import {
   Save,
   Search,
   Trash2,
+  Upload,
   X,
 } from 'lucide-react'
 
@@ -332,6 +333,8 @@ export default function AdminGuidesPage() {
   const [daySpotSearches, setDaySpotSearches] = useState<Record<number, string>>({})
   const [staySearches, setStaySearches] = useState<Record<number, string>>({})
   const [activeDayEditor, setActiveDayEditor] = useState<number | null>(0)
+  const [coverUploading, setCoverUploading] = useState(false)
+  const coverUploadRef = useRef<HTMLInputElement>(null)
 
   const regions = useMemo(() => {
     return Array.from(
@@ -572,6 +575,34 @@ export default function AdminGuidesPage() {
       ...current,
       [field]: value,
     }))
+  }
+
+  async function uploadGuideCover(file: File) {
+    if (!file) return
+    setCoverUploading(true)
+    setMessage(null)
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      body.append('category', 'guides')
+      body.append('field', 'cover')
+      body.append('target', 'cover')
+      body.append('locationSlug', form.slug || buildGuideSlug(form, regions) || 'guide-cover')
+      const response = await adminFetch('/api/upload/r2', { method: 'POST', body })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result.error || 'Failed to upload guide cover.')
+      const url = result.url || result.items?.[0]?.url || result.files?.[0]?.url
+      if (!url) throw new Error('Upload succeeded but no image URL was returned.')
+      updateField('coverImage', url)
+      setMessage('Guide cover uploaded. Save the guide to publish this binding.')
+      setMessageTone('success')
+    } catch (error: any) {
+      setMessage(error?.message || 'Failed to upload guide cover.')
+      setMessageTone('error')
+    } finally {
+      setCoverUploading(false)
+      if (coverUploadRef.current) coverUploadRef.current.value = ''
+    }
   }
 
   function createNewGuide() {
@@ -1107,6 +1138,14 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                   <Input value={form.duration} onChange={(e) => updateField('duration', e.target.value)} placeholder="11 Days / 10 Nights" />
                 </div>
                 <div className="space-y-2">
+                  <Label>Trip start date</Label>
+                  <Input type="date" value={form.tripStartDate || ''} onChange={(e) => updateField('tripStartDate', e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Trip end date</Label>
+                  <Input type="date" value={form.tripEndDate || ''} onChange={(e) => updateField('tripEndDate', e.target.value)} />
+                </div>
+                <div className="space-y-2">
                   <Label>Budget</Label>
                   <Input value={form.budget} onChange={(e) => updateField('budget', e.target.value)} placeholder="RM 4.3k" />
                 </div>
@@ -1129,9 +1168,31 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                   <Label>Travel Style</Label>
                   <Input value={form.travelStyle} onChange={(e) => updateField('travelStyle', e.target.value)} />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 md:col-span-2">
                   <Label>Cover Image</Label>
-                  <Input value={form.coverImage || ''} onChange={(e) => updateField('coverImage', e.target.value)} />
+                  {form.coverImage ? (
+                    <div className="relative aspect-[16/7] max-w-xl overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                      <FallbackImage src={form.coverImage} alt={`${form.title || 'Guide'} cover preview`} fill sizes="560px" className="object-cover" />
+                    </div>
+                  ) : null}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input
+                      ref={coverUploadRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="sr-only"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0]
+                        if (file) void uploadGuideCover(file)
+                      }}
+                    />
+                    <Button type="button" variant="outline" onClick={() => coverUploadRef.current?.click()} disabled={coverUploading}>
+                      {coverUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                      {coverUploading ? 'Uploading…' : 'Upload to R2'}
+                    </Button>
+                    {form.coverImage ? <Button type="button" variant="ghost" onClick={() => updateField('coverImage', '')}>Clear cover</Button> : null}
+                  </div>
+                  <Input value={form.coverImage || ''} onChange={(e) => updateField('coverImage', e.target.value)} placeholder="Existing R2 image URL" />
                 </div>
                 <div className="space-y-2">
                   <Label>YouTube</Label>

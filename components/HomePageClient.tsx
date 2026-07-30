@@ -162,7 +162,7 @@ function formatGuideTravelStyle(style: string) {
   return style
 }
 
-function getGuideRouteSummary(guide: TravelGuide, limit = 3) {
+function getGuideRouteSummary(guide: TravelGuide, limit = 6) {
   return guide.route
     .map((stop) => stop.name)
     .filter(Boolean)
@@ -186,7 +186,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
       <div className="grid gap-3 md:gap-5 lg:grid-cols-3">
         {visibleGuides.map((guide, index) => {
           const title = getGuideDisplayPair(guide)
-          const route = getGuideRouteSummary(guide, 3)
+          const route = getGuideRouteSummary(guide)
           const coverImage = getGuideCoverImage(guide, locations)
 
           return (
@@ -231,6 +231,11 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
                     <span className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 text-[11px] text-white/82 md:px-3 md:text-xs">
                       {formatGuideTravelStyle(guide.travelStyle)}
                     </span>
+                    {guide.tripStartDate ? (
+                      <span className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 text-[11px] text-white/82 md:px-3 md:text-xs">
+                        {new Intl.DateTimeFormat('en', { month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${guide.tripStartDate}T00:00:00Z`))}
+                      </span>
+                    ) : null}
                     {guide.budget ? (
                       <span className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 text-[11px] text-white/62 md:px-3 md:text-xs">
                         {guide.budget}
