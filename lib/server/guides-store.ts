@@ -2,6 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
+import { canonicalTripCostCategory } from '@/lib/guide-budget'
 import { jiangnanGuideDraft } from '@/lib/guide-drafts'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
@@ -50,6 +51,18 @@ function normalizeCoordinate(value: unknown) {
   return Number.isFinite(parsed) ? parsed : undefined
 }
 
+function normalizeBudgetItems(value: unknown) {
+  if (!Array.isArray(value)) return []
+  const items: TravelGuide['budgetItems'] = []
+  for (const raw of value) {
+    const label = canonicalTripCostCategory(raw?.label)
+    const hasValues = String(raw?.label || '').trim() || String(raw?.amount || '').trim() || String(raw?.note || '').trim()
+    if (!label && hasValues) throw new Error(`Unknown Guide budget category: ${String(raw?.label || '').trim() || '(blank)'}`)
+    if (label) items.push({ label, amount: String(raw?.amount || '').trim(), currency: String(raw?.currency || '').trim() || undefined, note: String(raw?.note || '').trim() || undefined })
+  }
+  return items
+}
+
 export function normalizeGuidePayload(value: any): TravelGuide {
   return {
     slug: String(value?.slug || '').trim(),
@@ -86,16 +99,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     coverImage: String(value?.coverImage || '').trim() || undefined,
     highlightTags: normalizeStringArray(value?.highlightTags),
     heroBullets: normalizeStringArray(value?.heroBullets),
-    budgetItems: Array.isArray(value?.budgetItems)
-      ? value.budgetItems
-          .map((item: any) => ({
-            label: String(item?.label || '').trim(),
-            amount: String(item?.amount || '').trim(),
-            currency: String(item?.currency || '').trim() || undefined,
-            note: String(item?.note || '').trim() || undefined,
-          }))
-          .filter((item: any) => item.label || item.amount || item.note)
-      : [],
+    budgetItems: normalizeBudgetItems(value?.budgetItems),
     days: Array.isArray(value?.days)
       ? value.days
           .map((item: any) => ({

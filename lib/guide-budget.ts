@@ -1,20 +1,18 @@
-export const GUIDE_BUDGET_SCOPES = [
-  'per_person',
-  'per_room',
-  'per_group',
-  'total_trip',
-  'unspecified',
-] as const
+import { GUIDE_TRIP_COST_CATEGORIES } from './guide-trip-cost-categories.ts'
 
+export {
+  GUIDE_TRIP_COST_CATEGORIES,
+  canonicalTripCostCategory,
+  getTripCostCategory,
+  orderedTripCostCategoryEntries,
+  type GuideTripCostCategory,
+  type GuideTripCostCategoryKey,
+} from './guide-trip-cost-categories.ts'
+
+export const GUIDE_BUDGET_SCOPES = ['per_person', 'per_room', 'per_group', 'total_trip', 'unspecified'] as const
 export type GuideBudgetScope = (typeof GUIDE_BUDGET_SCOPES)[number]
 
-export const GUIDE_BUDGET_REVIEW_STATUSES = [
-  'imported',
-  'reviewed',
-  'published',
-  'rejected',
-] as const
-
+export const GUIDE_BUDGET_REVIEW_STATUSES = ['imported', 'reviewed', 'published', 'rejected'] as const
 export type GuideBudgetReviewStatus = (typeof GUIDE_BUDGET_REVIEW_STATUSES)[number]
 
 export interface MoneyBotBudgetSnapshot {
@@ -56,8 +54,7 @@ export interface GuideBudgetSnapshotRecord {
   checksum: string
 }
 
-// Deliberately omits storage and sync identifiers. This is the only actual-spend
-// shape that presentation components are allowed to receive.
+/** The only actual-spend shape available to reader-facing components. */
 export interface GuideBudgetDisplaySnapshot {
   source_project_name: string
   currency: string
@@ -69,44 +66,18 @@ export interface GuideBudgetDisplaySnapshot {
   received_at: string
 }
 
-export const PUBLIC_BUDGET_CATEGORIES = [
-  'Flights',
-  'Transportation',
-  'Accommodation',
-  'Food & Dining',
-  'Tickets & Entrance Fees',
-  'Activities',
-  'Shopping',
-  'Internet & Communication',
-  'Insurance',
-  'Other',
-] as const
-
-export const PUBLIC_BUDGET_CATEGORY_LABELS: Record<string, string> = {
-  Flights: '机票',
-  Transportation: '交通',
-  Accommodation: '住宿',
-  'Food & Dining': '饮食',
-  'Tickets & Entrance Fees': '门票',
-  Activities: '活动',
-  Shopping: '购物',
-  'Internet & Communication': '通讯',
-  Insurance: '保险',
-  Other: '其他',
-}
+export const PUBLIC_BUDGET_CATEGORIES = GUIDE_TRIP_COST_CATEGORIES.map((category) => category.key)
+export const PUBLIC_BUDGET_CATEGORY_LABELS: Record<string, string> = Object.fromEntries(
+  GUIDE_TRIP_COST_CATEGORIES.map((category) => [category.key, category.nameZh])
+)
 
 export function guideBudgetScopeLabel(scope: GuideBudgetScope, travellerCount?: number | null) {
   switch (scope) {
-    case 'per_person':
-      return '每人实际花费'
-    case 'per_room':
-      return '每房实际花费'
-    case 'per_group':
-      return '每组实际花费'
-    case 'total_trip':
-      return travellerCount ? `本次旅程共 ${travellerCount} 人` : '整趟旅程总花费'
-    default:
-      return '实际总支出'
+    case 'per_person': return '每人实际花费'
+    case 'per_room': return '每房实际花费'
+    case 'per_group': return '每组实际花费'
+    case 'total_trip': return travellerCount ? `本次旅程共 ${travellerCount} 人` : '整趟旅程总花费'
+    default: return '实际总支出'
   }
 }
 
@@ -122,11 +93,9 @@ export function divideSnapshotMoney(total: string | number, divisor: number) {
   if (!Number.isInteger(divisor) || divisor <= 0) return null
   const match = String(total).trim().match(/^(-?)(\d+)(?:\.(\d{1,2}))?$/)
   if (!match) return null
-
   const sign = match[1] === '-' ? -1 : 1
   const cents = Number(match[2]) * 100 + Number((match[3] || '').padEnd(2, '0'))
   if (!Number.isSafeInteger(cents)) return null
-  // Round half up in cents without a floating-point conversion.
   const roundedCents = Math.floor((cents * 2 + divisor) / (divisor * 2))
   const absolute = String(roundedCents).padStart(3, '0')
   const formatted = `${absolute.slice(0, -2)}.${absolute.slice(-2)}`

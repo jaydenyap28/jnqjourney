@@ -6,6 +6,20 @@ import type {
   GuideBudgetSnapshotRecord,
   MoneyBotBudgetSnapshot,
 } from '@/lib/guide-budget'
+import { canonicalTripCostCategory } from '@/lib/guide-budget'
+
+function canonicalDisplayCategories(input: Record<string, string>) {
+  const centsByKey = new Map<string, number>()
+  for (const [key, amount] of Object.entries(input || {})) {
+    const canonical = canonicalTripCostCategory(key)
+    if (!canonical) continue
+    const match = String(amount).match(/^(\d+)(?:\.(\d{1,2}))?$/)
+    if (!match) continue
+    const cents = Number(match[1]) * 100 + Number((match[2] || '').padEnd(2, '0'))
+    centsByKey.set(canonical, (centsByKey.get(canonical) || 0) + cents)
+  }
+  return Object.fromEntries([...centsByKey].map(([key, cents]) => [key, `${Math.floor(cents / 100)}.${String(cents % 100).padStart(2, '0')}`]))
+}
 
 function getBudgetAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -21,7 +35,7 @@ function toDisplaySnapshot(value: GuideBudgetSnapshotRecord): GuideBudgetDisplay
     scope: value.scope,
     traveller_count: value.traveller_count,
     total: value.total,
-    categories: value.categories,
+    categories: canonicalDisplayCategories(value.categories),
     transaction_count: value.transaction_count,
     received_at: value.received_at,
   }

@@ -20,6 +20,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type TravelGuide } from '@/lib/guides'
+import { GUIDE_TRIP_COST_CATEGORIES, canonicalTripCostCategory } from '@/lib/guide-budget'
 import FallbackImage from '@/components/FallbackImage'
 import AdminGuideActualSpendPanel from '@/components/AdminGuideActualSpendPanel'
 import { Badge } from '@/components/ui/badge'
@@ -814,7 +815,7 @@ function removeDay(index: number) {
     updateField('budgetItems', [
       ...form.budgetItems,
       {
-        label: '',
+        label: 'Flights',
         amount: '',
         currency: 'RM',
         note: '',
@@ -1427,8 +1428,15 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                       </div>
                       <div className="grid gap-4 md:grid-cols-2">
                         <div className="space-y-2">
-                          <Label>Label</Label>
-                          <Input value={item.label} onChange={(e) => updateBudgetItem(index, { label: e.target.value })} placeholder="机票 / 住宿 / 门票 / 吃喝" />
+                          <Label>Category</Label>
+                          <select
+                            value={canonicalTripCostCategory(item.label) || ''}
+                            onChange={(e) => updateBudgetItem(index, { label: e.target.value })}
+                            className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900"
+                          >
+                            <option value="" disabled>Select category</option>
+                            {GUIDE_TRIP_COST_CATEGORIES.map((category) => <option key={category.key} value={category.key}>{category.nameEn} / {category.nameZh}</option>)}
+                          </select>
                         </div>
                         <div className="space-y-2">
                           <Label>Amount</Label>

@@ -62,6 +62,17 @@ test('rejects unknown fields so private ledger data cannot leak through', () => 
   assert.throws(() => validateMoneyBotSnapshot(snapshot), /Unknown snapshot fields/)
 })
 
+test('canonicalises signed historical category aliases without altering the signed payload', () => {
+  const { checksum: ignored, ...base } = validSnapshot()
+  void ignored
+  const payload = { ...base, categories: { Transport: '50.00', Meals: '100.00' } }
+  const checksum = computeSnapshotChecksum(payload)
+  assert.deepEqual(validateMoneyBotSnapshot({ ...payload, checksum }).categories, {
+    Transportation: '50.00',
+    'Food & Dining': '100.00',
+  })
+})
+
 test('rejects the legacy event selector and full date detail', () => {
   const snapshot = {
     ...validSnapshot(),

@@ -2,7 +2,7 @@ import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 
 import {
   GUIDE_BUDGET_SCOPES,
-  PUBLIC_BUDGET_CATEGORIES,
+  canonicalTripCostCategory,
   type MoneyBotBudgetSnapshot,
 } from '../guide-budget.ts'
 
@@ -127,11 +127,12 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   const categories: Record<string, string> = {}
   let categoryTotal = 0
   for (const [key, amount] of Object.entries(value.categories as Record<string, unknown>)) {
-    if (![...PUBLIC_BUDGET_CATEGORIES, 'unclassified'].includes(key as never)) {
+    const canonicalKey = key === 'unclassified' ? 'unclassified' : canonicalTripCostCategory(key)
+    if (!canonicalKey) {
       throw new BudgetContractError(`Unknown public category: ${key}`)
     }
     const cents = moneyToCents(amount, `categories.${key}`)
-    categories[key] = centsToMoney(cents)
+    categories[canonicalKey] = centsToMoney(moneyToCents(categories[canonicalKey] || '0.00') + cents)
     categoryTotal += cents
   }
   const total = centsToMoney(moneyToCents(value.total, 'total'))
@@ -141,6 +142,9 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   const checksum = cleanText(value.checksum, 'checksum', 64).toLowerCase()
   if (!CHECKSUM.test(checksum)) throw new BudgetContractError('checksum is invalid.')
 
+  const signedCategories = Object.fromEntries(
+    Object.entries(value.categories as Record<string, unknown>).map(([key, amount]) => [key, centsToMoney(moneyToCents(amount, `categories.${key}`))])
+  )
   const normalized: MoneyBotBudgetSnapshot = {
     source: 'moneybot_project',
     source_project_key: sourceProjectKey,
@@ -161,7 +165,10 @@ export function validateMoneyBotSnapshot(input: unknown): MoneyBotBudgetSnapshot
   }
   const { checksum: ignored, ...withoutChecksum } = normalized
   void ignored
-  const expected = computeSnapshotChecksum(withoutChecksum)
+  // Verify the signed wire payload before canonicalising historical aliases.
+  // Canonicalisation is presentation/storage-only and must not invalidate a
+  // correctly signed legacy snapshot.
+  const expected = computeSnapshotChecksum({ ...withoutChecksum, categories: signedCategories })
   if (!safeEqualHex(checksum, expected)) throw new BudgetContractError('checksum does not match the snapshot.')
   return normalized
 }
