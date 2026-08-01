@@ -4,6 +4,8 @@ import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
 import { canonicalTripCostCategory } from '@/lib/guide-budget'
 import { jiangnanGuideDraft } from '@/lib/guide-drafts'
+import staticGuideRecords from '@/data/guides.json'
+import { mergeGuideCollections } from '@/lib/guide-collection'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -290,50 +292,20 @@ async function writeStorageGuides(guides: TravelGuide[]) {
   }
 }
 
-function sortGuides(guides: TravelGuide[]) {
-  return [...guides].sort((left, right) => {
-    // Public ordering follows when a trip happened, not JSON insertion order.
-    // Legacy sortDate is kept only for older records without the new dates.
-    const leftDate = Date.parse(left.tripStartDate || left.publishedAt || left.sortDate || '')
-    const rightDate = Date.parse(right.tripStartDate || right.publishedAt || right.sortDate || '')
-    const leftHasDate = Number.isFinite(leftDate)
-    const rightHasDate = Number.isFinite(rightDate)
-
-    if (leftHasDate && rightHasDate && leftDate !== rightDate) {
-      return rightDate - leftDate
-    }
-
-    if (leftHasDate !== rightHasDate) {
-      return leftHasDate ? -1 : 1
-    }
-
-    return 0
-  })
+function staticCompleteGuides() {
+  return [...staticGuideRecords.map(normalizeGuidePayload), jiangnanGuideDraft]
 }
 
-function withPublishedStaticGuides(guides: TravelGuide[]) {
-  const merged = new Map(guides.map((guide) => [guide.slug, guide]))
-  const savedJiangnan = merged.get(jiangnanGuideDraft.slug)
-  // The editorial draft remains the content source; durable admin edits such
-  // as an approved cover or budget must not be overwritten on every read.
-  merged.set(
-    jiangnanGuideDraft.slug,
-    savedJiangnan
-      ? normalizeGuidePayload({
-          ...jiangnanGuideDraft,
-          // The static draft seeds a newly published guide only. Once an
-          // administrator saves it, Storage is the authoritative record.
-          ...savedJiangnan,
-        })
-      : jiangnanGuideDraft
-  )
-  return sortGuides(Array.from(merged.values()))
-}
-
+/**
+ * Storage is an overlay of administrator changes, never a visibility whitelist.
+ * A persisted record therefore replaces its static counterpart as a whole,
+ * which preserves explicit empty arrays/null-equivalent deletions instead of
+ * reviving them from a static draft.
+ */
 export async function readGuides() {
   const now = Date.now()
   if (cachedGuides && now - lastFetchTime < CACHE_TTL) {
-    return withPublishedStaticGuides(cachedGuides)
+    return mergeGuideCollections(staticCompleteGuides(), cachedGuides)
   }
 
   const storageGuides = await readStorageGuides()
@@ -343,7 +315,7 @@ export async function readGuides() {
     try {
       await writeLocalGuides(storageGuides)
     } catch {}
-    return withPublishedStaticGuides(storageGuides)
+    return mergeGuideCollections(staticCompleteGuides(), storageGuides)
   }
 
   const localGuides = await readLocalGuides()
@@ -351,7 +323,7 @@ export async function readGuides() {
     cachedGuides = localGuides
     lastFetchTime = now
   }
-  return withPublishedStaticGuides(localGuides)
+  return mergeGuideCollections(staticCompleteGuides(), localGuides)
 }
 
 export async function readGuideBySlug(slug: string) {
