@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { TravelGuide } from '@/lib/guides'
-import { canonicalTripCostCategory } from '@/lib/guide-budget'
+import { canonicalGuideBudgetItems, canonicalTripCostCategory, guideBudgetMoneyToCents } from '@/lib/guide-budget'
 import { jiangnanGuideDraft } from '@/lib/guide-drafts'
 import staticGuideRecords from '@/data/guides.json'
 import { mergeGuideCollections } from '@/lib/guide-collection'
@@ -89,7 +89,14 @@ function normalizeGuideAttractions(value: unknown) {
     .filter(Boolean)
 }
 
-export function normalizeGuidePayload(value: any): TravelGuide {
+export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?: boolean } = {}): TravelGuide {
+  const budget = String(value?.budget || '').trim()
+  const budgetItems = normalizeBudgetItems(value?.budgetItems)
+  const declaredBudgetCents = guideBudgetMoneyToCents(budget)
+  const calculatedBudget = canonicalGuideBudgetItems(budgetItems)
+  if (options.enforceBudgetTotal && declaredBudgetCents !== null && calculatedBudget.categories.length && declaredBudgetCents !== calculatedBudget.totalCents) {
+    throw new Error(`Guide budget total (${budget}) does not equal its canonical category total (${calculatedBudget.totalCents} cents).`)
+  }
   return {
     slug: String(value?.slug || '').trim(),
     aliases: normalizeStringArray(value?.aliases),
@@ -102,7 +109,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     tagline: String(value?.tagline || '').trim(),
     summary: String(value?.summary || '').trim(),
     duration: String(value?.duration || '').trim(),
-    budget: String(value?.budget || '').trim(),
+    budget,
     budgetScope: ['per_person', 'per_room', 'per_group', 'total_trip'].includes(String(value?.budgetScope || ''))
       ? value.budgetScope
       : 'unspecified',
@@ -125,7 +132,7 @@ export function normalizeGuidePayload(value: any): TravelGuide {
     coverImage: String(value?.coverImage || '').trim() || undefined,
     highlightTags: normalizeStringArray(value?.highlightTags),
     heroBullets: normalizeStringArray(value?.heroBullets),
-    budgetItems: normalizeBudgetItems(value?.budgetItems),
+    budgetItems,
     days: Array.isArray(value?.days)
       ? value.days
           .map((item: any) => ({
@@ -216,7 +223,7 @@ async function readLocalGuides() {
     const raw = await readFile(guidesFilePath, 'utf8')
     const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
     if (!Array.isArray(parsed)) return []
-    return parsed.map(normalizeGuidePayload).filter((guide) => guide.slug && guide.title)
+    return parsed.map((item: any) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
   } catch {
     return []
   }
@@ -272,7 +279,7 @@ async function readStorageGuides() {
     const parsed = JSON.parse(raw.replace(/^\uFEFF/, ''))
     if (!Array.isArray(parsed)) return []
 
-    return parsed.map(normalizeGuidePayload).filter((guide) => guide.slug && guide.title)
+    return parsed.map((item: any) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
   } catch {
     return null
   }
@@ -320,7 +327,7 @@ async function writeStorageGuides(guides: TravelGuide[]) {
 }
 
 function staticCompleteGuides() {
-  return [...staticGuideRecords.map(normalizeGuidePayload), jiangnanGuideDraft]
+  return [...staticGuideRecords.map((item: any) => normalizeGuidePayload(item)), jiangnanGuideDraft]
 }
 
 /**
@@ -359,7 +366,7 @@ export async function readGuideBySlug(slug: string) {
 }
 
 export async function saveGuides(guides: TravelGuide[]) {
-  const normalized = guides.map(normalizeGuidePayload)
+  const normalized = guides.map((guide) => normalizeGuidePayload(guide))
   try {
     await writeLocalGuides(normalized)
   } catch {}

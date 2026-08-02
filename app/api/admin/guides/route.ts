@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   try {
     const rawPayload = await request.json()
     const previousSlug = String(rawPayload?.previousSlug || '').trim()
-    const payload = normalizeGuidePayload(rawPayload)
+    const payload = normalizeGuidePayload(rawPayload, { enforceBudgetTotal: true })
 
     if (!payload.slug || !payload.title) {
       return NextResponse.json({ error: '攻略至少需要 slug 和标题。' }, { status: 400 })

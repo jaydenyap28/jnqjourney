@@ -22,7 +22,7 @@ import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type GuideAttractionRef, type TravelGuide } from '@/lib/guides'
 import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
 import { buildLocationSlug } from '@/lib/location-routing'
-import { GUIDE_TRIP_COST_CATEGORIES, canonicalTripCostCategory } from '@/lib/guide-budget'
+import { canonicalGuideBudgetItems, formatGuideBudgetCents, GUIDE_TRIP_COST_CATEGORIES, guideBudgetMoneyToCents, canonicalTripCostCategory } from '@/lib/guide-budget'
 import FallbackImage from '@/components/FallbackImage'
 import AdminGuideActualSpendPanel from '@/components/AdminGuideActualSpendPanel'
 import { Badge } from '@/components/ui/badge'
@@ -441,6 +441,12 @@ export default function AdminGuidesPage() {
   const [activeDayEditor, setActiveDayEditor] = useState<number | null>(0)
   const [coverUploading, setCoverUploading] = useState(false)
   const coverUploadRef = useRef<HTMLInputElement>(null)
+
+  const budgetBreakdown = useMemo(() => {
+    const calculated = canonicalGuideBudgetItems(form.budgetItems)
+    const declaredCents = guideBudgetMoneyToCents(form.budget)
+    return { ...calculated, declaredCents, differenceCents: declaredCents === null ? null : declaredCents - calculated.totalCents }
+  }, [form.budget, form.budgetItems])
 
   const regions = useMemo(() => {
     return Array.from(
@@ -924,6 +930,11 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
   }
 
   async function saveGuide() {
+    if (budgetBreakdown.differenceCents !== null && budgetBreakdown.categories.length && budgetBreakdown.differenceCents !== 0) {
+      setMessage(`Budget total differs from canonical categories by ${formatGuideBudgetCents('RM', Math.abs(budgetBreakdown.differenceCents))}.`)
+      setMessageTone('error')
+      return
+    }
     const autoSlug = buildGuideSlug(form, regions)
     const payload: TravelGuide & { previousSlug?: string } = {
       ...form,
@@ -1435,6 +1446,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                     当前总预算会显示在前台预算拆解最上方。<span className="ml-2 font-semibold">{form.budget}</span>
                   </div>
                 ) : null}
+                <div className={`rounded-2xl border px-4 py-4 text-sm ${budgetBreakdown.differenceCents === null || budgetBreakdown.differenceCents === 0 ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-rose-200 bg-rose-50 text-rose-900'}`}>
+                  <div className="font-medium">Canonical category total: {formatGuideBudgetCents('RM', budgetBreakdown.totalCents)}</div>
+                  {budgetBreakdown.differenceCents !== null && budgetBreakdown.differenceCents !== 0 ? <div className="mt-1">Declared total differs by {formatGuideBudgetCents('RM', Math.abs(budgetBreakdown.differenceCents))}. Save is blocked until they match.</div> : null}
+                </div>
                 {(form.budgetScope || 'unspecified') === 'unspecified' ? (
                   <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-900">
                     预算尚未标记为每人、每组或整趟总额，请确认后再标示单位。
