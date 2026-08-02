@@ -27,7 +27,9 @@ import { attractionIdFromPriceSlug, isGuideDayCostPriceHighlight, matchesAttract
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
-import { resolveSegmentSpot, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
+import { guideAttractionMap, resolveGuideAttraction, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
+import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
+import { resolveGuideMedia } from '@/lib/guide-media'
 import { formatShortText } from '@/lib/short-text'
 
 // Linked spot cards must reflect a cover change immediately after it is saved.
@@ -108,6 +110,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     `Plan ${guide.title} with a day-by-day route, linked spots, transport notes${hasBudgetOrStay ? ', stays, budget references' : ''}, photos, and practical travel details from JnQ Journey.`
   )
   const canonicalUrl = buildCanonicalUrl(`/guide/${guide.slug}`)
+  const guideMedia = resolveGuideMedia(guide)
 
   return {
     title: baseTitle,
@@ -115,8 +118,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: canonicalUrl,
     },
-    openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guide.coverImage, 'article'),
-    twitter: buildTwitterCardData(baseTitle, description, guide.coverImage),
+    openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guideMedia.coverImage, 'article'),
+    twitter: buildTwitterCardData(baseTitle, description, guideMedia.coverImage),
   }
 }
 
@@ -209,28 +212,6 @@ async function fetchGuideRegionSpots(regionIds: number[]) {
 
   if (error || !data) return []
   return data as LinkedSpot[]
-}
-
-function resolveSpotByName(name: string, allSpots: LinkedSpot[], spotMap: Map<string, LinkedSpot>) {
-  const exact = spotMap.get(String(name || '').trim().toLowerCase())
-  if (exact) return exact
-
-  const normalized = normalizeText(name)
-  if (!normalized) return null
-
-  for (const spot of allSpots) {
-    if (normalizeText(spot.name) === normalized || normalizeText(spot.name_cn) === normalized) return spot
-  }
-
-  for (const spot of allSpots) {
-    const normalizedName = normalizeText(spot.name)
-    const normalizedNameCn = normalizeText(spot.name_cn)
-    if ((normalizedName && normalizedName.includes(normalized)) || (normalizedNameCn && normalizedNameCn.includes(normalized))) {
-      return spot
-    }
-  }
-
-  return null
 }
 
 async function fetchGuideAffiliateLinks(linkIds: number[]) {
@@ -460,10 +441,10 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const allLinkedNames = Array.from(
     new Set([
       ...(guide.featuredSpotNames || []),
-      ...guide.days.flatMap((day) => day.linkedSpots || []),
+      ...guide.days.flatMap((day) => orderedGuideAttractions(day).map((item) => item.displayName || '')),
       ...guide.days.flatMap((day) => (day.stay ? [day.stay] : [])),
       ...guide.route.flatMap((stop) => (stop.mapSpotName ? [stop.mapSpotName] : [])),
-      ...(guide.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes.flatMap((route) => route.linkedSpots || [])),
+      ...(guide.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes.flatMap((route) => orderedGuideAttractions(route).map((item) => item.displayName || ''))),
       ...(guide.itinerarySegments || []).flatMap((segment) => (segment.accommodationSpotName ? [segment.accommodationSpotName] : [])),
     ])
   )
@@ -532,10 +513,9 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const segmentSpotsBySegment = Object.fromEntries(
     (guide.itinerarySegments || []).map((segment) => [
       segment.id,
-      Object.fromEntries(
-        Array.from(new Set(segment.verifiedRoutes.flatMap((route) => route.linkedSpots || [])))
-          .map((name) => [name, resolveSegmentSpot(guide.slug, segment, name, allGuideSpots as GuideSegmentSpot[])])
-          .filter((entry): entry is [string, GuideSegmentSpot] => Boolean(entry[1]))
+      guideAttractionMap(
+        segment.verifiedRoutes.flatMap((route) => orderedGuideAttractions(route)),
+        allGuideSpots as GuideSegmentSpot[]
       ),
     ])
   )
@@ -552,11 +532,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
       return Array.from({ length: segment.dayEnd - segment.dayStart + 1 }, (_, index) => [segment.dayStart + index, staySpot])
     })
   )
-  const guideCoverImage =
-    guide.coverImage ||
-    linkedSpots.map((spot) => spot.image_url || spot.images?.[0]).find(Boolean) ||
-    regionSpots.map((spot) => spot.image_url || spot.images?.[0]).find(Boolean) ||
-    ''
+  const guideMedia = resolveGuideMedia(guide)
+  const guideCoverImage = guideMedia.coverImage || ''
   const spotMap = new Map(
     allGuideSpots.flatMap((spot) => {
       const entries: Array<[string, LinkedSpot]> = []
@@ -579,24 +556,14 @@ export default async function GuideDetailPage({ params }: PageProps) {
     const stayRawName = String(staySource?.stay || day.stay || '').trim()
     const stayName = stayRawName.toLowerCase()
 
-    const linkedOrder = new Map(
-      (day.linkedSpots || []).map((name, orderIndex) => [String(name || '').trim().toLowerCase(), orderIndex])
-    )
-
-    const orderedSpots = (day.linkedSpots || [])
-      .map((name) => resolveSpotByName(String(name || ''), allGuideSpots, spotMap))
+    const dayAttractions = orderedGuideAttractions(day)
+    const orderedSpots = dayAttractions
+      .map((attraction) => resolveGuideAttraction(attraction, allGuideSpots as GuideSegmentSpot[]))
       .filter((spot): spot is LinkedSpot => Boolean(spot))
 
-    const matchedSpotKeys = new Set(
-      orderedSpots.flatMap((spot) =>
-        [spot.name, spot.name_cn].map((value) => normalizeText(value)).filter(Boolean)
-      )
-    )
-
-    const unresolvedSpotNames = (day.linkedSpots || []).filter((name) => {
-      const normalized = normalizeText(name)
-      return normalized && !matchedSpotKeys.has(normalized)
-    })
+    const unresolvedSpotNames = dayAttractions
+      .filter((attraction) => !resolveGuideAttraction(attraction, allGuideSpots as GuideSegmentSpot[]))
+      .map((attraction) => attraction.displayName || attraction.spotSlug || attractionKey(attraction))
 
     const persistedDate = String(day.date || orderedSpots.find((spot) => spot.visit_date)?.visit_date || '').trim()
     const formattedDate = persistedDate
@@ -644,8 +611,8 @@ export default async function GuideDetailPage({ params }: PageProps) {
   // city-level: detailed Spot cards remain in the itinerary sections below.
   const segmentOverviewMapPoints = (guide.itinerarySegments || []).flatMap((segment, index) => {
     const firstLocatedSpot = segment.verifiedRoutes
-      .flatMap((route) => route.linkedSpots || [])
-      .map((name) => segmentSpotsBySegment[segment.id]?.[name])
+      .flatMap((route) => orderedGuideAttractions(route))
+      .map((attraction) => segmentSpotsBySegment[segment.id]?.[attractionKey(attraction)])
       .find((spot) => spot && Number.isFinite(spot.latitude) && Number.isFinite(spot.longitude))
 
     if (!firstLocatedSpot) return []
@@ -864,6 +831,12 @@ export default async function GuideDetailPage({ params }: PageProps) {
         </div>
       </header>
 
+      {guideMedia.images.length ? (
+        <section className="mx-auto max-w-7xl px-4 pt-8 md:px-8 md:pt-10">
+          <GuideGallery images={guideMedia.images} guideSlug={guide.slug} title="Travel photos / 旅程照片" />
+        </section>
+      ) : null}
+
       <GuideQuickNav
         guideSlug={guide.slug}
         days={isSegmentItinerary ? (guide.itinerarySegments || []).map((segment) => ({ dayNumber: segment.dayStart, title: segment.city })) : datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
@@ -1055,8 +1028,6 @@ export default async function GuideDetailPage({ params }: PageProps) {
                       <GuideVideoCard videoId={videoId} title={day.title} guideSlug={guide.slug} dayNumber={day.dayNumber} />
                     </section>
                   ) : null}
-
-                  {day.gallery.length ? <GuideGallery images={day.gallery} guideSlug={guide.slug} dayNumber={day.dayNumber} /> : null}
 
                   {day.reminder ? (
                     <aside className="mt-6 border-l-2 border-amber-300/40 bg-white/[0.03] px-4 py-3 text-sm leading-7 text-white/68">

@@ -25,6 +25,20 @@ export interface GuideDayImage {
   url: string
   alt: string
   caption?: string
+  assetId?: string
+  r2Key?: string
+}
+
+/** A stable, ordered reference to a public Spot used by a Guide day. */
+export interface GuideAttractionRef {
+  spotId?: number
+  spotSlug?: string
+  displayOrder: number
+  enabled?: boolean
+  displayName?: string
+  guideSummary?: string
+  routeNote?: string
+  tips?: string
 }
 
 export interface GuideDayPlan {
@@ -33,6 +47,7 @@ export interface GuideDayPlan {
   title: string
   summary: string
   highlights: string[]
+  attractions?: GuideAttractionRef[]
   linkedSpots?: string[]
   videoUrl?: string
   transport?: string
@@ -51,6 +66,7 @@ export interface GuideItineraryRoute {
   dayNumber?: number
   title: string
   summary?: string
+  attractions?: GuideAttractionRef[]
   linkedSpots?: string[]
   status?: 'visited' | 'reference' | 'pending'
 }

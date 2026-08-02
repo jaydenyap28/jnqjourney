@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import type { TravelGuide } from '@/lib/guides'
+import { resolveGuideMedia } from '@/lib/guide-media'
 
 export type GuideHeroRouteStop = {
   label: string
@@ -17,6 +18,8 @@ export default function GuideHero({
   guide: TravelGuide
   routeStops: GuideHeroRouteStop[]
 }) {
+  const coverImage = resolveGuideMedia(guide).coverImage
+
   return (
     <header className="border-b border-white/10">
       <div className="mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-8">
@@ -29,7 +32,7 @@ export default function GuideHero({
         </nav>
 
         <div className={`relative isolate overflow-hidden rounded-[24px] border border-white/12 ${guide.coverAccent} md:rounded-[32px]`}>
-          {guide.coverImage ? <FallbackImage src={guide.coverImage} alt={`${guide.title} 完整路线攻略封面`} fill priority sizes="(max-width: 768px) 100vw, 1280px" className="object-cover" /> : null}
+          {coverImage ? <FallbackImage src={coverImage} alt={`${guide.title} 完整路线攻略封面`} fill priority sizes="(max-width: 768px) 100vw, 1280px" className="object-cover" /> : null}
           <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(2,6,18,0.90)_0%,rgba(2,6,18,0.70)_52%,rgba(2,6,18,0.48)_100%)]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(255,255,255,0.12),transparent_30%)]" />
 

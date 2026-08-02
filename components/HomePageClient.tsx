@@ -22,6 +22,7 @@ import { getVisibleLocationTags } from '@/lib/tag-utils'
 import { stripSummaryTokens } from '@/lib/notes'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import type { TravelPackage } from '@/lib/server/travel-packages'
+import { resolveGuideMedia } from '@/lib/guide-media'
 
 interface NoteData {
   slug: string
@@ -113,39 +114,8 @@ function parseRegionCodeTokens(code?: string) {
   )
 }
 
-function normalizeGuideSpotName(value?: string | null) {
-  return String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '')
-}
-
-function getGuideCoverImage(guide: TravelGuide, locations: Location[] = []) {
-  if (guide.coverImage) return guide.coverImage
-
-  const candidateNames = [
-    ...(guide.featuredSpotNames || []),
-    ...guide.route.map((stop) => stop.mapSpotName || stop.name),
-    ...guide.days.flatMap((day) => day.linkedSpots || []),
-  ]
-    .map(normalizeGuideSpotName)
-    .filter(Boolean)
-
-  if (!candidateNames.length) return ''
-
-  const locationByName = new Map<string, Location>()
-  for (const location of locations) {
-    const names = [location.name, location.name_cn].map(normalizeGuideSpotName).filter(Boolean)
-    for (const name of names) locationByName.set(name, location)
-  }
-
-  for (const name of candidateNames) {
-    const location = locationByName.get(name)
-    const image = location?.image_url || location?.images?.[0]
-    if (image) return image
-  }
-
-  return ''
+function getGuideCoverImage(guide: TravelGuide) {
+  return resolveGuideMedia(guide).coverImage || ''
 }
 
 function formatGuideDuration(duration: string) {
@@ -187,7 +157,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
         {visibleGuides.map((guide, index) => {
           const title = getGuideDisplayPair(guide)
           const route = getGuideRouteSummary(guide)
-          const coverImage = getGuideCoverImage(guide, locations)
+          const coverImage = getGuideCoverImage(guide)
 
           return (
             <Link

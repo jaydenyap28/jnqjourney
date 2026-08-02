@@ -65,6 +65,30 @@ function normalizeBudgetItems(value: unknown) {
   return items
 }
 
+function normalizeGuideAttractions(value: unknown) {
+  if (!Array.isArray(value)) return undefined
+  const seen = new Set<string>()
+  return value
+    .map((item: any, index) => {
+      const spotId = normalizePositiveNumber(item?.spotId)
+      const spotSlug = String(item?.spotSlug || '').trim() || undefined
+      const key = spotId ? `id:${spotId}` : spotSlug ? `slug:${spotSlug}` : ''
+      if (!key || seen.has(key)) return null
+      seen.add(key)
+      return {
+        spotId,
+        spotSlug,
+        displayOrder: Number.isFinite(Number(item?.displayOrder)) ? Number(item.displayOrder) : index,
+        enabled: item?.enabled !== false,
+        displayName: String(item?.displayName || '').trim() || undefined,
+        guideSummary: String(item?.guideSummary || '').trim() || undefined,
+        routeNote: String(item?.routeNote || '').trim() || undefined,
+        tips: String(item?.tips || '').trim() || undefined,
+      }
+    })
+    .filter(Boolean)
+}
+
 export function normalizeGuidePayload(value: any): TravelGuide {
   return {
     slug: String(value?.slug || '').trim(),
@@ -110,7 +134,8 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             title: String(item?.title || '').trim(),
             summary: String(item?.summary || '').trim(),
             highlights: normalizeStringArray(item?.highlights),
-            linkedSpots: normalizeStringArray(item?.linkedSpots),
+            attractions: normalizeGuideAttractions(item?.attractions),
+            linkedSpots: Array.isArray(item?.attractions) ? [] : normalizeStringArray(item?.linkedSpots),
             videoUrl: String(item?.videoUrl || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
             transportPrice: String(item?.transportPrice || '').trim() || undefined,
@@ -124,6 +149,8 @@ export function normalizeGuidePayload(value: any): TravelGuide {
                     url: String(image?.url || '').trim(),
                     alt: String(image?.alt || '').trim(),
                     caption: String(image?.caption || '').trim() || undefined,
+                    assetId: String(image?.assetId || image?.asset_id || '').trim() || undefined,
+                    r2Key: String(image?.r2Key || image?.r2_key || '').trim() || undefined,
                   }))
                   .filter((image: any) => image.url && image.alt)
               : [],
@@ -144,10 +171,10 @@ export function normalizeGuidePayload(value: any): TravelGuide {
             title: String(item?.title || '').trim(),
             summary: String(item?.summary || '').trim(),
             verifiedRoutes: Array.isArray(item?.verifiedRoutes)
-              ? item.verifiedRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.verifiedRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             referenceRoutes: Array.isArray(item?.referenceRoutes)
-              ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, linkedSpots: normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             accommodation: String(item?.accommodation || '').trim() || undefined,
             accommodationSpotName: String(item?.accommodationSpotName || '').trim() || undefined,

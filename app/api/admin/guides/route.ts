@@ -2,8 +2,17 @@ import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { normalizeGuidePayload, readGuideBySlug, readGuides, saveGuides } from '@/lib/server/guides-store'
+import { orderedGuideAttractions } from '@/lib/guide-attractions'
 
 export const runtime = 'nodejs'
+
+function guideAttractionSignature(guide: ReturnType<typeof normalizeGuidePayload>) {
+  const days = guide.days.map((day) => orderedGuideAttractions(day).map((item) => [item.spotId || null, item.spotSlug || null, item.displayOrder, item.enabled !== false]))
+  const segments = (guide.itinerarySegments || []).flatMap((segment) =>
+    segment.verifiedRoutes.map((route) => [route.dayNumber || null, orderedGuideAttractions(route).map((item) => [item.spotId || null, item.spotSlug || null, item.displayOrder, item.enabled !== false])])
+  )
+  return JSON.stringify({ days, segments })
+}
 
 export async function GET(request: Request) {
   const adminCheck = await requireAdminRequest(request)
@@ -41,7 +50,7 @@ export async function POST(request: Request) {
 
     await saveGuides(guides)
     const savedGuide = await readGuideBySlug(payload.slug)
-    if (!savedGuide || savedGuide.title !== payload.title) {
+    if (!savedGuide || savedGuide.title !== payload.title || guideAttractionSignature(savedGuide) !== guideAttractionSignature(payload)) {
       return NextResponse.json({ error: 'Guide was not persisted by the authoritative store.' }, { status: 409 })
     }
     revalidatePath('/')

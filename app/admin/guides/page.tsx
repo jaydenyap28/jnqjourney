@@ -19,7 +19,9 @@ import {
 
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
-import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type TravelGuide } from '@/lib/guides'
+import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type GuideAttractionRef, type TravelGuide } from '@/lib/guides'
+import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
+import { buildLocationSlug } from '@/lib/location-routing'
 import { GUIDE_TRIP_COST_CATEGORIES, canonicalTripCostCategory } from '@/lib/guide-budget'
 import FallbackImage from '@/components/FallbackImage'
 import AdminGuideActualSpendPanel from '@/components/AdminGuideActualSpendPanel'
@@ -145,6 +147,24 @@ function linesToArray(value: string) {
     .split(/\r?\n/)
     .map((item) => item.trim())
     .filter(Boolean)
+}
+
+function attractionFromLocation(location: LocationOption, displayOrder: number): GuideAttractionRef {
+  return {
+    spotId: location.id,
+    spotSlug: buildLocationSlug(location.name, location.id),
+    displayOrder,
+    enabled: true,
+    displayName: locationDisplayName(location),
+  }
+}
+
+function migrateLegacyAttractions(day: TravelGuide['days'][number], locations: LocationOption[]) {
+  if (Array.isArray(day.attractions)) return day.attractions
+  return (day.linkedSpots || []).flatMap((name, index) => {
+    const location = locations.find((candidate) => matchesLocationIdentity(candidate, name))
+    return location ? [attractionFromLocation(location, index)] : []
+  })
 }
 
 function galleryToLines(value?: TravelGuide['days'][number]['gallery']) {
@@ -295,7 +315,7 @@ function buildGuideDaysFromVisitDates(locations: LocationOption[], routeNames: s
       title: firstRegion || formatVisitDate(date) || `Day ${index + 1}`,
       summary: '',
       highlights: [],
-      linkedSpots: ordered.filter((spot) => spot.category !== 'accommodation').map((spot) => locationDisplayName(spot)),
+      attractions: ordered.filter((spot) => spot.category !== 'accommodation').map(attractionFromLocation),
       videoUrl: '',
       transport: '',
       transportPrice: '',
@@ -324,7 +344,12 @@ function segmentDaysForEditor(guide: TravelGuide, locations: LocationOption[] = 
           title: route.title,
           summary: route.summary || '',
           highlights: [],
-          linkedSpots: route.linkedSpots || [],
+          attractions: Array.isArray(route.attractions)
+            ? route.attractions
+            : (route.linkedSpots || []).flatMap((name, index) => {
+                const location = locations.find((candidate) => matchesLocationIdentity(candidate, name))
+                return location ? [attractionFromLocation(location, index)] : []
+              }),
           transport: dayNumber === segment.dayStart ? segment.transport : undefined,
           // An explicit empty array means an admin deleted the stay. It must not
           // fall back to the legacy static display value.
@@ -367,7 +392,7 @@ function applyEditorDaysToSegments(guide: TravelGuide, days: TravelGuide['days']
       ...segment,
       verifiedRoutes: segment.verifiedRoutes.map((route) => {
       const day = typeof route.dayNumber === 'number' ? byDay.get(route.dayNumber) : null
-      return day ? { ...route, title: day.title, summary: day.summary, linkedSpots: day.linkedSpots || [] } : route
+      return day ? { ...route, title: day.title, summary: day.summary, attractions: orderedGuideAttractions(day), linkedSpots: [] } : route
       }),
       // Every save writes the exact per-day stay state. In particular, [] is a
       // durable deletion marker and prevents legacy seed data from returning.
@@ -780,7 +805,7 @@ export default function AdminGuidesPage() {
         title: '',
         summary: '',
         highlights: [],
-        linkedSpots: [],
+        attractions: [],
         videoUrl: '',
         transport: '',
         transportPrice: '',
@@ -834,25 +859,30 @@ function removeDay(index: number) {
     )
   }
 
-function toggleDayLinkedSpot(dayIndex: number, spotName: string) {
-  const current = form.days[dayIndex]?.linkedSpots || []
-  const exists = current.includes(spotName)
+function toggleDayLinkedSpot(dayIndex: number, location: LocationOption) {
+  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
+  const key = attractionKey(attractionFromLocation(location, 0))
+  const exists = current.some((item) => attractionKey(item) === key)
   updateDay(dayIndex, {
-      linkedSpots: exists ? current.filter((item) => item !== spotName) : [spotName, ...current],
+      attractions: (exists ? current.filter((item) => attractionKey(item) !== key) : [...current, attractionFromLocation(location, current.length)])
+        .map((item, displayOrder) => ({ ...item, displayOrder })),
+      linkedSpots: [],
   })
 }
 
 function moveDayLinkedSpot(dayIndex: number, spotIndex: number, direction: 'up' | 'down') {
-  const current = form.days[dayIndex]?.linkedSpots || []
+  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
   updateDay(dayIndex, {
-    linkedSpots: moveArrayItem(current, spotIndex, direction),
+    attractions: moveArrayItem(current, spotIndex, direction).map((item, displayOrder) => ({ ...item, displayOrder })),
+    linkedSpots: [],
   })
 }
 
 function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'start' | 'end') {
-  const current = form.days[dayIndex]?.linkedSpots || []
+  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
   updateDay(dayIndex, {
-    linkedSpots: moveArrayItemToEdge(current, spotIndex, edge),
+    attractions: moveArrayItemToEdge(current, spotIndex, edge).map((item, displayOrder) => ({ ...item, displayOrder })),
+    linkedSpots: [],
   })
 }
 
@@ -917,7 +947,8 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
           title: String(day.title || '').trim(),
           summary: String(day.summary || '').trim(),
           highlights: Array.isArray(day.highlights) ? day.highlights.filter(Boolean) : [],
-          linkedSpots: Array.isArray(day.linkedSpots) ? day.linkedSpots.filter(Boolean) : [],
+          attractions: migrateLegacyAttractions(day, locations).map((item, displayOrder) => ({ ...item, displayOrder })),
+          linkedSpots: [],
           videoUrl: String(day.videoUrl || '').trim() || undefined,
           transport: String(day.transport || '').trim() || undefined,
           transportPrice: String(day.transportPrice || '').trim() || undefined,
@@ -1495,10 +1526,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 ) : null}
                 {form.days.length ? (
                   form.days.map((day, index) => {
-                    const linkedSpots = day.linkedSpots || []
+                    const linkedSpots = migrateLegacyAttractions(day, locations)
                     const isEditorOpen = activeDayEditor === index
                     const dayQuery = String(daySpotSearches[index] || '').trim()
-                    const linkedSpotNameSet = new Set(linkedSpots.map((item) => item.trim().toLowerCase()))
+                    const linkedSpotIdSet = new Set(linkedSpots.map((item) => item.spotId).filter((item): item is number => typeof item === 'number'))
                     const visibleCandidates = !isEditorOpen
                       ? []
                       : locations
@@ -1517,8 +1548,8 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                             )
                           })
                           .sort((left, right) => {
-                            const leftSelected = linkedSpotNameSet.has(locationDisplayName(left).trim().toLowerCase()) ? 1 : 0
-                            const rightSelected = linkedSpotNameSet.has(locationDisplayName(right).trim().toLowerCase()) ? 1 : 0
+                            const leftSelected = linkedSpotIdSet.has(left.id) ? 1 : 0
+                            const rightSelected = linkedSpotIdSet.has(right.id) ? 1 : 0
                             if (leftSelected !== rightSelected) return rightSelected - leftSelected
                             const leftPreferred = isPreferredRouteLocation(left) ? 1 : 0
                             const rightPreferred = isPreferredRouteLocation(right) ? 1 : 0
@@ -1566,7 +1597,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                     const completenessIssues = [
                       !day.date ? '缺日期' : '',
                       !day.summary ? '缺少每日介绍' : '',
-                      !(day.linkedSpots || []).length ? '缺地点' : '',
+                      !linkedSpots.length ? '缺地点' : '',
                       day.gallery?.some((image) => !image.alt) ? '图集缺 alt' : '',
                     ].filter(Boolean)
 
@@ -1635,13 +1666,13 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                                   {visibleCandidates.length ? (
                                     visibleCandidates.map((location) => {
                                       const spotName = locationDisplayName(location)
-                                      const checked = linkedSpots.includes(spotName)
+                                      const checked = linkedSpotIdSet.has(location.id)
                                       const altName = locationAltName(location)
                                       return (
                                         <button
                                           key={`${location.id}-${index}`}
                                           type="button"
-                                          onClick={() => toggleDayLinkedSpot(index, spotName)}
+                                          onClick={() => toggleDayLinkedSpot(index, location)}
                                           className={`flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left transition ${
                                             checked
                                               ? 'border-sky-300/40 bg-sky-300/10 text-sky-50'
@@ -1674,9 +1705,9 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                               <div className="space-y-2">
                                 <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Selected for this day</div>
                                 <div className="flex flex-wrap gap-2">
-                                  {linkedSpots.map((spotName, spotIndex) => (
-                                    <div key={`${spotName}-${spotIndex}`} className="flex items-center gap-1 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-sm text-sky-50">
-                                      <span>{spotName}</span>
+                                  {linkedSpots.map((spot, spotIndex) => (
+                                    <div key={`${attractionKey(spot)}-${spotIndex}`} className="flex items-center gap-1 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-sm text-sky-50">
+                                      <span>{spot.displayName || locations.find((location) => location.id === spot.spotId)?.name_cn || locations.find((location) => location.id === spot.spotId)?.name || 'Spot'}</span>
                                       <button type="button" onClick={() => moveDayLinkedSpotToEdge(index, spotIndex, 'start')} className="rounded-full px-1.5 py-1 text-[11px] font-medium hover:bg-sky-100" title="Move to top">
                                         Top
                                       </button>
@@ -1689,7 +1720,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                                       <button type="button" onClick={() => moveDayLinkedSpotToEdge(index, spotIndex, 'end')} className="rounded-full px-1.5 py-1 text-[11px] font-medium hover:bg-sky-100" title="Move to bottom">
                                         Bottom
                                       </button>
-                                      <button type="button" onClick={() => toggleDayLinkedSpot(index, spotName)} className="rounded-full p-1 hover:bg-sky-100" title="Remove">
+                                      <button type="button" onClick={() => { const location = locations.find((item) => item.id === spot.spotId); if (location) toggleDayLinkedSpot(index, location) }} className="rounded-full p-1 hover:bg-sky-100" title="Remove">
                                         <X className="h-3 w-3" />
                                       </button>
                                     </div>
