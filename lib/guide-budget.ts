@@ -125,6 +125,14 @@ export interface CanonicalGuideBudgetItem {
   note?: string
 }
 
+export type PublicGuideTripCostSource = 'published_actual' | 'guide_budget' | 'hidden'
+
+export interface PublicGuideTripCost {
+  source: PublicGuideTripCostSource
+  categories: CanonicalGuideBudgetItem[]
+  totalCents: number
+}
+
 export function canonicalGuideBudgetItems(items: Array<{ label: string; amount: string; note?: string }>) {
   const merged = new Map<GuideTripCostCategoryKey, { amountCents: number; notes: string[] }>()
   for (const item of items || []) {
@@ -145,6 +153,24 @@ export function canonicalGuideBudgetItems(items: Array<{ label: string; amount: 
   )
   const categories: CanonicalGuideBudgetItem[] = ordered.map((item) => ({ key: item.key as GuideTripCostCategoryKey, label: item.label, amountCents: item.amount, note: item.note }))
   return { categories, totalCents: categories.reduce((total, item) => total + item.amountCents, 0) }
+}
+
+/**
+ * Reader-facing Trip Cost has one precedence rule: a published actual-spend
+ * snapshot always wins over the Guide's saved/static estimate.
+ */
+export function resolvePublicGuideTripCost(
+  actualSpend: Pick<GuideBudgetDisplaySnapshot, 'categories'> | null,
+  guideBudgetItems: Array<{ label: string; amount: string; note?: string }>
+): PublicGuideTripCost {
+  const source: Exclude<PublicGuideTripCostSource, 'hidden'> = actualSpend ? 'published_actual' : 'guide_budget'
+  const sourceItems = actualSpend
+    ? Object.entries(actualSpend.categories).map(([label, amount]) => ({ label, amount }))
+    : guideBudgetItems
+  const canonical = canonicalGuideBudgetItems(sourceItems)
+  return canonical.categories.length
+    ? { source, ...canonical }
+    : { source: 'hidden', categories: [], totalCents: 0 }
 }
 
 export function divideSnapshotMoney(total: string | number, divisor: number) {

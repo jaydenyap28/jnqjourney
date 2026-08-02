@@ -22,7 +22,7 @@ import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
 import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
-import { formatSnapshotMoney } from '@/lib/guide-budget'
+import { formatSnapshotMoney, resolvePublicGuideTripCost } from '@/lib/guide-budget'
 import { attractionIdFromPriceSlug, isGuideDayCostPriceHighlight, matchesAttractionPriceHighlight } from '@/lib/guide-price-highlights'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -431,10 +431,11 @@ export default async function GuideDetailPage({ params }: PageProps) {
         received_at: actualSpend.received_at,
       }
     : null
+  const publicTripCost = resolvePublicGuideTripCost(publicActualSpend, guide.budgetItems)
   // Keep the legacy estimate out of the client/RSC payload once a published
   // actual-spend snapshot takes precedence. The canonical Guide record remains
   // unchanged in storage for history and for routes without actual spend.
-  const budgetGuide = actualSpend
+  const budgetGuide = publicTripCost.source === 'published_actual'
     ? { budget: '', budgetItems: [], budgetScope: 'unspecified' as const }
     : { budget: guide.budget, budgetItems: guide.budgetItems, budgetScope: guide.budgetScope }
 
