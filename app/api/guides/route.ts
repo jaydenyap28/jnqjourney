@@ -3,7 +3,7 @@ import { readGuides } from '@/lib/server/guides-store'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 0
 
 export async function GET() {
   const guides = await readGuides()
@@ -11,7 +11,9 @@ export async function GET() {
     { guides },
     {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=300',
+        // Guide edits are administered from the same authoritative storage;
+        // caching this response can otherwise expose an older day ordering.
+        'Cache-Control': 'private, no-store, max-age=0',
       },
     }
   )
