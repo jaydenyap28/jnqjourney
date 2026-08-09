@@ -8,8 +8,7 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 3600
 export const metadata: Metadata = {
   title: '旅游配套',
   description: '查看 JnQ Journey 已发布的旅游配套，并通过 WhatsApp 查询日期与最新价格。',

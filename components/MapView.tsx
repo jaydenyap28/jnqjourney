@@ -2,26 +2,11 @@
 
 import React, { forwardRef } from 'react'
 import Map, { Marker, MapRef, NavigationControl } from 'react-map-gl/mapbox'
-
-interface Location {
-  id: number
-  name: string
-  name_cn?: string
-  category?: string
-  latitude: number
-  longitude: number
-  review?: string
-  visit_date?: string
-  video_url?: string
-  image_url?: string
-  images?: string[]
-  tags?: string[]
-  opening_hours?: string
-}
+import type { PublicLocation } from '@/lib/public-data'
 
 interface MapViewProps {
-  locations: Location[]
-  onSelectLocation: (location: Location) => void
+  locations: PublicLocation[]
+  onSelectLocation: (location: PublicLocation) => void
   className?: string
   flyToLocation?: { latitude: number; longitude: number; zoom?: number } | null
 }

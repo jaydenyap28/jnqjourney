@@ -3,6 +3,7 @@ import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
 
 export interface LocationSummary {
   id: number
@@ -63,7 +64,7 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   return 2 * earthRadiusKm * Math.asin(Math.sqrt(a))
 }
 
-export async function fetchLocationBySlug(slug: string) {
+export const fetchLocationBySlug = cache(async (slug: string) => {
   const locationId = extractLocationIdFromSlug(slug)
   if (!locationId) return null
 
@@ -71,7 +72,8 @@ export async function fetchLocationBySlug(slug: string) {
   const { data, error } = await supabase
     .from('locations')
     .select(`
-      *,
+      id,name,name_cn,category,latitude,longitude,image_url,images,description,review,tags,
+      video_url,facebook_video_url,visit_date,opening_hours,price_info,address,region_id,
       regions:region_id (
         id,
         name,
@@ -82,11 +84,12 @@ export async function fetchLocationBySlug(slug: string) {
       )
     `)
     .eq('id', locationId)
+    .eq('status', 'active')
     .single()
 
   if (error || !data) return null
-  return data as PublicLocationRecord
-}
+  return data as unknown as PublicLocationRecord
+})
 
 export async function fetchRelatedLocations(location: PublicLocationRecord, limit = 6) {
   if (!location.region_id) return []
@@ -109,11 +112,15 @@ export async function fetchRelatedLocations(location: PublicLocationRecord, limi
     `)
     .neq('id', location.id)
     .eq('region_id', location.region_id)
+    .eq('status', 'active')
+    .not('latitude', 'is', null)
+    .not('longitude', 'is', null)
     .limit(24)
 
   if (error || !data) return []
 
   const sameRegion = (data as LocationSummary[])
+    .filter((item) => Number.isFinite(Number(item.latitude)) && Number.isFinite(Number(item.longitude)))
     .map((item) => ({
       ...item,
       distanceKm: haversineKm(location.latitude, location.longitude, item.latitude, item.longitude),
@@ -126,107 +133,80 @@ export async function fetchRelatedLocations(location: PublicLocationRecord, limi
 
 export async function fetchRegionBySlug(slug: string) {
   const regionId = extractRegionIdFromSlug(slug)
-
-  const supabase = createPublicSupabaseClient()
-  let query = supabase
-    .from('regions')
-    .select('id,name,name_cn,country,description,image_url,parent_id')
-  query = regionId ? query.eq('id', regionId) : query.eq('slug', String(slug || '').trim())
-  const { data, error } = await query.single()
-
-  if (error || !data) return null
-  return data as RegionRecord
+  const { regions } = await resolvePublicData()
+  const region = regions.find((item) => regionId ? item.id === regionId : item.slug === String(slug || '').trim())
+  if (!region) return null
+  return {
+    id: region.id,
+    name: region.name,
+    country: region.country,
+    description: region.shortSummary,
+    image_url: region.thumbnail,
+    parent_id: region.parentId,
+  } as RegionRecord
 }
 
 export async function fetchLocationsByRegion(regionId: number, limit = 60) {
-  const supabase = createPublicSupabaseClient()
-  const { data: regionRows } = await supabase
-    .from('regions')
-    .select('id,parent_id')
-    .order('id', { ascending: true })
-
+  const { locations, regions } = await resolvePublicData()
   const regionIds = new Set<number>([regionId])
   const queue = [regionId]
-  const allRegions = (regionRows || []) as Array<{ id: number; parent_id?: number | null }>
+  const allRegions = regions
 
   while (queue.length) {
     const current = queue.shift()
     if (!current) continue
     for (const region of allRegions) {
-      if (region.parent_id === current && !regionIds.has(region.id)) {
+      if (region.parentId === current && !regionIds.has(region.id)) {
         regionIds.add(region.id)
         queue.push(region.id)
       }
     }
   }
 
-  const { data, error } = await supabase
-    .from('locations')
-    .select(`
-      id,
-      name,
-      name_cn,
-      category,
-      latitude,
-      longitude,
-      image_url,
-      images,
-      description,
-      review,
-      tags,
-      visit_date
-    `)
-    .in('region_id', [...regionIds])
-    .order('id', { ascending: false })
-    .limit(limit)
-
-  if (error || !data) return []
-  return data as LocationSummary[]
+  return locations
+    .filter((location) => location.region?.id && regionIds.has(location.region.id))
+    .slice(0, limit)
+    .map((location) => ({
+      id: location.id,
+      name: location.name,
+      category: location.category,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      image_url: location.thumbnail,
+      description: location.shortSummary,
+    })) as LocationSummary[]
 }
 
 export const fetchTopRegions = unstable_cache(
   async (limit = 80) => {
-    const supabase = createPublicSupabaseClient()
-    const { data, error } = await supabase
-      .from('regions')
-      .select('id,name,name_cn,country,description,image_url,parent_id')
-      .order('name', { ascending: true })
-      .limit(limit)
-
-    if (error || !data) return []
-    const rows = data as Array<RegionRecord & { parent_id?: number | null }>
+    const { regions } = await resolvePublicData()
+    const rows = regions.map((region) => ({
+      id: region.id,
+      name: region.name,
+      country: region.country,
+      description: region.shortSummary,
+      image_url: region.thumbnail,
+      parent_id: region.parentId,
+    })) as Array<RegionRecord & { parent_id?: number | null }>
     const parentIds = new Set(
       rows
         .map((region) => region.parent_id)
         .filter((value): value is number => typeof value === 'number')
     )
-    return rows.filter((region) => !parentIds.has(region.id))
+    return rows.filter((region) => !parentIds.has(region.id)).slice(0, limit)
   },
   ['top-regions'],
   { revalidate: 3600, tags: ['regions'] }
 )
 
 export async function fetchAllLocationsForSitemap() {
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('locations')
-    .select('id,name,updated_at')
-    .order('id', { ascending: false })
-
-  if (error || !data) return []
-  return data as Array<{ id: number; name: string; updated_at?: string | null }>
+  const { locations } = await resolvePublicData()
+  return locations.map((location) => ({ id: location.id, name: location.name, updated_at: undefined as string | undefined }))
 }
 
 export async function fetchAllRegionsForSitemap() {
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('regions')
-    .select('id,name,updated_at,parent_id')
-    .is('parent_id', null)
-    .order('name', { ascending: true })
-
-  if (error || !data) return []
-  return data as Array<{ id: number; name: string; updated_at?: string | null; parent_id?: number | null }>
+  const { regions } = await resolvePublicData()
+  return regions.filter((region) => !region.parentId).map((region) => ({ id: region.id, name: region.name, updated_at: undefined as string | undefined, parent_id: region.parentId }))
 }
 
 

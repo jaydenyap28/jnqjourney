@@ -1,0 +1,569 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "type": "supabase-direct-read",
+    "generatedAt": "2026-08-09T12:25:35.284Z"
+  },
+  "regions": [
+    {
+      "id": 1,
+      "slug": "johor-1",
+      "name": "柔佛 / Johor",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/9kBMyx34/Pantai-Batu-Layar6.webp#focus=50,50",
+      "shortSummary": "柔佛位于马来西亚半岛南部，与新加坡相邻，以城市与海边度假兼具的旅游体验闻名 这里有新山的城市生活、迪沙鲁海岸的度假海滩，以及乐高乐园等亲子景点，同时也有丰富的美食选择 适合周末短途、亲子旅行与轻松度假 Johor is located in southern Peninsular Malaysia, next to Singapore, offering a",
+      "parentId": null,
+      "code": "JHR"
+    },
+    {
+      "id": 2,
+      "slug": "kuala-lumpur-2",
+      "name": "吉隆坡 / Kuala Lumpur",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/57zKyRw/4.webp#focus=50,50",
+      "shortSummary": "吉隆坡是马来西亚首都，以现代城市景观与多元文化融合闻名 这里有双子塔、黑风洞、吉隆坡塔等地标，也能在武吉免登感受购物与夜生活氛围 适合城市观光、美食探索与购物旅行 Kuala Lumpur is the capital of Malaysia, known for its modern skyline and multicultural atmosphere",
+      "parentId": null,
+      "code": "KUL"
+    },
+    {
+      "id": 3,
+      "slug": "penang-3",
+      "name": "槟城 / Penang",
+      "country": "Malaysia",
+      "thumbnail": null,
+      "shortSummary": "槟城是马来西亚最具文化与美食代表性的目的地之一 乔治市以世界遗产古城与街头壁画闻名，同时汇集多元文化与丰富在地美食，如炒粿条、槟城叻沙等 适合美食探索、文化体验与城市漫游 Penang is one of Malaysia’s top destinations, known for its culture and food George Town is fa",
+      "parentId": null,
+      "code": "PNG"
+    },
+    {
+      "id": 8,
+      "slug": "pontian-8",
+      "name": "笨珍 / Pontian",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/Zw9qXt0/Tanjung-Piai1.webp#focus=50,50",
+      "shortSummary": "笨珍位于柔佛西海岸，是一个以渔村文化与海鲜闻名的小镇，也是亚洲大陆最南端所在地——丹绒比艾（Tanjung Piai） 这里可以走进红树林步道，打卡“亚洲最南端”地标，看海边日落，同时也能品尝新鲜海鲜与在地风味 适合打卡地标、自然探索与周末轻松旅行 Pontian is a coastal town on the west coast of Johor, k",
+      "parentId": 1,
+      "code": "PTN"
+    },
+    {
+      "id": 9,
+      "slug": "pahang-9",
+      "name": "彭亨 / Pahang",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-01/1775023284843-3496c6eb-06bf-4bba-9e1d-3ce73a5383fa-641531996_1441422317622197_7860114950956538680_n-watermark.webp",
+      "shortSummary": "彭亨是马来西亚面积最大的州之一，以多样的自然景观与度假体验闻名。 这里有清凉的金马仑高原、原始雨林国家公园，以及云顶高原的娱乐与夜景，还有热门海岛刁曼岛。山林、海岛与度假元素兼具，是非常全面的旅游目的地。 适合自然探索、避暑度假与多样玩法旅行。 Pahang is the largest state in Peninsular Malaysia, known",
+      "parentId": null,
+      "code": "PHG"
+    },
+    {
+      "id": 10,
+      "slug": "bentong-10",
+      "name": "文冬 / Bentong",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/gL0hkWXb/12.webp#focus=50,50",
+      "shortSummary": "文冬是位于彭亨州的一个小镇，距离吉隆坡约1小时车程，以自然风光与榴莲闻名。 这里可以探访情人桥、直落加蒙瀑布（Chamang Waterfall），或前往加叻与Janda Baik一带享受山林与河流的宁静环境。榴莲季期间，更是品尝猫山王的热门地点。 适合周末短途、亲近自然与美食体验。 Bentong is a small town in Pahang, ab",
+      "parentId": 9,
+      "code": "BTG"
+    },
+    {
+      "id": 11,
+      "slug": "muar-11",
+      "name": "麻坡 / Muar",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-31/1774941651234-47330b27-2189-4f89-a1d9-7ffee63176f8-3-28-13--watermarked.webp",
+      "shortSummary": "麻坡位于柔佛西部，是一个充满文艺气息与美食文化的小城，也被称为“文化之都” 这里可以漫步老街欣赏壁画，感受复古咖啡店氛围，同时也以乌达（Otak-otak）等在地美食闻名 适合美食探索、轻松漫游与周末小旅行 Muar is a charming town in western Johor, known for its culture, street art,",
+      "parentId": 1,
+      "code": "MUR"
+    },
+    {
+      "id": 14,
+      "slug": "yong-peng-14",
+      "name": "永平 / Yong Peng",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/4RNbGRK5/1.webp#focus=50,50",
+      "shortSummary": "永平位于柔佛中部，是南北大道沿线的重要小镇，以美食与华人文化闻名 这里有大型华人庙宇与大佛地标，也以鸭面、鱼圆等在地美食吸引不少旅客停留 适合中途休息、美食打卡与短暂停留 Yong Peng is a town in central Johor along the North-South Highway, known for its food and Chi",
+      "parentId": 1,
+      "code": "YPG"
+    },
+    {
+      "id": 15,
+      "slug": "batu-pahat-15",
+      "name": "峇株吧辖 / Batu Pahat",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/QFLpcbtX/1.webp#focus=50,50",
+      "shortSummary": "峇株吧辖位于柔佛西部，是一个节奏悠闲的海边小城，也被称为“神庙之乡” 这里拥有众多华人庙宇，文化氛围浓厚，可以一边探索在地信仰文化，一边在海滨广场散步或前往米纳油海滩（Pantai Minyak Beku）看海 适合文化探索、周末放松与轻松旅行 Batu Pahat is a laid-back coastal town in western Johor, ",
+      "parentId": 1,
+      "code": "BPH"
+    },
+    {
+      "id": 19,
+      "slug": "kuantan-19",
+      "name": "关丹 / Kuantan",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-01/1775007610033-ae4992ff-def7-429c-9705-338d5908f775-3-31-3--kolong-pahat-hanging-bridge.webp",
+      "shortSummary": "关丹是彭亨州首府，位于马来西亚东海岸，以海滩、瀑布与悠闲氛围著称。 热门景点包括直落尖不叻海滩（Teluk Cempedak）、双溪班丹瀑布，以及适合风筝冲浪的巴洛海滩。这里节奏轻松，适合放松度假与自然体验。 适合海边度假、轻松旅行与周边探索。 Kuantan is the capital of Pahang, located on Malaysia’s e",
+      "parentId": 9,
+      "code": "KTN"
+    },
+    {
+      "id": 23,
+      "slug": "terengganu-23",
+      "name": "登嘉楼 / Terengganu",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-30/1774857489816-62e10b06-4bff-4e56-b0ce-5f706fbe71bc-3-30-6--watermarked.webp",
+      "shortSummary": "登嘉楼位于马来西亚东海岸，以清澈海岛与马来传统文化闻名 这里有热浪岛、停泊岛等世界级海岛，也能参观水晶清真寺，感受悠闲与纯净的度假氛围 适合海岛度假、浮潜潜水与放松旅行 Terengganu is located on the east coast of Malaysia, known for its pristine islands and Malay c",
+      "parentId": null,
+      "code": "TRG"
+    },
+    {
+      "id": 27,
+      "slug": "kelantan-27",
+      "name": "吉兰丹 / Kelantan",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-29/1774772363034-1dc0c8e0-668b-4efb-9026-4947f4b03c4d-3-28-8.webp",
+      "shortSummary": "吉兰丹位于马来西亚东海岸，以传统马来文化与独特在地风情闻名 这里可以在哥打峇鲁体验热闹市集，欣赏传统风筝（Wau Bulan）、皮影戏等文化，也能前往海边或探访特色寺庙 适合文化体验、在地探索与不一样的东海岸旅行 Kelantan is located on the east coast of Malaysia, known for its strong M",
+      "parentId": null,
+      "code": "KLT"
+    },
+    {
+      "id": 28,
+      "slug": "kota-bharu-28",
+      "name": "哥打巴鲁 / Kota Bharu",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-30/1774853601229-0bdff59d-0404-44ff-85ee-997191ec2c9a-3-28-2--watermarked.webp",
+      "shortSummary": "哥打巴鲁是吉兰丹首府，以浓厚的马来文化与在地生活气息闻名 这里可以逛中央市场（Pasar Siti Khadijah），感受传统市集氛围，也能欣赏街头壁画或前往海边看日落 适合文化体验、在地探索与轻松旅行 Kota Bharu is the capital of Kelantan, known for its strong Malay culture and",
+      "parentId": 27,
+      "code": "KBH"
+    },
+    {
+      "id": 38,
+      "slug": "batam-38",
+      "name": "巴淡岛 / Batam",
+      "country": "Indonesia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-01/1775028801259-5f6746a2-895d-4354-beda-68600e136857-4-1-4--watermark.webp",
+      "shortSummary": "巴淡岛位于印尼廖内群岛，距离新加坡约45–60分钟船程，从新山也有直达渡轮约1.5–2小时，是热门的短途度假地 这里以度假村、SPA按摩、海鲜美食和海边放松闻名，也可打卡标志性的Barelang大桥 适合周末度假、放松休闲与轻松出游 Batam is an island in Indonesia’s Riau Islands, about 45–60 min",
+      "parentId": null,
+      "code": "BTM"
+    },
+    {
+      "id": 39,
+      "slug": "sarawak-39",
+      "name": "砂拉越 / Sarawak",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-29/1774764935786-48ba10ba-7c5b-41d1-804c-adff4b4b55e7-img_e2131.webp",
+      "shortSummary": "砂拉越位于马来西亚婆罗洲，以原始雨林、多元文化与自然奇观闻名 这里有古晋河滨风光、巴哥国家公园的野生动物，以及世界遗产姆鲁洞穴，同时也能体验丰富的原住民文化 适合自然探索、文化体验与深度旅行 Sarawak is located on the island of Borneo, known for its rainforests, diverse cultu",
+      "parentId": null,
+      "code": "SWK"
+    },
+    {
+      "id": 40,
+      "slug": "kuching-40",
+      "name": "古晋 / Kuching",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-29/1774765860534-30ae91c3-81f0-42e4-b2f6-9b64b7469f34-img_e1433.webp",
+      "shortSummary": "古晋是砂拉越首府，以悠闲氛围与丰富文化著称 这里可以在河滨步道散步看日落，探访人猿保护中心，也能漫游老街感受殖民时期建筑与在地生活 适合轻松城市旅行、自然体验与文化探索 Kuching is the capital of Sarawak, known for its laid-back vibe and cultural diversity Visitors",
+      "parentId": 39,
+      "code": "KCH"
+    },
+    {
+      "id": 42,
+      "slug": "guangzhou-42",
+      "name": "广州 / Guangzhou",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-01/1775024831146-384889c0-864f-4311-8ae4-10521694e17c-img_e3817.webp",
+      "shortSummary": "广州是中国南方的重要城市，以美食、商贸与岭南文化闻名 这里有广州塔、珠江夜游、沙面岛等经典景点，也能在北京路感受城市活力与历史交融 适合美食探索、城市观光与购物旅行 Guangzhou is a major city in southern China, known for its food, trade, and Lingnan culture Highl",
+      "parentId": null,
+      "code": "GZH"
+    },
+    {
+      "id": 44,
+      "slug": "harbin-44",
+      "name": "哈尔滨 / Harbin",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-02/1775104327405-0653af07-0341-44fc-9fc3-70fa93006d79-597774876_1385342259896870_433196229323751546_n-watermarked.webp#focus=50,12",
+      "shortSummary": "哈尔滨是中国最具代表性的冰雪城市之一，以冬季雪景与欧式建筑风格闻名 这里有冰雪大世界、圣索菲亚大教堂和中央大街，冬天仿佛置身童话世界，也能感受到浓厚的异国氛围 适合冬季旅行、冰雪体验与摄影打卡 Harbin is one of China’s most iconic winter cities, known for its snow landscapes a",
+      "parentId": null,
+      "code": "HRB"
+    },
+    {
+      "id": 45,
+      "slug": "tokyo-45",
+      "name": "东京 / Tokyo",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/GvVrwc2y/1774514087987-1-facebook-1.webp#focus=50,50",
+      "shortSummary": "东京是日本的首都，以繁华都市与多元文化融合闻名 这里可以体验涩谷十字路口的热闹氛围，参观浅草寺等传统景点，也能登东京塔或漫步新宿感受城市夜景 适合城市探索、美食购物与多样化旅行 Tokyo is Japan’s capital, known for its vibrant city life and diverse culture Visitors can ",
+      "parentId": null,
+      "code": "TKY"
+    },
+    {
+      "id": 47,
+      "slug": "hokkaido-47",
+      "name": "北海道 / Hokkaido",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/vxbYCQkk/gallery-Cafe-Mori-no-Tokei-02.webp#focus=50,50",
+      "shortSummary": "北海道是日本最北的岛屿，以四季分明的自然风光与辽阔景色闻名 夏季可欣赏富良野花海，冬季则是滑雪与雪景天堂，也能在小樽运河感受浪漫氛围，或探索知床的原始自然 适合四季旅行、自然探索与摄影打卡 Hokkaido is Japan’s northernmost island, known for its wide-open landscapes and disti",
+      "parentId": null,
+      "code": "HKD"
+    },
+    {
+      "id": 48,
+      "slug": "otaru-48",
+      "name": "小樽 / Otaru",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/Fkdwfftz/gallery-Otaru-Canal-02.webp#focus=50,50",
+      "shortSummary": "小樽位于北海道西部，以浪漫运河与复古港口风情闻名 可以漫步小樽运河，欣赏夜晚灯光倒影，也能逛玻璃工艺店与音乐盒博物馆，感受浓厚的怀旧氛围 适合情侣旅行、夜景打卡与轻松漫游 Otaru is a charming port town in western Hokkaido, known for its romantic canal and nostalgic ",
+      "parentId": 47,
+      "code": "OTR"
+    },
+    {
+      "id": 49,
+      "slug": "hakodate-49",
+      "name": "函馆 / Hakodate",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/bR71FH9w/gallery-Mount-Hakodate-Night-View-04.webp#focus=50,50",
+      "shortSummary": "函馆位于北海道南部，以迷人夜景与港口城市风情闻名 可以登函馆山俯瞰百万夜景，逛朝市品尝新鲜海鲜，或在五稜郭与红砖仓库一带感受历史与浪漫氛围 适合夜景打卡、美食体验与轻松城市旅行 Hakodate is a port city in southern Hokkaido, known for its stunning night views and charmi",
+      "parentId": 47,
+      "code": "HKD"
+    },
+    {
+      "id": 50,
+      "slug": "noboribetsu-50",
+      "name": "登别 / Noboribetsu",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/jZLJgQPT/9.webp",
+      "shortSummary": "登别位于北海道，是日本著名的温泉胜地之一，以火山地热景观闻名 这里可以探访地狱谷，欣赏蒸汽弥漫的火山地貌，也能体验多种泉质的温泉，放松身心 适合温泉度假、自然探索与放松旅行 Noboribetsu is one of Japan’s most famous hot spring destinations in Hokkaido, known for its ",
+      "parentId": 47,
+      "code": "NBB"
+    },
+    {
+      "id": 51,
+      "slug": "yamagata-51",
+      "name": "山形县 / Yamagata",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/pvXDfdVZ/4.webp#focus=50,50",
+      "shortSummary": "山形县位于日本东北地区，以温泉、雪景与自然风光闻名 这里有银山温泉的复古雪景、藏王树冰奇观，以及山寺的山间景色，也能感受宁静的乡村与四季变化 适合温泉度假、冬季旅行与自然探索 Yamagata is located in the Tohoku region of Japan, known for its hot springs, winter scenery",
+      "parentId": null,
+      "code": "YGT"
+    },
+    {
+      "id": 55,
+      "slug": "yamanashi-55",
+      "name": "山梨县 / Yamanashi",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/tpQK1QY8/1774515145520-1-facebook-1.webp#focus=50,50",
+      "shortSummary": "山梨县位于东京近郊，以富士山景观与自然风光闻名 这里可以在河口湖欣赏富士山倒影，打卡新仓山浅间公园的经典机位，也能漫步忍野八海或体验葡萄酒与果园文化 适合富士山打卡、摄影与轻松近郊旅行 Yamanashi is located near Tokyo, best known for its iconic views of Mount Fuji and natu",
+      "parentId": null,
+      "code": "YMS"
+    },
+    {
+      "id": 60,
+      "slug": "mersing-60",
+      "name": "丰盛港 / Mersing",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/4w5hHf72/Gerbang-Laut-Pulau-Mawar1.webp#focus=50,50",
+      "shortSummary": "丰盛港位于柔佛东海岸，是前往刁曼岛等海岛的重要门户 这里以码头小镇与海边风光为主，大多数游客会从这里搭船前往周边海岛，同时也能品尝新鲜海鲜、感受宁静海港氛围 适合中转停留、海岛出发点与轻松海边小镇体验 Mersing is located on the east coast of Johor and serves as a gateway to island",
+      "parentId": 1,
+      "code": "MSG"
+    },
+    {
+      "id": 61,
+      "slug": "ipoh-61",
+      "name": "怡保 / Ipoh",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-28/1774682582507-c52f72ba-d1f1-496f-a41e-b932e0395b9d-1.webp",
+      "shortSummary": "怡保是霹雳州首府，以美食、老街风情与石灰岩洞穴景观闻名 这里可以漫步二奶巷、三奶巷，品尝白咖啡与芽菜鸡，也能探访极乐洞、南天洞等洞穴寺庙 适合美食探索、轻松城市漫游与周边自然景点 Ipoh is the capital of Perak, known for its food, old town charm, and limestone cave templ",
+      "parentId": null,
+      "code": "IPH"
+    },
+    {
+      "id": 62,
+      "slug": "sapporo-62",
+      "name": "札幌 / Sapporo",
+      "country": "Japan",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-29/1774769263126-c38b6138-e9aa-47cc-96ac-75fc82a3052a-1.webp",
+      "shortSummary": "札幌是北海道最大的城市，以美食、雪景与城市氛围闻名 这里有大通公园、札幌电视塔与薄野夜生活区，冬季更有著名的雪祭，同时也能品尝味噌拉面与成吉思汗烤肉 适合城市观光、美食体验与冬季旅行 Sapporo is the largest city in Hokkaido, known for its food, winter scenery, and vibrant",
+      "parentId": 47,
+      "code": "SPK"
+    },
+    {
+      "id": 63,
+      "slug": "biei-63",
+      "name": "美瑛 / Biei",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/60jgVBHc/gallery-Shirahige-Falls-01.webp#focus=50,50",
+      "shortSummary": "美瑛位于北海道中部，以起伏丘陵与拼布般的田园风光闻名 这里可以沿着拼布之路自驾，欣赏四季变化的田野景色，也能打卡青池与白须瀑布等经典景点 冬季的白须瀑布尤其梦幻，瀑布流入湛蓝河水，在雪景中形成强烈对比，夜晚点灯后更是绝美打卡点 适合自驾旅行、摄影打卡与四季慢节奏度假 Biei is a scenic area in central Hokkaido, kno",
+      "parentId": 47,
+      "code": "BEI"
+    },
+    {
+      "id": 64,
+      "slug": "furano-64",
+      "name": "富良野 / Furano",
+      "country": "Japan",
+      "thumbnail": "https://i.ibb.co/DHjJxYwQ/gallery-Ningle-Terrace-01.webp#focus=50,50",
+      "shortSummary": "富良野位于北海道中部，以夏季花海与冬季雪景闻名 夏天可以欣赏薰衣草花田与多彩花海，冬季则是滑雪与粉雪体验的热门地点，同时也能感受宁静的田园风光 适合四季旅行、摄影打卡与自然度假 Furano is located in central Hokkaido, known for its flower fields in summer and snowy land",
+      "parentId": 47,
+      "code": "FRN"
+    },
+    {
+      "id": 65,
+      "slug": "melaka-65",
+      "name": "马六甲 / Melaka",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/PzhGJ4Dh/1.webp",
+      "shortSummary": "马六甲是马来西亚最具历史底蕴的城市之一，以多元文化与殖民建筑闻名 这里可以漫步鸡场街夜市，参观红屋与圣地亚哥古城门，也能乘坐马六甲河游船欣赏夜景 适合文化探索、美食体验与轻松古城漫游 Melaka is one of Malaysia’s most historic cities, known for its multicultural heritage a",
+      "parentId": null,
+      "code": "MLK"
+    },
+    {
+      "id": 66,
+      "slug": "hangzhou-66",
+      "name": "杭州 / Hangzhou",
+      "country": "China",
+      "thumbnail": "https://i.ibb.co/p6SJdGTw/19.png",
+      "shortSummary": "杭州是中国最具代表性的风景城市之一，以秀丽山水和深厚文化底蕴闻名。 西湖是核心景点，湖光山色与古典园林相映成趣。还可以游览灵隐寺、龙井茶园，感受传统与现代融合的城市氛围。 适合文化体验、自然风光与轻松度假。 Hangzhou is one of China’s most scenic cities, known for its poetic landscap",
+      "parentId": null,
+      "code": "HGZ"
+    },
+    {
+      "id": 67,
+      "slug": "wuzhen-67",
+      "name": "乌镇 / Wuzhen",
+      "country": "China",
+      "thumbnail": "https://i.ibb.co/C5j33HhG/4-7-7-watermarked.png",
+      "shortSummary": "乌镇是江南最具代表性的水乡古镇之一，以小桥流水与夜景灯火闻名 这里分为东栅与西栅，白天可感受古镇生活气息，夜晚灯光亮起后，整个水乡宛如电影画面 适合古镇漫游、夜景拍摄与慢节奏旅行 Wuzhen is one of the most iconic water towns in Jiangnan, known for its canals, bridges, a",
+      "parentId": null,
+      "code": "WZH"
+    },
+    {
+      "id": 68,
+      "slug": "suzhou-68",
+      "name": "苏州 / Suzhou",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-06/1775473629831-68699eda-cf7b-4e54-b3dd-1b4799943d04-4-6-17--watermarked.webp",
+      "shortSummary": "苏州以古典园林与水乡风光闻名，是江南文化的代表城市之一 可以游览拙政园、漫步平江路，感受小桥流水人家的诗意，也能在金鸡湖一带体验现代城市景观 适合文化体验、古镇漫游与轻松旅行 Suzhou is famous for its classical gardens and water town scenery, representing the charm of",
+      "parentId": null,
+      "code": "SZH"
+    },
+    {
+      "id": 69,
+      "slug": "shanghai-69",
+      "name": "上海 / Shanghai",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-06/1775449787881-c7b82b91-7d93-46c3-8b44-4e84598265b8-img_5709-watermarked.webp",
+      "shortSummary": "上海是中国最国际化的城市之一，以现代天际线与历史建筑交织而闻名。 外滩的万国建筑群与浦东陆家嘴的摩天大楼形成强烈对比，展现出独特的城市魅力。你可以登高俯瞰城市夜景，也可以漫步街头感受中西文化融合的氛围。 适合城市观光、美食探索与夜景打卡。 Shanghai is one of China’s most dynamic and international ci",
+      "parentId": null,
+      "code": "SHI"
+    },
+    {
+      "id": 70,
+      "slug": "hainan-70",
+      "name": "海南 / Hainan",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-03/1775186825228-42df3ae9-2afe-447e-91cc-221d9ff3b98c-watermarked.webp",
+      "shortSummary": "海南是中国唯一的热带海岛省份，以阳光海滩与度假氛围著称 三亚是最热门的目的地，拥有亚龙湾、蜈支洲岛等优质海景，也可探索热带雨林与自然风光 适合海岛度假、放松休闲与阳光旅行 Hainan is China’s only tropical island province, known for its beaches and resort lifestyle Sa",
+      "parentId": null,
+      "code": "HNN"
+    },
+    {
+      "id": 71,
+      "slug": "beijing-71",
+      "name": "北京 / Beijing",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-02/1775122814820-e78d724d-81d9-410e-87cd-d7f19293aa2f-img_2447-watermarked.webp",
+      "shortSummary": "北京是中国的首都，拥有深厚的历史底蕴与丰富的文化遗产 这里汇集了故宫、长城、天坛等世界级景点，也融合了现代都市的发展与活力。无论是古老宫殿还是繁华街区，都展现出独特的城市魅力 适合历史文化探索、城市观光与深度旅行 Beijing is the capital of China, known for its rich history and cultural ",
+      "parentId": null,
+      "code": "BJG"
+    },
+    {
+      "id": 72,
+      "slug": "changbai-mountain-72",
+      "name": "长白山 / Changbai Mountain",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-02/1775121489812-91e5eecf-aa54-41ee-9c67-7bf77a1aeb96-604775771_1397265852037844_776758058156731662_n-watermarked.webp",
+      "shortSummary": "长白山是中国东北最著名的自然景区之一，以壮丽的火山地貌与原始森林闻名。 天池是这里最具代表性的景点，四周群山环绕，景色随季节变化各具魅力。还可以欣赏瀑布、森林景观，以及冬季雪景与温泉体验。 适合自然风光、摄影打卡与四季旅行。 Changbaishan is one of the most famous natural destinations in Nort",
+      "parentId": null,
+      "code": "CBS"
+    },
+    {
+      "id": 73,
+      "slug": "xuegu-73",
+      "name": "雪谷 / Xuegu",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-02/1775118566183-82cf5290-7895-451f-b3f6-54f10867334c-3-28-3--watermarked.webp",
+      "shortSummary": "雪谷位于黑龙江，是一个相对小众的冰雪村落，以原始雪景与宁静氛围著称 相比雪乡，这里人更少、商业化程度较低，可以看到厚厚积雪覆盖的木屋与“雪蘑菇”景观，冬季宛如童话世界 适合摄影打卡、深度冰雪体验与安静旅行 Xuegu (Snow Valley) is a lesser-known winter destination in Heilongjiang, kno",
+      "parentId": null,
+      "code": "XUG"
+    },
+    {
+      "id": 74,
+      "slug": "lijiang-74",
+      "name": "丽江 / Lijiang",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-02/1775130715400-fb43303f-1476-4b94-a4ab-54017ac4acf1-img_3805-watermarked.webp",
+      "shortSummary": "丽江位于云南西北，以古城风貌与雪山景观闻名 可以漫步丽江古城，远眺玉龙雪山，打卡蓝月谷的梦幻湖水，感受浓厚的纳西族文化与悠闲氛围 适合古城漫游、自然风光与放松旅行 Lijiang is a scenic destination in northwest Yunnan, known for its ancient town and snow mountain ",
+      "parentId": null,
+      "code": "LJG"
+    },
+    {
+      "id": 75,
+      "slug": "dali-75",
+      "name": "大理 / Dali",
+      "country": "China",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-05/1775358593104-a0eda0b8-8782-4c6a-b2c2-4bc687068686-retouch_2024090615490590-watermarked.webp",
+      "shortSummary": "大理位于云南西部，以洱海、苍山与慢生活氛围闻名 这里可以骑行环洱海，漫步大理古城，远眺苍山雪景，感受白族文化与悠闲节奏 适合放松度假、自然风光与文艺旅行 Dali is a scenic destination in western Yunnan, known for Erhai Lake, Cangshan Mountain, and its relaxe",
+      "parentId": null,
+      "code": "DAL"
+    },
+    {
+      "id": 76,
+      "slug": "shangri-la-76",
+      "name": "香格里拉 / Shangri-La",
+      "country": "China",
+      "thumbnail": "https://i.ibb.co/27hVLspj/2.webp#focus=50,39",
+      "shortSummary": "香格里拉位于云南高原，是一个融合雪山、草原与藏族文化的梦幻之地。 这里可以探访松赞林寺，漫步独克宗古城，或走进普达措国家公园感受高原湖泊与森林风光。纯净的自然环境与浓厚的藏族文化交织，让人仿佛置身世外桃源。 适合自然风光、文化体验与高原旅行。 Shangri-La is a highland destination in Yunnan, known for ",
+      "parentId": null,
+      "code": "SHL"
+    },
+    {
+      "id": 77,
+      "slug": "sabah-77",
+      "name": "沙巴 / Sabah",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/mp0JnPH/Timba-Timba2.png",
+      "shortSummary": "沙巴位于马来西亚东部婆罗洲，以壮丽自然与海岛风光闻名 这里有神山、仙本那群岛与世界级潜水点西巴丹，也能在亚庇欣赏绝美日落 适合海岛度假、潜水体验与自然探索 Sabah is located on the island of Borneo in East Malaysia, known for its stunning nature and island sc",
+      "parentId": null,
+      "code": "SBH"
+    },
+    {
+      "id": 78,
+      "slug": "kota-kinabalu-78",
+      "name": "亚庇 / Kota Kinabalu",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-06/1775439262661-a4469618-844e-4444-abcd-f846099b759c-4-6-1--watermarked.webp",
+      "shortSummary": "亚庇是沙巴首府，以海岛风光与世界级日落闻名 这里可以跳岛前往东姑阿都拉曼海洋公园，享受清澈海水与浮潜，也能在海边欣赏被誉为世界前三的日落景色 适合海岛度假、放松旅行与轻松慢游 Kota Kinabalu is the capital of Sabah, known for its island scenery and world-class sunsets ",
+      "parentId": 77,
+      "code": "SKK"
+    },
+    {
+      "id": 79,
+      "slug": "semporna-79",
+      "name": "仙本那 / Semporna",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-06/1775446114080-27954c1a-842d-4722-b4a7-3880451f32fc-img_20220914_110732-watermarked.webp",
+      "shortSummary": "仙本那位于沙巴东海岸，是通往世界级海岛与潜水天堂的重要门户 这里可以前往马布岛、卡帕莱岛与西巴丹等著名潜点，欣赏清澈海水、丰富珊瑚与海洋生物，也能登上波希杜浪岛俯瞰梦幻海景 适合海岛度假、潜水体验与绝美海景打卡 Semporna is located on the east coast of Sabah and serves as a gateway to ",
+      "parentId": 77,
+      "code": "SPN"
+    },
+    {
+      "id": 80,
+      "slug": "kundasang-80",
+      "name": "昆达山 / Kundasang",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/vxXcQfW0/Desa-Dairy-Farm5.webp#focus=50,50",
+      "shortSummary": "昆达山位于沙巴高原，以神山景观与清凉气候闻名 这里可以近距离欣赏京那巴鲁山（神山），打卡Desa奶牛场，感受高原农场与云雾缭绕的自然风光 适合避暑度假、自然探索与摄影打卡 Kundasang is a highland area in Sabah, known for its cool climate and views of Mount Kinabalu ",
+      "parentId": 77,
+      "code": "KDS"
+    },
+    {
+      "id": 81,
+      "slug": "thailand-81",
+      "name": "泰国 / Thailand",
+      "country": "Thailand",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-05/1775393661192-08ce7892-d737-4c12-a545-fa96b5435515-4-3-3--watermark.webp",
+      "shortSummary": "泰国位于东南亚，以海岛、寺庙文化与美食闻名 这里有曼谷的繁华城市与大皇宫，普吉、甲米等海岛度假胜地，以及清迈的山城与古寺风光 适合海岛度假、文化探索与美食旅行 Thailand is a popular Southeast Asian destination known for its islands, temples, and food From the ",
+      "parentId": null,
+      "code": "THL"
+    },
+    {
+      "id": 82,
+      "slug": "bangkok-82",
+      "name": "曼谷 / Bangkok",
+      "country": "Thailand",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-05/1775380594720-98f00ee3-cb7b-455f-9746-1ef511a061c1-img_4119-watermark.webp",
+      "shortSummary": "曼谷是泰国首都，以寺庙文化、美食与热闹城市氛围闻名 这里可以参观大皇宫、郑王庙，体验湄南河风光，也能逛夜市品尝地道街头美食 适合文化探索、美食体验与城市夜生活 Bangkok is the capital of Thailand, known for its temples, food, and vibrant city life Visitors can ",
+      "parentId": 81,
+      "code": "BKK"
+    },
+    {
+      "id": 83,
+      "slug": "koh-chang-83",
+      "name": "象岛 / Koh Chang",
+      "country": "Thailand",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-04-05/1775393071871-23682e91-5649-45d0-865a-549b61faaf2c-4-3-1--watermark.webp",
+      "shortSummary": "象岛是泰国第二大岛，位于东部达叻府，以原始自然与相对清静的氛围著称。 这里拥有绵长海滩、热带雨林与瀑布景观，可以浮潜、跳岛或在Klong Plu瀑布玩水放松。相比普吉或苏梅，象岛更低调，也更适合想远离人潮的旅人。 适合海岛度假、自然探索与放松慢游。 Koh Chang is Thailand’s second-largest island, located ",
+      "parentId": 81,
+      "code": "KCH"
+    },
+    {
+      "id": 84,
+      "slug": "desaru-84",
+      "name": "迪沙鲁 / Desaru",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/0yj5z6KM/desaru-beach1.png#focus=50,50",
+      "shortSummary": "迪沙鲁位于柔佛东海岸，以海滩度假与高端度假村闻名 这里拥有绵长海岸线与宁静氛围，可以在海边看日出、入住度假村放松，也能前往水上乐园或水果农场体验 适合周末度假、亲子旅行与轻松放松 Desaru is located on the east coast of Johor, known for its beach resorts and relaxing coa",
+      "parentId": 1,
+      "code": "DSR"
+    },
+    {
+      "id": 85,
+      "slug": "sungai-lembing-85",
+      "name": "林明 / Sungai Lembing",
+      "country": "Malaysia",
+      "thumbnail": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/cover/2026-03-31/1774944300255-c4decb06-edab-470a-94c2-a9fd9271f9b3-3-31-1--watermarked.webp",
+      "shortSummary": "林明是位于关丹附近的一个小镇，曾是世界上最深、最长的锡矿之一所在地，如今以自然景观与怀旧氛围吸引游客。 最著名的是彩虹瀑布（Rainbow Waterfall）与全景山（Bukit Panorama）的日出云海，还有林明博物馆可以了解矿业历史。小镇保留着浓厚的旧时光气息，非常适合慢慢探索。 适合摄影打卡、日出追景与短途旅行。 Sungai Lembing i",
+      "parentId": 9,
+      "code": "SLB"
+    },
+    {
+      "id": 86,
+      "slug": "genting-highlands-86",
+      "name": "云顶 / Genting Highlands",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/tpKb8s8n/3.webp#focus=50,50",
+      "shortSummary": "云顶高原位于马来西亚彭亨州，是著名的高原度假胜地，以凉爽气候、主题乐园、购物商场、酒店娱乐与山景闻名 这里距离吉隆坡车程约一小时多，适合亲子出游、情侣度假、周末短途旅行与避暑放松 旅客可以体验室内外游乐设施、逛街购物、享受美食，也可以欣赏高原云雾与夜景氛围 Genting Highlands is a famous hill resort in Pahang",
+      "parentId": 9,
+      "code": "GTG"
+    },
+    {
+      "id": 87,
+      "slug": "cameron-highland-87",
+      "name": "金马伦 / Cameron Highland",
+      "country": "Malaysia",
+      "thumbnail": "https://i.ibb.co/4nsTc1xR/Boh31.webp#focus=50,50",
+      "shortSummary": "金马仑高原位于马来西亚彭亨州，是著名的高原避暑胜地，以凉爽气候、茶园风光、草莓园、花卉农场与亲子景点闻名 这里拥有大片茶山、欧式小镇氛围与许多本地美食，适合家庭出游、情侣旅行、拍照打卡与周末短途度假 旅客可以参观 BOH Tea 茶园、农场、市集与寺庙，也可以在高原慢慢享受悠闲清新的旅行节奏 Cameron Highlands is a famous hil",
+      "parentId": 9,
+      "code": "CMH"
+    },
+    {
+      "id": 88,
+      "slug": "hongcun-88",
+      "name": "宏村 / Hongcun",
+      "country": "China",
+      "thumbnail": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hongcun/hongcun-scenic-area/images/2026-05-31/61dc6dc4-95e6-408e-82f4-368ede4509d7-19.webp#focus=50,50",
+      "shortSummary": "Hongcun and nearby Yixian villages in Huangshan, Anhui, including Hongcun, Lucun, Tachuan, Bishan, and Xiuli.",
+      "parentId": null,
+      "code": "HONGCUN"
+    },
+    {
+      "id": 89,
+      "slug": "nanjing-89",
+      "name": "南京 / Nanjing",
+      "country": "China",
+      "thumbnail": null,
+      "shortSummary": "Nanjing travel spots from the Jiangnan autumn route, covering Niushou Mountain, Qixia Mountain, Qinhuai River, Ming Xiaoling, and Xinjiekou.",
+      "parentId": null,
+      "code": "NKG"
+    },
+    {
+      "id": 90,
+      "slug": "pulau-tioman-90",
+      "name": "刁曼岛 / Pulau Tioman",
+      "country": "Malaysia",
+      "thumbnail": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/273-1775533061061-35d413c4-ae3c-434d-a273-1c3a33b543eb-pulau-tio-06c7974f-259c-4fbe-bfae-88c0802761a9.webp",
+      "shortSummary": "刁曼岛位于马来西亚彭亨外海，适合海岛住宿、浮潜与轻松度假行程。",
+      "parentId": null,
+      "code": null
+    }
+  ]
+}

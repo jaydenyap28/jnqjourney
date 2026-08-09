@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
 
 export const runtime = 'nodejs'
-export const dynamic = 'force-dynamic'
+export const revalidate = 3600
 
 function getSupabaseServerClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -58,7 +59,7 @@ export async function GET(request: Request) {
 
   let query = supabase
     .from('affiliate_links')
-    .select('*, locations(name, name_cn, image_url, images), regions(name, name_cn, country, image_url)')
+    .select('id,provider,link_type,url,title,description,commission_rate,clicks,location_id,region_id,note_slug,locations(name,name_cn,image_url,images),regions(name,name_cn,country,image_url)')
     .eq('is_active', true)
     .order('clicks', { ascending: false })
 
@@ -81,10 +82,8 @@ export async function GET(request: Request) {
   const { data, error } = await query.limit(limit)
 
   if (error) {
-    return NextResponse.json({ links: [], error: error.message }, { status: 500 })
+    return NextResponse.json({ links: [], error: error.message }, { status: 500, headers: { 'Cache-Control': PRIVATE_NO_STORE } })
   }
 
-  return NextResponse.json({
-    links: (data || []).map(normalizeJoinedRecord),
-  })
+  return NextResponse.json({ links: (data || []).map(normalizeJoinedRecord) }, { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } })
 }

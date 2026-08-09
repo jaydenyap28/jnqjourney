@@ -181,3 +181,16 @@ export async function uploadImageToR2(options: UploadR2ImageOptions): Promise<R2
     provider: 'cloudflare-r2',
   }
 }
+
+export async function uploadPublicDataSnapshot(fileName: 'locations.json' | 'regions.json', body: Buffer | Uint8Array) {
+  assertR2Env()
+  const key = `public-data/${fileName}`
+  await getR2Client().send(new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME!,
+    Key: key,
+    Body: body,
+    ContentType: 'application/json; charset=utf-8',
+    CacheControl: 'public, max-age=3600, stale-while-revalidate=86400',
+  }))
+  return `${getR2PublicBaseUrl()}/${key}`
+}

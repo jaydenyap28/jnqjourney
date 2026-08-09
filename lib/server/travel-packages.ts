@@ -1,5 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
 
+const PACKAGE_SELECT = 'id,slug,title_zh,title_en,destination,region_id,duration,short_description,full_description,cover_image,gallery,video_url,highlights,suitable_for,itinerary_days,included_items,excluded_items,notes,price_display,price_note,whatsapp_message,source_code,status,featured,sort_order,seo_title,seo_description,canonical_url,related_location_ids,related_guide_slugs,related_note_slugs,affiliate_link_ids,created_at,updated_at,published_at'
+const PACKAGE_OPTION_SELECT = 'id,package_id,slug,name_zh,name_en,accommodation_name,accommodation_type,village_name,short_description,suitable_for,price_from,price_currency,price_unit,price_display,price_rows,included_items,excluded_items,notes,validity_label,valid_until,brochure_image,gallery,whatsapp_message,source_code,featured,sort_order,status,created_at,updated_at'
+
 export interface TravelPackageDay {
   title?: string
   summary?: string
@@ -97,7 +100,7 @@ export async function readPublishedPackages() {
   if (!supabase) return []
   const { data, error } = await supabase
     .from('travel_packages')
-    .select('*')
+    .select(PACKAGE_SELECT)
     .eq('status', 'published')
     .order('featured', { ascending: false })
     .order('sort_order', { ascending: true })
@@ -113,7 +116,7 @@ export async function readPublishedPackage(slug: string) {
   if (!supabase) return null
   const { data, error } = await supabase
     .from('travel_packages')
-    .select('*')
+    .select(PACKAGE_SELECT)
     .eq('slug', slug)
     .eq('status', 'published')
     .maybeSingle()
@@ -129,7 +132,7 @@ export async function readPublishedPackageOptions(packageId: number) {
   if (!supabase || !Number.isInteger(packageId) || packageId <= 0) return []
   const { data, error } = await supabase
     .from('travel_package_options')
-    .select('*')
+    .select(PACKAGE_OPTION_SELECT)
     .eq('package_id', packageId)
     .eq('status', 'active')
     .order('sort_order', { ascending: true })

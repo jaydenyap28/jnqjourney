@@ -10,12 +10,12 @@ export async function GET() {
   try {
     const data = await resolvePublicData()
     return NextResponse.json(
-      { locations: data.locations, regions: data.regions },
+      { regions: data.regions },
       { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL, 'X-JNQ-Data-Source': dataSourceHeader(data.source) } }
     )
   } catch {
     return NextResponse.json(
-      { error: { code: 'PUBLIC_DATA_UNAVAILABLE', message: 'Public travel data is temporarily unavailable.' } },
+      { error: { code: 'PUBLIC_DATA_UNAVAILABLE', message: 'Public region data is temporarily unavailable.' } },
       { status: 503, headers: { 'Cache-Control': PRIVATE_NO_STORE } }
     )
   }

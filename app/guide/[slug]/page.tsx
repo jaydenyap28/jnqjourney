@@ -32,9 +32,7 @@ import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
 import { resolveGuideMedia } from '@/lib/guide-media'
 import { formatShortText } from '@/lib/short-text'
 
-// Linked spot cards must reflect a cover change immediately after it is saved.
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 600
 
 interface PageProps {
   params: {
@@ -129,21 +127,14 @@ async function fetchGuideSpots(names: string[]) {
 
   if (!supabaseUrl || !supabaseAnonKey || !names.length) return []
 
-  const wanted = new Set(names.map((item) => String(item || '').trim().toLowerCase()).filter(Boolean))
-  if (!wanted.size) return []
+  const wantedNames = [...new Set(names.map((item) => String(item || '').trim()).filter(Boolean))]
+  if (!wantedNames.length) return []
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: { persistSession: false },
   })
 
-  const allRows: LinkedSpot[] = []
-  const pageSize = 500
-  let from = 0
-
-  while (true) {
-    const { data, error } = await supabase
-      .from('locations')
-      .select(`
+  const select = `
         id,
         name,
         name_cn,
@@ -160,20 +151,18 @@ async function fetchGuideSpots(names: string[]) {
           name_cn,
           country
         )
-      `)
-      .order('id', { ascending: false })
-      .range(from, from + pageSize - 1)
-
-    if (error) return []
-
-    const batch = Array.isArray(data) ? (data as LinkedSpot[]) : []
-    allRows.push(...batch)
-
-    if (batch.length < pageSize) break
-    from += pageSize
+      `
+  const rows = new Map<number, LinkedSpot>()
+  for (let index = 0; index < wantedNames.length; index += 50) {
+    const batch = wantedNames.slice(index, index + 50)
+    const [byEnglish, byChinese] = await Promise.all([
+      supabase.from('locations').select(select).in('name', batch).eq('status', 'active'),
+      supabase.from('locations').select(select).in('name_cn', batch).eq('status', 'active'),
+    ])
+    if (byEnglish.error || byChinese.error) return []
+    for (const row of [...(byEnglish.data || []), ...(byChinese.data || [])] as unknown as LinkedSpot[]) rows.set(row.id, row)
   }
-
-  return allRows
+  return [...rows.values()]
 }
 
 async function fetchGuideRegionSpots(regionIds: number[]) {
@@ -207,8 +196,10 @@ async function fetchGuideRegionSpots(regionIds: number[]) {
       )
     `)
     .in('region_id', regionIds)
+    .eq('status', 'active')
     .order('visit_date', { ascending: true })
     .order('id', { ascending: true })
+    .limit(250)
 
   if (error || !data) return []
   return data as LinkedSpot[]

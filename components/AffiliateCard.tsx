@@ -226,7 +226,6 @@ export default function AffiliateCard({
     }
 
     const response = await fetch(`/api/affiliate-links?${params.toString()}`, {
-      cache: 'no-store',
     }).catch(() => null)
     if (!response?.ok) {
       setLinks([])

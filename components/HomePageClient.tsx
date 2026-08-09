@@ -8,21 +8,19 @@ import { MapRef } from 'react-map-gl/mapbox'
 import Fuse from 'fuse.js'
 
 import { Badge } from '@/components/ui/badge'
-import { buildLocationPath } from '@/lib/location-routing'
-import { buildRegionPath } from '@/lib/region-routing'
 import MapView from '@/components/MapView'
 import TopFloatingIsland from '@/components/TopFloatingIsland'
 import BottomFloatingDock from '@/components/BottomFloatingDock'
 import SiteFooter from '@/components/SiteFooter'
 import type { TravelGuide } from '@/lib/guides'
 import FallbackImage from '@/components/FallbackImage'
-import { getDisplayTitle, getGuideDisplayPair, getSpotDescription } from '@/lib/content-display'
-import { getRegionCountry } from '@/lib/region-utils'
-import { getVisibleLocationTags } from '@/lib/tag-utils'
+import { getGuideDisplayPair } from '@/lib/content-display'
 import { stripSummaryTokens } from '@/lib/notes'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 import { resolveGuideMedia } from '@/lib/guide-media'
+import type { PublicLocation as Location, PublicRegion as Region } from '@/lib/public-data'
+import { fetchPublicData } from '@/lib/client/public-data'
 
 interface NoteData {
   slug: string
@@ -36,65 +34,20 @@ interface NoteData {
   published?: boolean
 }
 
-interface Region {
-  id: number
-  name: string
-  name_cn?: string
-  country?: string
-  description?: string
-  image_url?: string
-  code?: string
-  parent_id?: number | null
-}
-
-interface Location {
-  id: number
-  name: string
-  name_cn?: string
-  latitude: number
-  longitude: number
-  review?: string
-  description?: string
-  address?: string
-  category?: string
-  visit_date?: string
-  video_url?: string
-  image_url?: string
-  images?: string[]
-  tags?: string[]
-  opening_hours?: string
-  regions?: Region
-}
-
 interface RegionHighlight {
   id: number
+  slug: string
   name: string
-  name_cn?: string
-  country?: string
+  country?: string | null
   count: number
   coverImage?: string
   sampleText?: string
   pinned?: boolean
 }
 
-function compareLocationsByVisitDate(left: Location, right: Location) {
-  const leftVisit = left.visit_date ? Date.parse(left.visit_date) : NaN
-  const rightVisit = right.visit_date ? Date.parse(right.visit_date) : NaN
-  const leftHasVisit = Number.isFinite(leftVisit)
-  const rightHasVisit = Number.isFinite(rightVisit)
+function compareLocationsByVisitDate(left: Location, right: Location) { return right.id - left.id }
 
-  if (leftHasVisit && rightHasVisit && leftVisit !== rightVisit) {
-    return rightVisit - leftVisit
-  }
-
-  if (leftHasVisit !== rightHasVisit) {
-    return rightHasVisit ? 1 : -1
-  }
-
-  return right.id - left.id
-}
-
-function getCategoryLabel(category?: string) {
+function getCategoryLabel(category?: string | null) {
   switch (category) {
     case 'food':
       return 'Food'
@@ -105,7 +58,7 @@ function getCategoryLabel(category?: string) {
   }
 }
 
-function parseRegionCodeTokens(code?: string) {
+function parseRegionCodeTokens(code?: string | null) {
   return new Set(
     String(code || '')
       .split(/[,\s;|]+/)
@@ -262,8 +215,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
 }
 
 function LocationCard({ location, onOpen }: { location: Location; onOpen: (location: Location) => void }) {
-  const coverImage = location.image_url || location.images?.[0] || '/placeholder-image.jpg'
-  const title = getDisplayTitle(location.name, location.name_cn)
+  const coverImage = location.thumbnail || '/placeholder-image.jpg'
 
   return (
     <article className="group overflow-hidden rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition hover:-translate-y-1 hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(17,24,39,0.96))] md:rounded-[28px]">
@@ -271,7 +223,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
         <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
           <FallbackImage
             src={coverImage}
-            alt={title.primary}
+            alt={location.name}
             fill
             className="object-cover transition duration-700 group-hover:scale-105"
           />
@@ -282,9 +234,9 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
                 {getCategoryLabel(location.category)}
               </Badge>
             ) : null}
-            {location.regions?.name ? (
+            {location.region?.name ? (
               <Badge className="border border-white/10 bg-white/10 text-white">
-                {location.regions.name}
+                {location.region.name}
               </Badge>
             ) : null}
           </div>
@@ -293,19 +245,16 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
 
       <div className="space-y-3 p-4 md:space-y-4 md:p-5">
         <div>
-          <h3 className="line-clamp-1 text-lg font-semibold text-white md:text-xl">{title.primary}</h3>
-          {title.secondary ? (
-            <p className="mt-1 line-clamp-1 text-xs text-gray-400 md:text-sm">{title.secondary}</p>
-          ) : null}
+          <h3 className="line-clamp-1 text-lg font-semibold text-white md:text-xl">{location.name}</h3>
         </div>
 
         <p className="line-clamp-2 text-[13px] leading-5 text-gray-300 md:line-clamp-3 md:text-sm md:leading-6">
-          {getSpotDescription(location) || 'Open this spot page for photos, maps, videos, and travel notes.'}
+          {location.shortSummary || 'Open this spot page for photos, maps, videos, and travel notes.'}
         </p>
 
         <div className="flex justify-end">
           <Link
-            href={buildLocationPath(location.name, location.id)}
+            href={`/spot/${location.slug}`}
             className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-50"
           >
             {'View spot / 查看景点'}
@@ -318,8 +267,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
 }
 
 function RegionCard({ region }: { region: RegionHighlight }) {
-  const href = buildRegionPath(region.name, region.id)
-  const title = getDisplayTitle(region.name, region.name_cn)
+  const href = `/region/${region.slug}`
 
   return (
     <Link
@@ -330,7 +278,7 @@ function RegionCard({ region }: { region: RegionHighlight }) {
         {region.coverImage ? (
           <FallbackImage
             src={region.coverImage}
-            alt={title.primary}
+            alt={region.name}
             fill
             className="object-cover transition duration-700 group-hover:scale-105"
           />
@@ -343,10 +291,7 @@ function RegionCard({ region }: { region: RegionHighlight }) {
         <div className="space-y-3 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h3 className="line-clamp-1 text-xl font-semibold text-white">{title.primary}</h3>
-              {title.secondary ? (
-                <p className="mt-1 line-clamp-1 text-sm text-gray-400">{title.secondary}</p>
-              ) : null}
+              <h3 className="line-clamp-1 text-xl font-semibold text-white">{region.name}</h3>
             </div>
           <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">
           {region.count} spots
@@ -441,12 +386,10 @@ export default function HomePageClient({
         threshold: 0.3,
         keys: [
           { name: 'name', weight: 1.0 },
-          { name: 'name_cn', weight: 1.0 },
-          { name: 'tags', weight: 0.8 },
-          { name: 'regions.country', weight: 0.6 },
-          { name: 'regions.name', weight: 0.6 },
-          { name: 'regions.name_cn', weight: 0.6 },
-          { name: 'description', weight: 0.5 },
+          { name: 'region.country', weight: 0.7 },
+          { name: 'region.name', weight: 0.8 },
+          { name: 'category', weight: 0.6 },
+          { name: 'shortSummary', weight: 0.5 },
         ],
       }),
     [locations]
@@ -472,13 +415,11 @@ export default function HomePageClient({
     setIsRetrying(true)
     setLoadError(null)
     try {
-      const response = await fetch('/api/locations', { cache: 'no-store' })
-      const payload = await response.json()
-      if (!response.ok) throw new Error(payload?.error || 'Unable to load travel spots right now.')
-      const nextLocations = Array.isArray(payload.locations) ? payload.locations : []
+      const payload = await fetchPublicData()
+      const nextLocations = payload.locations
       setLocations(nextLocations)
       setFilteredLocations(nextLocations)
-      setRegions(Array.isArray(payload.regions) ? payload.regions : [])
+      setRegions(payload.regions)
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : 'Unable to load travel spots right now.')
     } finally {
@@ -492,7 +433,7 @@ export default function HomePageClient({
       longitude: location.longitude,
       zoom: 15,
     })
-    router.push(buildLocationPath(location.name, location.id))
+    router.push(`/spot/${location.slug}`)
   }
 
   const handleHoverLocation = (location: Location | null) => {
@@ -511,15 +452,17 @@ export default function HomePageClient({
   )
 
   const latestLocations = useMemo(() => visibleLocations.slice(0, 8), [visibleLocations])
+  const regionsById = useMemo(() => new Map(regions.map((region) => [region.id, region])), [regions])
 
   const malaysiaRegions = useMemo(
     () => {
       const regionMap = new Map<number, RegionHighlight>()
 
       for (const location of visibleLocations) {
-        const region = location.regions
+        const region = location.region
         if (!region?.id || !region.name) continue
-        const regionCountry = getRegionCountry(region, regions)
+        const regionRecord = regionsById.get(region.id)
+        const regionCountry = region.country
         if (regionCountry !== 'Malaysia') continue
 
         const pinned = parseRegionCodeTokens(region.code).has('home-malaysia')
@@ -528,23 +471,23 @@ export default function HomePageClient({
         if (existing) {
           existing.count += 1
           existing.pinned = existing.pinned || pinned
-          if (region.image_url) {
-            existing.coverImage = region.image_url
+          if (regionRecord?.thumbnail) {
+            existing.coverImage = regionRecord.thumbnail
           }
-          if (!existing.sampleText && region.description) {
-            existing.sampleText = region.description
+          if (!existing.sampleText && regionRecord?.shortSummary) {
+            existing.sampleText = regionRecord.shortSummary
           }
           continue
         }
 
         regionMap.set(region.id, {
           id: region.id,
+          slug: region.slug,
           name: region.name,
-          name_cn: region.name_cn,
-          country: regionCountry || region.country,
+          country: regionCountry,
           count: 1,
-          coverImage: region.image_url || undefined,
-          sampleText: region.description || undefined,
+          coverImage: regionRecord?.thumbnail || undefined,
+          sampleText: regionRecord?.shortSummary || undefined,
           pinned,
         })
       }
@@ -558,7 +501,7 @@ export default function HomePageClient({
           return left.name.localeCompare(right.name)
         })
     },
-    [regions, visibleLocations]
+    [regionsById, visibleLocations]
   )
 
   const globalRegions = useMemo(
@@ -566,9 +509,10 @@ export default function HomePageClient({
       const regionMap = new Map<number, RegionHighlight>()
 
       for (const location of visibleLocations) {
-        const region = location.regions
+        const region = location.region
         if (!region?.id || !region.name) continue
-        const regionCountry = getRegionCountry(region, regions)
+        const regionRecord = regionsById.get(region.id)
+        const regionCountry = region.country
         if (regionCountry === 'Malaysia') continue
 
         const pinned = parseRegionCodeTokens(region.code).has('home-global')
@@ -577,23 +521,23 @@ export default function HomePageClient({
         if (existing) {
           existing.count += 1
           existing.pinned = existing.pinned || pinned
-          if (region.image_url) {
-            existing.coverImage = region.image_url
+          if (regionRecord?.thumbnail) {
+            existing.coverImage = regionRecord.thumbnail
           }
-          if (!existing.sampleText && region.description) {
-            existing.sampleText = region.description
+          if (!existing.sampleText && regionRecord?.shortSummary) {
+            existing.sampleText = regionRecord.shortSummary
           }
           continue
         }
 
         regionMap.set(region.id, {
           id: region.id,
+          slug: region.slug,
           name: region.name,
-          name_cn: region.name_cn,
-          country: regionCountry || region.country,
+          country: regionCountry,
           count: 1,
-          coverImage: region.image_url || undefined,
-          sampleText: region.description || undefined,
+          coverImage: regionRecord?.thumbnail || undefined,
+          sampleText: regionRecord?.shortSummary || undefined,
           pinned,
         })
       }
@@ -607,17 +551,15 @@ export default function HomePageClient({
           return left.name.localeCompare(right.name)
         })
     },
-    [regions, visibleLocations]
+    [regionsById, visibleLocations]
   )
 
   const topTags = useMemo(() => {
     const tagCounts = new Map<string, number>()
 
     for (const location of visibleLocations) {
-      for (const tag of getVisibleLocationTags(location.tags)) {
-        if (!tag) continue
-        tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
-      }
+      const tag = getCategoryLabel(location.category)
+      tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)
     }
 
     return [...tagCounts.entries()].sort((left, right) => right[1] - left[1]).slice(0, 8)

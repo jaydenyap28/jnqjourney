@@ -28,6 +28,8 @@ function getBudgetAdminClient() {
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 }
 
+const BUDGET_SNAPSHOT_SELECT = 'id,guide_slug,source,source_project_key,source_project_name,snapshot_version,currency,scope,traveller_count,total,categories,unclassified_amount,transaction_count,generated_at,confirmed_at,received_at,review_status,published_at,checksum'
+
 function toDisplaySnapshot(value: GuideBudgetSnapshotRecord): GuideBudgetDisplaySnapshot {
   return {
     source_project_name: value.source_project_name,
@@ -107,14 +109,14 @@ export async function importBudgetSnapshot(snapshot: MoneyBotBudgetSnapshot) {
   const { data, error } = await client
     .from('guide_budget_snapshots')
     .upsert(row, { onConflict: 'source,source_project_key,snapshot_version', ignoreDuplicates: true })
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .maybeSingle()
   if (error) throw new Error(error.message)
   if (data) return { record: normalizeRecord(data), alreadyImported: false }
 
   const { data: existing, error: existingError } = await client
     .from('guide_budget_snapshots')
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .eq('source', snapshot.source)
     .eq('source_project_key', snapshot.source_project_key)
     .eq('snapshot_version', snapshot.snapshot_version)
@@ -130,7 +132,7 @@ export async function listGuideBudgetSnapshots(guideSlug: string) {
   const client = getBudgetAdminClient()
   const { data, error } = await client
     .from('guide_budget_snapshots')
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .eq('guide_slug', guideSlug)
     .order('snapshot_version', { ascending: false })
     .order('received_at', { ascending: false })
@@ -145,7 +147,7 @@ export async function readPublishedGuideBudget(guideSlug: string) {
   const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const { data, error } = await client
     .from('guide_budget_snapshots')
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .eq('guide_slug', guideSlug)
     .eq('review_status', 'published')
     .order('published_at', { ascending: false })
@@ -174,7 +176,7 @@ export async function updateGuideBudgetSnapshot(
 
   const { data: current, error: currentError } = await client
     .from('guide_budget_snapshots')
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .eq('id', id)
     .single()
   if (currentError || !current) throw new Error(currentError?.message || 'Snapshot not found.')
@@ -202,7 +204,7 @@ export async function updateGuideBudgetSnapshot(
     .from('guide_budget_snapshots')
     .update(patch)
     .eq('id', id)
-    .select('*')
+    .select(BUDGET_SNAPSHOT_SELECT)
     .single()
   if (error || !data) throw new Error(error?.message || 'Snapshot update failed.')
   return normalizeRecord(data)

@@ -6,30 +6,16 @@ import { MapPin, ArrowRight } from 'lucide-react'
 
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
-import { buildLocationPath } from '@/lib/location-routing'
 import FallbackImage from '@/components/FallbackImage'
-
-interface Location {
-  id: number
-  name: string
-  name_cn?: string
-  category?: string
-  review?: string
-  description?: string
-  image_url?: string
-  images?: string[]
-  latitude: number
-  longitude: number
-  opening_hours?: string
-}
+import type { PublicLocation } from '@/lib/public-data'
 
 interface BottomFloatingDockProps {
-  locations: Location[]
-  onHoverLocation: (location: Location | null) => void
-  onSelectLocation: (location: Location) => void
+  locations: PublicLocation[]
+  onHoverLocation: (location: PublicLocation | null) => void
+  onSelectLocation: (location: PublicLocation) => void
 }
 
-function getCategoryLabel(category?: string) {
+function getCategoryLabel(category?: string | null) {
   switch (category) {
     case 'food':
       return 'Food'
@@ -39,14 +25,6 @@ function getCategoryLabel(category?: string) {
     default:
       return 'Spot'
   }
-}
-
-function getDisplayTitle(location: Location) {
-  if (location.name_cn && location.name_cn.trim() && location.name_cn.trim() !== location.name.trim()) {
-    return { primary: location.name_cn, secondary: location.name }
-  }
-
-  return { primary: location.name_cn || location.name, secondary: '' }
 }
 
 export default function BottomFloatingDock({
@@ -136,7 +114,7 @@ export default function BottomFloatingDock({
     }
   }
 
-  const handleCardClick = (location: Location) => {
+  const handleCardClick = (location: PublicLocation) => {
     if (isDragging.current) return
     onSelectLocation(location)
   }
@@ -161,11 +139,7 @@ export default function BottomFloatingDock({
                 </div>
               ) : (
                 locations.map((location, index) => {
-                  const coverImage =
-                    location.image_url ||
-                    (location.images && location.images.length > 0 ? location.images[0] : null) ||
-                    '/placeholder-image.jpg'
-                  const title = getDisplayTitle(location)
+                  const coverImage = location.thumbnail || '/placeholder-image.jpg'
 
                   return (
                     <div
@@ -193,7 +167,7 @@ export default function BottomFloatingDock({
                           {coverImage ? (
                             <FallbackImage
                               src={coverImage}
-                              alt={title.primary}
+                              alt={location.name}
                               fill
                               className={cn(
                                 'object-cover opacity-90 transition-transform duration-700',
@@ -224,18 +198,15 @@ export default function BottomFloatingDock({
                               index === focusedIndex ? 'text-amber-200' : 'group-hover:text-amber-200'
                             )}
                           >
-                            {title.primary}
+                            {location.name}
                           </h4>
-                          {title.secondary ? (
-                            <p className="mt-0.5 line-clamp-1 text-[9px] text-white/75 md:mt-1 md:text-xs">{title.secondary}</p>
-                          ) : null}
                           <p className="mt-0.5 line-clamp-1 text-[9px] text-white/70 md:mt-1 md:text-xs">
-                            {location.review || location.description || getCategoryLabel(location.category)}
+                            {location.shortSummary || getCategoryLabel(location.category)}
                           </p>
                           <div className="mt-1.5 flex items-center justify-end md:mt-3 md:justify-between">
                             <span className="hidden text-[11px] text-white/60 md:block">Tap card to open the full spot page</span>
                             <Link
-                              href={buildLocationPath(location.name, location.id)}
+                              href={`/spot/${location.slug}`}
                               onClick={(event) => event.stopPropagation()}
                               className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-[9px] text-white/90 transition hover:bg-white/20 md:px-2.5 md:text-[11px]"
                             >
