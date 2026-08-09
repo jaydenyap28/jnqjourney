@@ -29,6 +29,7 @@ import {
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
+import { resolveSpotDisplayImages } from '@/lib/spot-media'
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
 
@@ -187,41 +188,6 @@ function getPriceCurrencyLabel(primary?: string, secondary?: string) {
   return parts.length ? parts.join(' / ') : 'Local Currency'
 }
 
-function normalizeImageList(value: unknown) {
-  if (Array.isArray(value)) {
-    return value.map((item) => String(item || '').trim()).filter(Boolean)
-  }
-
-  const text = String(value || '').trim()
-  if (!text) return []
-
-  try {
-    const parsed = JSON.parse(text)
-    if (Array.isArray(parsed)) {
-      return parsed.map((item) => String(item || '').trim()).filter(Boolean)
-    }
-  } catch {
-    // Fall through to delimiter parsing.
-  }
-
-  return text
-    .split(/\s*(?:\||,|\n)\s*/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-}
-
-function imageIdentity(value?: string | null) {
-  const text = String(value || '').trim()
-  if (!text) return ''
-
-  try {
-    const url = new URL(text)
-    return `${url.hostname.toLowerCase()}${url.pathname}`
-  } catch {
-    return text.split('#')[0].trim()
-  }
-}
-
 function TikTokIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -311,13 +277,7 @@ export default function SpotContent({
   const regionPath = location.regions?.id && location.regions?.name ? buildRegionPath(location.regions.name, location.regions.id) : null
 
   const allImages = useMemo(() => {
-    const galleryImages = normalizeImageList(location.images)
-    const coverIdentity = imageIdentity(location.image_url)
-    return Array.from(new Set(
-      galleryImages
-        .map((item) => String(item || '').trim())
-        .filter((item) => item && imageIdentity(item) !== coverIdentity)
-    ))
+    return resolveSpotDisplayImages({ image_url: location.image_url, images: location.images })
   }, [location.image_url, location.images])
 
   const validImages = useMemo(
