@@ -371,6 +371,10 @@ export async function saveGuides(guides: TravelGuide[]) {
     await writeLocalGuides(normalized)
   } catch {}
   await writeStorageGuides(normalized)
+  try {
+    const { uploadPublicGuidesSnapshot } = await import('@/lib/server/r2')
+    await uploadPublicGuidesSnapshot(Buffer.from(JSON.stringify({ schemaVersion: 1, generatedAt: new Date().toISOString(), guides: normalized }), 'utf8'))
+  } catch {}
   // Clear cache after save
   cachedGuides = null
   lastFetchTime = 0

@@ -13,11 +13,14 @@ import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
-import { readNoteBySlug } from '@/lib/server/notes-store'
+import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
+import { resolvePublicImage } from '@/lib/public-media'
 
 interface PageProps {
   params: { slug: string }
@@ -62,25 +65,6 @@ function createPublicSupabaseClient() {
   }
 
   return createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false } })
-}
-
-async function fetchLocationsByIds(ids: number[]) {
-  if (!ids.length) return []
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('locations')
-    .select('id,name,name_cn,category,image_url,images,description,review,regions:region_id(id,name,name_cn,country)')
-    .in('id', ids)
-
-  if (error || !data) return []
-
-  const order = new Map(ids.map((id, index) => [id, index]))
-  return (data as any[])
-    .map((item) => ({
-      ...item,
-      regions: Array.isArray(item?.regions) ? item.regions[0] || null : item?.regions || null,
-    }))
-    .sort((left, right) => (order.get(left.id) ?? 999) - (order.get(right.id) ?? 999))
 }
 
 async function fetchAffiliateLinksByIds(ids: number[]) {
@@ -159,7 +143,8 @@ function CoverVideoEmbed({ url, title }: { url?: string | null; title: string })
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const note = await readNoteBySlug(params.slug)
+  const [storedNote, { locations }] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
+  const note = storedNote ? resolveNotePublicMedia(storedNote, locations) : null
   if (!note) {
     return { title: 'Note not found' }
   }
@@ -337,7 +322,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
         >
           <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
             <FallbackImage
-              src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+              src={resolvePublicImage({ cover: spot.image_url, images: spot.images || [], fallback: '/placeholder-image.jpg' })}
               alt={spot.name_cn || spot.name}
               fill
               sizes="(max-width: 768px) 100vw, 240px"
@@ -367,7 +352,8 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
 }
 
 export default async function NoteDetailPage({ params }: PageProps) {
-  const note = await readNoteBySlug(params.slug)
+  const [storedNote, publicData] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
+  const note = storedNote ? resolveNotePublicMedia(storedNote, publicData.locations) : null
   if (!note || !note.published) notFound()
 
   const blocks = getRenderableNoteBlocks(note)
@@ -398,8 +384,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
     return data as AffiliateData[]
   }
 
-  const [relatedSpots, affiliateLinks, allKlookWidgets, noteKlookWidgets, noteAffiliateLinks, publishedPackages] = await Promise.all([
-    fetchLocationsByIds(spotIds),
+  const relatedSpots = selectPublicSpotCards(publicData.locations, { ids: spotIds }) as LocationData[]
+  const [affiliateLinks, allKlookWidgets, noteKlookWidgets, noteAffiliateLinks, publishedPackages] = await Promise.all([
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
     getActiveKlookWidgetsForTargets({ noteSlug: note.slug }),
@@ -585,7 +571,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
                     >
                       <div className="relative h-16 w-16 overflow-hidden rounded-xl">
                         <FallbackImage
-                          src={spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'}
+                          src={resolvePublicImage({ cover: spot.image_url, images: spot.images || [], fallback: '/placeholder-image.jpg' })}
                           alt={spot.name_cn || spot.name}
                           fill
                           sizes="64px"

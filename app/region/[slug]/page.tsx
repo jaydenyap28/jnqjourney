@@ -9,7 +9,7 @@ import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { fetchLocationsByRegion, fetchRegionBySlug } from '@/lib/server/public-location-data'
-import { readGuides } from '@/lib/server/guides-store'
+import { readPublicGuides } from '@/lib/server/public-content-store'
 import { absoluteUrl } from '@/lib/site'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 import TravelPackageCard from '@/components/TravelPackageCard'
@@ -95,7 +95,7 @@ export default async function RegionPage({ params }: PageProps) {
   const readableName = region.name_cn || region.name
 
   // Guides matching
-  const allGuides = await readGuides()
+  const allGuides = await readPublicGuides()
   const locationNames = new Set(
     locations.flatMap(loc => [
       normalizeGuideMatch(loc.name),

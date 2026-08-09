@@ -5,7 +5,7 @@ import SpotContent from '@/components/SpotContent'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
-import { readGuides } from '@/lib/server/guides-store'
+import { readPublicGuides } from '@/lib/server/public-content-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
@@ -76,7 +76,7 @@ export default async function SpotPage({ params }: PageProps) {
 
   const [relatedLocations, allGuides, allPackages] = await Promise.all([
     fetchRelatedLocations(location, 6),
-    readGuides(),
+    readPublicGuides(),
     readPublishedPackages(),
   ])
   const relatedPackages = allPackages.filter((item) =>

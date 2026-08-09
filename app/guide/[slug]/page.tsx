@@ -18,7 +18,7 @@ import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
-import { readGuideBySlug, readGuides } from '@/lib/server/guides-store'
+import { readPublicGuideBySlug, readPublicGuides } from '@/lib/server/public-content-store'
 import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
@@ -31,6 +31,9 @@ import { guideAttractionMap, resolveGuideAttraction, type GuideSegmentSpot } fro
 import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
 import { resolveGuideMedia } from '@/lib/guide-media'
 import { formatShortText } from '@/lib/short-text'
+import { resolvePublicImage } from '@/lib/public-media'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { resolveGuidePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 
 export const revalidate = 600
 
@@ -91,7 +94,8 @@ function getYouTubeID(url: string) {
 import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const guide = await readGuideBySlug(params.slug)
+  const [storedGuide, { locations }] = await Promise.all([readPublicGuideBySlug(params.slug), resolvePublicData()])
+  const guide = storedGuide ? resolveGuidePublicMedia(storedGuide, locations) : null
 
   if (!guide) {
     return {
@@ -121,90 +125,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-async function fetchGuideSpots(names: string[]) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey || !names.length) return []
-
-  const wantedNames = [...new Set(names.map((item) => String(item || '').trim()).filter(Boolean))]
-  if (!wantedNames.length) return []
-
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false },
-  })
-
-  const select = `
-        id,
-        name,
-        name_cn,
-        category,
-        latitude,
-        longitude,
-        visit_date,
-        image_url,
-        images,
-        region_id,
-        regions:region_id (
-          id,
-          name,
-          name_cn,
-          country
-        )
-      `
-  const rows = new Map<number, LinkedSpot>()
-  for (let index = 0; index < wantedNames.length; index += 50) {
-    const batch = wantedNames.slice(index, index + 50)
-    const [byEnglish, byChinese] = await Promise.all([
-      supabase.from('locations').select(select).in('name', batch).eq('status', 'active'),
-      supabase.from('locations').select(select).in('name_cn', batch).eq('status', 'active'),
-    ])
-    if (byEnglish.error || byChinese.error) return []
-    for (const row of [...(byEnglish.data || []), ...(byChinese.data || [])] as unknown as LinkedSpot[]) rows.set(row.id, row)
-  }
-  return [...rows.values()]
-}
-
-async function fetchGuideRegionSpots(regionIds: number[]) {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey || !regionIds.length) return []
-
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false },
-  })
-
-  const { data, error } = await supabase
-    .from('locations')
-    .select(`
-      id,
-      name,
-      name_cn,
-      category,
-      latitude,
-      longitude,
-      visit_date,
-      image_url,
-      images,
-      region_id,
-      regions:region_id (
-        id,
-        name,
-        name_cn,
-        country
-      )
-    `)
-    .in('region_id', regionIds)
-    .eq('status', 'active')
-    .order('visit_date', { ascending: true })
-    .order('id', { ascending: true })
-    .limit(250)
-
-  if (error || !data) return []
-  return data as LinkedSpot[]
-}
-
 async function fetchGuideAffiliateLinks(linkIds: number[]) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -228,7 +148,7 @@ async function fetchGuideAffiliateLinks(linkIds: number[]) {
 }
 
 function getSpotCover(spot: LinkedSpot) {
-  return spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'
+  return resolvePublicImage({ cover: spot.image_url, images: spot.images || [], fallback: '/placeholder-image.jpg' })
 }
 
 function normalizeText(value?: string | null) {
@@ -388,7 +308,8 @@ function resolveMatchingRegionSpot(stopName: string, spots: LinkedSpot[]) {
 }
 
 export default async function GuideDetailPage({ params }: PageProps) {
-  const guide = await readGuideBySlug(params.slug)
+  const [storedGuide, publicData] = await Promise.all([readPublicGuideBySlug(params.slug), resolvePublicData()])
+  const guide = storedGuide ? resolveGuidePublicMedia(storedGuide, publicData.locations) : null
 
   if (!guide) {
     notFound()
@@ -430,18 +351,27 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ? { budget: '', budgetItems: [], budgetScope: 'unspecified' as const }
     : { budget: guide.budget, budgetItems: guide.budgetItems, budgetScope: guide.budgetScope }
 
+  const allAttractionRefs = [
+    ...guide.days.flatMap((day) => orderedGuideAttractions(day)),
+    ...(guide.itinerarySegments || []).flatMap((segment) =>
+      segment.verifiedRoutes.flatMap((route) => orderedGuideAttractions(route))
+    ),
+  ]
   const allLinkedNames = Array.from(
     new Set([
       ...(guide.featuredSpotNames || []),
-      ...guide.days.flatMap((day) => orderedGuideAttractions(day).map((item) => item.displayName || '')),
+      ...allAttractionRefs.map((item) => item.displayName || ''),
       ...guide.days.flatMap((day) => (day.stay ? [day.stay] : [])),
       ...guide.route.flatMap((stop) => (stop.mapSpotName ? [stop.mapSpotName] : [])),
-      ...(guide.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes.flatMap((route) => orderedGuideAttractions(route).map((item) => item.displayName || ''))),
       ...(guide.itinerarySegments || []).flatMap((segment) => (segment.accommodationSpotName ? [segment.accommodationSpotName] : [])),
-    ])
+    ].filter(Boolean))
   )
 
-  const linkedSpots = await fetchGuideSpots(allLinkedNames)
+  const linkedSpots = selectPublicSpotCards(publicData.locations, {
+    ids: allAttractionRefs.flatMap((item) => item.spotId ? [item.spotId] : []),
+    slugs: allAttractionRefs.flatMap((item) => item.spotSlug ? [item.spotSlug] : []),
+    names: allLinkedNames,
+  }) as LinkedSpot[]
   const preliminarySpotMap = new Map(
     linkedSpots.flatMap((spot) => {
       const entries: Array<[string, LinkedSpot]> = []
@@ -498,7 +428,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         .filter((value): value is number => typeof value === 'number')
     )
   )
-  const regionSpots = await fetchGuideRegionSpots(supplementalRegionIds)
+  const regionSpots = selectPublicSpotCards(publicData.locations, { regionIds: supplementalRegionIds }) as LinkedSpot[]
   const allGuideSpots = Array.from(
     new Map([...linkedSpots, ...regionSpots].map((spot) => [spot.id, spot])).values()
   )
@@ -638,7 +568,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
     ]
   }))
 
-  const allGuides = await readGuides()
+  const allGuides = (await readPublicGuides()).map((item) => resolveGuidePublicMedia(item, publicData.locations))
   const relatedGuides = allGuides
     .filter(g => g.slug !== guide.slug)
     .slice(0, 3)

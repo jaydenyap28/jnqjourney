@@ -4,7 +4,9 @@ import { ArrowRight } from 'lucide-react'
 
 import SiteFooter from '@/components/SiteFooter'
 import FallbackImage from '@/components/FallbackImage'
-import { readPublishedNotes } from '@/lib/server/notes-store'
+import { readPublicNotes } from '@/lib/server/public-content-store'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { stripSummaryTokens } from '@/lib/notes'
 
 export const metadata: Metadata = {
@@ -18,7 +20,8 @@ export const metadata: Metadata = {
 export const revalidate = 600 // Cache for 10 minutes
 
 export default async function NotesIndexPage() {
-  const notes = await readPublishedNotes()
+  const [storedNotes, { locations }] = await Promise.all([readPublicNotes(), resolvePublicData()])
+  const notes = storedNotes.map((note) => resolveNotePublicMedia(note, locations))
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(251,191,36,0.08),transparent_18%),linear-gradient(180deg,#111827_0%,#020617_52%,#000000_100%)] text-white">

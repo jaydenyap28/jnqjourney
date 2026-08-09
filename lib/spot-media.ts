@@ -1,3 +1,5 @@
+import { uniquePublicImages } from './public-media.ts'
+
 interface SpotMediaSource {
   image_url?: string | null
   images?: unknown
@@ -26,26 +28,7 @@ function normalizeImageList(value: unknown) {
     .filter(Boolean)
 }
 
-function imageIdentity(value?: string | null) {
-  const text = String(value || '').trim()
-  if (!text) return ''
-
-  try {
-    const url = new URL(text)
-    return `${url.hostname.toLowerCase()}${url.pathname}`
-  } catch {
-    return text.split('#')[0].trim()
-  }
-}
-
 export function resolveSpotDisplayImages(location: SpotMediaSource) {
   const candidates = [String(location.image_url || '').trim(), ...normalizeImageList(location.images)].filter(Boolean)
-  const seen = new Set<string>()
-
-  return candidates.filter((imageUrl) => {
-    const identity = imageIdentity(imageUrl)
-    if (!identity || seen.has(identity)) return false
-    seen.add(identity)
-    return true
-  })
+  return uniquePublicImages(candidates)
 }

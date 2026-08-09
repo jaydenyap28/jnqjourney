@@ -1,24 +1,24 @@
 import HomePageClient from '@/components/HomePageClient'
-import { readGuides } from '@/lib/server/guides-store'
-import { readPublishedNotes } from '@/lib/server/notes-store'
+import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 
 export const revalidate = 3600
 
 export default async function Home() {
   const [{ locations, regions }, guides, notes, packages] = await Promise.all([
     resolvePublicData(),
-    readGuides(),
-    readPublishedNotes(),
+    readPublicGuides(),
+    readPublicNotes(),
     readPublishedPackages(),
   ])
 
   return (
     <HomePageClient
-      initialGuides={guides.slice(0, 6)}
       initialLocations={locations}
-      initialNotes={notes}
+      initialGuides={guides.slice(0, 6).map((guide) => resolveGuidePublicMedia(guide, locations))}
+      initialNotes={notes.map((note) => resolveNotePublicMedia(note, locations))}
       initialRegions={regions}
       initialLoadError={null}
       initialPackages={packages.slice(0, 3)}

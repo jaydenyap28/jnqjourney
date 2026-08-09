@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test:guide-budget": "node --experimental-strip-types --test tests/guide-budget-contract.test.ts tests/guide-trip-cost-taxonomy.test.ts tests/guide-budget-display.test.ts tests/guide-trip-cost-source.test.ts",
-    "test:public-data": "node --experimental-strip-types --test tests/public-data-contract.test.ts",
+    "test:public-data": "node --experimental-strip-types --test tests/public-data-contract.test.ts tests/spot-media-contract.test.ts tests/guide-media-resolver.test.ts tests/public-media-contract.test.ts",
     "snapshot:spots": "node scripts/build-public-spot-fallbacks.mjs",
     "audit:locations": "node scripts/audit-locations.mjs",
     "fix:locations": "node scripts/fix-common-location-issues.mjs",

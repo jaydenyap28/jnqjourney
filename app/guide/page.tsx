@@ -2,8 +2,11 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { ArrowRight, CalendarDays, Wallet } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
+import FallbackImage from '@/components/FallbackImage'
 import { getGuideDisplayPair } from '@/lib/content-display'
-import { readGuides } from '@/lib/server/guides-store'
+import { readPublicGuides } from '@/lib/server/public-content-store'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { resolveGuidePublicMedia } from '@/lib/server/public-content-media'
 
 export const metadata: Metadata = {
   title: '完整旅程攻略 | JnQ Journey',
@@ -27,7 +30,8 @@ export const metadata: Metadata = {
 export const revalidate = 600 // Cache for 10 minutes
 
 export default async function GuideIndexPage() {
-  const guides = await readGuides()
+  const [storedGuides, { locations }] = await Promise.all([readPublicGuides(), resolvePublicData()])
+  const guides = storedGuides.map((guide) => resolveGuidePublicMedia(guide, locations))
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
@@ -50,7 +54,16 @@ export default async function GuideIndexPage() {
                 href={`/guide/${guide.slug}`}
                 className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
               >
-                <div className={`relative overflow-hidden p-6 md:p-8 ${guide.coverAccent}`}>
+                <div className={`relative min-h-[300px] overflow-hidden p-6 md:p-8 ${guide.coverAccent}`}>
+                {guide.coverImage ? (
+                  <FallbackImage
+                    src={guide.coverImage}
+                    alt={`${title.primary} travel guide cover`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                  />
+                ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
                 <div className="relative z-10">
                   <p className="text-sm uppercase tracking-[0.28em] text-amber-100/80">{guide.travelStyle}</p>

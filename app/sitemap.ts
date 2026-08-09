@@ -2,9 +2,8 @@
 
 import { buildRegionPath } from '@/lib/region-routing'
 import { absoluteUrl } from '@/lib/site'
-import { readGuides } from '@/lib/server/guides-store'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
-import { readPublishedNotes } from '@/lib/server/notes-store'
+import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
@@ -18,8 +17,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [locations, regions, guides, notes, packages] = await Promise.all([
     fetchAllLocationsForSitemap(),
     fetchAllRegionsForSitemap(),
-    readGuides(),
-    readPublishedNotes(),
+    readPublicGuides(),
+    readPublicNotes(),
     readPublishedPackages(),
   ])
 

@@ -1,14 +1,17 @@
 ﻿import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { NextResponse } from 'next/server'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeNotePayload, readNotes, saveNotes } from '@/lib/server/notes-store'
+import { PRIVATE_NO_STORE } from '@/lib/public-data'
 
 export const runtime = 'nodejs'
+const ADMIN_HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
 
 export async function GET(request: Request) {
   const adminCheck = await requireAdminRequest(request)
   if (!adminCheck.ok) return adminCheck.response
   const notes = await readNotes()
-  return NextResponse.json({ notes })
+  return NextResponse.json({ notes }, { headers: ADMIN_HEADERS })
 }
 
 export async function POST(request: Request) {
@@ -40,7 +43,13 @@ export async function POST(request: Request) {
 
     const savedNotes = await saveNotes(notes)
     const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
-    return NextResponse.json({ note: savedNote })
+    revalidateTag('notes')
+    revalidatePath('/')
+    revalidatePath('/notes')
+    revalidatePath('/api/notes')
+    revalidatePath(`/notes/${payload.slug}`)
+    if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/notes/${previousSlug}`)
+    return NextResponse.json({ note: savedNote }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存笔记失败。' }, { status: 500 })
   }
@@ -59,8 +68,12 @@ export async function DELETE(request: Request) {
     const notes = await readNotes()
     const nextNotes = notes.filter((item) => item.slug !== slug)
     await saveNotes(nextNotes)
-
-    return NextResponse.json({ ok: true })
+    revalidateTag('notes')
+    revalidatePath('/')
+    revalidatePath('/notes')
+    revalidatePath('/api/notes')
+    revalidatePath(`/notes/${slug}`)
+    return NextResponse.json({ ok: true }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '删除笔记失败。' }, { status: 500 })
   }

@@ -4,6 +4,7 @@ import path from 'node:path'
 const root = process.cwd()
 const sourcePath = path.join(root, 'public-data', 'locations.json')
 const outputDir = path.join(root, 'public-data', 'spots')
+const replaceLightweight = process.argv.includes('--replace-lightweight')
 
 function splitDisplayName(value) {
   const display = String(value || '').trim()
@@ -60,13 +61,26 @@ if (payload?.schemaVersion !== 1 || !Array.isArray(payload.locations) || !payloa
 
 await mkdir(outputDir, { recursive: true })
 const generatedAt = new Date().toISOString()
-const source = { type: 'static-lightweight-location-snapshot', generatedAt }
+const source = { type: 'static-lightweight-location-seed', generatedAt }
 const slugs = []
+let created = 0
+let preserved = 0
 for (const location of payload.locations) {
   const spot = spotFromLocation(location)
   if (!spot.slug || !Number.isInteger(spot.id) || spot.id <= 0) throw new Error(`Invalid public location: ${JSON.stringify(location)}`)
   slugs.push(spot.slug)
-  await writeAtomic(path.join(outputDir, `${spot.slug}.json`), { schemaVersion: 1, source, spot })
+  const outputPath = path.join(outputDir, `${spot.slug}.json`)
+  if (!replaceLightweight) {
+    try {
+      const existing = JSON.parse((await readFile(outputPath, 'utf8')).replace(/^\uFEFF/, ''))
+      if (existing?.schemaVersion === 1 && Number(existing?.spot?.id) === spot.id) {
+        preserved += 1
+        continue
+      }
+    } catch {}
+  }
+  await writeAtomic(outputPath, { schemaVersion: 1, source, spot })
+  created += 1
 }
 await writeAtomic(path.join(outputDir, 'index.json'), { schemaVersion: 1, source, slugs })
-console.log(JSON.stringify({ generatedAt, spots: slugs.length, outputDir }, null, 2))
+console.log(JSON.stringify({ generatedAt, spots: slugs.length, created, preserved, replaceLightweight, outputDir }, null, 2))

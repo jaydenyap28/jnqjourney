@@ -216,3 +216,11 @@ export function uploadPublicSpotSnapshot(slug: string, body: Buffer | Uint8Array
 export function uploadPublicSpotIndex(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/spots/index.json', body)
 }
+
+export function uploadPublicGuidesSnapshot(body: Buffer | Uint8Array) {
+  return uploadPublicJsonObject('public-data/guides.json', body)
+}
+
+export function uploadPublicNotesSnapshot(body: Buffer | Uint8Array) {
+  return uploadPublicJsonObject('public-data/notes.json', body)
+}

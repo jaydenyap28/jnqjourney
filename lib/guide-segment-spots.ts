@@ -1,4 +1,5 @@
 import type { GuideAttractionRef } from './guides'
+import { resolvePublicImage } from './public-media.ts'
 
 export interface GuideSegmentSpot {
   id: number
@@ -60,5 +61,5 @@ export function guideAttractionMap(attractions: GuideAttractionRef[], spots: Gui
 }
 
 export function getGuideSpotCover(spot?: Pick<GuideSegmentSpot, 'image_url' | 'images'> | null) {
-  return spot?.image_url || spot?.images?.find(Boolean) || '/placeholder-image.jpg'
+  return resolvePublicImage({ cover: spot?.image_url, images: spot?.images || [], fallback: '/placeholder-image.jpg' })
 }
