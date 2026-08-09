@@ -188,6 +188,12 @@ const report = {
     legacyUrlMatches: r2Matches,
   },
 }
+const findR2 = process.argv.find((value) => value.startsWith('--find-r2='))?.split('=', 2)[1]?.toLowerCase()
+if (findR2) {
+  report.r2.matches = r2Objects
+    .filter((item) => item.key?.toLowerCase().includes(findR2))
+    .map((item) => ({ key: item.key, size: item.size }))
+}
 
 if (process.argv.includes('--supabase')) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL

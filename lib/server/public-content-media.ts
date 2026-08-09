@@ -5,7 +5,7 @@ import { isR2PublicImage, resolvePublicImage } from '../public-media.ts'
 import { publicSpotFromLocationSummary, type PublicSpotRecord } from '../public-spot.ts'
 
 const GUIDE_SPECIFIC_R2_COVERS: Record<string, string> = {
-  'china-jiangnan-autumn-15d14n': 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f3743-0117-4e79-a73e-dc8dcb9ab0d1-img_5709.webp',
+  'china-jiangnan-autumn-15d14n': 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f7830-b1be-4c33-9dc7-da04f8757a2b-img_5709.webp',
 }
 
 // Exact legacy asset identities already present in R2. These are compatibility
