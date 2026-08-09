@@ -15,10 +15,11 @@ import {
   type PublicRegionsPayload,
   type ResolvedPublicData,
 } from '@/lib/public-data'
+import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
-const SNAPSHOT_LOCATIONS_SELECT = `${LOCATIONS_SELECT},images,description,review`
+const SNAPSHOT_LOCATIONS_SELECT = `${LOCATIONS_SELECT},images,description,tags,video_url,facebook_video_url,visit_date,opening_hours,price_info,address`
 const SNAPSHOT_REGIONS_SELECT = `${REGIONS_SELECT},description`
 const TIMEOUT_MS = 4000
 
@@ -148,7 +149,12 @@ async function readSupabase(): Promise<ResolvedPublicData | null> {
   }
 }
 
-async function readSupabaseSnapshot(): Promise<ResolvedPublicData | null> {
+interface PublicSnapshotBundle {
+  data: ResolvedPublicData
+  spots: PublicSpotRecord[]
+}
+
+async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) return null
@@ -159,8 +165,18 @@ async function readSupabaseSnapshot(): Promise<ResolvedPublicData | null> {
       supabase.from('regions').select(SNAPSHOT_REGIONS_SELECT).order('id', { ascending: true }),
     ]), 'Supabase snapshot data')
     if (locationsResult.error || regionsResult.error) return null
-    const normalized = normalizeSupabasePublicData(locationsResult.data || [], regionsResult.data || [])
-    return { ...normalized, source: 'supabase' }
+    const locationRows = locationsResult.data || []
+    const regionRows = regionsResult.data || []
+    const normalized = normalizeSupabasePublicData(locationRows, regionRows)
+    const locationById = new Map(normalized.locations.map((location) => [location.id, location]))
+    const regionById = new Map(regionRows.map((region: any) => [Number(region.id), region]))
+    const spots = locationRows
+      .map((row: any) => {
+        const location = locationById.get(Number(row.id))
+        return location ? publicSpotFromSupabaseRow(row, location, regionById.get(Number(row.region_id))) : null
+      })
+      .filter((spot): spot is PublicSpotRecord => Boolean(spot))
+    return { data: { ...normalized, source: 'supabase' }, spots }
   } catch {
     return null
   }
@@ -198,9 +214,15 @@ export async function resolvePublicData() {
 }
 
 export async function resolvePublicDataUncachedForSnapshot() {
-  const supabase = await readSupabaseSnapshot()
-  if (!supabase) throw new Error('Authoritative public data is unavailable.')
-  return supabase
+  const bundle = await readSupabaseSnapshotBundle()
+  if (!bundle) throw new Error('Authoritative public data is unavailable.')
+  return bundle.data
+}
+
+export async function resolvePublicSnapshotBundleUncached() {
+  const bundle = await readSupabaseSnapshotBundle()
+  if (!bundle) throw new Error('Authoritative public data is unavailable.')
+  return bundle
 }
 
 export function dataSourceHeader(source: PublicDataSource) {

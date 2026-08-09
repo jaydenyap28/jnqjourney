@@ -1489,10 +1489,19 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           const slugPayload = await slugResponse.json().catch(() => ({}))
           throw new Error(slugPayload?.error || '保存自定义 slug 失败')
         }
+
+        const snapshotResponse = await adminFetch(`/api/admin/public-data/spots/${savedRecord.id}`, {
+          method: 'POST',
+        })
+        if (!snapshotResponse.ok) {
+          const snapshotPayload = await snapshotResponse.json().catch(() => ({}))
+          console.warn('Spot snapshot refresh failed after database save:', snapshotPayload?.error || snapshotResponse.status)
+          setMessage(`${mode === 'edit' ? '更新' : '发布'}成功，但公开 fallback 快照刷新失败；上一份有效快照会继续使用。`)
+        }
       }
 
       setLastUpdatedAt(savedRecord?.updated_at || new Date().toISOString())
-      setMessage(mode === 'edit' ? '更新成功！' : '发布成功！')
+      setMessage((current) => current || (mode === 'edit' ? '更新成功！' : '发布成功！'))
       
       // Force a router refresh to ensure data is up-to-date across the app
       router.refresh()

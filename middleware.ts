@@ -1,6 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+async function guardSpot(request: NextRequest) {
+  const slug = request.nextUrl.pathname.split('/').filter(Boolean)[1]
+  if (!slug) return NextResponse.next()
+  const endpoint = new URL(`/api/spots/${encodeURIComponent(slug)}`, request.url)
+  try {
+    const response = await fetch(endpoint, { cache: 'force-cache' })
+    if (response.ok) {
+      const nextResponse = NextResponse.next()
+      const source = response.headers.get('X-JNQ-Data-Source')
+      if (source) nextResponse.headers.set('X-JNQ-Data-Source', source)
+      return nextResponse
+    }
+    if (response.status === 404) {
+      return new NextResponse('Not Found', {
+        status: 404,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow' },
+      })
+    }
+    if (response.status === 503) {
+      return new NextResponse('This spot is temporarily unavailable. Please try again shortly.', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Retry-After': '30', 'X-Robots-Tag': 'noindex' },
+      })
+    }
+  } catch (error) {
+    console.error('[spot-visibility]', error)
+  }
+  return NextResponse.next()
+}
+
+async function guardPackage(request: NextRequest) {
   const pathParts = request.nextUrl.pathname.split('/').filter(Boolean)
   const slug = pathParts[1]
   if (!slug) return NextResponse.next()
@@ -40,6 +70,11 @@ export async function middleware(request: NextRequest) {
   }
 }
 
+export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith('/spot/')) return guardSpot(request)
+  return guardPackage(request)
+}
+
 export const config = {
-  matcher: ['/packages/:path*'],
+  matcher: ['/packages/:path*', '/spot/:path*'],
 }

@@ -1,9 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
-import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
 
 export interface LocationSummary {
   id: number
@@ -40,19 +39,6 @@ export interface PublicLocationRecord extends LocationSummary {
   regions?: RegionRecord | null
 }
 
-function createPublicSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase public environment variables')
-  }
-
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false },
-  })
-}
-
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
   const toRad = (degrees: number) => (degrees * Math.PI) / 180
   const earthRadiusKm = 6371
@@ -65,64 +51,26 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number) {
 }
 
 export const fetchLocationBySlug = cache(async (slug: string) => {
-  const locationId = extractLocationIdFromSlug(slug)
-  if (!locationId) return null
-
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('locations')
-    .select(`
-      id,name,name_cn,category,latitude,longitude,image_url,images,description,review,tags,
-      video_url,facebook_video_url,visit_date,opening_hours,price_info,address,region_id,
-      regions:region_id (
-        id,
-        name,
-        name_cn,
-        country,
-        description,
-        image_url
-      )
-    `)
-    .eq('id', locationId)
-    .eq('status', 'active')
-    .single()
-
-  if (error || !data) return null
-  return data as unknown as PublicLocationRecord
+  const result = await getPublicSpotBySlug(slug)
+  return result ? result.spot as PublicLocationRecord : null
 })
 
 export async function fetchRelatedLocations(location: PublicLocationRecord, limit = 6) {
   if (!location.region_id) return []
-
-  const supabase = createPublicSupabaseClient()
-  const { data, error } = await supabase
-    .from('locations')
-    .select(`
-      id,
-      name,
-      name_cn,
-      category,
-      latitude,
-      longitude,
-      image_url,
-      images,
-      description,
-      review,
-      tags
-    `)
-    .neq('id', location.id)
-    .eq('region_id', location.region_id)
-    .eq('status', 'active')
-    .not('latitude', 'is', null)
-    .not('longitude', 'is', null)
-    .limit(24)
-
-  if (error || !data) return []
-
-  const sameRegion = (data as LocationSummary[])
-    .filter((item) => Number.isFinite(Number(item.latitude)) && Number.isFinite(Number(item.longitude)))
+  const { locations } = await resolvePublicData()
+  const sameRegion = locations
+    .filter((item) => item.id !== location.id && item.region?.id === location.region_id)
     .map((item) => ({
-      ...item,
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      image_url: item.thumbnail,
+      images: item.thumbnail ? [item.thumbnail] : [],
+      description: item.shortSummary,
+      review: null,
+      tags: [],
       distanceKm: haversineKm(location.latitude, location.longitude, item.latitude, item.longitude),
     }))
     .sort((left, right) => left.distanceKm - right.distanceKm)

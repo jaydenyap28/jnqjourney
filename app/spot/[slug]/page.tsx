@@ -3,15 +3,17 @@ import { notFound, redirect } from 'next/navigation'
 import SiteFooter from '@/components/SiteFooter'
 import SpotContent from '@/components/SpotContent'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
-import { fetchLocationBySlug, fetchRelatedLocations } from '@/lib/server/public-location-data'
+import { fetchRelatedLocations } from '@/lib/server/public-location-data'
+import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
 import { readGuides } from '@/lib/server/guides-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
-import { buildCanonicalUrl, buildMetaDescription, buildOpenGraphData, buildPageTitle, buildTwitterCardData } from '@/lib/seo'
+import { buildCanonicalUrl, buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
 export const revalidate = 600
+export const dynamic = 'force-static'
 
 interface PageProps {
   params: {
@@ -31,12 +33,11 @@ function getCoverImage(location: { image_url?: string | null; images?: string[] 
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const location = await fetchLocationBySlug(params.slug)
+  const resolved = await getPublicSpotBySlug(params.slug)
+  const location = resolved?.spot
 
   if (!location) {
-    return {
-      title: buildPageTitle('Spot not found'),
-    }
+    notFound()
   }
 
   const regionName = location.regions?.name_cn || location.regions?.name || ''
@@ -61,7 +62,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function SpotPage({ params }: PageProps) {
-  const location = await fetchLocationBySlug(params.slug)
+  const resolved = await getPublicSpotBySlug(params.slug)
+  const location = resolved?.spot
 
   if (!location) {
     notFound()
@@ -169,7 +171,10 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.15),transparent_22%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white">
+    <main
+      className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.15),transparent_22%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white"
+      data-jnq-data-source={resolved.source}
+    >
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
       <SpotContent

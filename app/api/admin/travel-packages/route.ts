@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
@@ -195,6 +196,7 @@ export async function POST(request: Request) {
     : supabase.from('travel_packages').insert(payload)
   const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateTag('travel-packages')
   return NextResponse.json({ package: data })
 }
 
@@ -222,5 +224,6 @@ export async function DELETE(request: Request) {
 
   const { error } = await supabase.from('travel_packages').delete().eq('id', id).eq('slug', confirmSlug)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateTag('travel-packages')
   return NextResponse.json({ ok: true })
 }

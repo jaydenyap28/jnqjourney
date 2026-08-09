@@ -194,3 +194,25 @@ export async function uploadPublicDataSnapshot(fileName: 'locations.json' | 'reg
   }))
   return `${getR2PublicBaseUrl()}/${key}`
 }
+
+async function uploadPublicJsonObject(key: string, body: Buffer | Uint8Array) {
+  assertR2Env()
+  await getR2Client().send(new PutObjectCommand({
+    Bucket: process.env.R2_BUCKET_NAME!,
+    Key: key,
+    Body: body,
+    ContentType: 'application/json; charset=utf-8',
+    CacheControl: 'public, max-age=3600, stale-while-revalidate=86400',
+  }))
+  return `${getR2PublicBaseUrl()}/${key}`
+}
+
+export function uploadPublicSpotSnapshot(slug: string, body: Buffer | Uint8Array) {
+  const safeSlug = String(slug || '').trim()
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*-\d+$/.test(safeSlug)) throw new Error(`Invalid public spot slug: ${slug}`)
+  return uploadPublicJsonObject(`public-data/spots/${safeSlug}.json`, body)
+}
+
+export function uploadPublicSpotIndex(body: Buffer | Uint8Array) {
+  return uploadPublicJsonObject('public-data/spots/index.json', body)
+}

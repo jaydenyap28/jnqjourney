@@ -10,6 +10,7 @@ import {
   PUBLIC_CACHE_CONTROL,
   resolvePublicDataSources,
 } from '../lib/public-data.ts'
+import { resolvePublicSpotSources } from '../lib/public-spot.ts'
 
 const root = process.cwd()
 const read = (file: string) => readFile(path.join(root, file), 'utf8')
@@ -106,4 +107,110 @@ test('Guide writes revalidate collection and slug-specific cache tags', async ()
   assert.match(source, /revalidateTag\('guides'\)/)
   assert.match(source, /revalidateTag\(`guide:\$\{payload\.slug\}`\)/)
   assert.match(source, /revalidatePath\('\/api\/guides'\)/)
+})
+
+test('public Spot snapshots use the detail schema without private fields', async () => {
+  const index = JSON.parse(await read('public-data/spots/index.json'))
+  assert.equal(index.schemaVersion, 1)
+  assert.equal(index.slugs.length, 547)
+  assert.ok(index.slugs.includes('tachuan-academy-806'))
+  const payload = JSON.parse(await read('public-data/spots/tachuan-academy-806.json'))
+  assert.equal(payload.schemaVersion, 1)
+  assert.equal(payload.spot.id, 806)
+  assert.equal(payload.spot.slug, 'tachuan-academy-806')
+  assert.match(payload.spot.description, /塔川书院/)
+  assert.match(payload.spot.image_url, /\.r2\.dev\//)
+  for (const forbidden of ['admin_notes', 'review_status', 'hmac', 'internal_audit']) {
+    assert.equal(Object.hasOwn(payload.spot, forbidden), false)
+  }
+})
+
+test('Supabase Spot quota failure falls back to a compatible snapshot', async () => {
+  const fallback = JSON.parse(await read('public-data/spots/tachuan-academy-806.json')).spot
+  const result = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'not-found' }),
+    supabase: async () => ({ status: 'failure', error: new Error('exceed_egress_quota') }),
+    fallback: async () => ({ status: 'found', spot: fallback }),
+  })
+  assert.equal(result.status, 'found')
+  assert.equal(result.status === 'found' && result.source, 'static-fallback')
+  assert.equal(result.status === 'found' && result.spot.id, 806)
+})
+
+test('Supabase Spot timeout falls back instead of becoming not found', async () => {
+  const fallback = JSON.parse(await read('public-data/spots/tachuan-academy-806.json')).spot
+  const result = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'failure', error: new Error('CDN timeout') }),
+    supabase: async () => { throw new Error('Supabase public spot timed out') },
+    fallback: async () => ({ status: 'found', spot: fallback }),
+  })
+  assert.equal(result.status, 'found')
+  assert.equal(result.status === 'found' && result.source, 'static-fallback')
+})
+
+test('only authoritative zero rows plus a missing snapshot becomes 404', async () => {
+  const missing = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'not-found' }),
+    supabase: async () => ({ status: 'not-found' }),
+    fallback: async () => ({ status: 'not-found' }),
+  })
+  assert.equal(missing.status, 'not-found')
+
+  const unavailable = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'not-found' }),
+    supabase: async () => ({ status: 'failure', error: new Error('network error') }),
+    fallback: async () => ({ status: 'not-found' }),
+  })
+  assert.equal(unavailable.status, 'unavailable')
+
+  const snapshotConfirmedMissing = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'not-found' }),
+    supabase: async () => ({ status: 'failure', error: new Error('network error') }),
+    fallback: async () => ({ status: 'not-found', authoritative: true }),
+  })
+  assert.equal(snapshotConfirmedMissing.status, 'not-found')
+})
+
+test('Spot CDN hit performs zero Supabase calls', async () => {
+  const fallback = JSON.parse(await read('public-data/spots/tachuan-academy-806.json')).spot
+  let supabaseCalls = 0
+  const result = await resolvePublicSpotSources({
+    cdn: async () => ({ status: 'found', spot: fallback }),
+    supabase: async () => { supabaseCalls += 1; return { status: 'not-found' } },
+    fallback: async () => ({ status: 'not-found' }),
+  })
+  assert.equal(result.status, 'found')
+  assert.equal(result.status === 'found' && result.source, 'cdn-cache')
+  assert.equal(supabaseCalls, 0)
+})
+
+test('Spot public query is exact, field-whitelisted, and related Spots reuse public data', async () => {
+  const [resolver, locations] = await Promise.all([
+    read('lib/server/public-spot-resolver.ts'),
+    read('lib/server/public-location-data.ts'),
+  ])
+  assert.doesNotMatch(resolver, /\.select\([\s\S]*?['"`]\s*\*/)
+  assert.match(resolver, /\.eq\('id', id\)/)
+  assert.match(resolver, /\.maybeSingle\(\)/)
+  assert.doesNotMatch(resolver, /\.order\(/)
+  const relatedBody = locations.slice(locations.indexOf('export async function fetchRelatedLocations'), locations.indexOf('export async function fetchRegionBySlug'))
+  assert.match(relatedBody, /resolvePublicData\(\)/)
+  assert.doesNotMatch(relatedBody, /\.from\(/)
+})
+
+test('Spot API and admin refresh preserve cache contracts', async () => {
+  const [publicRoute, adminRoute, page, middleware] = await Promise.all([
+    read('app/api/spots/[slug]/route.ts'),
+    read('app/api/admin/public-data/spots/[id]/route.ts'),
+    read('app/spot/[slug]/page.tsx'),
+    read('middleware.ts'),
+  ])
+  assert.match(publicRoute, /PUBLIC_CACHE_CONTROL/)
+  assert.match(publicRoute, /X-JNQ-Data-Source/)
+  assert.match(adminRoute, /PRIVATE_NO_STORE/)
+  assert.match(adminRoute, /revalidateTag\(`public-spot:\$\{spot\.slug\}`\)/)
+  assert.match(page, /data-jnq-data-source=\{resolved\.source\}/)
+  assert.match(middleware, /response\.status === 404/)
+  assert.match(middleware, /status: 404/)
+  assert.match(middleware, /'\/spot\/:path\*'/)
 })
