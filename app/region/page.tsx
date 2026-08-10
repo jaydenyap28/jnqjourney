@@ -1,6 +1,6 @@
 ﻿import Link from 'next/link'
-import Image from 'next/image'
 import type { Metadata } from 'next'
+import FallbackImage from '@/components/FallbackImage'
 import SiteFooter from '@/components/SiteFooter'
 import { Badge } from '@/components/ui/badge'
 import { buildRegionPath } from '@/lib/region-routing'
@@ -48,10 +48,11 @@ export default async function RegionIndexPage() {
               >
                 <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
                   {region.image_url ? (
-                    <Image
+                    <FallbackImage
                       src={region.image_url}
                       alt={region.name}
                       fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                       className="object-cover transition duration-500 group-hover:scale-105"
                     />
                   ) : (

@@ -16,6 +16,7 @@ import {
   type ResolvedPublicData,
 } from '@/lib/public-data'
 import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
+import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
@@ -183,7 +184,7 @@ async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null
 }
 
 async function resolveUncached(): Promise<ResolvedPublicData> {
-  return resolvePublicDataSources({
+  const resolved = await resolvePublicDataSources({
     cdn: async () => {
       const value = await readCdnSnapshot()
       return value ? { locations: value.locations, regions: value.regions } : null
@@ -197,6 +198,7 @@ async function resolveUncached(): Promise<ResolvedPublicData> {
       return { locations: value.locations, regions: value.regions }
     },
   })
+  return { ...resolved, regions: resolvePublicRegionMedia(resolved.regions, resolved.locations) }
 }
 
 async function resolveCoalesced() {
@@ -216,13 +218,16 @@ export async function resolvePublicData() {
 export async function resolvePublicDataUncachedForSnapshot() {
   const bundle = await readSupabaseSnapshotBundle()
   if (!bundle) throw new Error('Authoritative public data is unavailable.')
-  return bundle.data
+  return { ...bundle.data, regions: resolvePublicRegionMedia(bundle.data.regions, bundle.data.locations) }
 }
 
 export async function resolvePublicSnapshotBundleUncached() {
   const bundle = await readSupabaseSnapshotBundle()
   if (!bundle) throw new Error('Authoritative public data is unavailable.')
-  return bundle
+  return {
+    ...bundle,
+    data: { ...bundle.data, regions: resolvePublicRegionMedia(bundle.data.regions, bundle.data.locations) },
+  }
 }
 
 export function dataSourceHeader(source: PublicDataSource) {

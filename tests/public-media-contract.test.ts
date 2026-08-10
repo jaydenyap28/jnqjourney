@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises'
 import test from 'node:test'
 
 import { resolvePublicImage, uniquePublicImages } from '../lib/public-media.ts'
+import { auditPublicRegionMedia, resolvePublicRegionMedia } from '../lib/public-region-media.ts'
 import { resolveGuidePublicMedia, resolveNotePublicMedia, selectPublicSpotCards } from '../lib/server/public-content-media.ts'
 import type { TravelGuide } from '../lib/guides.ts'
 import type { LongformNote } from '../lib/notes.ts'
@@ -68,6 +69,48 @@ test('Guide and Longform public pages do not query the locations table directly'
     readFile('app/notes/[slug]/page.tsx', 'utf8'),
   ])
   for (const source of sources) assert.doesNotMatch(source, /\.from\(['"]locations['"]\)/)
+})
+
+test('Region covers use only deterministic R2 media from the Region tree', () => {
+  const regionFixtures = [
+    { id: 1, slug: 'parent-1', name: 'Parent', country: 'Malaysia', thumbnail: 'https://i.ibb.co/old.webp', shortSummary: null, parentId: null, code: null },
+    { id: 2, slug: 'child-2', name: 'Child', country: 'Malaysia', thumbnail: null, shortSummary: null, parentId: 1, code: null },
+    { id: 3, slug: 'other-3', name: 'Other', country: 'Malaysia', thumbnail: null, shortSummary: null, parentId: null, code: null },
+  ]
+  const locationFixtures: PublicLocation[] = [
+    { id: 20, slug: 'food-20', name: 'Food', region: { id: 2, slug: 'child-2', name: 'Child', country: 'Malaysia', code: null }, category: 'food', latitude: 1, longitude: 1, thumbnail: r2('food'), shortSummary: null },
+    { id: 10, slug: 'spot-10', name: 'Spot', region: { id: 2, slug: 'child-2', name: 'Child', country: 'Malaysia', code: null }, category: 'attraction', latitude: 1, longitude: 1, thumbnail: r2('spot'), shortSummary: null },
+    { id: 1, slug: 'wrong-1', name: 'Wrong', region: { id: 3, slug: 'other-3', name: 'Other', country: 'Malaysia', code: null }, category: 'attraction', latitude: 1, longitude: 1, thumbnail: r2('wrong'), shortSummary: null },
+  ]
+  const resolved = resolvePublicRegionMedia(regionFixtures, locationFixtures)
+  assert.equal(resolved[0].thumbnail, r2('spot'))
+  assert.equal(resolved[1].thumbnail, r2('spot'))
+  assert.equal(resolved[2].thumbnail, r2('wrong'))
+  assert.equal(regionFixtures[0].thumbnail, 'https://i.ibb.co/old.webp')
+  assert.deepEqual(auditPublicRegionMedia(regionFixtures, locationFixtures), {
+    total: 3, explicitR2: 0, explicitExternal: 1, missingExplicit: 2,
+    spotR2Fallback: 3, externalOnly: 0, logoFallback: 0,
+  })
+})
+
+test('all Regions with associated public Spot media resolve without inflating locations', async () => {
+  const [regionPayload, locationRaw] = await Promise.all([
+    readFile('public-data/regions.json', 'utf8').then(JSON.parse),
+    readFile('public-data/locations.json', 'utf8'),
+  ])
+  const locationPayload = JSON.parse(locationRaw)
+  const audit = auditPublicRegionMedia(regionPayload.regions, locationPayload.locations)
+  assert.deepEqual(audit, {
+    total: 56,
+    explicitR2: 2,
+    explicitExternal: 52,
+    missingExplicit: 2,
+    spotR2Fallback: 53,
+    externalOnly: 0,
+    logoFallback: 1,
+  })
+  assert.equal(locationPayload.locations.length, 547)
+  assert.ok(Buffer.byteLength(locationRaw) < 500000)
 })
 
 test('lightweight snapshot builder preserves existing Spot detail files by default', async () => {
