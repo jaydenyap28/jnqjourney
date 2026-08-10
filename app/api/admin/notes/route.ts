@@ -19,6 +19,17 @@ export async function POST(request: Request) {
   if (!adminCheck.ok) return adminCheck.response
   try {
     const rawPayload = await request.json()
+    if (rawPayload?.action === 'revalidate-public') {
+      const slug = String(rawPayload?.slug || '').trim()
+      if (!slug) return NextResponse.json({ error: '缺少 slug。' }, { status: 400, headers: ADMIN_HEADERS })
+      revalidateTag('notes')
+      revalidateTag(`note:${slug}`)
+      revalidatePath('/')
+      revalidatePath('/notes')
+      revalidatePath('/api/notes')
+      revalidatePath(`/notes/${slug}`)
+      return NextResponse.json({ ok: true, slug, revalidated: ['notes', `note:${slug}`] }, { headers: ADMIN_HEADERS })
+    }
     const previousSlug = String(rawPayload?.previousSlug || '').trim()
     const payload = normalizeNotePayload(rawPayload)
 
@@ -44,6 +55,7 @@ export async function POST(request: Request) {
     const savedNotes = await saveNotes(notes)
     const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
     revalidateTag('notes')
+    revalidateTag(`note:${payload.slug}`)
     revalidatePath('/')
     revalidatePath('/notes')
     revalidatePath('/api/notes')
@@ -69,6 +81,7 @@ export async function DELETE(request: Request) {
     const nextNotes = notes.filter((item) => item.slug !== slug)
     await saveNotes(nextNotes)
     revalidateTag('notes')
+    revalidateTag(`note:${slug}`)
     revalidatePath('/')
     revalidatePath('/notes')
     revalidatePath('/api/notes')

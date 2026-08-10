@@ -27,12 +27,12 @@ async function withTimeout<T>(promise: Promise<T>, label: string) {
   }
 }
 
-async function readCdnCollection<T>(fileName: string, key: 'guides' | 'notes', tag: string) {
+async function readCdnCollection<T>(fileName: string, key: 'guides' | 'notes', tags: string[]) {
   const base = cdnBase()
   if (!base) return null
   try {
     const response = await withTimeout(fetch(`${base}/public-data/${fileName}`, {
-      next: { revalidate: 3600, tags: [tag] },
+      next: { revalidate: 3600, tags },
     }), `Public ${key} CDN`)
     if (!response.ok) return null
     const payload = await response.json() as Record<string, unknown>
@@ -43,22 +43,30 @@ async function readCdnCollection<T>(fileName: string, key: 'guides' | 'notes', t
 }
 
 async function readPublicGuidesUncached(): Promise<TravelGuide[]> {
-  const snapshot = await readCdnCollection('guides.json', 'guides', 'guides')
+  const snapshot = await readCdnCollection('guides.json', 'guides', ['guides'])
   if (snapshot) return snapshot.map((item) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
   return readGuides()
 }
 
 async function readPublicNotesUncached(): Promise<LongformNote[]> {
-  const snapshot = await readCdnCollection('notes.json', 'notes', 'notes')
+  const snapshot = await readCdnCollection('notes.json', 'notes', ['notes'])
   if (snapshot) return snapshot.map((item) => normalizeNotePayload(item)).filter((note) => note.published && note.slug && note.title)
   return readPublishedNotes()
+}
+
+async function readPublicNoteBySlugUncached(slug: string): Promise<LongformNote | null> {
+  const snapshot = await readCdnCollection('notes.json', 'notes', ['notes', `note:${slug}`])
+  const notes = snapshot
+    ? snapshot.map((item) => normalizeNotePayload(item)).filter((note) => note.published && note.slug && note.title)
+    : await readPublishedNotes()
+  return notes.find((note) => note.slug === slug || note.aliases?.includes(slug)) || null
 }
 
 const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v1'], {
   revalidate: 3600,
   tags: ['guides'],
 })
-const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v1'], {
+const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v2'], {
   revalidate: 3600,
   tags: ['notes'],
 })
@@ -77,6 +85,9 @@ export function readPublicNotes() {
 }
 
 export async function readPublicNoteBySlug(slug: string) {
-  const notes = await readPublicNotes()
-  return notes.find((note) => note.slug === slug || note.aliases?.includes(slug)) || null
+  return unstable_cache(
+    () => readPublicNoteBySlugUncached(slug),
+    ['public-note-v2', slug],
+    { revalidate: 3600, tags: ['notes', `note:${slug}`] },
+  )()
 }

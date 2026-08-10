@@ -109,6 +109,18 @@ test('Guide writes revalidate collection and slug-specific cache tags', async ()
   assert.match(source, /revalidatePath\('\/api\/guides'\)/)
 })
 
+test('Longform public recovery has collection and slug revalidation without invoking save', async () => {
+  const [route, store] = await Promise.all([
+    read('app/api/admin/notes/route.ts'),
+    read('lib/server/public-content-store.ts'),
+  ])
+  assert.match(route, /rawPayload\?\.action === 'revalidate-public'/)
+  assert.match(route, /revalidateTag\(`note:\$\{slug\}`\)/)
+  assert.match(store, /tags: \['notes', `note:\$\{slug\}`\]/)
+  const recoveryBranch = route.slice(route.indexOf("rawPayload?.action === 'revalidate-public'"), route.indexOf('const previousSlug'))
+  assert.doesNotMatch(recoveryBranch, /saveNotes\(/)
+})
+
 test('public Spot snapshots use the detail schema without private fields', async () => {
   const index = JSON.parse(await read('public-data/spots/index.json'))
   assert.equal(index.schemaVersion, 1)
