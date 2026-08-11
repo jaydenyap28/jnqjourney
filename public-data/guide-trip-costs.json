@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-11T06:49:22.650Z",
+  "tripCosts": [
+    {
+      "slug": "china-jiangnan-autumn-15d14n",
+      "snapshotVersion": 2,
+      "tripCost": {
+        "source": "published_actual",
+        "currency": "RM",
+        "totalCents": 855447,
+        "travellers": 2,
+        "perPersonCents": 427724,
+        "transactionCount": 233,
+        "categories": [
+          { "key": "Flights", "label": "Flights / 机票", "amountCents": 128200 },
+          { "key": "Transportation", "label": "Transportation / 交通", "amountCents": 200101 },
+          { "key": "Accommodation", "label": "Accommodation / 住宿", "amountCents": 223298 },
+          { "key": "Food & Dining", "label": "Food & Dining / 饮食", "amountCents": 187704 },
+          { "key": "Tickets & Entrance Fees", "label": "Tickets & Entrance Fees / 门票", "amountCents": 62600 },
+          { "key": "Internet & Communication", "label": "Internet & Communication / 通讯", "amountCents": 31074 },
+          { "key": "Shopping", "label": "Shopping / 购物", "amountCents": 5887 },
+          { "key": "Other", "label": "Other / 其他", "amountCents": 16583 }
+        ]
+      }
+    },
+    {
+      "slug": "malaysia-east-coast-route3-10d9n",
+      "snapshotVersion": 1,
+      "tripCost": {
+        "source": "published_actual",
+        "currency": "RM",
+        "totalCents": 302013,
+        "travellers": 2,
+        "perPersonCents": 151007,
+        "transactionCount": 54,
+        "receivedAt": "2026-07-29T02:09:25.171Z",
+        "categories": [
+          { "key": "Transportation", "label": "Transportation / 交通", "amountCents": 33936 },
+          { "key": "Accommodation", "label": "Accommodation / 住宿", "amountCents": 143479 },
+          { "key": "Food & Dining", "label": "Food & Dining / 饮食", "amountCents": 73398 },
+          { "key": "Tickets & Entrance Fees", "label": "Tickets & Entrance Fees / 门票", "amountCents": 2900 },
+          { "key": "Activities", "label": "Activities / 活动", "amountCents": 38000 },
+          { "key": "Shopping", "label": "Shopping / 购物", "amountCents": 5380 },
+          { "key": "Other", "label": "Other / 其他", "amountCents": 4920 }
+        ]
+      }
+    },
+    {
+      "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
+      "tripCost": {
+        "source": "guide_budget",
+        "currency": "RM",
+        "totalCents": 645200,
+        "travellers": null,
+        "perPersonCents": null,
+        "transactionCount": null,
+        "categories": [
+          { "key": "Flights", "label": "Flights / 机票", "amountCents": 133400 },
+          { "key": "Transportation", "label": "Transportation / 交通", "amountCents": 131000 },
+          { "key": "Accommodation", "label": "Accommodation / 住宿", "amountCents": 99900 },
+          { "key": "Food & Dining", "label": "Food & Dining / 饮食", "amountCents": 95700 },
+          { "key": "Tickets & Entrance Fees", "label": "Tickets & Entrance Fees / 门票", "amountCents": 119100 },
+          { "key": "Internet & Communication", "label": "Internet & Communication / 通讯", "amountCents": 17700 },
+          { "key": "Other", "label": "Other / 其他", "amountCents": 48400 }
+        ]
+      }
+    },
+    {
+      "slug": "china-dali-shangri-la-lijiang-11d10n",
+      "tripCost": {
+        "source": "guide_budget",
+        "currency": "RM",
+        "totalCents": 432600,
+        "travellers": null,
+        "perPersonCents": null,
+        "transactionCount": null,
+        "categories": [
+          { "key": "Flights", "label": "Flights / 机票", "amountCents": 98700 },
+          { "key": "Transportation", "label": "Transportation / 交通", "amountCents": 102700 },
+          { "key": "Accommodation", "label": "Accommodation / 住宿", "amountCents": 97200 },
+          { "key": "Food & Dining", "label": "Food & Dining / 饮食", "amountCents": 76400 },
+          { "key": "Tickets & Entrance Fees", "label": "Tickets & Entrance Fees / 门票", "amountCents": 45800 },
+          { "key": "Internet & Communication", "label": "Internet & Communication / 通讯", "amountCents": 11800 }
+        ]
+      }
+    },
+    {
+      "slug": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "tripCost": {
+        "source": "guide_budget",
+        "currency": "RM",
+        "totalCents": 771500,
+        "travellers": null,
+        "perPersonCents": null,
+        "transactionCount": null,
+        "categories": [
+          { "key": "Flights", "label": "Flights / 机票", "amountCents": 171300 },
+          { "key": "Transportation", "label": "Transportation / 交通", "amountCents": 145000 },
+          { "key": "Accommodation", "label": "Accommodation / 住宿", "amountCents": 206100 },
+          { "key": "Food & Dining", "label": "Food & Dining / 饮食", "amountCents": 113700 },
+          { "key": "Tickets & Entrance Fees", "label": "Tickets & Entrance Fees / 门票", "amountCents": 33100 },
+          { "key": "Internet & Communication", "label": "Internet & Communication / 通讯", "amountCents": 5000 },
+          { "key": "Shopping", "label": "Shopping / 购物", "amountCents": 66200 },
+          { "key": "Other", "label": "Other / 其他", "amountCents": 31100 }
+        ]
+      }
+    },
+    {
+      "slug": "china-guangzhou-8d7n",
+      "tripCost": {
+        "source": "hidden",
+        "currency": "RM",
+        "totalCents": 0,
+        "travellers": null,
+        "perPersonCents": null,
+        "transactionCount": null,
+        "categories": []
+      }
+    }
+  ]
+}

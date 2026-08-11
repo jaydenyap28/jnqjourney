@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeGuidePayload, readGuideBySlug, readGuides, saveGuides } from '@/lib/server/guides-store'
 import { orderedGuideAttractions } from '@/lib/guide-attractions'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
+import { publishManualGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 
 export const runtime = 'nodejs'
 const ADMIN_HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
@@ -55,8 +56,18 @@ export async function POST(request: Request) {
     if (!savedGuide || savedGuide.title !== payload.title || guideAttractionSignature(savedGuide) !== guideAttractionSignature(payload)) {
       return NextResponse.json({ error: 'Guide was not persisted by the authoritative store.' }, { status: 409, headers: ADMIN_HEADERS })
     }
+    let tripCostSnapshotUpdated = true
+    let tripCostSnapshotWarning: string | null = null
+    try {
+      await publishManualGuideTripCost(savedGuide)
+    } catch (error: any) {
+      tripCostSnapshotUpdated = false
+      tripCostSnapshotWarning = error?.message || 'Guide saved, but the public Trip Cost snapshot was not updated.'
+    }
     revalidateTag('guides')
     revalidateTag(`guide:${payload.slug}`)
+    revalidateTag('guide-trip-costs')
+    revalidateTag(`guide-trip-cost:${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidateTag(`guide:${previousSlug}`)
     revalidatePath('/')
     revalidatePath('/guide')
@@ -65,9 +76,9 @@ export async function POST(request: Request) {
     revalidatePath('/admin/guides')
     revalidatePath(`/admin/guides/${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/guide/${previousSlug}`)
-    return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString() }, { headers: ADMIN_HEADERS })
+    return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString(), tripCostSnapshotUpdated, tripCostSnapshotWarning }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message || '保存攻略失败。' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || '保存攻略失败。' }, { status: 500, headers: ADMIN_HEADERS })
   }
 }
 
@@ -78,7 +89,7 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url)
     const slug = String(searchParams.get('slug') || '').trim()
     if (!slug) {
-      return NextResponse.json({ error: '缺少 slug。' }, { status: 400 })
+      return NextResponse.json({ error: '缺少 slug。' }, { status: 400, headers: ADMIN_HEADERS })
     }
 
     const guides = await readGuides()
@@ -92,7 +103,7 @@ export async function DELETE(request: Request) {
     revalidatePath(`/guide/${slug}`)
     return NextResponse.json({ ok: true }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
-    return NextResponse.json({ error: error?.message || '删除攻略失败。' }, { status: 500 })
+    return NextResponse.json({ error: error?.message || '删除攻略失败。' }, { status: 500, headers: ADMIN_HEADERS })
   }
 }
 

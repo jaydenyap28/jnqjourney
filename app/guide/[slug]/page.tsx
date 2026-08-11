@@ -11,7 +11,7 @@ import GuideSegmentItinerarySection from '@/components/GuideSegmentItinerarySect
 import GuideDayStayCard from '@/components/GuideDayStayCard'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
-import GuideBudgetSection from '@/components/GuideBudgetSection'
+import GuideTripCost from '@/components/GuideTripCost'
 import GuidePriceHighlightsSection, { GuideDayCostNote, GuideSpotPriceHighlights } from '@/components/GuidePriceHighlightsSection'
 import AffiliateCard from '@/components/AffiliateCard'
 import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
@@ -19,10 +19,10 @@ import SupportSidebarCard from '@/components/SupportSidebarCard'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import { readPublicGuideBySlug, readPublicGuides } from '@/lib/server/public-content-store'
-import { readPublishedGuideBudget } from '@/lib/server/guide-budget-store'
+import { readPublicGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
-import { formatSnapshotMoney, resolvePublicGuideTripCost } from '@/lib/guide-budget'
+import { formatGuideBudgetCents } from '@/lib/guide-budget'
 import { attractionIdFromPriceSlug, isGuideDayCostPriceHighlight, matchesAttractionPriceHighlight } from '@/lib/guide-price-highlights'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
@@ -321,35 +321,11 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
   const isSegmentItinerary = guide.itineraryMode === 'segment' && Boolean(guide.itinerarySegments?.length)
 
-  const [actualSpend, approvedPriceHighlights] = await Promise.all([
-    readPublishedGuideBudget(guide.slug),
+  const [publicTripCost, approvedPriceHighlights] = await Promise.all([
+    readPublicGuideTripCost(guide),
     readApprovedGuidePriceHighlights(guide.slug),
   ])
-  const declaredGuideBudget = parseGuideMoney(guide.budget)
-  const categorizedGuideBudget = guide.budgetItems.reduce(
-    (total, item) => total + parseGuideMoney(item.amount),
-    0
-  )
-  const legacyGuideBudgetTotal = declaredGuideBudget || categorizedGuideBudget
-  const hasLegacyGuideBudget = legacyGuideBudgetTotal > 0
-  const publicActualSpend = actualSpend
-    ? {
-        currency: actualSpend.currency,
-        scope: actualSpend.scope,
-        traveller_count: actualSpend.traveller_count,
-        total: actualSpend.total,
-        categories: actualSpend.categories,
-        transaction_count: actualSpend.transaction_count,
-        received_at: actualSpend.received_at,
-      }
-    : null
-  const publicTripCost = resolvePublicGuideTripCost(publicActualSpend, guide.budgetItems)
-  // Keep the legacy estimate out of the client/RSC payload once a published
-  // actual-spend snapshot takes precedence. The canonical Guide record remains
-  // unchanged in storage for history and for routes without actual spend.
-  const budgetGuide = publicTripCost.source === 'published_actual'
-    ? { budget: '', budgetItems: [], budgetScope: 'unspecified' as const }
-    : { budget: guide.budget, budgetItems: guide.budgetItems, budgetScope: guide.budgetScope }
+  const hasPublicTripCost = publicTripCost.source !== 'hidden'
 
   const allAttractionRefs = [
     ...guide.days.flatMap((day) => orderedGuideAttractions(day)),
@@ -698,7 +674,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                 {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{formatShortText(guide.tagline)}</p> : null}
                 {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
 
-                <dl className={`mt-6 grid max-w-2xl ${actualSpend || hasLegacyGuideBudget ? 'grid-cols-3' : 'grid-cols-2'} divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3`}>
+                <dl className={`mt-6 grid max-w-2xl ${hasPublicTripCost ? 'grid-cols-3' : 'grid-cols-2'} divide-x divide-white/12 border-y border-white/12 bg-black/15 py-3`}>
                   <div className="px-3 first:pl-0">
                     <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">行程</dt>
                     <dd className="mt-1 text-sm font-semibold text-white">{guide.duration || '待补充'}</dd>
@@ -707,15 +683,11 @@ export default async function GuideDetailPage({ params }: PageProps) {
                     <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">地区</dt>
                     <dd className="mt-1 text-sm font-semibold text-white">{routeRegions.length} 个主要地区</dd>
                   </div>
-                  {actualSpend || hasLegacyGuideBudget ? (
+                  {hasPublicTripCost ? (
                     <div className="px-3 pr-0">
-                      <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">{actualSpend ? '实际总支出' : '总预算'}</dt>
+                      <dt className="text-[10px] uppercase tracking-[0.2em] text-white/45">{publicTripCost.source === 'published_actual' ? '实际总支出' : '总预算'}</dt>
                       <dd className="mt-1 truncate text-sm font-semibold tabular-nums text-white">
-                        {actualSpend
-                          ? formatSnapshotMoney(actualSpend.currency, actualSpend.total)
-                          : declaredGuideBudget > 0
-                            ? formatGuideMoney(guide.budget)
-                            : formatSnapshotMoney('RM', legacyGuideBudgetTotal)}
+                        {formatGuideBudgetCents(publicTripCost.currency === 'MYR' ? 'RM' : publicTripCost.currency, publicTripCost.totalCents)}
                       </dd>
                     </div>
                   ) : null}
@@ -763,7 +735,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         guideSlug={guide.slug}
         days={isSegmentItinerary ? (guide.itinerarySegments || []).map((segment) => ({ dayNumber: segment.dayStart, title: segment.city })) : datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
         hasMap={routeMapPoints.length > 0}
-        hasBudget={Boolean(hasLegacyGuideBudget || actualSpend)}
+        hasBudget={hasPublicTripCost}
       />
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 md:px-8 md:py-16">
@@ -797,7 +769,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
           </section>
         ) : null}
 
-        <GuideBudgetSection guide={budgetGuide} actualSpend={publicActualSpend} />
+        <GuideTripCost tripCost={publicTripCost} />
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>

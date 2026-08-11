@@ -129,8 +129,13 @@ export type PublicGuideTripCostSource = 'published_actual' | 'guide_budget' | 'h
 
 export interface PublicGuideTripCost {
   source: PublicGuideTripCostSource
+  currency: string
   categories: CanonicalGuideBudgetItem[]
   totalCents: number
+  travellers: number | null
+  perPersonCents: number | null
+  transactionCount: number | null
+  receivedAt?: string
 }
 
 export function canonicalGuideBudgetItems(items: Array<{ label: string; amount: string; note?: string }>) {
@@ -160,17 +165,85 @@ export function canonicalGuideBudgetItems(items: Array<{ label: string; amount: 
  * snapshot always wins over the Guide's saved/static estimate.
  */
 export function resolvePublicGuideTripCost(
-  actualSpend: Pick<GuideBudgetDisplaySnapshot, 'categories'> | null,
-  guideBudgetItems: Array<{ label: string; amount: string; note?: string }>
+  actualSpend: Pick<GuideBudgetDisplaySnapshot, 'currency' | 'total' | 'categories' | 'traveller_count' | 'transaction_count' | 'received_at'> | null,
+  guideBudgetItems: Array<{ label: string; amount: string; note?: string }>,
+  guideCurrency = 'RM'
 ): PublicGuideTripCost {
   const source: Exclude<PublicGuideTripCostSource, 'hidden'> = actualSpend ? 'published_actual' : 'guide_budget'
   const sourceItems = actualSpend
     ? Object.entries(actualSpend.categories).map(([label, amount]) => ({ label, amount }))
     : guideBudgetItems
   const canonical = canonicalGuideBudgetItems(sourceItems)
-  return canonical.categories.length
-    ? { source, ...canonical }
-    : { source: 'hidden', categories: [], totalCents: 0 }
+  if (!canonical.categories.length) {
+    return { source: 'hidden', currency: guideCurrency, categories: [], totalCents: 0, travellers: null, perPersonCents: null, transactionCount: null }
+  }
+
+  const declaredTotalCents = actualSpend ? guideBudgetMoneyToCents(actualSpend.total) : null
+  if (actualSpend && (declaredTotalCents === null || declaredTotalCents !== canonical.totalCents)) {
+    throw new Error('Published Actual total does not match its canonical categories.')
+  }
+  const totalCents = declaredTotalCents ?? canonical.totalCents
+  const travellers = actualSpend?.traveller_count && actualSpend.traveller_count > 0
+    ? actualSpend.traveller_count
+    : null
+  return {
+    source,
+    currency: actualSpend?.currency || guideCurrency,
+    categories: canonical.categories,
+    totalCents,
+    travellers,
+    perPersonCents: travellers ? Math.round(totalCents / travellers) : null,
+    transactionCount: actualSpend ? actualSpend.transaction_count : null,
+    ...(actualSpend?.received_at ? { receivedAt: actualSpend.received_at } : {}),
+  }
+}
+
+export function normalizePublicGuideTripCost(value: unknown): PublicGuideTripCost | null {
+  if (!value || typeof value !== 'object') return null
+  const candidate = value as Partial<PublicGuideTripCost>
+  if (!['published_actual', 'guide_budget', 'hidden'].includes(String(candidate.source))) return null
+  const currency = String(candidate.currency || '').trim()
+  const totalCents = Number(candidate.totalCents)
+  const travellers = candidate.travellers === null ? null : Number(candidate.travellers)
+  const perPersonCents = candidate.perPersonCents === null ? null : Number(candidate.perPersonCents)
+  const transactionCount = candidate.transactionCount === null ? null : Number(candidate.transactionCount)
+  if (!currency || !Number.isSafeInteger(totalCents) || totalCents < 0) return null
+  if (travellers !== null && (!Number.isSafeInteger(travellers) || travellers <= 0)) return null
+  if (perPersonCents !== null && (!Number.isSafeInteger(perPersonCents) || perPersonCents < 0)) return null
+  if (transactionCount !== null && (!Number.isSafeInteger(transactionCount) || transactionCount < 0)) return null
+  if (!Array.isArray(candidate.categories)) return null
+  const categories = candidate.categories.flatMap((item) => {
+    if (!item || typeof item !== 'object') return []
+    const sourceItem = item as Partial<CanonicalGuideBudgetItem>
+    const category = getTripCostCategory(String(sourceItem.key || ''))
+    const amountCents = Number(sourceItem.amountCents)
+    if (!category || !Number.isSafeInteger(amountCents) || amountCents <= 0) return []
+    return [{
+      key: category.key,
+      label: `${category.nameEn} / ${category.nameZh}`,
+      amountCents,
+      ...(String(sourceItem.note || '').trim() ? { note: String(sourceItem.note).trim() } : {}),
+    }]
+  })
+  const ordered = orderedTripCostCategoryEntries(categories.map((item) => ({ ...item, amount: item.amountCents })))
+    .map(({ amount: _amount, ...item }) => item as CanonicalGuideBudgetItem)
+  const categoryTotal = ordered.reduce((sum, item) => sum + item.amountCents, 0)
+  if (candidate.source === 'hidden') {
+    return totalCents === 0 && ordered.length === 0
+      ? { source: 'hidden', currency, totalCents: 0, travellers: null, perPersonCents: null, transactionCount: null, categories: [] }
+      : null
+  }
+  if (!ordered.length || categoryTotal !== totalCents) return null
+  return {
+    source: candidate.source as Exclude<PublicGuideTripCostSource, 'hidden'>,
+    currency,
+    totalCents,
+    travellers,
+    perPersonCents,
+    transactionCount,
+    categories: ordered,
+    ...(candidate.receivedAt ? { receivedAt: String(candidate.receivedAt) } : {}),
+  }
 }
 
 export function divideSnapshotMoney(total: string | number, divisor: number) {

@@ -59,3 +59,10 @@ test('Guide Trip Cost is hidden when the selected source has no positive canonic
   assert.equal(tripCost.source, 'hidden')
   assert.equal(tripCost.totalCents, 0)
 })
+
+test('Published Actual total/category mismatch is rejected instead of recalculated', () => {
+  assert.throws(
+    () => resolvePublicGuideTripCost({ ...eastCoastSnapshot, total: '3020.14' }, legacyEastCoastBudget),
+    /does not match/,
+  )
+})

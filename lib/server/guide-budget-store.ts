@@ -30,7 +30,7 @@ function getBudgetAdminClient() {
 
 const BUDGET_SNAPSHOT_SELECT = 'id,guide_slug,source,source_project_key,source_project_name,snapshot_version,currency,scope,traveller_count,total,categories,unclassified_amount,transaction_count,generated_at,confirmed_at,received_at,review_status,published_at,checksum'
 
-function toDisplaySnapshot(value: GuideBudgetSnapshotRecord): GuideBudgetDisplaySnapshot {
+export function guideBudgetRecordToDisplaySnapshot(value: GuideBudgetSnapshotRecord): GuideBudgetDisplaySnapshot {
   return {
     source_project_name: value.source_project_name,
     currency: value.currency,
@@ -154,13 +154,13 @@ export async function readPublishedGuideBudget(guideSlug: string) {
     .limit(1)
     .maybeSingle()
   if (error || !data) return null
-  return toDisplaySnapshot(normalizeRecord(data))
+  return guideBudgetRecordToDisplaySnapshot(normalizeRecord(data))
 }
 
 export async function readReviewedGuideBudgetDisplay(guideSlug: string) {
   const snapshots = await listGuideBudgetSnapshots(guideSlug)
   const reviewed = snapshots.find((snapshot) => snapshot.review_status === 'reviewed')
-  return reviewed ? toDisplaySnapshot(reviewed) : null
+  return reviewed ? guideBudgetRecordToDisplaySnapshot(reviewed) : null
 }
 
 export async function updateGuideBudgetSnapshot(

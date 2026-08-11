@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 import { Loader2, ShieldAlert } from 'lucide-react'
 
-import GuideBudgetSection from '@/components/GuideBudgetSection'
+import GuideTripCost from '@/components/GuideTripCost'
 import { adminFetch } from '@/lib/admin-fetch'
-import type { GuideBudgetDisplaySnapshot } from '@/lib/guide-budget'
+import { resolvePublicGuideTripCost, type GuideBudgetDisplaySnapshot } from '@/lib/guide-budget'
 import type { TravelGuide } from '@/lib/guides'
 
 type PreviewPayload = {
@@ -54,11 +54,5 @@ export default function AdminReviewedActualSpendPreview({ guideSlug }: { guideSl
     )
   }
 
-  return (
-    <GuideBudgetSection
-      guide={payload.guide}
-      actualSpend={payload.snapshot}
-      showAdminSourceNote
-    />
-  )
+  return <GuideTripCost tripCost={resolvePublicGuideTripCost(payload.snapshot, payload.guide.budgetItems)} />
 }

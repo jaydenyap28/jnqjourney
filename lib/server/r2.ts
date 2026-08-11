@@ -221,6 +221,10 @@ export function uploadPublicGuidesSnapshot(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/guides.json', body)
 }
 
+export function uploadPublicGuideTripCostsSnapshot(body: Buffer | Uint8Array) {
+  return uploadPublicJsonObject('public-data/guide-trip-costs.json', body)
+}
+
 export function uploadPublicNotesSnapshot(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/notes.json', body)
 }
