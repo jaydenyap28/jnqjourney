@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeGuidePayload, readGuideBySlug, readGuides, saveGuides } from '@/lib/server/guides-store'
 import { orderedGuideAttractions } from '@/lib/guide-attractions'
+import { countLegacyGuideLinkedSpots } from '@/lib/guide-legacy-migration'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { publishManualGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 
@@ -29,6 +30,13 @@ export async function POST(request: Request) {
   if (!adminCheck.ok) return adminCheck.response
   try {
     const rawPayload = await request.json()
+    const legacyLinkedSpotCount = countLegacyGuideLinkedSpots(rawPayload)
+    if (legacyLinkedSpotCount) {
+      return NextResponse.json(
+        { error: `Guide saves require canonical attractions; received ${legacyLinkedSpotCount} legacy linkedSpots.` },
+        { status: 400, headers: ADMIN_HEADERS }
+      )
+    }
     const previousSlug = String(rawPayload?.previousSlug || '').trim()
     const payload = normalizeGuidePayload(rawPayload, { enforceBudgetTotal: true })
 

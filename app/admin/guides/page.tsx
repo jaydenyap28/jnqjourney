@@ -21,6 +21,7 @@ import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type GuideAttractionRef, type TravelGuide } from '@/lib/guides'
 import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
+import { migrateLegacyGuideAttractionsUnique } from '@/lib/guide-legacy-migration'
 import { buildLocationSlug } from '@/lib/location-routing'
 import { canonicalGuideBudgetItems, formatGuideBudgetCents, GUIDE_TRIP_COST_CATEGORIES, guideBudgetMoneyToCents, canonicalTripCostCategory } from '@/lib/guide-budget'
 import FallbackImage from '@/components/FallbackImage'
@@ -160,11 +161,7 @@ function attractionFromLocation(location: LocationOption, displayOrder: number):
 }
 
 function migrateLegacyAttractions(day: TravelGuide['days'][number], locations: LocationOption[]) {
-  if (Array.isArray(day.attractions)) return day.attractions
-  return (day.linkedSpots || []).flatMap((name, index) => {
-    const location = locations.find((candidate) => matchesLocationIdentity(candidate, name))
-    return location ? [attractionFromLocation(location, index)] : []
-  })
+  return migrateLegacyGuideAttractionsUnique(day, locations)
 }
 
 function galleryToLines(value?: TravelGuide['days'][number]['gallery']) {
@@ -936,40 +933,47 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
       return
     }
     const autoSlug = buildGuideSlug(form, regions)
-    const payload: TravelGuide & { previousSlug?: string } = {
-      ...form,
-      slug: autoSlug,
-      aliases: (form.aliases || []).filter(Boolean),
-      route: form.route
-        .map((stop) => ({
-          stopLabel: String(stop.stopLabel || '').trim(),
-          name: String(stop.name || '').trim(),
-          summary: String(stop.summary || '').trim(),
-          mapSpotName: String(stop.mapSpotName || '').trim() || undefined,
-          latitude: typeof stop.latitude === 'number' && Number.isFinite(stop.latitude) ? stop.latitude : undefined,
-          longitude: typeof stop.longitude === 'number' && Number.isFinite(stop.longitude) ? stop.longitude : undefined,
-        }))
-        .filter((stop) => stop.name),
-      days: form.itineraryMode === 'segment' ? [] : form.days.map((day, index) => {
-        const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
-        return {
-          ...day,
-          dayLabel: String(day.dayLabel || `Day ${index + 1}`).trim(),
-          title: String(day.title || '').trim(),
-          summary: String(day.summary || '').trim(),
-          highlights: Array.isArray(day.highlights) ? day.highlights.filter(Boolean) : [],
-          attractions: migrateLegacyAttractions(day, locations).map((item, displayOrder) => ({ ...item, displayOrder })),
-          linkedSpots: [],
-          videoUrl: String(day.videoUrl || '').trim() || undefined,
-          transport: String(day.transport || '').trim() || undefined,
-          transportPrice: String(day.transportPrice || '').trim() || undefined,
-          stay: String(day.stay || '').trim() || undefined,
-          stayRangeStart: day.stay ? Number(day.stayRangeStart || dayNumber) : undefined,
-          stayRangeEnd: day.stay ? Number(day.stayRangeEnd || day.stayRangeStart || dayNumber) : undefined,
-        }
-      }),
-      itinerarySegments: applyEditorDaysToSegments(form, form.days, locations),
-      previousSlug: originalSlug || undefined,
+    let payload: TravelGuide & { previousSlug?: string }
+    try {
+      payload = {
+        ...form,
+        slug: autoSlug,
+        aliases: (form.aliases || []).filter(Boolean),
+        route: form.route
+          .map((stop) => ({
+            stopLabel: String(stop.stopLabel || '').trim(),
+            name: String(stop.name || '').trim(),
+            summary: String(stop.summary || '').trim(),
+            mapSpotName: String(stop.mapSpotName || '').trim() || undefined,
+            latitude: typeof stop.latitude === 'number' && Number.isFinite(stop.latitude) ? stop.latitude : undefined,
+            longitude: typeof stop.longitude === 'number' && Number.isFinite(stop.longitude) ? stop.longitude : undefined,
+          }))
+          .filter((stop) => stop.name),
+        days: form.itineraryMode === 'segment' ? [] : form.days.map((day, index) => {
+          const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
+          return {
+            ...day,
+            dayLabel: String(day.dayLabel || `Day ${index + 1}`).trim(),
+            title: String(day.title || '').trim(),
+            summary: String(day.summary || '').trim(),
+            highlights: Array.isArray(day.highlights) ? day.highlights.filter(Boolean) : [],
+            attractions: migrateLegacyAttractions(day, locations).map((item, displayOrder) => ({ ...item, displayOrder })),
+            linkedSpots: [],
+            videoUrl: String(day.videoUrl || '').trim() || undefined,
+            transport: String(day.transport || '').trim() || undefined,
+            transportPrice: String(day.transportPrice || '').trim() || undefined,
+            stay: String(day.stay || '').trim() || undefined,
+            stayRangeStart: day.stay ? Number(day.stayRangeStart || dayNumber) : undefined,
+            stayRangeEnd: day.stay ? Number(day.stayRangeEnd || day.stayRangeStart || dayNumber) : undefined,
+          }
+        }),
+        itinerarySegments: applyEditorDaysToSegments(form, form.days, locations),
+        previousSlug: originalSlug || undefined,
+      }
+    } catch (error: any) {
+      setMessage(error?.message || 'Guide Spot migration failed.')
+      setMessageTone('error')
+      return
     }
 
     if (!payload.title.trim()) {

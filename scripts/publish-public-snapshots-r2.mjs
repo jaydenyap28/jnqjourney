@@ -22,6 +22,7 @@ const REQUIRED_TRIP_COSTS = {
   'china-guangzhou-8d7n': { source: 'hidden', totalCents: 0, categories: 0 },
 }
 const JIANGNAN_GUIDE_SLUG = 'china-jiangnan-autumn-15d14n'
+const JAPAN_GUIDE_SLUG = 'japan-hokkaido-yamagata-tokyo-10d9n'
 const JIANGNAN_ROUTE_ATTRACTION_IDS = {
   1: [],
   2: [446, 447, 449, 452],
@@ -39,6 +40,18 @@ const JIANGNAN_ROUTE_ATTRACTION_IDS = {
   14: [795, 797, 798, 802],
   15: [800, 801, 803],
 }
+const JAPAN_DAY_ATTRACTION_IDS = [
+  [374, 375],
+  [379, 376, 377, 410, 378],
+  [334, 335, 336, 337, 338, 339],
+  [349, 350, 352, 354],
+  [340, 341, 343, 342],
+  [413, 347],
+  [370],
+  [363],
+  [364, 365, 366, 367, 389],
+  [357, 359],
+]
 
 function loadEnvLocal() {
   const filePath = path.join(process.cwd(), '.env.local')
@@ -102,6 +115,24 @@ function validateGuideSnapshot(guides) {
       : null
     if (!actualIds || JSON.stringify(actualIds) !== JSON.stringify(expectedIds) || (route.linkedSpots || []).length) {
       throw new Error(`Jiangnan Day ${day} attraction contract failed`)
+    }
+  }
+
+  const japan = guides.find((guide) => guide?.slug === JAPAN_GUIDE_SLUG)
+  if (!japan || (japan.days || []).length !== JAPAN_DAY_ATTRACTION_IDS.length) {
+    throw new Error('Japan Guide must contain 10 canonical days')
+  }
+  for (const [index, expectedIds] of JAPAN_DAY_ATTRACTION_IDS.entries()) {
+    const day = japan.days[index]
+    const actual = Array.isArray(day?.attractions)
+      ? day.attractions
+          .filter((item) => item?.enabled !== false)
+          .slice()
+          .sort((left, right) => Number(left.displayOrder) - Number(right.displayOrder))
+          .map((item) => item?.spotId)
+      : null
+    if (!actual || JSON.stringify(actual) !== JSON.stringify(expectedIds) || (day.linkedSpots || []).length) {
+      throw new Error(`Japan Day ${index + 1} attraction contract failed`)
     }
   }
 }
