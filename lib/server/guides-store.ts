@@ -133,7 +133,11 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
     highlightTags: normalizeStringArray(value?.highlightTags),
     heroBullets: normalizeStringArray(value?.heroBullets),
     budgetItems,
-    days: Array.isArray(value?.days)
+    // Segment Guides persist verifiedRoutes as their single itinerary source.
+    // Editor-only day projections must never become a parallel authoritative array.
+    days: value?.itineraryMode === 'segment'
+      ? []
+      : Array.isArray(value?.days)
       ? value.days
           .map((item: any) => ({
             dayLabel: String(item?.dayLabel || '').trim(),

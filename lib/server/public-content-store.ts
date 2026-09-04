@@ -48,6 +48,14 @@ async function readPublicGuidesUncached(): Promise<TravelGuide[]> {
   return readGuides()
 }
 
+async function readPublicGuideBySlugUncached(slug: string): Promise<TravelGuide | null> {
+  const snapshot = await readCdnCollection('guides.json', 'guides', [`guide:${slug}`])
+  const guides = snapshot
+    ? snapshot.map((item) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
+    : await readGuides()
+  return guides.find((guide) => guide.slug === slug || guide.aliases?.includes(slug)) || null
+}
+
 async function readPublicNotesUncached(): Promise<LongformNote[]> {
   const snapshot = await readCdnCollection('notes.json', 'notes', ['notes'])
   if (snapshot) return snapshot.map((item) => normalizeNotePayload(item)).filter((note) => note.published && note.slug && note.title)
@@ -76,8 +84,11 @@ export function readPublicGuides() {
 }
 
 export async function readPublicGuideBySlug(slug: string) {
-  const guides = await readPublicGuides()
-  return guides.find((guide) => guide.slug === slug || guide.aliases?.includes(slug)) || null
+  return unstable_cache(
+    () => readPublicGuideBySlugUncached(slug),
+    ['public-guide-v1', slug],
+    { revalidate: 3600, tags: [`guide:${slug}`] },
+  )()
 }
 
 export function readPublicNotes() {

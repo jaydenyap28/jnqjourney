@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import test from 'node:test'
 
 import { jiangnanGuideDraft } from '../lib/guide-drafts.ts'
@@ -33,8 +34,42 @@ test('keeps Yixian actual visits in the confirmed Day 9–11 order', () => {
   const day9 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 9)
   const day10 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 10)
   const day11 = yixian?.verifiedRoutes.find((route) => route.dayNumber === 11)
-  assert.deepEqual(day9?.linkedSpots, ['宏村', '南湖'])
-  assert.deepEqual(day10?.linkedSpots, ['碧山村', '卢村'])
-  assert.deepEqual(day11?.linkedSpots, ['秀里水镇', '塔川'])
-  assert.deepEqual(yixian?.referenceRoutes?.[0]?.linkedSpots, ['奇墅湖'])
+  assert.deepEqual(day9?.attractions?.map((item) => item.spotId), [785, 804])
+  assert.deepEqual(day10?.attractions?.map((item) => item.spotId), [789, 787])
+  assert.deepEqual(day11?.attractions?.map((item) => item.spotId), [790, 788])
+  assert.deepEqual(yixian?.referenceRoutes?.[0]?.attractions, [])
+  assert.ok(yixian?.verifiedRoutes.every((route) => !route.linkedSpots?.length))
+})
+
+test('keeps all 15 Jiangnan days on one canonical attraction source', () => {
+  const routes = (jiangnanGuideDraft.itinerarySegments || [])
+    .flatMap((segment) => segment.verifiedRoutes)
+    .sort((left, right) => Number(left.dayNumber) - Number(right.dayNumber))
+  assert.deepEqual(routes.map((route) => route.dayNumber), Array.from({ length: 15 }, (_, index) => index + 1))
+  assert.deepEqual(routes.map((route) => route.attractions?.map((item) => item.spotId)), [
+    [],
+    [446, 447, 449, 452],
+    [453, 454, 458, 459],
+    [436, 437, 438, 439],
+    [440, 441, 445],
+    [432],
+    [420, 427],
+    [422, 423, 426, 640, 429],
+    [785, 804],
+    [789, 787],
+    [790, 788],
+    [],
+    [792, 794],
+    [795, 797, 798, 802],
+    [800, 801, 803],
+  ])
+  assert.equal(routes.flatMap((route) => route.attractions || []).length, 38)
+  assert.ok(routes.every((route) => !route.linkedSpots?.length))
+})
+
+test('public snapshot publisher reads authoritative Storage instead of its own public Guide output', () => {
+  const source = fs.readFileSync(new URL('../scripts/publish-public-snapshots-r2.mjs', import.meta.url), 'utf8')
+  assert.match(source, /currentAuthoritativeGuides/)
+  assert.match(source, /_system\/guides-latest\.webp/)
+  assert.doesNotMatch(source, /PRODUCTION_BASE}\/api\/guides/)
 })

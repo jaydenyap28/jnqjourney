@@ -327,7 +327,7 @@ function buildGuideDaysFromVisitDates(locations: LocationOption[], routeNames: s
 }
 
 function segmentDaysForEditor(guide: TravelGuide, locations: LocationOption[] = []): TravelGuide['days'] {
-  if (guide.days.length || guide.itineraryMode !== 'segment') return guide.days
+  if (guide.itineraryMode !== 'segment') return guide.days
   return (guide.itinerarySegments || []).flatMap((segment) =>
     segment.verifiedRoutes
       .filter((route) => typeof route.dayNumber === 'number')
@@ -950,7 +950,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
           longitude: typeof stop.longitude === 'number' && Number.isFinite(stop.longitude) ? stop.longitude : undefined,
         }))
         .filter((stop) => stop.name),
-      days: form.days.map((day, index) => {
+      days: form.itineraryMode === 'segment' ? [] : form.days.map((day, index) => {
         const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
         return {
           ...day,

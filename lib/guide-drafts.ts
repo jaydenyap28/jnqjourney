@@ -1,16 +1,26 @@
-import type { GuideItinerarySegment, TravelGuide } from '@/lib/guides'
+import type { GuideAttractionRef, GuideItinerarySegment, TravelGuide } from '@/lib/guides'
 import type { GuidePriceHighlight } from '@/lib/guide-price-highlights'
 
 export const JIANGNAN_GUIDE_DRAFT_SLUG = 'china-jiangnan-autumn-15d14n'
+
+function attractions(...items: Array<[spotId: number, spotSlug: string, displayName: string]>): GuideAttractionRef[] {
+  return items.map(([spotId, spotSlug, displayName], displayOrder) => ({
+    spotId,
+    spotSlug,
+    displayName,
+    displayOrder,
+    enabled: true,
+  }))
+}
 
 const segments: GuideItinerarySegment[] = [
   {
     id: 'shanghai', dayStart: 1, dayEnd: 3, dateStart: '2025-11-04', dateEnd: '2025-11-06', city: '上海', title: '上海｜City Walk 与夜景',
     summary: '抵达后的三天以上海市区步行与夜景为主。',
     verifiedRoutes: [
-      { dayNumber: 1, title: '抵达上海', summary: '抵达浦东后进入市区，安顿住宿。', linkedSpots: [], status: 'visited' },
-      { dayNumber: 2, title: '上海 City Walk', summary: '新天地、南京路步行街、外滩与陆家嘴一带。', linkedSpots: ['新天地', '南京路步行街', '外滩', '陆家嘴'], status: 'visited' },
-      { dayNumber: 3, title: '梧桐街区与夜景', summary: '武康路、安福路、苏州河、北外滩与豫园。', linkedSpots: ['武康路', '安福路', '苏州河', '北外滩', '豫园'], status: 'visited' },
+      { dayNumber: 1, title: '抵达上海', summary: '抵达浦东后进入市区，安顿住宿。', attractions: [], status: 'visited' },
+      { dayNumber: 2, title: '上海 City Walk', summary: '新天地、南京路步行街、外滩与陆家嘴一带。', attractions: attractions([446, 'spot-446', '新天地'], [447, 'spot-447', '南京路步行街'], [449, 'spot-449', '外滩'], [452, 'spot-452', '陆家嘴']), status: 'visited' },
+      { dayNumber: 3, title: '梧桐街区与夜景', summary: '武康路、安福路、苏州河、北外滩与豫园。', attractions: attractions([453, 'spot-453', '武康路'], [454, 'spot-454', '安福路'], [458, 'spot-458', '北外滩'], [459, 'spot-459', '豫园']), status: 'visited' },
     ],
     transport: '抵达浦东后进入市区；具体接驳安排保留在原始路线记录中。',
     accommodation: '唯庭世纪酒店(上海静安火车站店)', accommodationStays: [{ dayStart: 1, dayEnd: 3, accommodationId: 609 }],
@@ -23,8 +33,8 @@ const segments: GuideItinerarySegment[] = [
     id: 'suzhou', dayStart: 4, dayEnd: 5, dateStart: '2025-11-07', dateEnd: '2025-11-08', city: '苏州', title: '苏州｜园林、古镇与山塘夜景',
     summary: '由上海转入苏州，园林、古镇与山塘夜景分别安排在两天。',
     verifiedRoutes: [
-      { dayNumber: 4, title: '上海→苏州与山塘夜景', summary: '西园寺、寒山寺与枫桥、虎丘、山塘街夜景。', linkedSpots: ['西园寺', '寒山寺', '枫桥', '虎丘', '山塘街'], status: 'visited' },
-      { dayNumber: 5, title: '园林与同里古镇', summary: '拙政园、平江路与同里古镇。', linkedSpots: ['拙政园', '平江路', '同里古镇'], status: 'visited' },
+      { dayNumber: 4, title: '上海→苏州与山塘夜景', summary: '西园寺、寒山寺与枫桥、虎丘、山塘街夜景。', attractions: attractions([436, 'spot-436', '西园寺'], [437, 'spot-437', '寒山寺'], [438, 'spot-438', '虎丘'], [439, 'spot-439', '山塘街']), status: 'visited' },
+      { dayNumber: 5, title: '园林与同里古镇', summary: '拙政园、平江路与同里古镇。', attractions: attractions([440, 'spot-440', '拙政园'], [441, 'spot-441', '平江路'], [445, 'spot-445', '同里古镇']), status: 'visited' },
     ],
     accommodation: 'Whisper 姑苏私语·露台雅舍', accommodationStays: [{ dayStart: 4, dayEnd: 4, accommodationId: 615 }, { dayStart: 5, dayEnd: 5, accommodationId: 442 }],
     practicalTips: ['拙政园宜 07:30 入园避开旅行团。', '山塘街夜间沿河通道窄，人多时容易拥挤；同里免票进街区时段不含内部园林。'],
@@ -36,7 +46,7 @@ const segments: GuideItinerarySegment[] = [
     id: 'wuzhen', dayStart: 6, dayEnd: 6, dateStart: '2025-11-09', dateEnd: '2025-11-09', city: '乌镇', title: '乌镇｜西栅水乡',
     summary: 'Day 6 在乌镇西栅办理入住、沿水乡步行，并安排清晨水乡体验。',
     verifiedRoutes: [
-      { dayNumber: 6, title: '乌镇西栅', summary: '进入西栅、办理住客流程，沿水乡夜景步行；清晨继续水乡与摇橹船路线。', linkedSpots: ['乌镇西栅'], status: 'visited' },
+      { dayNumber: 6, title: '乌镇西栅', summary: '进入西栅、办理住客流程，沿水乡夜景步行；清晨继续水乡与摇橹船路线。', attractions: attractions([432, 'spot-432', '乌镇西栅']), status: 'visited' },
     ],
     accommodation: '灵水居', accommodationStays: [{ dayStart: 6, dayEnd: 6, accommodationId: 433 }],
     practicalTips: ['住客应提前一天预约早茶客；名额有限，9 点前适合拍无人古镇。', '夜景整体偏暗，摇橹船无灯，拍摄需预留夜拍能力。'],
@@ -48,8 +58,8 @@ const segments: GuideItinerarySegment[] = [
     id: 'hangzhou', dayStart: 7, dayEnd: 8, dateStart: '2025-11-10', dateEnd: '2025-11-11', city: '杭州', title: '杭州｜西湖漫步与城市夜景',
     summary: '两条已证实城市路线涵盖满觉陇、西湖周边、河坊街与钱江新城夜景。',
     verifiedRoutes: [
-      { dayNumber: 7, title: '满觉陇与西湖夜景', summary: '满觉陇、城市街区与西湖夜景。', linkedSpots: ['满觉陇', '西湖'], status: 'visited' },
-      { dayNumber: 8, title: '西湖西线与钱江新城', summary: '太子湾、花港观鱼、曲院风荷、河坊街与钱江新城。', linkedSpots: ['太子湾公园', '花港观鱼', '曲院风荷', '河坊街', '钱江新城'], status: 'visited' },
+      { dayNumber: 7, title: '满觉陇与西湖夜景', summary: '满觉陇、城市街区与西湖夜景。', attractions: attractions([420, 'spot-420', '满觉陇'], [427, 'spot-427', '西湖']), status: 'visited' },
+      { dayNumber: 8, title: '西湖西线与钱江新城', summary: '太子湾、花港观鱼、曲院风荷、河坊街与钱江新城。', attractions: attractions([422, 'spot-422', '太子湾公园'], [423, 'spot-423', '花港观鱼'], [426, 'spot-426', '曲院风荷'], [640, 'spot-640', '河坊街'], [429, 'spot-429', '钱江新城']), status: 'visited' },
     ],
     accommodation: '祺悦西湖文化酒店', accommodationStays: [{ dayStart: 7, dayEnd: 8, accommodationId: 419 }],
     practicalTips: ['桂花花期影响满觉陇体验；本次到访时大部分桂花已落。', '断桥人多时可在孤山公园乘 1314 路离开；不虚构票价。', '灯光秀和无人机属于当晚／时效活动，公开前需要复查。'],
@@ -60,11 +70,11 @@ const segments: GuideItinerarySegment[] = [
     id: 'yixian', dayStart: 9, dayEnd: 11, dateStart: '2025-11-12', dateEnd: '2025-11-14', city: '宏村／黟县', title: '宏村／黟县｜古村与秋色',
     summary: '已证实到访宏村、卢村观景点、塔川入口、碧山村与秀里水镇一带；付费景区未进入。',
     verifiedRoutes: [
-      { dayNumber: 9, title: '杭州→黟县与宏村', summary: '转往黟县并办理入住，游览宏村、南湖与周边步行。', linkedSpots: ['宏村', '南湖'], status: 'visited' },
-      { dayNumber: 10, title: '碧山村与卢村观景点', summary: '碧山村与卢村观景点慢行。', linkedSpots: ['碧山村', '卢村'], status: 'visited' },
-      { dayNumber: 11, title: '秀里水镇与塔川入口', summary: '秀里水镇、塔川入口与周边慢行。', linkedSpots: ['秀里水镇', '塔川'], status: 'visited' },
+      { dayNumber: 9, title: '杭州→黟县与宏村', summary: '转往黟县并办理入住，游览宏村、南湖与周边步行。', attractions: attractions([785, 'hongcun-scenic-area-785', '宏村'], [804, 'nanhu-academy-804', '南湖']), status: 'visited' },
+      { dayNumber: 10, title: '碧山村与卢村观景点', summary: '碧山村与卢村观景点慢行。', attractions: attractions([789, 'bishan-village-789', '碧山村'], [787, 'lucun-viewing-platform-787', '卢村']), status: 'visited' },
+      { dayNumber: 11, title: '秀里水镇与塔川入口', summary: '秀里水镇、塔川入口与周边慢行。', attractions: attractions([790, 'xiuli-water-town-790', '秀里水镇'], [788, 'tachuan-788', '塔川']), status: 'visited' },
     ],
-    referenceRoutes: [{ title: '附近延伸选择', summary: '奇墅湖等资料中出现的地点，未确认实际到访，不进入路线地图。', linkedSpots: ['奇墅湖'], status: 'reference' }],
+    referenceRoutes: [{ title: '附近延伸选择', summary: '奇墅湖等资料中出现的地点，未确认实际到访，不进入路线地图。', attractions: [], status: 'reference' }],
     accommodation: '有巢别院', accommodationStays: [{ dayStart: 9, dayEnd: 11, accommodationId: 807 }],
     practicalTips: ['宏村入口每次进村需重新检票；提前联系客栈接送。', '卢村观景台需早起，但上山会拥堵；不保证晨雾。', '塔川本次只到入口与外围，未进入收费景区。'],
     actualExperiences: ['宏村外围稻田、南湖与月沼夜景是主要拍摄内容。', '秀里游船河道较小、绕一圈返回，体验较单一；当晚鱼灯表演未观看。'],
@@ -75,10 +85,10 @@ const segments: GuideItinerarySegment[] = [
     id: 'nanjing', dayStart: 12, dayEnd: 15, dateStart: '2025-11-15', dateEnd: '2025-11-18', city: '南京', title: '南京｜秋季城市路线',
     summary: '由黟县转入南京后，依次完成牛首山、秋色与明孝陵周边三条城市路线。',
     verifiedRoutes: [
-      { dayNumber: 12, title: '黟县→南京', summary: '由黟县东前往南京南，入住新街口一带。', linkedSpots: [], status: 'visited' },
-      { dayNumber: 13, title: '牛首山与金陵小城', summary: '牛首山与金陵小城。', linkedSpots: ['牛首山', '金陵小城'], status: 'visited' },
-      { dayNumber: 14, title: '栖霞山与秦淮夜游', summary: '栖霞山、中华门、夫子庙秦淮河与德基广场。', linkedSpots: ['栖霞山', '中华门', '夫子庙', '秦淮河', '德基广场'], status: 'visited' },
-      { dayNumber: 15, title: '明孝陵周边秋色', summary: '明孝陵周边、燕雀湖、石象路与陵园路银杏大道；明孝陵未确认进入。', linkedSpots: ['燕雀湖', '石象路', '陵园路'], status: 'visited' },
+      { dayNumber: 12, title: '黟县→南京', summary: '由黟县东前往南京南，入住新街口一带。', attractions: [], status: 'visited' },
+      { dayNumber: 13, title: '牛首山与金陵小城', summary: '牛首山与金陵小城。', attractions: attractions([792, 'niushou-mountain-cultural-tourism-zone-792', '牛首山'], [794, 'jinling-xiaocheng-794', '金陵小城']), status: 'visited' },
+      { dayNumber: 14, title: '栖霞山与秦淮夜游', summary: '栖霞山、中华门、夫子庙秦淮河与德基广场。', attractions: attractions([795, 'qixia-mountain-795', '栖霞山'], [797, 'zhonghua-gate-797', '中华门'], [798, 'confucius-temple-qinhuai-scenic-area-798', '夫子庙秦淮河'], [802, 'deji-plaza-802', '德基广场']), status: 'visited' },
+      { dayNumber: 15, title: '明孝陵周边秋色', summary: '明孝陵周边、燕雀湖、石象路与陵园路银杏大道；明孝陵未确认进入。', attractions: attractions([800, 'yanque-lake-800', '燕雀湖'], [801, 'shixiang-road-801', '石象路'], [803, 'wutong-avenue-803', '陵园路']), status: 'visited' },
     ],
     accommodation: '新街口古南都弘嘉逸居酒店', accommodationStays: [{ dayStart: 12, dayEnd: 15, accommodationId: 791 }],
     practicalTips: ['栖霞山秋色受花期影响；字幕记录 11 月中旬尚未全红。', '明孝陵当天接近 0 度且风大，未继续进入游览。', '门票与夜游场次均为时效信息，公开前必须复查。'],

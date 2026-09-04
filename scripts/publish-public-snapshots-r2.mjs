@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { createClient } from '@supabase/supabase-js'
 import {
   fetchProductionNoteDetails,
   replaceSingleNote,
@@ -19,6 +20,24 @@ const REQUIRED_TRIP_COSTS = {
   'china-dali-shangri-la-lijiang-11d10n': { source: 'guide_budget', totalCents: 432600, categories: 6 },
   'japan-hokkaido-yamagata-tokyo-10d9n': { source: 'guide_budget', totalCents: 771500, categories: 8 },
   'china-guangzhou-8d7n': { source: 'hidden', totalCents: 0, categories: 0 },
+}
+const JIANGNAN_GUIDE_SLUG = 'china-jiangnan-autumn-15d14n'
+const JIANGNAN_ROUTE_ATTRACTION_IDS = {
+  1: [],
+  2: [446, 447, 449, 452],
+  3: [453, 454, 458, 459],
+  4: [436, 437, 438, 439],
+  5: [440, 441, 445],
+  6: [432],
+  7: [420, 427],
+  8: [422, 423, 426, 640, 429],
+  9: [785, 804],
+  10: [789, 787],
+  11: [790, 788],
+  12: [],
+  13: [792, 794],
+  14: [795, 797, 798, 802],
+  15: [800, 801, 803],
 }
 
 function loadEnvLocal() {
@@ -46,16 +65,54 @@ async function fetchJson(url, label) {
   return response.json()
 }
 
+async function currentAuthoritativeGuides() {
+  const supabase = createClient(required('NEXT_PUBLIC_SUPABASE_URL'), required('SUPABASE_SERVICE_ROLE_KEY'), {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+  const bucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
+  const pointerCandidates = ['_system/guides-latest.webp', '_system/guides-latest.txt']
+  let latestPath = ''
+  for (const pointerPath of pointerCandidates) {
+    const { data } = await supabase.storage.from(bucket).download(pointerPath)
+    if (!data) continue
+    latestPath = String(await data.text()).trim()
+    if (latestPath) break
+  }
+  if (!latestPath) throw new Error('Authoritative Guide latest pointer is missing')
+  const { data, error } = await supabase.storage.from(bucket).download(latestPath)
+  if (error || !data) throw new Error(error?.message || `Unable to download ${latestPath}`)
+  const guides = JSON.parse(String(await data.text()).replace(/^\uFEFF/, ''))
+  if (!Array.isArray(guides) || guides.length !== 6) throw new Error(`Expected 6 authoritative Guides, received ${Array.isArray(guides) ? guides.length : 'invalid data'}`)
+  return { guides, latestPath }
+}
+
+function validateGuideSnapshot(guides) {
+  const jiangnan = guides.find((guide) => guide?.slug === JIANGNAN_GUIDE_SLUG)
+  if (!jiangnan) throw new Error('Jiangnan Guide is missing from the authoritative snapshot')
+  if (jiangnan.itineraryMode !== 'segment' || (jiangnan.days || []).length) {
+    throw new Error('Jiangnan must use verifiedRoutes as its single authoritative itinerary source')
+  }
+  const routes = (jiangnan.itinerarySegments || []).flatMap((segment) => segment.verifiedRoutes || [])
+  if (routes.length !== 15) throw new Error(`Expected 15 Jiangnan verified routes, received ${routes.length}`)
+  for (const [dayText, expectedIds] of Object.entries(JIANGNAN_ROUTE_ATTRACTION_IDS)) {
+    const day = Number(dayText)
+    const route = routes.find((item) => item?.dayNumber === day)
+    const actualIds = Array.isArray(route?.attractions)
+      ? [...route.attractions].filter((item) => item?.enabled !== false).sort((a, b) => Number(a.displayOrder) - Number(b.displayOrder)).map((item) => item?.spotId)
+      : null
+    if (!actualIds || JSON.stringify(actualIds) !== JSON.stringify(expectedIds) || (route.linkedSpots || []).length) {
+      throw new Error(`Jiangnan Day ${day} attraction contract failed`)
+    }
+  }
+}
+
 async function currentProductionContent() {
-  const guideList = await fetchJson(`${PRODUCTION_BASE}/api/guides`, 'Production Guides')
-  const guides = await Promise.all((guideList.guides || []).map(async (guide) => {
-    const response = await fetch(`${PRODUCTION_BASE}/api/guides?slug=${encodeURIComponent(guide.slug)}`, { cache: 'no-store' })
-    if (!response.ok) throw new Error(`Production Guide ${guide.slug} returned ${response.status}`)
-    return (await response.json()).guide
-  }))
-  const notes = await fetchProductionNoteDetails(PRODUCTION_BASE)
-  if (guides.length !== 6) throw new Error(`Expected 6 Production Guides, received ${guides.length}`)
-  return { guides, notes }
+  const [{ guides, latestPath }, notes] = await Promise.all([
+    currentAuthoritativeGuides(),
+    fetchProductionNoteDetails(PRODUCTION_BASE),
+  ])
+  validateGuideSnapshot(guides)
+  return { guides, notes, authoritativeGuidePath: latestPath }
 }
 
 function argument(name) {
@@ -107,6 +164,7 @@ let guides = []
 let notes = []
 let files = []
 let noteChanges = []
+let authoritativeGuidePath
 
 if (guideTripCostsOnly) {
   if (targetSlug || notesOnly) throw new Error('--guide-trip-costs-only cannot be combined with Note recovery flags')
@@ -137,6 +195,7 @@ if (guideTripCostsOnly) {
   ])
   guides = production.guides
   notes = production.notes
+  authoritativeGuidePath = production.authoritativeGuidePath
   noteChanges = validateNoteSnapshot(notes, existingSnapshot.notes)
   files = [
     ['public-data/locations.json', fs.readFileSync(path.join(root, 'public-data', 'locations.json'))],
@@ -159,6 +218,7 @@ const summary = {
   notes: notes.length,
   spots: files.filter(([key]) => key.startsWith('public-data/spots/') && !key.endsWith('/index.json')).length,
   noteChanges,
+  authoritativeGuidePath,
   objectSha256: Object.fromEntries(files.map(([key, body]) => [key, createHash('sha256').update(body).digest('hex')])),
 }
 if (!apply) {
