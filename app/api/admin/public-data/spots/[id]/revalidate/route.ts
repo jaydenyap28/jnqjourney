@@ -32,13 +32,20 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const bytes = Buffer.from(await object.Body!.transformToByteArray())
     const snapshot = JSON.parse(bytes.toString())
     if (createHash('sha256').update(bytes).digest('hex') !== payload.sha256) throw new Error('Published snapshot mismatch')
-    const storage = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false, autoRefreshToken: false } }).storage
+    const storage = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: (input, init) => {
+        const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url)
+        url.searchParams.set('cacheNonce', String(Date.now()))
+        return fetch(url, init)
+      } },
+    }).storage
     const bucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
     let aliasMap: Record<string, string> | undefined
     for (const key of ['_system/location-slugs.webp', '_system/location-slugs.json']) {
-      const result = await storage.from(bucket).download(key, { cacheNonce: String(Date.now()) })
+      const result = await storage.from(bucket).download(key)
       if (result.error) {
-        if (String(result.error.statusCode) === '404') continue
+        if ('statusCode' in result.error && String(result.error.statusCode) === '404') continue
         throw new Error('Authoritative alias map unavailable')
       }
       aliasMap = JSON.parse(await result.data.text())
