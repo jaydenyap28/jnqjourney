@@ -29,6 +29,7 @@ import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { guideAttractionMap, resolveGuideAttraction, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
 import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
+import { guideAttractionDisplayName } from '@/lib/guide-attraction-display'
 import { resolveGuideMedia } from '@/lib/guide-media'
 import { formatShortText } from '@/lib/short-text'
 import { resolvePublicImage } from '@/lib/public-media'
@@ -46,6 +47,7 @@ interface PageProps {
 interface LinkedSpot {
   id: number
   name: string
+  attractionDisplayName?: string
   name_cn?: string | null
   category?: string | null
   latitude?: number | null
@@ -456,7 +458,10 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
     const dayAttractions = orderedGuideAttractions(day)
     const orderedSpots = dayAttractions
-      .map((attraction) => resolveGuideAttraction(attraction, allGuideSpots as GuideSegmentSpot[]))
+      .map((attraction): LinkedSpot | null => {
+        const spot = resolveGuideAttraction(attraction, allGuideSpots as GuideSegmentSpot[])
+        return spot ? { ...spot, attractionDisplayName: attraction.displayName } : null
+      })
       .filter((spot): spot is LinkedSpot => Boolean(spot))
 
     const unresolvedSpotNames = dayAttractions
@@ -810,7 +815,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                         {day.displaySpots.map((spot, index) => (
                           <li key={`route-${day.dayNumber}-${spot.id}`} className="flex min-w-0 items-center gap-2">
                             <Link href={buildLocationPath(spot.name, spot.id)} className="truncate text-sm text-white/82 transition hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
-                              {spot.name_cn || spot.name}
+                              {guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)}
                             </Link>
                             {index < day.displaySpots.length - 1 ? <ArrowRight className="h-3.5 w-3.5 shrink-0 rotate-90 text-amber-200/45 sm:rotate-0" /> : null}
                           </li>
@@ -861,7 +866,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                               <div className="relative aspect-[4/3] overflow-hidden bg-black/25">
                                 <FallbackImage
                                   src={getSpotCover(spot)}
-                                  alt={`${spot.name_cn || spot.name} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅行照片'}`.trim()}
+                                  alt={`${guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅行照片'}`.trim()}
                                   fill
                                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                                   className="object-cover transition duration-500 group-hover:scale-[1.025]"
@@ -873,7 +878,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                 </div>
                               </div>
                               <div className="p-4">
-                                <p className="text-base font-medium leading-6 text-white">{spot.name_cn || spot.name}</p>
+                                <p className="text-base font-medium leading-6 text-white">{guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)}</p>
                                 <p className="mt-1 text-xs text-white/50">{spot.regions?.name_cn || spot.regions?.name || '地点'}</p>
                                 <GuideSpotPriceHighlights highlights={spotPriceHighlights} />
                               </div>
