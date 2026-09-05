@@ -134,6 +134,6 @@ test('precise revalidation requires an authenticated fresh signed payload', () =
 test('revalidation route cannot rebuild/write and only targets the requested Spot', () => {
   const source = readFileSync('app/api/admin/public-data/spots/[id]/revalidate/route.ts', 'utf8')
   assert.doesNotMatch(source, /PutObjectCommand|uploadPublic|supabase\.from|revalidateTag\('public-spots'\)/)
-  assert.match(source, /revalidateTag\(`public-spot:\$\{payload.slug\}`\)/)
+  assert.match(source, /for \(const tag of plan.tags\) revalidateTag\(tag\)/)
   assert.match(source, /PRIVATE_NO_STORE/)
 })
