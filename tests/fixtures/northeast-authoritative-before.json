@@ -1,0 +1,273 @@
+{
+  "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
+  "aliases": [
+    "china-harbin-xuegu-changbai-beijing-10d9n",
+    "china-beijing-harbin-xuegu-changbai-8d7n",
+    "dongbei-8d7n",
+    "china-northeast-8d7n"
+  ],
+  "sortDate": "2025-01-06",
+  "title": "哈尔滨·雪谷·长白山·北京",
+  "shortTitle": "中国东北冬季游",
+  "tagline": "从哈尔滨出发，走进雪谷、长白山，再用北京收尾，把冬季雪景与城市经典串成完整路线",
+  "summary": "",
+  "duration": "11 Days / 10 Nights",
+  "budget": "RM 6,452",
+  "budgetScope": "unspecified",
+  "travelStyle": "自由行",
+  "route": [
+    {
+      "stopLabel": "D1-D2",
+      "name": "哈尔滨",
+      "summary": "先用中央大街、冰雪大世界和老城氛围把东北冬天打开。",
+      "mapSpotName": "中央大街",
+      "latitude": 45.7743,
+      "longitude": 126.6296
+    },
+    {
+      "stopLabel": "D3-D4",
+      "name": "雪谷",
+      "summary": "接着进入雪谷与羊草山，体验更完整的雪地路线。",
+      "mapSpotName": "雪谷",
+      "latitude": 44.3880450599042,
+      "longitude": 128.124383465718
+    },
+    {
+      "stopLabel": "D5-D7",
+      "name": "长白山",
+      "summary": "中段转入长白山，以景区、温泉与雪地体验为主。",
+      "mapSpotName": "长白山北坡景区",
+      "latitude": 42.0581,
+      "longitude": 128.0602
+    },
+    {
+      "stopLabel": "D8-D11",
+      "name": "北京",
+      "summary": "最后用北京的经典景点与城市段落收尾。",
+      "mapSpotName": "前门大街",
+      "latitude": 39.8940131340641,
+      "longitude": 116.393376514878
+    }
+  ],
+  "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(125,211,252,0.28),transparent_20%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
+  "coverImage": "https://i.ibb.co/5gBmGqJV/597774876-1385342259896870-433196229323751546-n-watermarked.webp",
+  "highlightTags": [
+    "雪景",
+    "城市散步",
+    "温泉",
+    "冬季旅行",
+    "老街",
+    "雪地活动"
+  ],
+  "heroBullets": [],
+  "budgetItems": [
+    {
+      "label": "Flights",
+      "amount": "1,334",
+      "note": "国际航班来回飞行费用。"
+    },
+    {
+      "label": "Transportation",
+      "amount": "1,310",
+      "note": "机场接送、包车、打车、跨城交通与雪地接驳。"
+    },
+    {
+      "label": "Tickets & Entrance Fees",
+      "amount": "1,191",
+      "note": "冰雪大世界、长白山与雪地活动。"
+    },
+    {
+      "label": "Accommodation",
+      "amount": "999",
+      "note": "哈尔滨、雪谷、长白山、北京住宿。"
+    },
+    {
+      "label": "Food & Dining",
+      "amount": "957",
+      "note": "东北烧烤、早市和景区餐饮。"
+    },
+    {
+      "label": "Other",
+      "amount": "484",
+      "note": "个人购物、其他消费。"
+    },
+    {
+      "label": "Internet & Communication",
+      "amount": "177",
+      "note": "电话卡、上网费。"
+    }
+  ],
+  "days": [
+    {
+      "dayLabel": "Day 1",
+      "title": "哈尔滨老城",
+      "summary": "从哈尔滨太平国际机场出发，一路前往汉庭酒店安顿，随后依次打卡中华巴洛克风情街、黑皮肘子锅包肉、松花江铁路大桥、防洪纪念塔、中央大街、大漠烤巴、圣索菲亚教堂。中华巴洛克风情街满是中西合璧的复古建筑，氛围感十足；中途可以打卡地道东北菜馆黑皮肘子锅包肉，招牌菜品分量足、性价比高；百年松花江铁路大桥既能体验江上玩乐项目，也是绝佳日落观赏点；防洪纪念塔是城市地标，承载着抗洪历史记忆；欧式风情满满的中央大街集购物、美食、休闲于一体；大漠烤吧特色烧烤适合小酌放松，不太适合当作正餐；最后逛 1907 年建成的圣索菲亚教堂，拜占庭式建筑典雅大气，是哈尔滨极具代表性的历史打卡地。",
+      "highlights": [],
+      "linkedSpots": [
+        "中华巴洛克",
+        "松花江铁路大桥",
+        "防洪纪念塔",
+        "中央大街",
+        "圣索菲亚教堂"
+      ],
+      "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
+      "stay": "汉庭酒店(哈尔滨景阳街中华巴洛克店)",
+      "stayRangeStart": 1,
+      "stayRangeEnd": 2,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 2",
+      "title": "哈尔滨冰雪线",
+      "summary": "早上先逛充满市井烟火气的红专街早市，一路品尝各式地道小吃；接着前往冬日绝美打卡地沙滩部落，欣赏如同星辰散落般的钻石海冰块景观；随后奔赴世界最大冰雪艺术乐园冰雪大世界，沉浸式感受壮观冰雕、璀璨灯光与各类冰雪玩乐项目；再到松花江畔的音乐长廊，打卡欧式建筑和巨型雪人地标；晚上落脚民谣集烧烤酒馆，酒水品类丰富可自行选购，驻唱歌手唱功在线，不喝酒也能安静听歌放松氛围感拉满。",
+      "highlights": [],
+      "linkedSpots": [
+        "红专街早市",
+        "冰雪大世界",
+        "音乐长廊",
+        "民谣集烧烤酒馆"
+      ],
+      "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 3",
+      "title": "雪谷",
+      "summary": "哈尔滨出发前往雪谷，入住谷丁子涵时尚家庭旅馆。雪谷是冬日赏雪的高性价比之选，相比雪乡物价更亲民，保留着东北原始村落的静谧与淳朴，很适合沉浸式体验林海雪景和地道东北乡村生活。",
+      "highlights": [],
+      "linkedSpots": [
+        "雪谷"
+      ],
+      "videoUrl": "https://youtu.be/LEC8GSvQu2o",
+      "stay": "雪谷丁子涵时尚家庭旅馆",
+      "stayRangeStart": 3,
+      "stayRangeEnd": 4,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 4",
+      "title": "羊草山穿越",
+      "summary": "早餐后出发前往羊草山，这里是从雪谷穿越到雪乡的必经之地，可选择徒步、马拉爬犁或雪地摩托出行，沿途尽览冬日林海的梦幻雪景；随后抵达雪乡，这座冰雪童话小镇以厚厚的积雪、可爱的蘑菇屋和氛围感十足的梦幻夜景出圈，是冬日赏雪拍照、沉浸式体验东北冬日风情的绝佳去处。",
+      "highlights": [],
+      "linkedSpots": [
+        "羊草山",
+        "中国雪乡"
+      ],
+      "videoUrl": "https://youtu.be/LEC8GSvQu2o",
+      "stay": "雪谷丁子涵时尚家庭旅馆",
+      "stayRangeStart": 3,
+      "stayRangeEnd": 4,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 5",
+      "title": "长白山镇上",
+      "summary": "从雪谷出发前往二道白河，入住长白山喜来客宾馆，随后打卡山顺炭火烤肉朝鲜族家，店里主打炭火烤肉和地道朝鲜族风味，口味正宗性价比很高；傍晚漫步恩都里梦幻商业街，超多网红打卡点位，还能免费打卡盗墓笔记同款云顶天宫场景。",
+      "highlights": [],
+      "linkedSpots": [
+        "山顺烤肉",
+        "恩都里",
+        "云顶天宫"
+      ],
+      "videoUrl": "https://youtu.be/703jrkOwtb0",
+      "stay": "栖溪小院",
+      "stayRangeStart": 5,
+      "stayRangeEnd": 7,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 6",
+      "title": "长白山北坡",
+      "summary": "从长白山北坡游客中心开启行程，依次游玩长白瀑布、绿渊潭和谷底森林。长白瀑布从天池飞泻而下，是长白山风光精髓，可徒步也能坐雪地摩托上山；绿渊潭瀑布落差 26 米，冬日冰挂晶莹剔透，仿若人间仙境；谷底森林古树林立，冬日银装素裹，满是原始林海的童话氛围感。中途打卡蓝景酒店里的丰茂烤串，自动烤串体验感十足，吃饱再前往聚龙火山温泉，感受冬日户外温泉冰火两重天的独特体验，结束后再去莲钰汤饭暖心收尾。",
+      "highlights": [],
+      "linkedSpots": [
+        "长白山北坡景区",
+        "蓝景聚龙温泉"
+      ],
+      "videoUrl": "https://youtu.be/703jrkOwtb0",
+      "stay": "栖溪小院",
+      "stayRangeStart": 5,
+      "stayRangeEnd": 7,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 7",
+      "title": "长白山体验线",
+      "summary": "从酒店出发，开启一天的行程，先前往西坡原生态漂流，全程约40分钟，人少景美、水流平缓，超适合慢慢拍照出片；接着打卡二道白河镇的雪绒花，网红冰封玫瑰氛围感拉满，还有雪人大军、驯鹿园等趣味项目可以游玩；中途到溪边雪地的拾乐咖啡小坐，点一杯季节限定饮品搭配小甜点，惬意放松身心；随后逛满是东北年味的云顶集市，老式木屋配上红灯笼与皑皑积雪，吃喝玩乐一应俱全；晚餐就在集市里选择韩顺拌饭，正宗韩式餐食，性价比高又好吃。",
+      "highlights": [],
+      "linkedSpots": [
+        "西坡雾凇漂流",
+        "雪绒花雪乐园",
+        "拾乐咖啡",
+        "云顶集市"
+      ],
+      "videoUrl": "https://youtu.be/703jrkOwtb0",
+      "stay": "栖溪小院",
+      "stayRangeStart": 5,
+      "stayRangeEnd": 7,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 8",
+      "title": "北京经典线",
+      "summary": "从长白山搭乘动车前往北京，抵达后入住潮漫酒店，随后前往中华老字号全聚德品尝正宗北京烤鸭，古色古香的环境满满京韵风情；饭后漫步前门大街，这里云集各类老字号、特色小吃与传统手工艺品，还可顺路打卡周边大栅栏、鲜鱼口胡同，沉浸式感受地道老北京韵味。",
+      "highlights": [],
+      "linkedSpots": [
+        "前门大街"
+      ],
+      "videoUrl": "https://youtu.be/RsxorBCejcU",
+      "stay": "潮漫酒店(北京国贸大望路站店)",
+      "stayRangeStart": 8,
+      "stayRangeEnd": 10,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 9",
+      "title": "北京环球",
+      "summary": "一大早出发前往北京环球影城，园区汇聚哈利波特、侏罗纪世界、功夫熊猫、变形金刚、小黄人等七大主题园区，可以体验沉浸式游乐项目、品尝主题美食、逛特色文创购物，仿佛一秒闯入奇幻电影世界。",
+      "highlights": [],
+      "linkedSpots": [
+        "北京环球"
+      ],
+      "videoUrl": "https://youtu.be/RsxorBCejcU",
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 10",
+      "title": "老街与城景",
+      "summary": "Day 1️⃣0️⃣ 北京\n依次游览故宫、什刹海、东华门、鼓楼、烟袋斜街，最后前往北京CBD国贸。故宫是明清两代皇家宫殿，古建筑群规模宏大，馆藏珍宝无数，也是世界上现存规模最大、保存最完整的木结构宫殿群落。什刹海由前海、后海、西海组成，胡同、茶馆与特色小店错落分布，满满老北京风情。东华门汇集超多地道北京小吃，性价比高，靠窗位置还能欣赏什刹海胡同街景。鼓楼矗立在古都之中，红墙灰瓦沉淀着千年历史，和钟楼遥遥相望，见证京城岁月变迁。烟袋斜街古色古香，遍布特色文创小店与传统美食，氛围感十足。傍晚来到北京CBD国贸，高楼林立繁华热闹，也是打卡城市地标大裤衩的绝佳位置。",
+      "highlights": [],
+      "linkedSpots": [
+        "故宫博物院",
+        "烟袋斜街",
+        "中国中央电视台总部大楼"
+      ],
+      "videoUrl": "https://youtu.be/RsxorBCejcU",
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 11",
+      "title": "慕田峪长城",
+      "summary": "第一站出发前往慕田峪长城，作为长城的精华路段之一，好汉坡与英雄台坐落于最高的 20 号敌楼，登高便能俯瞰壮阔山河美景。之后去到悠唐广场内煮茶小憩，店内茶水甜点齐全，座位充足环境舒适，很适合悠闲享受下午茶时光。晚餐打卡费大厨辣椒炒肉，招牌辣椒炒肉风味地道，心心念念特地前来回味美味。",
+      "highlights": [],
+      "linkedSpots": [
+        "慕田峪长城"
+      ],
+      "videoUrl": "https://youtu.be/RsxorBCejcU",
+      "gallery": []
+    }
+  ],
+  "itinerarySegments": [],
+  "bestFor": [],
+  "notes": [],
+  "featuredSpotNames": [
+    "中央大街",
+    "冰雪大世界",
+    "雪谷",
+    "长白山北坡景区",
+    "故宫博物院",
+    "慕田峪长城"
+  ],
+  "featuredAffiliateLinkIds": [],
+  "sidebarAffiliateLinkIds": []
+}
