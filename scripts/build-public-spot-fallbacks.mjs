@@ -1,10 +1,11 @@
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 const root = process.cwd()
 const sourcePath = path.join(root, 'public-data', 'locations.json')
 const outputDir = path.join(root, 'public-data', 'spots')
 const replaceLightweight = process.argv.includes('--replace-lightweight')
+if (replaceLightweight) throw new Error('--replace-lightweight is disabled: lightweight data cannot replace Spot detail. Use authoritative media recovery.')
 
 function splitDisplayName(value) {
   const display = String(value || '').trim()
@@ -27,7 +28,8 @@ function spotFromLocation(location) {
     latitude: Number(location.latitude),
     longitude: Number(location.longitude),
     image_url: location.thumbnail ?? null,
-    images: location.thumbnail ? [location.thumbnail] : [],
+    // A thumbnail is a cover hint, never an authoritative Gallery.
+    images: [],
     description: location.shortSummary ?? null,
     review: null,
     tags: [],
@@ -48,10 +50,8 @@ function spotFromLocation(location) {
   }
 }
 
-async function writeAtomic(filePath, value) {
-  const tempPath = `${filePath}.${process.pid}.tmp`
-  await writeFile(tempPath, `${JSON.stringify(value)}\n`, 'utf8')
-  await rename(tempPath, filePath)
+async function createOnly(filePath, value) {
+  await writeFile(filePath, `${JSON.stringify(value)}\n`, { encoding: 'utf8', flag: 'wx' })
 }
 
 const payload = JSON.parse((await readFile(sourcePath, 'utf8')).replace(/^\uFEFF/, ''))
@@ -70,17 +70,20 @@ for (const location of payload.locations) {
   if (!spot.slug || !Number.isInteger(spot.id) || spot.id <= 0) throw new Error(`Invalid public location: ${JSON.stringify(location)}`)
   slugs.push(spot.slug)
   const outputPath = path.join(outputDir, `${spot.slug}.json`)
-  if (!replaceLightweight) {
-    try {
-      const existing = JSON.parse((await readFile(outputPath, 'utf8')).replace(/^\uFEFF/, ''))
-      if (existing?.schemaVersion === 1 && Number(existing?.spot?.id) === spot.id) {
-        preserved += 1
-        continue
-      }
-    } catch {}
+  try {
+    const existing = JSON.parse((await readFile(outputPath, 'utf8')).replace(/^\uFEFF/, ''))
+    if (existing?.schemaVersion !== 1 || Number(existing?.spot?.id) !== spot.id) throw new Error(`Invalid existing Spot snapshot: ${outputPath}`)
+    preserved += 1
+    continue
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
   }
-  await writeAtomic(outputPath, { schemaVersion: 1, source, spot })
+  await createOnly(outputPath, { schemaVersion: 1, source, spot })
   created += 1
 }
-await writeAtomic(path.join(outputDir, 'index.json'), { schemaVersion: 1, source, slugs })
+try {
+  await createOnly(path.join(outputDir, 'index.json'), { schemaVersion: 1, source, slugs })
+} catch (error) {
+  if (error.code !== 'EEXIST') throw error
+}
 console.log(JSON.stringify({ generatedAt, spots: slugs.length, created, preserved, replaceLightweight, outputDir }, null, 2))

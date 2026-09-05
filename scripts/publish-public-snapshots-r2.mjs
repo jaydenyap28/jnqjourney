@@ -3,6 +3,7 @@ import path from 'node:path'
 import { createHash } from 'node:crypto'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { createClient } from '@supabase/supabase-js'
+import { assertNoGenericSpotPublish } from './lib/spot-media-recovery.mjs'
 import {
   fetchProductionNoteDetails,
   replaceSingleNote,
@@ -235,12 +236,11 @@ if (guideTripCostsOnly) {
     ['public-data/guide-trip-costs.json', Buffer.from(JSON.stringify(guideTripCosts))],
     ['public-data/notes.json', Buffer.from(JSON.stringify({ schemaVersion: 1, generatedAt: new Date().toISOString(), notes }))],
   ]
-  const spotDir = path.join(root, 'public-data', 'spots')
-  for (const name of fs.readdirSync(spotDir).filter((value) => value.endsWith('.json'))) {
-    files.push([`public-data/spots/${name}`, fs.readFileSync(path.join(spotDir, name))])
-  }
+  // Spot detail/index are intentionally excluded. Local lightweight fallbacks
+  // cannot overwrite live-authoritative media published by the recovery tool.
 }
 
+assertNoGenericSpotPublish(files.map(([key]) => key))
 const summary = {
   apply,
   objects: files.length,
