@@ -8,6 +8,17 @@ function featuredSpotId(region: PublicRegion) {
   return match ? Number(match[1]) : null
 }
 
+function explicitRegionCover(region: PublicRegion) {
+  const value = String(region.thumbnail || '').trim()
+  if (!value) return null
+  try {
+    const protocol = new URL(value).protocol
+    return protocol === 'https:' || protocol === 'http:' ? value : null
+  } catch {
+    return null
+  }
+}
+
 function locationRank(location: PublicLocation) {
   const category = String(location.category || '').toLowerCase()
   if (category === 'attraction') return 0
@@ -51,12 +62,13 @@ export interface PublicRegionMediaAudit {
  * to the Region itself or one of its descendants. Selection is deterministic:
  * configured featured Spot, then category rank, then ascending Spot id.
  *
- * Legacy external Region covers are deliberately placed after verified R2 Spot
- * media because those hosts can return quota, hotlink, or expiry failures.
+ * An explicit, valid Region cover is authoritative. Only missing or invalid
+ * Region covers may fall through to the configured or deterministic Spot cover.
  */
 export function resolvePublicRegionMedia(regions: PublicRegion[], locations: PublicLocation[]) {
   return regions.map((region) => {
-    if (isR2PublicImage(region.thumbnail)) return { ...region }
+    const explicit = explicitRegionCover(region)
+    if (explicit) return { ...region, thumbnail: explicit }
 
     const allowedRegionIds = descendantIds(region.id, regions)
     const regionSpots = locations

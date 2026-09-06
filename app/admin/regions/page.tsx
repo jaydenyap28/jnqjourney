@@ -249,6 +249,12 @@ export default function RegionsPage() {
 
       if (result.error) throw result.error
 
+      if (editingId) {
+        const response = await adminFetch(`/api/admin/public-data/regions/${editingId}`, { method: 'POST' })
+        const published = await response.json()
+        if (!response.ok) throw new Error(published.error || 'Region was saved but its public cover could not be published.')
+      }
+
       await fetchRegions()
       setSuccessMsg(editingId ? 'Region updated.' : 'Region created.')
       setIsDialogOpen(false)

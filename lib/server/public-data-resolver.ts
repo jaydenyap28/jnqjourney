@@ -118,7 +118,12 @@ async function readCdnSnapshot(): Promise<ResolvedPublicData | null> {
   try {
     const [locationsResponse, regionsResponse] = await withTimeout(Promise.all([
       fetch(`${base}/public-data/locations.json`, { next: { revalidate: 3600, tags: ['public-locations'] } }),
-      fetch(`${base}/public-data/regions.json`, { next: { revalidate: 3600, tags: ['public-regions'] } }),
+      // The Region snapshot is overwritten at a fixed R2 key. Ask the CDN to
+      // revalidate that object when Next has precisely invalidated this tag.
+      fetch(`${base}/public-data/regions.json`, {
+        headers: { 'Cache-Control': 'no-cache' },
+        next: { revalidate: 3600, tags: ['public-regions'] },
+      }),
     ]), 'Public data CDN')
     if (!locationsResponse.ok || !regionsResponse.ok) return null
     const [locations, regions] = await Promise.all([

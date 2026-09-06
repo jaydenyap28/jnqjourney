@@ -98,8 +98,25 @@ test('admin writes remain private and no-store', async () => {
   const sources = await Promise.all([
     read('app/api/admin/guides/route.ts'),
     read('app/api/admin/public-data/snapshot/route.ts'),
+    read('app/api/admin/public-data/regions/[id]/route.ts'),
   ])
   assert.ok(sources.every((source) => source.includes('PRIVATE_NO_STORE')))
+})
+
+test('Region cover saves publish one snapshot record and precisely invalidate public Region consumers', async () => {
+  const [admin, resolver] = await Promise.all([
+    read('app/admin/regions/page.tsx'),
+    read('app/api/admin/public-data/regions/[id]/route.ts'),
+  ])
+  assert.match(admin, /\/api\/admin\/public-data\/regions\/\$\{editingId\}/)
+  assert.match(resolver, /snapshot\.regions\[index\] = region/)
+  assert.match(resolver, /uploadPublicDataSnapshot\('regions\.json'/)
+  assert.match(resolver, /revalidateTag\('public-regions'\)/)
+  assert.match(resolver, /revalidateTag\('regions'\)/)
+  assert.match(resolver, /revalidatePath\('\/'\)/)
+  assert.match(resolver, /revalidatePath\('\/api\/regions'\)/)
+  assert.match(resolver, /revalidatePath\(`\/region\/\$\{region\.slug\}`\)/)
+  assert.match(resolver, /readPublishedRegions/)
 })
 
 test('Guide writes revalidate collection and slug-specific cache tags', async () => {

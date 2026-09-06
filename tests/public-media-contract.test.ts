@@ -71,7 +71,7 @@ test('Guide and Longform public pages do not query the locations table directly'
   for (const source of sources) assert.doesNotMatch(source, /\.from\(['"]locations['"]\)/)
 })
 
-test('Region covers use only deterministic R2 media from the Region tree', () => {
+test('explicit Region covers outrank configured and deterministic Spot fallbacks', () => {
   const regionFixtures = [
     { id: 1, slug: 'parent-1', name: 'Parent', country: 'Malaysia', thumbnail: 'https://i.ibb.co/old.webp', shortSummary: null, parentId: null, code: null },
     { id: 2, slug: 'child-2', name: 'Child', country: 'Malaysia', thumbnail: null, shortSummary: null, parentId: 1, code: null },
@@ -83,13 +83,13 @@ test('Region covers use only deterministic R2 media from the Region tree', () =>
     { id: 1, slug: 'wrong-1', name: 'Wrong', region: { id: 3, slug: 'other-3', name: 'Other', country: 'Malaysia', code: null }, category: 'attraction', latitude: 1, longitude: 1, thumbnail: r2('wrong'), shortSummary: null },
   ]
   const resolved = resolvePublicRegionMedia(regionFixtures, locationFixtures)
-  assert.equal(resolved[0].thumbnail, r2('spot'))
+  assert.equal(resolved[0].thumbnail, 'https://i.ibb.co/old.webp')
   assert.equal(resolved[1].thumbnail, r2('spot'))
   assert.equal(resolved[2].thumbnail, r2('wrong'))
   assert.equal(regionFixtures[0].thumbnail, 'https://i.ibb.co/old.webp')
   assert.deepEqual(auditPublicRegionMedia(regionFixtures, locationFixtures), {
     total: 3, explicitR2: 0, explicitExternal: 1, missingExplicit: 2,
-    spotR2Fallback: 3, externalOnly: 0, logoFallback: 0,
+    spotR2Fallback: 2, externalOnly: 1, logoFallback: 0,
   })
 })
 
@@ -105,8 +105,8 @@ test('all Regions with associated public Spot media resolve without inflating lo
     explicitR2: 2,
     explicitExternal: 52,
     missingExplicit: 2,
-    spotR2Fallback: 53,
-    externalOnly: 0,
+    spotR2Fallback: 1,
+    externalOnly: 52,
     logoFallback: 1,
   })
   assert.equal(locationPayload.locations.length, 547)
