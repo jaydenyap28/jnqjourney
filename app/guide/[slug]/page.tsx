@@ -703,18 +703,18 @@ export default async function GuideDetailPage({ params }: PageProps) {
 
               {routeRegions.length ? (
                 <section aria-labelledby="hero-route-heading" className="border-l border-white/16 bg-black/20 p-4 backdrop-blur-md md:p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">Route / 路线</p>
-                  <h2 id="hero-route-heading" className="mt-2 text-xl font-semibold text-white">路线总览</h2>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-200/75">{guide.itineraryMode === 'unassigned' ? 'Destination / 地区' : 'Route / 路线'}</p>
+                  <h2 id="hero-route-heading" className="mt-2 text-xl font-semibold text-white">{guide.itineraryMode === 'unassigned' ? '旅行地区' : '路线总览'}</h2>
                   <ol className="mt-4 space-y-1">
                     {routeRegions.map((stop, index) => {
                       const startDay = routeStartDay(stop.stopLabel, index + 1)
                       return (
                         <li key={`${stop.name}-${index}`}>
                           <a
-                            href={`#day-${startDay}`}
+                            href={guide.itineraryMode === 'unassigned' ? stop.href || '#itinerary-heading' : `#day-${startDay}`}
                             className="group grid min-h-12 grid-cols-[4.5rem_1fr_auto] items-center gap-2 border-t border-white/10 py-2.5 text-sm transition first:border-t-0 hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
                           >
-                            <span className="font-semibold tabular-nums text-amber-200/80">{stop.stopLabel || `D${startDay}`}</span>
+                            <span className="font-semibold tabular-nums text-amber-200/80">{guide.itineraryMode === 'unassigned' ? '地区' : stop.stopLabel || `D${startDay}`}</span>
                             <span className="min-w-0">
                               <span className="block truncate font-medium text-white">{stop.primaryLabel || stop.name}</span>
                               {stop.secondaryLabel ? <span className="mt-0.5 block truncate text-[10px] uppercase tracking-[0.18em] text-white/40">{stop.secondaryLabel}</span> : null}
@@ -738,15 +738,15 @@ export default async function GuideDetailPage({ params }: PageProps) {
         </section>
       ) : null}
 
-      <GuideQuickNav
+      {guide.itineraryMode !== 'unassigned' && <GuideQuickNav
         guideSlug={guide.slug}
         days={isSegmentItinerary ? (guide.itinerarySegments || []).map((segment) => ({ dayNumber: segment.dayStart, title: segment.city })) : datedDayPlans.map((day) => ({ dayNumber: day.dayNumber, title: day.title }))}
         hasMap={routeMapPoints.length > 0}
         hasBudget={hasPublicTripCost}
-      />
+      />}
 
       <div className="mx-auto max-w-6xl space-y-16 px-4 py-10 md:px-8 md:py-16">
-        {routeMapPoints.length ? (
+        {guide.itineraryMode !== 'unassigned' && routeMapPoints.length ? (
           <section id="route-map" className="scroll-mt-24">
             <div className="grid gap-3 border-b border-white/10 pb-5 md:grid-cols-[1fr_auto] md:items-end">
               <div>
