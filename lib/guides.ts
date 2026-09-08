@@ -132,7 +132,7 @@ export interface TravelGuide {
   itineraryMode?: GuideItineraryMode
   /** Actual visits whose day assignment has not been established. Never a daily projection. */
   attractions?: GuideAttractionRef[]
-  accommodationStays?: Array<{ accommodationId: number; note?: string }>
+  accommodationStays?: Array<{ accommodationId: number; displayName?: string; note?: string }>
   itinerarySegments?: GuideItinerarySegment[]
   bestFor: string[]
   notes: string[]

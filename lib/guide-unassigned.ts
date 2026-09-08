@@ -3,7 +3,7 @@ import type { GuideAttractionRef } from './guides.ts'
 /** Fail closed instead of accepting a second itinerary or silently dropping an identity. */
 export function normalizeUnassignedVisits(value: any): {
   attractions: GuideAttractionRef[]
-  accommodationStays: Array<{ accommodationId: number; note?: string }>
+  accommodationStays: Array<{ accommodationId: number; displayName?: string; note?: string }>
 } {
   if ((value.days || []).length || (value.itinerarySegments || []).length || (value.linkedSpots || []).length) {
     throw new Error('Unassigned visits cannot contain days, itinerarySegments or linkedSpots.')
@@ -26,7 +26,8 @@ export function normalizeUnassignedVisits(value: any): {
       throw new Error(`accommodationStays[${index}]: unique accommodationId without guessed days is required.`)
     }
     seen.add(item.accommodationId)
-    return { accommodationId: item.accommodationId, note: String(item.note || '').trim() || undefined }
+    const displayName = String(item.displayName || '').trim()
+    return { accommodationId: item.accommodationId, ...(displayName ? { displayName } : {}), note: String(item.note || '').trim() || undefined }
   })
   return { attractions, accommodationStays }
 }

@@ -23,17 +23,19 @@ export default function GuideDayStayCard({
   dayNumber,
   stay,
   staySpot,
+  displayName,
   note,
   continued = false,
 }: {
   dayNumber?: number
   stay?: string
   staySpot?: GuideStaySpot | null
+  displayName?: string
   note?: string
   continued?: boolean
 }) {
   if (!stay && !staySpot) return null
-  const name = staySpot?.name_cn || staySpot?.name || stay || ''
+  const name = displayName?.trim() || staySpot?.name_cn || staySpot?.name || stay || ''
   const region = staySpot?.regions?.name_cn || staySpot?.regions?.name || '住宿地点'
   const content = (
     <>

@@ -13,7 +13,7 @@ export default function GuideUnassignedVisits({ guide, spots }: { guide: TravelG
     <div className="border-b border-white/10 pb-5">
       <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/70">Visited places / 实际到访</p>
       <h2 id="itinerary-heading" className="mt-2 font-display text-4xl text-white md:text-5xl">这趟去过的地方</h2>
-      <p className="mt-4 max-w-3xl text-sm leading-7 text-white/70">以下按影片介绍顺序整理。每日安排尚待补充，可先查看地点资料与完整影片。</p>
+      <p className="mt-4 max-w-3xl text-sm leading-7 text-white/70">以下整理本次实际到访的地点。每日安排尚待确认，可先查看地点资料与完整影片。</p>
     </div>
     <ol className="mt-6 grid gap-x-7 sm:grid-cols-2 lg:grid-cols-3">
       {visits.map((ref, index) => {
@@ -28,7 +28,7 @@ export default function GuideUnassignedVisits({ guide, spots }: { guide: TravelG
     </ol>
     {!!guide.accommodationStays?.length && <div className="mt-10"><h2 className="font-display text-3xl text-white">这趟住过的地方</h2><div className="grid gap-x-5 lg:grid-cols-2">{guide.accommodationStays.map(stay => {
       const spot = spots.find(item => item.id === stay.accommodationId && item.category === 'accommodation')
-      return spot ? <GuideDayStayCard key={stay.accommodationId} staySpot={spot} note={stay.note} /> : null
+      return spot ? <GuideDayStayCard key={stay.accommodationId} staySpot={spot} displayName={stay.displayName} note={stay.note} /> : null
     })}</div></div>}
     {!!guide.notes.length && <aside className="mt-10 border-l-2 border-amber-200/35 pl-5"><h2 className="text-2xl font-medium text-white">交通与旅行提醒</h2><div className="mt-4 space-y-4">{guide.notes.map(note => <p key={note} className="max-w-3xl text-sm leading-7 text-white/70">{note}</p>)}</div></aside>}
     {videoId && <div className="mt-10"><h2 className="mb-4 font-display text-3xl text-white">完整旅行影片</h2><GuideVideoCard videoId={videoId} title={guide.title} guideSlug={guide.slug} /></div>}

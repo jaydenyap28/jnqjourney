@@ -8,6 +8,10 @@ test('actual visits and stays survive without invented days', () => {
   assert.equal(result.attractions[0].spotSlug, 'example-900')
   assert.deepEqual(result.accommodationStays, [{ accommodationId: 901, note: undefined }])
 })
+test('Guide-specific stay display name survives without changing identity or day assignment', () => {
+  const value = normalizeUnassignedVisits({ accommodationStays: [{ accommodationId: 808, displayName: ' Villa Paddy ' }] })
+  assert.deepEqual(value.accommodationStays, [{ accommodationId: 808, displayName: 'Villa Paddy', note: undefined }])
+})
 test('reject parallel itinerary, duplicate or mismatched identity and invented stay range', () => {
   for (const value of [
     { days: [{ dayLabel: 'Day 1' }] }, { itinerarySegments: [{}] }, { linkedSpots: ['Example'] },
