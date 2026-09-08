@@ -89,6 +89,8 @@ export default async function SpotPage({ params }: PageProps) {
   ].filter(Boolean))
   const relatedGuides = allGuides
     .filter((guide) => {
+      if (guide.attractions?.some(ref => ref.enabled !== false && ref.spotId === location.id) ||
+          guide.accommodationStays?.some(stay => stay.accommodationId === location.id)) return true
       const guideNames = new Set(
         [
           ...guide.route.map((item) => item.mapSpotName || item.name),

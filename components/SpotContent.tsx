@@ -707,7 +707,7 @@ export default function SpotContent({
           </div>
         ) : null}
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6">
+        <div className="grid min-w-0 grid-cols-1 gap-4 [overflow-wrap:anywhere] lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6">
           <div className="space-y-4">
             {shouldShowPriceSnapshot ? (
               <div className="overflow-hidden rounded-[24px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3.5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:rounded-[32px] md:p-7">
@@ -968,7 +968,7 @@ export default function SpotContent({
                 {(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt) ? (
                   <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-4 text-xs text-gray-300">
                     {priceInfo.notes ? <span className="text-gray-300">{priceInfo.notes}</span> : null}
-                    {priceInfo.priceSource ? <span>Source: {priceInfo.priceSource}</span> : null}
+                    {priceInfo.priceSource ? <span className="min-w-0 [overflow-wrap:anywhere]">Source: {priceInfo.priceSource}</span> : null}
                     {priceInfo.lastCheckedAt ? <span>Checked: {priceInfo.lastCheckedAt}</span> : null}
                   </div>
                 ) : null}
@@ -982,7 +982,7 @@ export default function SpotContent({
               </h3>
               {spotDescription ? (
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-inner backdrop-blur-md md:p-6">
-                  <div className="whitespace-pre-line text-lg leading-relaxed text-gray-200">{spotDescription}</div>
+                  <div className="whitespace-pre-line [overflow-wrap:anywhere] text-lg leading-relaxed text-gray-200">{spotDescription}</div>
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-5 text-center md:p-8">
