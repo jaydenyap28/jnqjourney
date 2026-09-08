@@ -1,5 +1,8 @@
 'use client'
 
+import EntityName from '@/components/EntityName'
+
+
 import React from 'react'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,6 +14,7 @@ import { getVisibleLocationTags } from '@/lib/tag-utils'
 interface Location {
   id: number
   name: string
+  name_cn?: string | null
   latitude: number
   longitude: number
   review?: string
@@ -62,7 +66,7 @@ export default function LocationCard({ location, onClick }: LocationCardProps) {
 
       <CardContent className="p-4">
         <div className="flex justify-between items-start gap-2 mb-2">
-          <h3 className="font-bold text-lg leading-tight line-clamp-1">{location.name}</h3>
+          <h3 className="min-w-0 font-bold text-lg leading-tight"><EntityName entity={location} /></h3>
         </div>
         
         {location.review ? (

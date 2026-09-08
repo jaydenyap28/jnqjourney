@@ -27,10 +27,12 @@ test('daily and segmented renderers use the shared precedence for card title and
   const daily = fs.readFileSync(new URL('../app/guide/[slug]/page.tsx', import.meta.url), 'utf8')
   const segment = fs.readFileSync(new URL('../components/GuideSegmentItinerarySection.tsx', import.meta.url), 'utf8')
   assert.match(daily, /attractionDisplayName: attraction\.displayName/)
-  assert.equal(daily.split('guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)').length - 1, 3)
-  assert.equal(segment.split('guideAttractionDisplayName(attraction, spot)').length - 1, 2)
+  assert.equal(daily.split('guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)').length - 1, 2)
+  assert.equal(segment.split('guideAttractionDisplayName(attraction, spot)').length - 1, 1)
+  assert.match(daily, /<EntityName entity=\{\{ \.\.\.spot, displayName: spot.attractionDisplayName \}\} \/>/)
+  assert.match(segment, /<EntityName entity=\{\{ \.\.\.spot, displayName: attraction.displayName \}\} \/>/)
   for (const source of [daily, segment]) {
     assert.match(source, /href=\{buildLocationPath\(spot\.name, spot\.id\)\}/)
-    assert.doesNotMatch(source, /href=\{buildLocationPath\(.*displayName/)
+    assert.doesNotMatch(source, /href=\{buildLocationPath\([^)]*displayName/)
   }
 })

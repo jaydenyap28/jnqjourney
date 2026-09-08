@@ -1,3 +1,5 @@
+import { resolveEntityDisplayName } from '@/lib/entity-display-name'
+import EntityName from '@/components/EntityName'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -42,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
   }
 
-  const readableName = region.name_cn || region.name
+  const readableName = resolveEntityDisplayName(region).primary
   const seoTitle = `${readableName} Travel Guide - Spots, Food, Stays and Routes`
   const description = `Explore ${readableName} with JnQ Journey: travel spots, food finds, stays, route ideas, maps, photos, and practical notes for planning your trip.`
   
@@ -76,7 +78,7 @@ function SpotCard({ spot, regionName }: { spot: any, regionName: string }) {
         )}
       </div>
       <div className="flex-1 p-3 md:p-4">
-        <h3 className="line-clamp-1 font-semibold text-white text-base">{title.primary}</h3>
+        <h3 className="font-semibold text-white text-base"><EntityName entity={spot} /></h3>
         <p className="line-clamp-2 text-xs md:text-sm text-gray-400 mt-1.5 leading-relaxed">{getSpotDescription(spot) || '查看详细介绍、图片与地图位置。'}</p>
       </div>
     </Link>
@@ -92,7 +94,7 @@ export default async function RegionPage({ params }: PageProps) {
 
   const locations = await fetchLocationsByRegion(region.id, 100)
   const relatedPackages = (await readPublishedPackages()).filter((item) => item.region_id === region.id)
-  const readableName = region.name_cn || region.name
+  const readableName = resolveEntityDisplayName(region).primary
 
   // Guides matching
   const allGuides = await readPublicGuides()
@@ -226,7 +228,7 @@ export default async function RegionPage({ params }: PageProps) {
               <Badge className="bg-amber-500/20 text-amber-200 border-amber-500/30">Region Guide</Badge>
               {region.country && <Badge className="bg-white/10 text-white border-white/20">{region.country}</Badge>}
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white">{readableName}自由行攻略</h1>
+            <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white"><EntityName entity={region} /></h1>
             <p className="text-lg text-gray-300 leading-relaxed max-w-3xl">
               这里整理 JnQ Journey 已收录的 {readableName} 景点、美食、路线和旅行参考，适合规划自由行、周末游或亲子行程。
             </p>

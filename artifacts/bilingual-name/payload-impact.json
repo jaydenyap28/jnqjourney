@@ -1,0 +1,6 @@
+{
+  "measurement": "Same captured production dataset; API code and serializers unchanged",
+  "beforeBytes": 457323,
+  "afterBytes": 457323,
+  "deltaPercent": 0
+}

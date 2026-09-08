@@ -1,5 +1,6 @@
 'use client'
 
+import EntityName from '@/components/EntityName'
 import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import { MapPin, ArrowRight } from 'lucide-react'
@@ -157,7 +158,7 @@ export default function BottomFloatingDock({
                     >
                       <Card
                         className={cn(
-                          'group relative h-[106px] w-[176px] cursor-pointer overflow-hidden rounded-[18px] border border-white/10 bg-black/20 shadow-xl backdrop-blur-sm transition-all duration-300 md:h-[170px] md:w-[300px] md:rounded-xl',
+                          'group relative min-h-[106px] w-[176px] cursor-pointer overflow-hidden rounded-[18px] border border-white/10 bg-black/20 shadow-xl backdrop-blur-sm transition-all duration-300 md:min-h-[170px] md:w-[300px] md:rounded-xl',
                           index === focusedIndex
                             ? 'z-10 scale-[1.02] ring-2 ring-amber-400 bg-black/40 md:scale-105'
                             : 'hover:-translate-y-2'
@@ -180,7 +181,7 @@ export default function BottomFloatingDock({
                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
                         </div>
 
-                        <div className="absolute bottom-0 left-0 w-full p-2 text-white md:p-4">
+                        <div className="relative flex min-h-[106px] w-full flex-col justify-end p-2 text-white md:min-h-[170px] md:p-4">
                           <div
                             className={cn(
                               'mb-1 flex items-center gap-1 text-[10px] font-medium text-amber-200 transition-all duration-300 md:text-xs',
@@ -194,11 +195,11 @@ export default function BottomFloatingDock({
                           </div>
                           <h4
                             className={cn(
-                              'line-clamp-1 text-[13px] font-bold leading-tight transition-colors md:text-lg',
+                              'text-[13px] font-bold leading-tight transition-colors md:text-lg',
                               index === focusedIndex ? 'text-amber-200' : 'group-hover:text-amber-200'
                             )}
                           >
-                            {location.name}
+                            <EntityName entity={location} />
                           </h4>
                           <p className="mt-0.5 line-clamp-1 text-[9px] text-white/70 md:mt-1 md:text-xs">
                             {location.shortSummary || getCategoryLabel(location.category)}

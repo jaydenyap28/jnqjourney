@@ -1,5 +1,8 @@
 'use client'
 
+import EntityName from '@/components/EntityName'
+
+
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, RefreshCw } from 'lucide-react'
@@ -236,7 +239,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
             ) : null}
             {location.region?.name ? (
               <Badge className="border border-white/10 bg-white/10 text-white">
-                {location.region.name}
+                <EntityName entity={location.region} />
               </Badge>
             ) : null}
           </div>
@@ -245,7 +248,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
 
       <div className="space-y-3 p-4 md:space-y-4 md:p-5">
         <div>
-          <h3 className="line-clamp-1 text-lg font-semibold text-white md:text-xl">{location.name}</h3>
+          <h3 className="text-lg font-semibold text-white md:text-xl"><EntityName entity={location} /></h3>
         </div>
 
         <p className="line-clamp-2 text-[13px] leading-5 text-gray-300 md:line-clamp-3 md:text-sm md:leading-6">
@@ -291,7 +294,7 @@ function RegionCard({ region }: { region: RegionHighlight }) {
         <div className="space-y-3 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h3 className="line-clamp-1 text-xl font-semibold text-white">{region.name}</h3>
+              <h3 className="text-xl font-semibold text-white"><EntityName entity={region} /></h3>
             </div>
           <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">
           {region.count} spots

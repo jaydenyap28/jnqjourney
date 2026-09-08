@@ -1,3 +1,4 @@
+import { resolveEntityDisplayName } from './entity-display-name.ts'
 import type { TravelGuide } from '@/lib/guides'
 
 function containsCjk(value?: string | null) {
@@ -75,14 +76,7 @@ export function getSpotDescription(location: {
 }
 
 export function getDisplayTitle(name: string, nameCn?: string | null) {
-  const english = String(name || '').trim()
-  const chinese = String(nameCn || '').trim()
-
-  if (english && chinese && english !== chinese) {
-    return { primary: chinese, secondary: english }
-  }
-
-  return { primary: chinese || english, secondary: '' }
+  return resolveEntityDisplayName({ name, name_cn: nameCn })
 }
 
 export function getGuideDisplayPair(guide: Pick<TravelGuide, 'shortTitle' | 'title'>) {

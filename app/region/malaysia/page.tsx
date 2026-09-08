@@ -1,3 +1,4 @@
+import EntityName from '@/components/EntityName'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import FallbackImage from '@/components/FallbackImage'
@@ -62,8 +63,7 @@ export default async function MalaysiaRegionIndexPage() {
                 </div>
                 <div className="space-y-3 p-5">
                   <div>
-                    <h2 className="line-clamp-1 text-xl font-semibold text-white">{region.name}</h2>
-                    {region.name_cn ? <p className="line-clamp-1 text-sm text-gray-400">{region.name_cn}</p> : null}
+                    <h2 className="text-xl font-semibold text-white"><EntityName entity={region} /></h2>
                   </div>
                   <p className="line-clamp-3 text-sm leading-6 text-gray-300">
                     {region.description || `进入 ${region.name}，查看当地景点、美食和后续会持续补充的旅行内容。`}

@@ -1,9 +1,9 @@
+import EntityName from '@/components/EntityName'
 import Link from 'next/link'
 import GuideDayStayCard from '@/components/GuideDayStayCard'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import { orderedGuideAttractions } from '@/lib/guide-attractions'
 import { resolveGuideAttraction, type GuideSegmentSpot } from '@/lib/guide-segment-spots'
-import { guideAttractionDisplayName } from '@/lib/guide-attraction-display'
 import type { TravelGuide } from '@/lib/guides'
 
 export default function GuideUnassignedVisits({ guide, spots }: { guide: TravelGuide; spots: GuideSegmentSpot[] }) {
@@ -18,7 +18,7 @@ export default function GuideUnassignedVisits({ guide, spots }: { guide: TravelG
     <ol className="mt-6 grid gap-x-7 sm:grid-cols-2 lg:grid-cols-3">
       {visits.map((ref, index) => {
         const spot = resolveGuideAttraction(ref, spots)
-        const name = guideAttractionDisplayName(ref, spot || {})
+        const name = <EntityName entity={{ ...spot, displayName: ref.displayName }} />
         return <li key={ref.spotId} className="min-w-0 border-b border-white/10 py-5">
           <span className="text-xs tabular-nums text-amber-200/70">{String(index + 1).padStart(2, '0')}</span>
           <h3 className="mt-2 break-words text-lg font-medium leading-7 text-white">{spot ? <Link href={`/spot/${ref.spotSlug}`} className="block py-1 hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200">{name}</Link> : name}</h3>

@@ -1,3 +1,4 @@
+import EntityName from '@/components/EntityName'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -880,7 +881,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                                 </div>
                               </div>
                               <div className="p-4">
-                                <p className="text-base font-medium leading-6 text-white">{guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)}</p>
+                                <p className="text-base font-medium leading-6 text-white"><EntityName entity={{ ...spot, displayName: spot.attractionDisplayName }} /></p>
                                 <p className="mt-1 text-xs text-white/50">{spot.regions?.name_cn || spot.regions?.name || '地点'}</p>
                                 <GuideSpotPriceHighlights highlights={spotPriceHighlights} />
                               </div>

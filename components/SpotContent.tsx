@@ -1,5 +1,8 @@
 'use client'
 
+import EntityName from '@/components/EntityName'
+
+
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
@@ -246,8 +249,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
       </div>
       <div className="space-y-2 p-4">
         <div>
-          <h4 className="line-clamp-1 text-base font-semibold text-white">{title.primary}</h4>
-          {title.secondary ? <p className="line-clamp-1 text-sm text-gray-400">{title.secondary}</p> : null}
+          <h4 className="text-base font-semibold text-white"><EntityName entity={location} /></h4>
         </div>
         {location.distanceKm !== undefined ? (
           <p className="text-xs text-amber-200">About {location.distanceKm.toFixed(1)} km</p>
@@ -452,8 +454,7 @@ export default function SpotContent({
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">JnQ Journey Spot</p>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl">{spotTitle.primary}</h1>
-            {spotTitle.secondary ? <p className="mt-2 text-lg text-gray-400 md:text-2xl">{spotTitle.secondary}</p> : null}
+            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl"><EntityName entity={location} /></h1>
           </div>
           <Link
             href="/"
@@ -633,8 +634,7 @@ export default function SpotContent({
         <div className="flex flex-col gap-3.5 md:gap-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col">
-              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl">{spotTitle.primary}</h2> : null}
-              {spotTitle.secondary ? <span className="mt-1 text-lg font-semibold text-gray-400 md:text-2xl">{spotTitle.secondary}</span> : null}
+              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl"><EntityName entity={location} /></h2> : null}
               {(location.regions?.name || location.regions?.country) ? (
                 <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-gray-400 md:mt-3 md:text-sm">
                   <span>{[location.regions?.country, location.regions?.name].filter(Boolean).join(' / ')}</span>
