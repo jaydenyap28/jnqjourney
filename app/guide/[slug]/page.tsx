@@ -8,6 +8,7 @@ import FallbackImage from '@/components/FallbackImage'
 import GuideRouteMap from '@/components/GuideRouteMap'
 import GuideQuickNav from '@/components/GuideQuickNav'
 import GuideSegmentItinerarySection from '@/components/GuideSegmentItinerarySection'
+import GuideUnassignedVisits from '@/components/GuideUnassignedVisits'
 import GuideDayStayCard from '@/components/GuideDayStayCard'
 import GuideVideoCard from '@/components/GuideVideoCard'
 import GuideGallery from '@/components/GuideGallery'
@@ -330,6 +331,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   const hasPublicTripCost = publicTripCost.source !== 'hidden'
 
   const allAttractionRefs = [
+    ...orderedGuideAttractions(guide),
     ...guide.days.flatMap((day) => orderedGuideAttractions(day)),
     ...(guide.itinerarySegments || []).flatMap((segment) =>
       segment.verifiedRoutes.flatMap((route) => orderedGuideAttractions(route))
@@ -346,7 +348,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
   )
 
   const linkedSpots = selectPublicSpotCards(publicData.locations, {
-    ids: allAttractionRefs.flatMap((item) => item.spotId ? [item.spotId] : []),
+    ids: [...allAttractionRefs.flatMap((item) => item.spotId ? [item.spotId] : []), ...(guide.accommodationStays || []).map(stay => stay.accommodationId)],
     slugs: allAttractionRefs.flatMap((item) => item.spotSlug ? [item.spotSlug] : []),
     names: allLinkedNames,
   }) as LinkedSpot[]
@@ -674,7 +676,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
                   {guide.title}
                 </h1>
                 <p className="mt-4 max-w-2xl text-base font-medium leading-7 text-white/90 md:text-xl md:leading-8">
-                  {[guide.duration, guide.travelStyle, '完整攻略'].filter(Boolean).join(' · ')}
+                  {[guide.duration, guide.travelStyle, guide.itineraryMode === 'unassigned' ? '旅行记录' : '完整攻略'].filter(Boolean).join(' · ')}
                 </p>
                 {guide.tagline ? <p className="mt-3 max-w-3xl text-sm leading-7 text-white/74 md:text-base md:leading-8">{formatShortText(guide.tagline)}</p> : null}
                 {guide.summary ? <p className="mt-2 max-w-3xl text-sm leading-7 text-white/64">{guide.summary}</p> : null}
@@ -778,7 +780,7 @@ export default async function GuideDetailPage({ params }: PageProps) {
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
-        {isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} staysByDay={segmentStaysByDay} /> : <>
+        {guide.itineraryMode === 'unassigned' ? <GuideUnassignedVisits guide={guide} spots={allGuideSpots as GuideSegmentSpot[]} /> : isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} staysByDay={segmentStaysByDay} /> : <>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68">Day by Day / 每日行程</p>

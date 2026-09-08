@@ -14,17 +14,18 @@ export default function GuideVideoCard({
   videoId: string
   title: string
   guideSlug: string
-  dayNumber: number
+  dayNumber?: number
 }) {
   const [playing, setPlaying] = useState(false)
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`
+  const videoLabel = dayNumber ? '当日旅行影片' : '完整旅行影片'
 
   function startVideo() {
     setPlaying(true)
     trackEvent('guide_video_click', {
       guide_slug: guideSlug,
       day_number: dayNumber,
-      cta_position: 'day_video',
+      cta_position: dayNumber ? 'day_video' : 'guide_video',
     })
   }
 
@@ -34,7 +35,7 @@ export default function GuideVideoCard({
         {playing ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
-            title={`${title} 当日旅行影片`}
+            title={`${title} ${videoLabel}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             className="h-full w-full"
@@ -44,11 +45,11 @@ export default function GuideVideoCard({
             type="button"
             onClick={startVideo}
             className="group absolute inset-0 block w-full overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-300"
-            aria-label={`播放 ${title} 当日旅行影片`}
+            aria-label={`播放 ${title} ${videoLabel}`}
           >
             <FallbackImage
               src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
-              alt={`${title} 当日旅行影片缩略图`}
+              alt={`${title} ${videoLabel}缩略图`}
               fill
               unoptimized
               sizes="(max-width: 768px) 100vw, 760px"

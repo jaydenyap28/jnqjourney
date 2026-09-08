@@ -86,6 +86,8 @@ function guideReferenceNames(guide: TravelGuide) {
 
 function guideReferenceIds(guide: TravelGuide) {
   return [
+    ...(guide.attractions || []).flatMap(item => item.spotId ? [item.spotId] : []),
+    ...(guide.accommodationStays || []).map(stay => stay.accommodationId),
     ...guide.days.flatMap((day) => (day.attractions || []).flatMap((item) => item.spotId ? [item.spotId] : [])),
     ...(guide.itinerarySegments || []).flatMap((segment) => [
       ...(segment.accommodationStays || []).map((stay) => stay.accommodationId),

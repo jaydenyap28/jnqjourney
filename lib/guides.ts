@@ -60,7 +60,7 @@ export interface GuideDayPlan {
   reminder?: string
 }
 
-export type GuideItineraryMode = 'daily' | 'segment'
+export type GuideItineraryMode = 'daily' | 'segment' | 'unassigned'
 
 export interface GuideItineraryRoute {
   dayNumber?: number
@@ -130,6 +130,9 @@ export interface TravelGuide {
   budgetItems: GuideBudgetItem[]
   days: GuideDayPlan[]
   itineraryMode?: GuideItineraryMode
+  /** Actual visits whose day assignment has not been established. Never a daily projection. */
+  attractions?: GuideAttractionRef[]
+  accommodationStays?: Array<{ accommodationId: number; note?: string }>
   itinerarySegments?: GuideItinerarySegment[]
   bestFor: string[]
   notes: string[]

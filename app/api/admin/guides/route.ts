@@ -15,7 +15,7 @@ function guideAttractionSignature(guide: ReturnType<typeof normalizeGuidePayload
   const segments = (guide.itinerarySegments || []).flatMap((segment) =>
     segment.verifiedRoutes.map((route) => [route.dayNumber || null, orderedGuideAttractions(route).map((item) => [item.spotId || null, item.spotSlug || null, item.displayOrder, item.enabled !== false])])
   )
-  return JSON.stringify({ days, segments })
+  return JSON.stringify({ days, segments, attractions: guide.attractions, accommodationStays: guide.accommodationStays })
 }
 
 export async function GET(request: Request) {

@@ -96,7 +96,10 @@ async function currentAuthoritativeGuides() {
   const { data, error } = await supabase.storage.from(bucket).download(latestPath)
   if (error || !data) throw new Error(error?.message || `Unable to download ${latestPath}`)
   const guides = JSON.parse(String(await data.text()).replace(/^\uFEFF/, ''))
-  if (!Array.isArray(guides) || guides.length !== 6) throw new Error(`Expected 6 authoritative Guides, received ${Array.isArray(guides) ? guides.length : 'invalid data'}`)
+  if (!Array.isArray(guides) || new Set(guides.map(guide => guide?.slug)).size !== guides.length ||
+      Object.keys(REQUIRED_TRIP_COSTS).some(slug => !guides.some(guide => guide?.slug === slug))) {
+    throw new Error('Authoritative Guides must retain the established collection and unique slugs')
+  }
   return { guides, latestPath }
 }
 

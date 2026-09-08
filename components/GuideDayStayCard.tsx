@@ -26,7 +26,7 @@ export default function GuideDayStayCard({
   note,
   continued = false,
 }: {
-  dayNumber: number
+  dayNumber?: number
   stay?: string
   staySpot?: GuideStaySpot | null
   note?: string
@@ -50,8 +50,8 @@ export default function GuideDayStayCard({
   )
 
   return (
-    <section aria-label={`Day ${dayNumber} 当日住宿`} className="mt-7 border border-sky-200/15 bg-sky-300/[0.055] p-4 md:p-5">
-      <div className="flex items-center gap-2 text-sky-100/82"><BedDouble className="h-4 w-4" /><p className="text-xs font-semibold uppercase tracking-[0.22em]">{continued ? '继续入住' : '当日住宿'}</p></div>
+    <section aria-label={dayNumber ? `Day ${dayNumber} 当日住宿` : '本次旅程住宿'} className="mt-7 border border-sky-200/15 bg-sky-300/[0.055] p-4 md:p-5">
+      <div className="flex items-center gap-2 text-sky-100/82"><BedDouble className="h-4 w-4" /><p className="text-xs font-semibold uppercase tracking-[0.22em]">{continued ? '继续入住' : dayNumber ? '当日住宿' : '本次旅程住宿'}</p></div>
       {staySpot ? <Link href={buildLocationPath(staySpot.name, staySpot.id)} className={`group mt-4 grid gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-200 ${continued ? 'grid-cols-[72px_minmax(0,1fr)] items-center' : 'md:grid-cols-[180px_minmax(0,1fr)]'}`}>{content}</Link> : <div className="mt-4 grid gap-4 md:grid-cols-[180px_minmax(0,1fr)]">{content}</div>}
     </section>
   )

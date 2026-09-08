@@ -6,6 +6,7 @@ import { canonicalGuideBudgetItems, canonicalTripCostCategory, guideBudgetMoneyT
 import { jiangnanGuideDraft } from '@/lib/guide-drafts'
 import staticGuideRecords from '@/data/guides.json'
 import { mergeGuideCollections } from '@/lib/guide-collection'
+import { normalizeUnassignedVisits } from '@/lib/guide-unassigned'
 
 const guidesFilePath = path.join(process.cwd(), 'data', 'guides.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -99,6 +100,7 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
   }
   return {
     slug: String(value?.slug || '').trim(),
+    ...(value?.itineraryMode === 'unassigned' ? normalizeUnassignedVisits(value) : {}),
     aliases: normalizeStringArray(value?.aliases),
     sortDate: String(value?.sortDate || '').trim() || undefined,
     tripStartDate: String(value?.tripStartDate || '').trim() || undefined,
@@ -169,7 +171,7 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
           }))
           .filter((item: any) => item.dayLabel && item.title)
       : [],
-    itineraryMode: value?.itineraryMode === 'segment' ? 'segment' : value?.itineraryMode === 'daily' ? 'daily' : undefined,
+    itineraryMode: ['segment', 'daily', 'unassigned'].includes(value?.itineraryMode) ? value.itineraryMode : undefined,
     itinerarySegments: Array.isArray(value?.itinerarySegments)
       ? value.itinerarySegments
           .map((item: any) => ({
