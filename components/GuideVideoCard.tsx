@@ -4,21 +4,24 @@ import { useState } from 'react'
 import { ExternalLink, Play } from 'lucide-react'
 import FallbackImage from '@/components/FallbackImage'
 import { trackEvent } from '@/lib/analytics'
+import { ui, type Locale } from '@/lib/locale'
 
 export default function GuideVideoCard({
   videoId,
   title,
   guideSlug,
   dayNumber,
+  locale = 'zh',
 }: {
   videoId: string
   title: string
   guideSlug: string
   dayNumber?: number
+  locale?: Locale
 }) {
   const [playing, setPlaying] = useState(false)
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`
-  const videoLabel = dayNumber ? '当日旅行影片' : '完整旅行影片'
+  const videoLabel = locale === 'en' ? 'Travel Video' : dayNumber ? '当日旅行影片' : '完整旅行影片'
 
   function startVideo() {
     setPlaying(true)
@@ -45,11 +48,11 @@ export default function GuideVideoCard({
             type="button"
             onClick={startVideo}
             className="group absolute inset-0 block w-full overflow-hidden text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-amber-300"
-            aria-label={`播放 ${title} ${videoLabel}`}
+            aria-label={`${ui(locale, 'playVideo')}: ${title} ${videoLabel}`}
           >
             <FallbackImage
               src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
-              alt={`${title} ${videoLabel}缩略图`}
+              alt={`${title} ${videoLabel}${locale === 'en' ? ' thumbnail' : '缩略图'}`}
               fill
               unoptimized
               sizes="(max-width: 768px) 100vw, 760px"
@@ -73,7 +76,7 @@ export default function GuideVideoCard({
           onClick={() => trackEvent('guide_video_click', { guide_slug: guideSlug, day_number: dayNumber, cta_position: 'youtube_link' })}
           className="inline-flex shrink-0 items-center gap-1.5 text-xs text-red-100 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
         >
-          YouTube 观看 <ExternalLink className="h-3.5 w-3.5" />
+          {locale === 'en' ? 'Watch on YouTube' : 'YouTube 观看'} <ExternalLink className="h-3.5 w-3.5" />
         </a>
       </div>
     </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import MapboxMap, { Layer, Marker, NavigationControl, Popup, Source } from 'react-map-gl/mapbox'
 import { trackEvent } from '@/lib/analytics'
 import FallbackImage from '@/components/FallbackImage'
+import type { Locale } from '@/lib/locale'
 
 export interface GuideRouteMapPoint {
   id: number
@@ -40,6 +41,8 @@ export default function GuideRouteMapCanvas({
   mode = 'detailed',
   showCards,
   guideSlug,
+  locale = 'zh',
+  connectPoints = true,
 }: {
   points: GuideRouteMapPoint[]
   className?: string
@@ -48,6 +51,8 @@ export default function GuideRouteMapCanvas({
   mode?: 'overview' | 'detailed'
   showCards?: boolean
   guideSlug?: string
+  locale?: Locale
+  connectPoints?: boolean
 }) {
   const mapPoints = points.filter(
     (point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude)
@@ -67,7 +72,7 @@ export default function GuideRouteMapCanvas({
   if (!mapPoints.length || !bounds) {
     return (
       <div className={`rounded-2xl border border-dashed border-white/12 bg-white/[0.04] px-5 py-10 text-sm leading-7 text-white/62 ${className || ''}`}>
-        <p className="font-medium text-white">文字路线仍可阅读</p>
+        <p className="font-medium text-white">{locale === 'en' ? 'The written route is available below' : '文字路线仍可阅读'}</p>
         <p className="mt-1">{emptyMessage}</p>
       </div>
     )
@@ -117,7 +122,7 @@ export default function GuideRouteMapCanvas({
             attributionControl
           >
             <NavigationControl position="bottom-right" visualizePitch={false} />
-            {mapPoints.length > 1 ? (
+            {connectPoints && mapPoints.length > 1 ? (
               <Source id="guide-route-source" type="geojson" data={routeGeoJson}>
                 <Layer {...routeLineLayer} />
               </Source>
@@ -131,7 +136,7 @@ export default function GuideRouteMapCanvas({
                     trackEvent('guide_route_map_interaction', { guide_slug: guideSlug, section: 'marker', day_number: point.dayNumber })
                   }}
                   className={`relative flex flex-col items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 ${index % 2 ? 'translate-y-4' : '-translate-y-1'}`}
-                  aria-label={`${point.stopLabel || `路线第 ${index + 1} 站`} ${point.label}`}
+                  aria-label={`${point.stopLabel || (locale === 'en' ? `Place ${index + 1}` : `路线第 ${index + 1} 站`)} ${point.label}`}
                 >
                   <span className="flex min-h-9 min-w-9 items-center justify-center rounded-full border-2 border-slate-950/70 bg-amber-300 px-2 text-[11px] font-bold text-slate-950 shadow-[0_0_0_3px_rgba(255,255,255,0.2),0_8px_22px_rgba(0,0,0,0.45)]">
                     {point.stopLabel || index + 1}
@@ -153,7 +158,7 @@ export default function GuideRouteMapCanvas({
                 className="guide-route-popup"
               >
                 <div className="min-w-36 p-1 text-slate-900">
-                  <p className="text-xs font-semibold text-amber-700">{selectedPoint.stopLabel || '路线节点'}</p>
+                  <p className="text-xs font-semibold text-amber-700">{selectedPoint.stopLabel || (locale === 'en' ? 'Route stop' : '路线节点')}</p>
                   <p className="mt-1 font-semibold">{selectedPoint.label}</p>
                   {selectedPoint.regionLabel ? <p className="mt-1 text-xs text-slate-500">{selectedPoint.regionLabel}</p> : null}
                 </div>
@@ -167,7 +172,7 @@ export default function GuideRouteMapCanvas({
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {mapPoints.map((point, index) => (
             <Link key={`${point.id}-${index}`} href={point.href || '#route-map'} className="group overflow-hidden border-l border-amber-300/35 bg-white/[0.035] transition hover:bg-white/[0.06]">
-              {point.image ? <div className="relative aspect-[16/8] overflow-hidden bg-black/20"><FallbackImage src={point.image} alt={`${point.label} 地点照片`} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.025]" /></div> : null}
+              {point.image ? <div className="relative aspect-[16/8] overflow-hidden bg-black/20"><FallbackImage src={point.image} alt={`${point.label} ${locale === 'en' ? 'photo' : '地点照片'}`} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition duration-500 group-hover:scale-[1.025]" /></div> : null}
               <div className="px-4 py-3"><p className="text-[11px] uppercase tracking-[0.22em] text-white/45">{point.stopLabel || `Point ${index + 1}`}</p><p className="mt-2 text-sm font-semibold text-white">{point.label}</p>{point.regionLabel ? <p className="mt-1 text-xs text-white/55">{point.regionLabel}</p> : null}</div>
             </Link>
           ))}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
 import SiteFooter from '@/components/SiteFooter'
 import SpotContent from '@/components/SpotContent'
@@ -53,9 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: seoTitle,
     description,
-    alternates: {
-      canonical: buildCanonicalUrl(canonicalPath),
-    },
+    alternates: await chineseLocalizedAlternates(canonicalPath, 'spot', location.id, {...location,title:location.name}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, coverImage, 'article'),
     twitter: buildTwitterCardData(seoTitle, description, coverImage),
   }

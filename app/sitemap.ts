@@ -6,6 +6,10 @@ import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
+import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
+import { englishPageData } from '@/lib/server/english-page-data'
+
+export const revalidate = 3600
 
 function validDateOrUndefined(value?: string | null) {
   if (!value) return undefined
@@ -73,5 +77,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes]
+  const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes]
+  const localization=await readLocalizationSnapshot('en')
+  const englishRoutes:MetadataRoute.Sitemap=[]
+  for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
+    const page=await englishPageData(record.canonicalPath.split('/').filter(Boolean))
+    if(!page || !('data' in page) || page.data.status!=='complete') {
+      console.info('[i18n sitemap] omitted incomplete page',record.canonicalPath,page && 'data' in page ? page.data.status : 'unavailable')
+      continue
+    }
+    const languages={zh:absoluteUrl(record.canonicalPath),en:absoluteUrl(`/en${record.canonicalPath}`),'x-default':absoluteUrl(record.canonicalPath)}
+    const existing=chineseRoutes.find(r=>r.url===languages.zh)
+    if(existing) existing.alternates={languages}
+    else chineseRoutes.push({url:languages.zh,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
+    englishRoutes.push({url:languages.en,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
+  }
+  return [...chineseRoutes,...englishRoutes]
 }

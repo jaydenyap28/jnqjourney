@@ -1,4 +1,5 @@
 import EntityName from '@/components/EntityName'
+import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -121,9 +122,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: baseTitle,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: await chineseLocalizedAlternates(`/guide/${guide.slug}`, 'guide', guide.slug, guide),
     openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guideMedia.coverImage, 'article'),
     twitter: buildTwitterCardData(baseTitle, description, guideMedia.coverImage),
   }

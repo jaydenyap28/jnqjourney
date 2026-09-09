@@ -1,3 +1,5 @@
+import type { Locale } from './locale.ts'
+
 export interface EntityNameSource {
   name?: string | null
   name_cn?: string | null
@@ -35,13 +37,13 @@ function splitBilingual(value: string) {
   return null
 }
 
-function pair(zh: string, original: string, locale: 'zh' | 'en'): EntityDisplayName {
+function pair(zh: string, original: string, locale: Locale): EntityDisplayName {
   const primary = (locale === 'en' ? original : zh) || original || zh
   const alternate = locale === 'en' ? zh : original
   return { primary, secondary: alternate && comparable(alternate) !== comparable(primary) ? alternate : null }
 }
 
-export function resolveEntityDisplayName(entity: EntityNameSource, locale: 'zh' | 'en' = 'zh'): EntityDisplayName {
+export function resolveEntityDisplayName(entity: EntityNameSource, locale: Locale = 'zh'): EntityDisplayName {
   const override = clean(entity.displayName)
   const name = clean(entity.name)
   const localized = clean(entity.name_cn)

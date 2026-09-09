@@ -400,6 +400,10 @@ export default function HomePageClient({
 
   const handleSearch = (term: string) => {
     setSearchTerm(term)
+    const url = new URL(window.location.href)
+    if (term) url.searchParams.set('q', term)
+    else url.searchParams.delete('q')
+    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
 
     if (!term.trim()) {
       setFilteredLocations(locations)
@@ -408,10 +412,6 @@ export default function HomePageClient({
 
     const results = fuse.search(term)
     setFilteredLocations(results.map((result) => result.item))
-  }
-
-  const handleLanguageChange = () => {
-    // Reserved for future multi-language support.
   }
 
   const retryLocations = async () => {
@@ -583,7 +583,7 @@ export default function HomePageClient({
           <div className="bg-grid-fade pointer-events-none absolute inset-0 opacity-15" />
         </div>
 
-        <TopFloatingIsland onSearch={handleSearch} onLanguageChange={handleLanguageChange} />
+        <TopFloatingIsland onSearch={handleSearch} />
         {loadError ? (
           <div className="absolute left-1/2 top-1/2 z-40 w-[min(92vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-rose-200/20 bg-[#09111f]/95 p-5 text-center shadow-2xl backdrop-blur-xl" role="alert">
             <p className="text-sm font-semibold text-white">景点暂时无法载入</p>

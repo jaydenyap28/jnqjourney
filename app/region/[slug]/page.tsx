@@ -1,4 +1,5 @@
 import { resolveEntityDisplayName } from '@/lib/entity-display-name'
+import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import EntityName from '@/components/EntityName'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -54,9 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: seoTitle,
     description,
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: await chineseLocalizedAlternates(canonicalPath, 'region', region.id, {shortSummary:region.description}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, region.image_url, 'website'),
     twitter: buildTwitterCardData(seoTitle, description, region.image_url),
   }

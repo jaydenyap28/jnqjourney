@@ -9,6 +9,7 @@ import GoogleAnalytics from '@/components/GoogleAnalytics'
 import { getSiteUrl } from '@/lib/site'
 import PageViewTracker from '@/components/PageViewTracker'
 import SiteStructuredData from '@/components/SiteStructuredData'
+import PublicLanguageControl from '@/components/PublicLanguageControl'
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ['latin'],
@@ -85,7 +86,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" translate="yes" suppressHydrationWarning>
+    <html lang="zh" translate="yes" suppressHydrationWarning>
       <body
         className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
@@ -94,6 +95,7 @@ export default function RootLayout({
           <GoogleAnalytics measurementId={googleAnalyticsId} />
         </Suspense>
         <PageViewTracker />
+        <PublicLanguageControl />
         {children}
         <Analytics />
         <SpeedInsights />

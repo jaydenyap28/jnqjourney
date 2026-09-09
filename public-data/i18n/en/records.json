@@ -1,0 +1,1329 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "version": "2026-09-08-v1",
+  "records": [
+    {
+      "entityType": "guide",
+      "entityId": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "locale": "en",
+      "canonicalPath": "/guide/japan-hokkaido-yamagata-tokyo-10d9n",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/guides.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "title": {
+          "source": "北海道·东北山形·东京·富士山",
+          "text": "Hokkaido, Yamagata, Tokyo & Mount Fuji"
+        },
+        "shortTitle": {
+          "source": "日本冬季游",
+          "text": "Japan in Winter"
+        },
+        "tagline": {
+          "source": "从北海道一路玩到山形，再接东京与富士山周边，把雪景、温泉、老街、美食和城市夜景串成一趟完整的冬季自由行",
+          "text": "A winter journey from Hokkaido through Yamagata to Tokyo and Mount Fuji, with snowy landscapes, hot springs, old streets, food and city lights."
+        },
+        "travelStyle": {
+          "source": "自由行",
+          "text": "Independent travel"
+        },
+        "route.0.name": {
+          "source": "北海道",
+          "text": "Hokkaido"
+        },
+        "route.0.summary": {
+          "source": "先从富良野、美瑛、札幌、小樽到登别与函馆，把北海道冬季经典路线走完整。",
+          "text": "Explore winter in Hokkaido, travelling through Furano, Biei, Sapporo, Otaru, Noboribetsu and Hakodate."
+        },
+        "route.1.name": {
+          "source": "山形",
+          "text": "Yamagata"
+        },
+        "route.1.summary": {
+          "source": "中段转进银山温泉与藏王树冰，把最有冬季感的温泉和雪景收入路线里。",
+          "text": "Continue to Ginzan Onsen and the snow-covered trees of Zao for hot springs and winter scenery."
+        },
+        "route.2.name": {
+          "source": "东京与富士山",
+          "text": "Tokyo & Mount Fuji"
+        },
+        "route.2.summary": {
+          "source": "最后用东京市区与富士山周边收尾，节奏会从雪景慢慢切回城市自由行。",
+          "text": "Finish around Mount Fuji and in Tokyo, easing from snowy landscapes back into city exploring."
+        },
+        "budgetItems.0.note": {
+          "source": "美瑛、札幌、登别、函馆、银山温泉与东京住宿人均花费",
+          "text": "Accommodation per person in Biei, Sapporo, Noboribetsu, Hakodate, Ginzan Onsen and Tokyo."
+        },
+        "budgetItems.1.note": {
+          "source": "往返国际航班人均花费。",
+          "text": "Return international flights per person."
+        },
+        "budgetItems.2.note": {
+          "source": "JR、巴士、地铁与景区接驳人均花费。",
+          "text": "JR trains, buses, subway journeys and attraction shuttles per person."
+        },
+        "budgetItems.3.note": {
+          "source": "正餐、甜点、小吃和沿路餐饮人均花费。",
+          "text": "Meals, desserts, snacks and other food along the route, per person."
+        },
+        "budgetItems.4.note": {
+          "source": "日本药妆店、土产店、伴手礼等个人消费。",
+          "text": "Personal purchases at drugstores, local-speciality shops and souvenir shops."
+        },
+        "budgetItems.5.note": {
+          "source": "东京迪士尼海洋、Shibuya Sky 门票。",
+          "text": "Admission to Tokyo DisneySea and Shibuya Sky."
+        },
+        "budgetItems.6.note": {
+          "source": "行李寄存、旅游保险等个人费用。",
+          "text": "Personal expenses including luggage storage and travel insurance."
+        },
+        "budgetItems.7.note": {
+          "source": "上网卡费用。",
+          "text": "Mobile data SIM card."
+        },
+        "days.0.title": {
+          "source": "富良野与美瑛",
+          "text": "Furano & Biei"
+        },
+        "days.1.title": {
+          "source": "美瑛转札幌",
+          "text": "Biei to Sapporo"
+        },
+        "days.2.title": {
+          "source": "小樽老街与运河",
+          "text": "Otaru: Old Streets & Canal"
+        },
+        "days.3.title": {
+          "source": "登别温泉路线",
+          "text": "Noboribetsu Hot Springs"
+        },
+        "days.4.title": {
+          "source": "函馆港口与夜景",
+          "text": "Hakodate Harbour & Night Views"
+        },
+        "days.5.title": {
+          "source": "银山温泉",
+          "text": "Ginzan Onsen"
+        },
+        "days.6.title": {
+          "source": "藏王树冰",
+          "text": "Zao Snow Monsters"
+        },
+        "days.7.title": {
+          "source": "东京迪士尼海洋",
+          "text": "Tokyo DisneySea"
+        },
+        "days.8.title": {
+          "source": "富士山周边一日",
+          "text": "A Day around Mount Fuji"
+        },
+        "days.9.title": {
+          "source": "东京市区收尾",
+          "text": "A Final Day in Tokyo"
+        },
+        "days.1.attractions.2.displayName": {
+          "source": "伝説のすた丼屋 札幌駅前店",
+          "text": "Densetsu no Sutadonya Sapporo Ekimae"
+        },
+        "days.1.attractions.3.displayName": {
+          "source": "薄野",
+          "text": "Susukino"
+        },
+        "days.1.attractions.4.displayName": {
+          "source": "狸小路",
+          "text": "Tanukikoji Shopping Street"
+        },
+        "days.2.attractions.0.displayName": {
+          "source": "住吉神社",
+          "text": "Sumiyoshi Shrine"
+        },
+        "days.2.attractions.1.displayName": {
+          "source": "一番拉面",
+          "text": "Ichiban Ramen"
+        },
+        "days.2.attractions.2.displayName": {
+          "source": "八音盒博物馆",
+          "text": "Otaru Music Box Museum"
+        },
+        "days.2.attractions.3.displayName": {
+          "source": "LeTao小樽洋菓子铺",
+          "text": "LeTAO Pathos"
+        },
+        "days.2.attractions.4.displayName": {
+          "source": "小樽堺町通商店街",
+          "text": "Otaru Sakaimachi Street"
+        },
+        "days.2.attractions.5.displayName": {
+          "source": "小樽运河",
+          "text": "Otaru Canal"
+        },
+        "days.3.attractions.0.displayName": {
+          "source": "大汤沼川天然足汤",
+          "text": "Oyunuma River Natural Footbath"
+        },
+        "days.3.attractions.1.displayName": {
+          "source": "泉源公园",
+          "text": "Sengen Park"
+        },
+        "days.3.attractions.2.displayName": {
+          "source": "阎魔殿",
+          "text": "Enma-do"
+        },
+        "days.3.attractions.3.displayName": {
+          "source": "登别地狱谷",
+          "text": "Noboribetsu Jigokudani"
+        },
+        "days.4.attractions.0.displayName": {
+          "source": "幸运小丑汉堡",
+          "text": "Lucky Pierrot"
+        },
+        "days.4.attractions.1.displayName": {
+          "source": "八幡坂",
+          "text": "Hachiman-zaka Slope"
+        },
+        "days.4.attractions.2.displayName": {
+          "source": "函馆山夜景",
+          "text": "Mount Hakodate Night View"
+        },
+        "days.4.attractions.3.displayName": {
+          "source": "金森红砖仓库",
+          "text": "Kanemori Red Brick Warehouse"
+        },
+        "days.5.attractions.0.displayName": {
+          "source": "和乐足汤",
+          "text": "Warashiyu Footbath"
+        },
+        "days.5.attractions.1.displayName": {
+          "source": "银山温泉街",
+          "text": "Ginzan Onsen Street"
+        },
+        "days.6.attractions.0.displayName": {
+          "source": "藏王树冰",
+          "text": "Zao Tree Ice"
+        },
+        "days.7.attractions.0.displayName": {
+          "source": "东京迪士尼海洋",
+          "text": "Tokyo DisneySea"
+        },
+        "days.8.attractions.1.displayName": {
+          "source": "金鸟居",
+          "text": "Kanadorii"
+        },
+        "days.8.attractions.3.displayName": {
+          "source": "山中湖平野の浜",
+          "text": "Hirano no Hama"
+        },
+        "days.8.attractions.4.displayName": {
+          "source": "歌舞伎町",
+          "text": "Kabukicho"
+        },
+        "days.9.attractions.0.displayName": {
+          "source": "浅草寺",
+          "text": "Senso-ji Temple"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "malaysia-langkawi-5d4n",
+      "locale": "en",
+      "canonicalPath": "/guide/malaysia-langkawi-5d4n",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/guides.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "title": {
+          "source": "Langkawi 5D4N 自驾游",
+          "text": "Langkawi: A 5-Day Self-Drive Trip"
+        },
+        "shortTitle": {
+          "source": "兰卡威 5天4夜",
+          "text": "Langkawi: 5 Days, 4 Nights"
+        },
+        "tagline": {
+          "source": "天空之桥、森林夜游、海滩与岛上餐桌",
+          "text": "The Sky Bridge, a forest after dark, beaches and island dining"
+        },
+        "summary": {
+          "source": "从士乃直飞兰卡威，机场取车开启五天四夜自驾。这篇游记整理影片中实际到访的地点、两间住宿及交通提醒；每日行程分组仍待补充。",
+          "text": "Fly directly from Senai to Langkawi, pick up a car at the airport and explore for five days and four nights. This guide brings together the places visited in our videos, our two stays and transport notes. The day-by-day grouping is still to be confirmed."
+        },
+        "travelStyle": {
+          "source": "Self-drive / 自驾",
+          "text": "Self-drive"
+        },
+        "route.0.summary": {
+          "source": "吉打州兰卡威；影片地点总览，具体分日待补充。",
+          "text": "Langkawi, Kedah: an overview of places in our videos. Individual days are still to be confirmed."
+        },
+        "highlightTags.2": {
+          "source": "自驾",
+          "text": "Self-drive"
+        },
+        "highlightTags.3": {
+          "source": "5天4夜",
+          "text": "5 Days, 4 Nights"
+        },
+        "heroBullets.0": {
+          "source": "士乃直飞兰卡威，机场取车",
+          "text": "Direct flight from Senai; car collection at Langkawi Airport"
+        },
+        "heroBullets.1": {
+          "source": "Villa Paddy 与 Airis Sanctuary 两间住宿",
+          "text": "Two stays: Villa Paddy and Airis Sanctuary"
+        },
+        "heroBullets.2": {
+          "source": "影片中的实际到访地点",
+          "text": "Places actually visited in our videos"
+        },
+        "attractions.0.guideSummary": {
+          "source": "天空之桥架在 Machinchang 山区，弧形桥面把山谷、森林与远海放在同一条视线上。它适合与 SkyCab 缆车一起安排，重点是上山后的步行与观景。",
+          "text": "The curved Sky Bridge spans the Machinchang mountains, bringing valleys, forest and the distant sea into one view. Pair it with the SkyCab cable car and allow time to walk and enjoy the scenery at the top."
+        },
+        "attractions.1.guideSummary": {
+          "source": "Perdana Quay 灯塔位于 Telaga Harbour 港口入口，适合在 Pantai Kok 一带顺路停留，看灯塔与港湾的组合。",
+          "text": "Perdana Quay Lighthouse stands at the entrance to Telaga Harbour. It makes an easy stop around Pantai Kok for views of the lighthouse and harbour together."
+        },
+        "attractions.2.guideSummary": {
+          "source": "Gunung Raya 是兰卡威的高山观景地，山路沿途的森林与高处视野，是这站比单一打卡点更值得慢慢看的部分。",
+          "text": "Gunung Raya offers elevated views of Langkawi. Take time for the forest along the mountain road as well as the outlook from higher up."
+        },
+        "attractions.3.guideSummary": {
+          "source": "Dream Forest 把兰卡威传说放进夜间森林步道，以灯光、声音与投影串起约 1.2 公里的户外体验。适合想在海滩与白天景点之外安排一晚散步的旅客。",
+          "text": "Dream Forest brings Langkawi legends to a forest trail after dark, using lights, sound and projections along an outdoor route of about 1.2 kilometres. It offers an evening walk beyond the beaches and daytime sights."
+        },
+        "attractions.4.guideSummary": {
+          "source": "Temurun 是兰卡威西北部的森林瀑布，可以把海岸公路与短段步行放在同一趟行程里。沿步道看水流与岩壁，比只在入口拍一张照片更能感受这里的环境。",
+          "text": "Temurun is a forest waterfall in northwestern Langkawi. Combine the coastal drive with a short walk along the trail to appreciate the water and rock faces beyond the entrance."
+        },
+        "attractions.5.guideSummary": {
+          "source": "珍南海滩把沙滩散步、餐饮与热闹街区集中在一起，适合留一段弹性时间慢慢逛。白天看海、之后到沿街找吃的，安排上很直观。",
+          "text": "Pantai Cenang combines beach walks, dining and lively streets. Leave some flexible time to enjoy the sea and then find something to eat along the street."
+        },
+        "attractions.6.guideSummary": {
+          "source": "Teluk Yu 是兰卡威北岸的一段海湾，适合作为自驾途中看海、沿海边走走的停留点。这里与 Tanjung Rhu 是不同地点，不要把两者合成一个地图标记。",
+          "text": "Teluk Yu is a bay on the north coast, suited to a seaside walk and a break during a drive. It is a separate place from Tanjung Rhu and has its own map location."
+        },
+        "attractions.7.guideSummary": {
+          "source": "丹绒鲁位于兰卡威北部，海岸与近岸小岛构成开阔的看海画面，适合从繁忙商圈换到另一种海滩节奏。",
+          "text": "On the north of Langkawi, Tanjung Rhu opens onto a broad coastline and nearby islands, offering a different beach rhythm from the busier commercial areas."
+        },
+        "attractions.8.guideSummary": {
+          "source": "兰卡威海底世界位于珍南一带，以水族展示、海底隧道与企鹅等动物展区为主要看点，适合想安排室内参观的旅客。",
+          "text": "Underwater World Langkawi is near Cenang. Aquarium displays, an underwater tunnel and animal exhibits including penguins make it an option for an indoor visit."
+        },
+        "attractions.9.guideSummary": {
+          "source": "Jalan Bukit Malut 是兰卡威南部的自驾道路，重点在沿路山坡、海岸与行驶视野，是一段路线而非独立景区。",
+          "text": "Jalan Bukit Malut is a driving route in southern Langkawi. Its hillside, coastline and views along the road are the experience; it is not a separate visitor attraction."
+        },
+        "attractions.10.guideSummary": {
+          "source": "老鹰广场是 Kuah 海滨的代表性地标，展翅鹰像与码头海景可以一起看，适合留作市区路线中的步行停留。",
+          "text": "Dataran Lang is a landmark on the Kuah waterfront. See the eagle sculpture with views towards the jetty and sea during a walk in town."
+        },
+        "attractions.11.guideSummary": {
+          "source": "MAHA Tower 是 Kuah 海滨的高塔地标，外部建筑与楼上的观景空间属于两种不同参观方式。可以按预算与天气，决定只在周边看建筑还是购票登塔。",
+          "text": "MAHA Tower is a tall waterfront landmark in Kuah. Seeing the building from outside and visiting its elevated viewing spaces are different experiences. Choose according to your budget and the weather."
+        },
+        "attractions.12.guideSummary": {
+          "source": "Wat Koh Wanararm 位于 Kuah 外围，寺院建筑、佛塔与依岩而立的观音像是参观重点。适合想在海岛行程中加入宗教文化的一站。",
+          "text": "Wat Koh Wanararm sits outside Kuah. Temple buildings, stupas and a Guanyin statue against the rock make this a stop for visitors interested in religious culture."
+        },
+        "attractions.13.guideSummary": {
+          "source": "Wat Tham Kisap 是 Kisap 一带的泰国佛教寺院，在本次影片中以山洞泰佛寺介绍。它与附近的印度庙及 Wat Koh Wanararm 是不同地点。",
+          "text": "Wat Tham Kisap is a Thai Buddhist temple around Kisap, introduced in our video as a cave temple. It is distinct from the nearby Hindu temple and from Wat Koh Wanararm."
+        },
+        "attractions.14.guideSummary": {
+          "source": "兰卡威天后宫位于 Jalan Padang Gaong 一带，是岛上华人信仰文化的一处参访点。适合对庙宇建筑和地方生活有兴趣的旅客。",
+          "text": "Thean Hou Temple Langkawi is around Jalan Padang Gaong, offering a glimpse of the island’s Chinese religious culture, temple architecture and local life."
+        },
+        "attractions.15.guideSummary": {
+          "source": "Gua MAHA & GM Farm Seafood Restaurant 是这次旅程实际到访的同一地点；Gua MAHA 与 GM Farm Seafood Restaurant 在本篇记录中共同指向这间餐厅。",
+          "text": "Gua MAHA & GM Farm Seafood Restaurant is the single location visited on this trip. Both names refer to this same restaurant in our record."
+        },
+        "attractions.16.guideSummary": {
+          "source": "FB Cafe 主打拿坡里风格披萨，位于 Padang Gaong 一带，适合在海鲜与本地饭食之外换一种用餐选择。",
+          "text": "FB Cafe serves Neapolitan-style pizza around Padang Gaong, offering a change from seafood and local rice dishes."
+        },
+        "attractions.17.guideSummary": {
+          "source": "Che Ta 是 Ayer Hangat 一带的鸡饭店，公开商家介绍也列有泰式与本地饭面选择。适合在北部自驾途中安排一餐较简单的饭食。",
+          "text": "Che Ta is a chicken-rice shop around Ayer Hangat. Its public business information also lists Thai and local rice and noodle dishes, making it an option for a simple meal while driving in the north."
+        },
+        "attractions.18.guideSummary": {
+          "source": "串吧位于 Kuah 的 Jalan Pandak Mayah 5，以日式融合料理和居酒屋风格为主，适合想在市区换个餐饮口味时考虑。",
+          "text": "Chuan Bar is on Jalan Pandak Mayah 5 in Kuah, with Japanese fusion food and an izakaya setting for a change of dining style in town."
+        },
+        "attractions.19.guideSummary": {
+          "source": "Golden Bamboo Cafe 在珍南一带，以竹构空间和白天餐饮为特色，适合把早餐、午餐或咖啡时间放进海滩行程。",
+          "text": "Golden Bamboo Cafe is near Cenang, with a bamboo setting and daytime dining. Work breakfast, lunch or a coffee break into your beach outing."
+        },
+        "attractions.20.guideSummary": {
+          "source": "Temonyong 夜市是本次影片记录的夜市一站，适合用小份量尝试不同摊位，把晚餐变成边走边选的体验。",
+          "text": "Temonyong Night Market is the market stop recorded in our video. Try smaller portions from different stalls and choose dinner as you walk."
+        },
+        "attractions.21.guideSummary": {
+          "source": "Tanjung Rhu Mangrove Jetty 是这次红树林船游实际出发的码头，位于兰卡威北部 Ayer Hangat。导航请使用这个码头的完整名称。",
+          "text": "Tanjung Rhu Mangrove Jetty, in Ayer Hangat in northern Langkawi, was the departure point for our mangrove boat trip. Use its full name for navigation."
+        },
+        "attractions.22.guideSummary": {
+          "source": "Crab Langkawi Farm and Restaurant 是这次旅程实际用餐的餐厅，位于 Jalan Teluk Yu 的 Kampung Kelubi。",
+          "text": "Crab Langkawi Farm and Restaurant, on Jalan Teluk Yu in Kampung Kelubi, is the restaurant where we ate during this trip."
+        },
+        "attractions.23.guideSummary": {
+          "source": "Eagle's Nest SkyWalk 位于 Langkawi SkyCab 的 Middle Station，是这次实际到访的玻璃观景平台。",
+          "text": "Eagle’s Nest SkyWalk is the glass viewing platform at Langkawi SkyCab’s Middle Station that we visited on this trip."
+        },
+        "attractions.24.guideSummary": {
+          "source": "Langkawi SkyDome 是 Oriental Village 的穹幕观影设施，也是这次旅程实际体验的项目。",
+          "text": "Langkawi SkyDome is the dome-screen experience at Oriental Village that we tried during this trip."
+        },
+        "attractions.25.guideSummary": {
+          "source": "3D Art in Paradise Langkawi 位于 Oriental Village，是这次实际到访的立体艺术展馆，运营方也使用 3D Art Langkawi 名称。",
+          "text": "3D Art in Paradise Langkawi is the three-dimensional art attraction at Oriental Village that we visited. Its operator also uses the name 3D Art Langkawi."
+        },
+        "accommodationStays.0.note": {
+          "source": "本次旅程实际入住；具体入住日与晚数待补充。",
+          "text": "We stayed here on this trip. Exact nights and stay dates are still to be added."
+        },
+        "accommodationStays.1.note": {
+          "source": "本次旅程实际入住；具体入住日与晚数待补充。",
+          "text": "We stayed here on this trip. Exact nights and stay dates are still to be added."
+        },
+        "bestFor.0": {
+          "source": "自驾自由行",
+          "text": "Independent self-drive travellers"
+        },
+        "bestFor.1": {
+          "source": "海滩与森林体验",
+          "text": "Beach and forest experiences"
+        },
+        "bestFor.2": {
+          "source": "想结合影片查地点的旅客",
+          "text": "Travellers using our videos to find places"
+        },
+        "notes.0": {
+          "source": "交通：影片说明记载从 Senai International Airport 直飞 Langkawi International Airport，抵达机场取车。5 天租车实际支付 RM290，属于本次历史消费，不是当前报价或整趟旅行总预算。",
+          "text": "Transport: the video description records a direct flight from Senai International Airport to Langkawi International Airport, with car collection on arrival. We paid RM290 for five days of car hire. This is historical spending from this trip, not a current quote or the total trip budget."
+        },
+        "notes.1": {
+          "source": "红树林：本次船游实际从 Tanjung Rhu Mangrove Jetty 出发；具体产品与费用请向预订方确认。",
+          "text": "Mangroves: our boat trip departed from Tanjung Rhu Mangrove Jetty. Confirm the particular product and price with your booking provider."
+        },
+        "notes.2": {
+          "source": "免税购物：影片包含免税购物记录，但具体店铺尚未确认。可作为购物安排参考，不列出未证实到访的商店。",
+          "text": "Duty-free shopping appears in the video, but the exact shops have not been confirmed. No unverified shop visits are listed."
+        },
+        "notes.3": {
+          "source": "Crab Langkawi Farm and Restaurant：本次实际用餐的餐厅，精确地点已核实，可由地点卡片查看导航。",
+          "text": "Crab Langkawi Farm and Restaurant: we ate here on this trip. The location has been verified; open its place card for directions."
+        },
+        "notes.4": {
+          "source": "Gua MAHA 与 GM Farm Seafood Restaurant 为本次到访的同一地点，统一记录为 Gua MAHA & GM Farm Seafood Restaurant。",
+          "text": "Gua MAHA and GM Farm Seafood Restaurant refer to the same place visited on this trip, recorded as Gua MAHA & GM Farm Seafood Restaurant."
+        },
+        "notes.5": {
+          "source": "以下为实际到访地点总览；每日分组尚待确认。",
+          "text": "This is an overview of places actually visited. Their day-by-day grouping remains to be confirmed."
+        },
+        "attractions.0.displayName": {
+          "source": "兰卡威天空之桥",
+          "text": "Langkawi Sky Bridge"
+        },
+        "attractions.1.displayName": {
+          "source": "Perdana Quay 灯塔",
+          "text": "Perdana Quay Light House"
+        },
+        "attractions.2.displayName": {
+          "source": "拉雅山",
+          "text": "Gunung Raya"
+        },
+        "attractions.4.displayName": {
+          "source": "特姆伦瀑布",
+          "text": "Temurun Waterfall"
+        },
+        "attractions.5.displayName": {
+          "source": "珍南海滩",
+          "text": "Pantai Cenang"
+        },
+        "attractions.6.displayName": {
+          "source": "鲨鱼湾海滩",
+          "text": "Teluk Yu"
+        },
+        "attractions.7.displayName": {
+          "source": "丹绒鲁海滩",
+          "text": "Tanjung Rhu Beach"
+        },
+        "attractions.8.displayName": {
+          "source": "兰卡威海底世界",
+          "text": "Underwater World Langkawi"
+        },
+        "attractions.9.displayName": {
+          "source": "Bukit Malut 沿海公路",
+          "text": "Jalan Bukit Malut Scenic Drive"
+        },
+        "attractions.10.displayName": {
+          "source": "老鹰广场",
+          "text": "Dataran Lang"
+        },
+        "attractions.12.displayName": {
+          "source": "Wat Koh Wanararm 泰佛寺",
+          "text": "Wat Koh Wanararm"
+        },
+        "attractions.13.displayName": {
+          "source": "Kisap 山洞泰佛寺",
+          "text": "Wat Tham Kisap"
+        },
+        "attractions.14.displayName": {
+          "source": "兰卡威天后宫",
+          "text": "Langkawi Thean Hou Temple"
+        },
+        "attractions.20.displayName": {
+          "source": "Temonyong 夜市",
+          "text": "Temonyong Night Market"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "china-jiangnan-autumn-15d14n",
+      "locale": "en",
+      "canonicalPath": "/guide/china-jiangnan-autumn-15d14n",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/guides.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "itinerarySegments.0.imageMatches.0.label": {
+          "source": "上海 City Walk 影片素材",
+          "text": "Shanghai City Walk footage"
+        },
+        "itinerarySegments.0.imageMatches.0.note": {
+          "source": "可用于城市区间，不作为单一景点主图。",
+          "text": "Suitable for the city segment, not as the cover image for a single attraction."
+        },
+        "itinerarySegments.1.imageMatches.0.label": {
+          "source": "苏州园林与山塘影片素材",
+          "text": "Suzhou gardens and Shantang footage"
+        },
+        "itinerarySegments.2.imageMatches.0.label": {
+          "source": "乌镇古镇、摇橹船与早茶客素材",
+          "text": "Wuzhen water town, rowing boats and morning tea footage"
+        },
+        "itinerarySegments.3.imageMatches.0.label": {
+          "source": "杭州西湖与城市夜景影片素材",
+          "text": "Hangzhou West Lake and city lights footage"
+        },
+        "itinerarySegments.4.imageMatches.0.label": {
+          "source": "宏村、塔川、卢村、碧山与秀里影片素材",
+          "text": "Hongcun, Tachuan, Lucun, Bishan and Xiuli footage"
+        },
+        "title": {
+          "source": "上海·苏州·乌镇·杭州·黟县·南京",
+          "text": "Shanghai, Suzhou, Wuzhen, Hangzhou, Yixian & Nanjing"
+        },
+        "shortTitle": {
+          "source": "中国江南秋季游",
+          "text": "Autumn in Jiangnan"
+        },
+        "tagline": {
+          "source": "15 天 14 夜，上海、苏州、乌镇、杭州、黟县与南京",
+          "text": "15 days and 14 nights through Shanghai, Suzhou, Wuzhen, Hangzhou, Yixian and Nanjing"
+        },
+        "summary": {
+          "source": "从上海一路南下，经苏州、乌镇、杭州与皖南，最后在南京收尾的秋季旅程。",
+          "text": "An autumn journey from Shanghai through Suzhou, Wuzhen, Hangzhou and southern Anhui, finishing in Nanjing."
+        },
+        "duration": {
+          "source": "15天14夜",
+          "text": "15 Days / 14 Nights"
+        },
+        "travelStyle": {
+          "source": "自由行",
+          "text": "Independent travel"
+        },
+        "route.0.name": {
+          "source": "上海",
+          "text": "Shanghai"
+        },
+        "route.0.summary": {
+          "source": "抵达后的三天以上海市区步行与夜景为主。",
+          "text": "Three days of city walks and night views after arriving in Shanghai."
+        },
+        "route.1.name": {
+          "source": "苏州",
+          "text": "Suzhou"
+        },
+        "route.1.summary": {
+          "source": "由上海转入苏州，园林、古镇与山塘夜景分别安排在两天。",
+          "text": "Continue from Shanghai to Suzhou, with gardens, old towns and Shantang after dark spread across two days."
+        },
+        "route.2.name": {
+          "source": "乌镇",
+          "text": "Wuzhen"
+        },
+        "route.2.summary": {
+          "source": "Day 6 在乌镇西栅办理入住、沿水乡步行，并安排清晨水乡体验。",
+          "text": "Check in at Wuzhen Xizha on Day 6, walk through the water town and explore again in the early morning."
+        },
+        "route.3.name": {
+          "source": "杭州",
+          "text": "Hangzhou"
+        },
+        "route.3.summary": {
+          "source": "两条已证实城市路线涵盖满觉陇、西湖周边、河坊街与钱江新城夜景。",
+          "text": "Two confirmed city routes cover Manjuelong, the West Lake area, Hefang Street and Qianjiang New City at night."
+        },
+        "route.4.name": {
+          "source": "宏村／黟县",
+          "text": "Hongcun / Yixian"
+        },
+        "route.4.summary": {
+          "source": "已证实到访宏村、卢村观景点与塔川入口一带；付费景区未进入。部分附近地点仅作顺路参考，不计入主行程。",
+          "text": "Confirmed visits include Hongcun, the Lucun viewpoint and the area around the Tachuan entrance. The paid scenic area was not entered. Some nearby places are reference options only and are excluded from the main itinerary."
+        },
+        "route.5.name": {
+          "source": "南京",
+          "text": "Nanjing"
+        },
+        "route.5.summary": {
+          "source": "由黟县转入南京后，依次完成牛首山、秋色与明孝陵周边三条城市路线。",
+          "text": "After travelling from Yixian to Nanjing, follow three city routes covering Niushoushan, autumn scenery and the surroundings of the Ming Xiaoling Mausoleum."
+        },
+        "highlightTags.0": {
+          "source": "秋季",
+          "text": "Autumn"
+        },
+        "highlightTags.1": {
+          "source": "城市漫步",
+          "text": "City Walks"
+        },
+        "highlightTags.2": {
+          "source": "古镇",
+          "text": "Water Towns"
+        },
+        "highlightTags.3": {
+          "source": "江南",
+          "text": "Jiangnan"
+        },
+        "heroBullets.0": {
+          "source": "2025年11月4日－11月18日",
+          "text": "4–18 November 2025"
+        },
+        "heroBullets.1": {
+          "source": "6 个已证实城市区间",
+          "text": "6 confirmed city segments"
+        },
+        "itinerarySegments.0.city": {
+          "source": "上海",
+          "text": "Shanghai"
+        },
+        "itinerarySegments.0.title": {
+          "source": "上海｜City Walk 与夜景",
+          "text": "Shanghai: City Walks & Night Views"
+        },
+        "itinerarySegments.0.summary": {
+          "source": "抵达后的三天以上海市区步行与夜景为主。",
+          "text": "Three days of city walks and night views after arriving in Shanghai."
+        },
+        "itinerarySegments.0.verifiedRoutes.0.title": {
+          "source": "抵达上海",
+          "text": "Arriving in Shanghai"
+        },
+        "itinerarySegments.0.verifiedRoutes.0.summary": {
+          "source": "抵达浦东后进入市区，安顿住宿。",
+          "text": "Travel into the city from Pudong and settle into the accommodation."
+        },
+        "itinerarySegments.0.verifiedRoutes.1.title": {
+          "source": "上海 City Walk",
+          "text": "Shanghai City Walk"
+        },
+        "itinerarySegments.0.verifiedRoutes.1.summary": {
+          "source": "新天地、南京路步行街、外滩与陆家嘴一带。",
+          "text": "Xintiandi, Nanjing Road Pedestrian Street, the Bund and Lujiazui."
+        },
+        "itinerarySegments.0.verifiedRoutes.2.title": {
+          "source": "梧桐街区与夜景",
+          "text": "Plane-Tree Streets & City Lights"
+        },
+        "itinerarySegments.0.verifiedRoutes.2.summary": {
+          "source": "武康路、安福路、苏州河、北外滩与豫园。",
+          "text": "Wukang Road, Anfu Road, Suzhou Creek, the North Bund and Yuyuan."
+        },
+        "itinerarySegments.0.transport": {
+          "source": "抵达浦东后进入市区；具体接驳安排保留在原始路线记录中。",
+          "text": "Travel into the city after arriving at Pudong. Specific transfer arrangements remain in the original route record."
+        },
+        "itinerarySegments.0.media.0.label": {
+          "source": "上海 2 天游影片",
+          "text": "Two Days in Shanghai"
+        },
+        "itinerarySegments.0.practicalTips.0": {
+          "source": "凌晨抵达时地铁与磁悬浮已停运；先查守航夜宵线，再决定是否叫车。",
+          "text": "The metro and maglev had stopped running by our early-morning arrival. Check the airport night bus before deciding whether to call a car."
+        },
+        "itinerarySegments.0.practicalTips.1": {
+          "source": "秋冬约 5–6 点转暗；下雨时可改为室内咖啡馆与北外滩。",
+          "text": "In autumn and winter, it gets dark around 5–6 pm. Rainy-day alternatives include indoor cafés and the North Bund."
+        },
+        "itinerarySegments.0.actualExperiences.0": {
+          "source": "金陵东路渡口二楼露台适合看浦江两岸。",
+          "text": "The second-floor terrace at Jinling East Road Ferry Wharf offers views of both sides of the Huangpu River."
+        },
+        "itinerarySegments.0.actualExperiences.1": {
+          "source": "武康路秋季梧桐与桂花适合慢走；北外滩与豫园夜景为不同视角。",
+          "text": "Take a slow autumn walk along Wukang Road among plane trees and osmanthus. The North Bund and Yuyuan offer different night views."
+        },
+        "itinerarySegments.0.pendingItems.0": {
+          "source": "浦东美术馆与部分店铺的精确到访顺序尚待影像时间轴核对。",
+          "text": "The exact visit order for the Museum of Art Pudong and some shops still needs checking against the footage timeline."
+        },
+        "itinerarySegments.1.city": {
+          "source": "苏州",
+          "text": "Suzhou"
+        },
+        "itinerarySegments.1.title": {
+          "source": "苏州｜园林、古镇与山塘夜景",
+          "text": "Suzhou: Gardens, Old Towns & Shantang at Night"
+        },
+        "itinerarySegments.1.summary": {
+          "source": "由上海转入苏州，园林、古镇与山塘夜景分别安排在两天。",
+          "text": "Continue from Shanghai to Suzhou, with gardens, old towns and Shantang after dark spread across two days."
+        },
+        "itinerarySegments.1.verifiedRoutes.0.title": {
+          "source": "上海→苏州与山塘夜景",
+          "text": "Shanghai to Suzhou & Shantang at Night"
+        },
+        "itinerarySegments.1.verifiedRoutes.0.summary": {
+          "source": "西园寺、寒山寺与枫桥、虎丘、山塘街夜景。",
+          "text": "Xiyuan Temple, Hanshan Temple and Fengqiao, Tiger Hill and Shantang Street after dark."
+        },
+        "itinerarySegments.1.verifiedRoutes.1.title": {
+          "source": "园林与同里古镇",
+          "text": "Gardens & Tongli Water Town"
+        },
+        "itinerarySegments.1.verifiedRoutes.1.summary": {
+          "source": "拙政园、平江路与同里古镇。",
+          "text": "The Humble Administrator’s Garden, Pingjiang Road and Tongli Water Town."
+        },
+        "itinerarySegments.1.media.0.label": {
+          "source": "苏州 2 天游影片",
+          "text": "Two Days in Suzhou"
+        },
+        "itinerarySegments.1.practicalTips.0": {
+          "source": "拙政园宜 07:30 入园避开旅行团。",
+          "text": "Our recommendation was to enter the Humble Administrator’s Garden at 07:30 to get ahead of tour groups."
+        },
+        "itinerarySegments.1.practicalTips.1": {
+          "source": "山塘街夜间沿河通道窄，人多时容易拥挤；同里免票进街区时段不含内部园林。",
+          "text": "The narrow riverside passage at Shantang Street can be crowded at night. Free-entry periods for Tongli’s streets do not include the gardens inside."
+        },
+        "itinerarySegments.1.actualExperiences.0": {
+          "source": "上海站至苏州站高铁约 30 分钟，出站南广场可见平门。",
+          "text": "The high-speed train from Shanghai Station to Suzhou Station took about 30 minutes. Pingmen is visible from the station’s south square."
+        },
+        "itinerarySegments.1.actualExperiences.1": {
+          "source": "李鸿章码头画舫连接虎丘与山塘夜景路线。",
+          "text": "A sightseeing boat from Li Hongzhang Wharf linked Tiger Hill with the Shantang evening route."
+        },
+        "itinerarySegments.1.pendingItems.0": {
+          "source": "退思园属于同里隔天早晨路线，尚未映射为全程精确 Day。",
+          "text": "Tuisi Garden belongs to the following morning’s Tongli route and has not yet been assigned an exact day in the full trip."
+        },
+        "itinerarySegments.2.city": {
+          "source": "乌镇",
+          "text": "Wuzhen"
+        },
+        "itinerarySegments.2.title": {
+          "source": "乌镇｜西栅水乡",
+          "text": "Wuzhen: Xizha Water Town"
+        },
+        "itinerarySegments.2.summary": {
+          "source": "Day 6 在乌镇西栅办理入住、沿水乡步行，并安排清晨水乡体验。",
+          "text": "Check in at Wuzhen Xizha on Day 6, walk through the water town and explore again in the early morning."
+        },
+        "itinerarySegments.2.verifiedRoutes.0.title": {
+          "source": "乌镇西栅",
+          "text": "Wuzhen Xizha"
+        },
+        "itinerarySegments.2.verifiedRoutes.0.summary": {
+          "source": "进入西栅、办理住客流程，沿水乡夜景步行；清晨继续水乡与摇橹船路线。",
+          "text": "Enter Xizha, complete the guest check-in process and walk through the water town at night. Continue exploring and take the rowing-boat route in the early morning."
+        },
+        "itinerarySegments.2.practicalTips.0": {
+          "source": "住客应提前一天预约早茶客；名额有限，9 点前适合拍无人古镇。",
+          "text": "Guests were advised to book the morning-tea experience a day ahead because places were limited. Before 9 am was a good time to photograph quiet streets."
+        },
+        "itinerarySegments.2.practicalTips.1": {
+          "source": "夜景整体偏暗，摇橹船无灯，拍摄需预留夜拍能力。",
+          "text": "The town was quite dark at night and the rowing boats had no lights. Allow for low-light photography."
+        },
+        "itinerarySegments.2.actualExperiences.0": {
+          "source": "景区统一办理入住、行李托运与住客观光车衔接。",
+          "text": "The scenic area coordinated check-in, luggage delivery and guest sightseeing shuttles."
+        },
+        "itinerarySegments.2.actualExperiences.1": {
+          "source": "灵水居水幕秀约每 10 分钟循环；退房前先寄行李可继续游览。",
+          "text": "The Lingshui Residence water-screen show repeated about every 10 minutes during our visit. Store luggage before checking out to keep exploring."
+        },
+        "itinerarySegments.2.pendingItems.0": {
+          "source": "住宿、门票与同里至乌镇交通金额未找到可靠实际记录。",
+          "text": "Reliable records of actual accommodation, admission and Tongli–Wuzhen transport costs have not been found."
+        },
+        "itinerarySegments.3.city": {
+          "source": "杭州",
+          "text": "Hangzhou"
+        },
+        "itinerarySegments.3.title": {
+          "source": "杭州｜西湖漫步与城市夜景",
+          "text": "Hangzhou: West Lake Walks & City Lights"
+        },
+        "itinerarySegments.3.summary": {
+          "source": "两条已证实城市路线涵盖满觉陇、西湖周边、河坊街与钱江新城夜景。",
+          "text": "Two confirmed city routes cover Manjuelong, the West Lake area, Hefang Street and Qianjiang New City at night."
+        },
+        "itinerarySegments.3.verifiedRoutes.0.title": {
+          "source": "满觉陇与西湖夜景",
+          "text": "Manjuelong & West Lake at Night"
+        },
+        "itinerarySegments.3.verifiedRoutes.0.summary": {
+          "source": "满觉陇、城市街区与西湖夜景。",
+          "text": "Manjuelong, city neighbourhoods and West Lake at night."
+        },
+        "itinerarySegments.3.verifiedRoutes.1.title": {
+          "source": "西湖西线与钱江新城",
+          "text": "Western West Lake & Qianjiang New City"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.summary": {
+          "source": "太子湾、花港观鱼、曲院风荷、河坊街与钱江新城。",
+          "text": "Taiziwan Park, Viewing Fish at Flower Harbor, Quyuan Fenghe, Hefang Street and Qianjiang New City."
+        },
+        "itinerarySegments.3.media.0.label": {
+          "source": "杭州 2天1晚影片",
+          "text": "Hangzhou: Two Days, One Night"
+        },
+        "itinerarySegments.3.practicalTips.0": {
+          "source": "桂花花期影响满觉陇体验；本次到访时大部分桂花已落。",
+          "text": "Osmanthus flowering affects the Manjuelong experience. Most flowers had already fallen when we visited."
+        },
+        "itinerarySegments.3.practicalTips.1": {
+          "source": "断桥人多时可在孤山公园乘 1314 路离开；不虚构票价。",
+          "text": "If Broken Bridge is crowded, bus 1314 from Gushan Park is an option for leaving the area. No unverified fare is quoted."
+        },
+        "itinerarySegments.3.practicalTips.2": {
+          "source": "灯光秀和无人机属于当晚／时效活动，公开前需要复查。",
+          "text": "Light shows and drone displays are time-sensitive events; recheck their schedule before planning around them."
+        },
+        "itinerarySegments.3.actualExperiences.0": {
+          "source": "西湖西线相对安静，包含太子湾、花港观鱼、浴鹄湾与乌龟潭。",
+          "text": "The western side of West Lake was quieter, including Taiziwan, Viewing Fish at Flower Harbor, Yuhuwan and Wuguitan."
+        },
+        "itinerarySegments.3.actualExperiences.1": {
+          "source": "钱江新城当晚确有灯光秀与无人机表演，但不可写成每日固定节目。",
+          "text": "There was a light show and drone display at Qianjiang New City that evening. This should not be treated as a daily programme."
+        },
+        "itinerarySegments.4.city": {
+          "source": "宏村／黟县",
+          "text": "Hongcun / Yixian"
+        },
+        "itinerarySegments.4.title": {
+          "source": "宏村／黟县｜古村与秋色",
+          "text": "Hongcun / Yixian: Villages & Autumn Colour"
+        },
+        "itinerarySegments.4.summary": {
+          "source": "已证实到访宏村、卢村观景点、塔川入口、碧山村与秀里水镇一带；付费景区未进入。",
+          "text": "Confirmed visits include Hongcun, the Lucun viewpoint, the Tachuan entrance, Bishan Village and the Xiuli Water Town area. The paid scenic area was not entered."
+        },
+        "itinerarySegments.4.verifiedRoutes.0.title": {
+          "source": "杭州→黟县与宏村",
+          "text": "Hangzhou to Yixian & Hongcun"
+        },
+        "itinerarySegments.4.verifiedRoutes.0.summary": {
+          "source": "转往黟县并办理入住，游览宏村、南湖与周边步行。",
+          "text": "Travel to Yixian and check in, then visit Hongcun, Nanhu and the surrounding walking areas."
+        },
+        "itinerarySegments.4.verifiedRoutes.1.title": {
+          "source": "碧山村与卢村观景点",
+          "text": "Bishan Village & the Lucun Viewpoint"
+        },
+        "itinerarySegments.4.verifiedRoutes.1.summary": {
+          "source": "碧山村与卢村观景点慢行。",
+          "text": "A slow visit to Bishan Village and the Lucun viewpoint."
+        },
+        "itinerarySegments.4.verifiedRoutes.2.title": {
+          "source": "秀里水镇与塔川入口",
+          "text": "Xiuli Water Town & the Tachuan Entrance"
+        },
+        "itinerarySegments.4.verifiedRoutes.2.summary": {
+          "source": "秀里水镇、塔川入口与周边慢行。",
+          "text": "Xiuli Water Town, the entrance to Tachuan and nearby walks."
+        },
+        "itinerarySegments.4.referenceRoutes.0.title": {
+          "source": "附近延伸选择",
+          "text": "Nearby Options"
+        },
+        "itinerarySegments.4.referenceRoutes.0.summary": {
+          "source": "奇墅湖等资料中出现的地点，未确认实际到访，不进入路线地图。",
+          "text": "Places such as Qishu Lake appear in reference material, but visits have not been confirmed. They are excluded from the route map."
+        },
+        "itinerarySegments.4.practicalTips.0": {
+          "source": "宏村入口每次进村需重新检票；提前联系客栈接送。",
+          "text": "Tickets were checked again each time we entered Hongcun. Contact the guesthouse in advance about a pickup."
+        },
+        "itinerarySegments.4.practicalTips.1": {
+          "source": "卢村观景台需早起，但上山会拥堵；不保证晨雾。",
+          "text": "An early start helps for the Lucun viewpoint, though the uphill road can be busy. Morning mist is not guaranteed."
+        },
+        "itinerarySegments.4.practicalTips.2": {
+          "source": "塔川本次只到入口与外围，未进入收费景区。",
+          "text": "On this trip we reached only the entrance and outer area of Tachuan, without entering the paid scenic area."
+        },
+        "itinerarySegments.4.actualExperiences.0": {
+          "source": "宏村外围稻田、南湖与月沼夜景是主要拍摄内容。",
+          "text": "The main photo subjects were the rice fields outside Hongcun, Nanhu and Moon Pond at night."
+        },
+        "itinerarySegments.4.actualExperiences.1": {
+          "source": "秀里游船河道较小、绕一圈返回，体验较单一；当晚鱼灯表演未观看。",
+          "text": "The Xiuli boat ride followed a small river loop and returned to its starting point; we found the experience limited. We did not watch the fish-lantern performance that evening."
+        },
+        "itinerarySegments.4.pendingItems.0": {
+          "source": "奇墅湖为晨雾推荐而非已确认到访；秀里各票种的实际购买状态待核对。",
+          "text": "Qishu Lake is a morning-mist recommendation, not a confirmed visit. The actual Xiuli ticket types purchased still need checking."
+        },
+        "itinerarySegments.5.city": {
+          "source": "南京",
+          "text": "Nanjing"
+        },
+        "itinerarySegments.5.title": {
+          "source": "南京｜秋季城市路线",
+          "text": "Nanjing: Autumn City Routes"
+        },
+        "itinerarySegments.5.summary": {
+          "source": "由黟县转入南京后，依次完成牛首山、秋色与明孝陵周边三条城市路线。",
+          "text": "After travelling from Yixian to Nanjing, follow three city routes covering Niushoushan, autumn scenery and the surroundings of the Ming Xiaoling Mausoleum."
+        },
+        "itinerarySegments.5.verifiedRoutes.0.title": {
+          "source": "黟县→南京",
+          "text": "Yixian to Nanjing"
+        },
+        "itinerarySegments.5.verifiedRoutes.0.summary": {
+          "source": "由黟县东前往南京南，入住新街口一带。",
+          "text": "Travel from Yixian East to Nanjing South and stay around Xinjiekou."
+        },
+        "itinerarySegments.5.verifiedRoutes.1.title": {
+          "source": "牛首山与金陵小城",
+          "text": "Niushoushan & Jinling Town"
+        },
+        "itinerarySegments.5.verifiedRoutes.1.summary": {
+          "source": "牛首山与金陵小城。",
+          "text": "Niushoushan and Jinling Town."
+        },
+        "itinerarySegments.5.verifiedRoutes.2.title": {
+          "source": "栖霞山与秦淮夜游",
+          "text": "Qixia Mountain & the Qinhuai at Night"
+        },
+        "itinerarySegments.5.verifiedRoutes.2.summary": {
+          "source": "栖霞山、中华门、夫子庙秦淮河与德基广场。",
+          "text": "Qixia Mountain, Zhonghua Gate, the Confucius Temple and Qinhuai River area, and Deji Plaza."
+        },
+        "itinerarySegments.5.verifiedRoutes.3.title": {
+          "source": "明孝陵周边秋色",
+          "text": "Autumn around Ming Xiaoling"
+        },
+        "itinerarySegments.5.verifiedRoutes.3.summary": {
+          "source": "明孝陵周边、燕雀湖、石象路与陵园路银杏大道；明孝陵未确认进入。",
+          "text": "The surroundings of Ming Xiaoling, Yanque Lake, Stone Elephant Road and the ginkgo-lined Lingyuan Road. Entry into Ming Xiaoling has not been confirmed."
+        },
+        "itinerarySegments.5.practicalTips.0": {
+          "source": "栖霞山秋色受花期影响；字幕记录 11 月中旬尚未全红。",
+          "text": "Autumn colour on Qixia Mountain varies with the season. Our subtitles record that the leaves were not fully red in mid-November."
+        },
+        "itinerarySegments.5.practicalTips.1": {
+          "source": "明孝陵当天接近 0 度且风大，未继续进入游览。",
+          "text": "It was close to 0°C and windy at Ming Xiaoling that day, so we did not continue inside."
+        },
+        "itinerarySegments.5.practicalTips.2": {
+          "source": "门票与夜游场次均为时效信息，公开前必须复查。",
+          "text": "Admission and evening-tour schedules are time-sensitive. Recheck them before planning a visit."
+        },
+        "itinerarySegments.5.actualExperiences.0": {
+          "source": "牛首山接驳车约 10 分钟；金陵小城的演出场次按当天安排。",
+          "text": "The Niushoushan shuttle took about 10 minutes. Performances at Jinling Town followed that day’s schedule."
+        },
+        "itinerarySegments.5.actualExperiences.1": {
+          "source": "南京路线三仅记录明孝陵周边、燕雀湖与陵园路，不代表完整游览明孝陵。",
+          "text": "The third Nanjing route records the area around Ming Xiaoling, Yanque Lake and Lingyuan Road; it does not represent a full visit inside the mausoleum site."
+        },
+        "itinerarySegments.5.pendingItems.0": {
+          "source": "三条影片路线的全程 Day 映射、住宿正式名称与价格、秦淮游船体验状态仍待确认。",
+          "text": "The full-trip day mapping for the three video routes, official accommodation names and prices, and whether the Qinhuai boat ride was taken remain unconfirmed."
+        },
+        "bestFor.0": {
+          "source": "希望按真实城市区间规划江南路线的旅客",
+          "text": "Travellers planning Jiangnan around verified city segments"
+        },
+        "notes.0": {
+          "source": "秋季天气、花期与景区活动会影响当天体验。",
+          "text": "Autumn weather, flowering seasons and attraction events can affect the experience on the day."
+        },
+        "itinerarySegments.0.verifiedRoutes.1.attractions.0.displayName": {
+          "source": "新天地",
+          "text": "Xintiandi"
+        },
+        "itinerarySegments.0.verifiedRoutes.1.attractions.1.displayName": {
+          "source": "南京路步行街",
+          "text": "Nanjing Road Pedestrian Street"
+        },
+        "itinerarySegments.0.verifiedRoutes.1.attractions.2.displayName": {
+          "source": "外滩",
+          "text": "The Bund"
+        },
+        "itinerarySegments.0.verifiedRoutes.1.attractions.3.displayName": {
+          "source": "陆家嘴",
+          "text": "Lujiazui"
+        },
+        "itinerarySegments.0.verifiedRoutes.2.attractions.0.displayName": {
+          "source": "武康路",
+          "text": "Wukang Road"
+        },
+        "itinerarySegments.0.verifiedRoutes.2.attractions.1.displayName": {
+          "source": "安福路",
+          "text": "Anfu Road"
+        },
+        "itinerarySegments.0.verifiedRoutes.2.attractions.2.displayName": {
+          "source": "北外滩",
+          "text": "North Bund"
+        },
+        "itinerarySegments.0.verifiedRoutes.2.attractions.3.displayName": {
+          "source": "豫园",
+          "text": "Yuyuan"
+        },
+        "itinerarySegments.1.verifiedRoutes.0.attractions.0.displayName": {
+          "source": "西园寺",
+          "text": "Xiyuan Temple"
+        },
+        "itinerarySegments.1.verifiedRoutes.0.attractions.1.displayName": {
+          "source": "寒山寺",
+          "text": "Hanshan Temple"
+        },
+        "itinerarySegments.1.verifiedRoutes.0.attractions.2.displayName": {
+          "source": "虎丘",
+          "text": "Tiger Hill"
+        },
+        "itinerarySegments.1.verifiedRoutes.0.attractions.3.displayName": {
+          "source": "山塘街",
+          "text": "Shantang Street"
+        },
+        "itinerarySegments.1.verifiedRoutes.1.attractions.0.displayName": {
+          "source": "拙政园",
+          "text": "Humble Administrator’s Garden"
+        },
+        "itinerarySegments.1.verifiedRoutes.1.attractions.1.displayName": {
+          "source": "平江路",
+          "text": "Pingjiang Road"
+        },
+        "itinerarySegments.1.verifiedRoutes.1.attractions.2.displayName": {
+          "source": "同里古镇",
+          "text": "Tongli Water Town"
+        },
+        "itinerarySegments.2.verifiedRoutes.0.attractions.0.displayName": {
+          "source": "乌镇西栅",
+          "text": "Wuzhen Xizha"
+        },
+        "itinerarySegments.3.verifiedRoutes.0.attractions.0.displayName": {
+          "source": "满觉陇",
+          "text": "Manjuelong"
+        },
+        "itinerarySegments.3.verifiedRoutes.0.attractions.1.displayName": {
+          "source": "西湖",
+          "text": "West Lake"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.attractions.0.displayName": {
+          "source": "太子湾公园",
+          "text": "Taiziwan Park"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.attractions.1.displayName": {
+          "source": "花港观鱼",
+          "text": "Viewing Fish at Flower Harbor"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.attractions.2.displayName": {
+          "source": "曲院风荷",
+          "text": "Quyuan Fenghe"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.attractions.3.displayName": {
+          "source": "河坊街",
+          "text": "Hefang Street"
+        },
+        "itinerarySegments.3.verifiedRoutes.1.attractions.4.displayName": {
+          "source": "钱江新城",
+          "text": "Qianjiang New City"
+        },
+        "itinerarySegments.4.verifiedRoutes.0.attractions.0.displayName": {
+          "source": "宏村",
+          "text": "Hongcun"
+        },
+        "itinerarySegments.4.verifiedRoutes.0.attractions.1.displayName": {
+          "source": "南湖",
+          "text": "Nanhu"
+        },
+        "itinerarySegments.4.verifiedRoutes.1.attractions.0.displayName": {
+          "source": "碧山村",
+          "text": "Bishan Village"
+        },
+        "itinerarySegments.4.verifiedRoutes.1.attractions.1.displayName": {
+          "source": "卢村",
+          "text": "Lucun"
+        },
+        "itinerarySegments.4.verifiedRoutes.2.attractions.0.displayName": {
+          "source": "秀里水镇",
+          "text": "Xiuli Water Town"
+        },
+        "itinerarySegments.4.verifiedRoutes.2.attractions.1.displayName": {
+          "source": "塔川",
+          "text": "Tachuan"
+        },
+        "itinerarySegments.5.verifiedRoutes.1.attractions.0.displayName": {
+          "source": "牛首山",
+          "text": "Niushoushan"
+        },
+        "itinerarySegments.5.verifiedRoutes.1.attractions.1.displayName": {
+          "source": "金陵小城",
+          "text": "Jinling Town"
+        },
+        "itinerarySegments.5.verifiedRoutes.2.attractions.0.displayName": {
+          "source": "栖霞山",
+          "text": "Qixia Mountain"
+        },
+        "itinerarySegments.5.verifiedRoutes.2.attractions.1.displayName": {
+          "source": "中华门",
+          "text": "Zhonghua Gate"
+        },
+        "itinerarySegments.5.verifiedRoutes.2.attractions.2.displayName": {
+          "source": "夫子庙秦淮河",
+          "text": "Confucius Temple & Qinhuai River"
+        },
+        "itinerarySegments.5.verifiedRoutes.2.attractions.3.displayName": {
+          "source": "德基广场",
+          "text": "Deji Plaza"
+        },
+        "itinerarySegments.5.verifiedRoutes.3.attractions.0.displayName": {
+          "source": "燕雀湖",
+          "text": "Yanque Lake"
+        },
+        "itinerarySegments.5.verifiedRoutes.3.attractions.1.displayName": {
+          "source": "石象路",
+          "text": "Stone Elephant Road"
+        },
+        "itinerarySegments.5.verifiedRoutes.3.attractions.2.displayName": {
+          "source": "陵园路",
+          "text": "Lingyuan Road"
+        }
+      }
+    },
+    {
+      "entityType": "region",
+      "entityId": "1",
+      "locale": "en",
+      "canonicalPath": "/region/johor-1",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/regions.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "shortSummary": {
+          "source": "柔佛位于马来西亚半岛南部，与新加坡相邻，以城市与海边度假兼具的旅游体验闻名 这里有新山的城市生活、迪沙鲁海岸的度假海滩，以及乐高乐园等亲子景点，同时也有丰富的美食选择 适合周末短途、亲子旅行与轻松度假 Johor is located in southern Peninsular Malaysia, next to Singapore, offering a",
+          "text": "Johor sits at the southern end of Peninsular Malaysia, next to Singapore. Combine Johor Bahru’s city life with Desaru’s beaches, family attractions such as LEGOLAND and plenty of food stops. It suits a short weekend, a family trip or a relaxed break."
+        }
+      }
+    },
+    {
+      "entityType": "region",
+      "entityId": "2",
+      "locale": "en",
+      "canonicalPath": "/region/kuala-lumpur-2",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/regions.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "shortSummary": {
+          "source": "吉隆坡是马来西亚首都，以现代城市景观与多元文化融合闻名 这里有双子塔、黑风洞、吉隆坡塔等地标，也能在武吉免登感受购物与夜生活氛围 适合城市观光、美食探索与购物旅行 Kuala Lumpur is the capital of Malaysia, known for its modern skyline and multicultural atmosphere",
+          "text": "Malaysia’s capital brings a modern skyline and many cultures together. Visit landmarks such as the Petronas Twin Towers, Batu Caves and KL Tower, then explore Bukit Bintang for shopping and nightlife. Come for city sightseeing, food and shopping."
+        }
+      }
+    },
+    {
+      "entityType": "region",
+      "entityId": "78",
+      "locale": "en",
+      "canonicalPath": "/region/kota-kinabalu-78",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/regions.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "shortSummary": {
+          "source": "亚庇是沙巴首府，以海岛风光与世界级日落闻名 这里可以跳岛前往东姑阿都拉曼海洋公园，享受清澈海水与浮潜，也能在海边欣赏被誉为世界前三的日落景色 适合海岛度假、放松旅行与轻松慢游 Kota Kinabalu is the capital of Sabah, known for its island scenery and world-class sunsets ",
+          "text": "Kota Kinabalu, the capital of Sabah, is a base for island scenery and seaside sunsets. Take an island-hopping trip to Tunku Abdul Rahman Marine Park for clear water and snorkelling, or slow down by the coast for a relaxed break."
+        }
+      }
+    },
+    {
+      "entityType": "region",
+      "entityId": "79",
+      "locale": "en",
+      "canonicalPath": "/region/semporna-79",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/regions.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "shortSummary": {
+          "source": "仙本那位于沙巴东海岸，是通往世界级海岛与潜水天堂的重要门户 这里可以前往马布岛、卡帕莱岛与西巴丹等著名潜点，欣赏清澈海水、丰富珊瑚与海洋生物，也能登上波希杜浪岛俯瞰梦幻海景 适合海岛度假、潜水体验与绝美海景打卡 Semporna is located on the east coast of Sabah and serves as a gateway to ",
+          "text": "On Sabah’s east coast, Semporna is a gateway to islands and diving. Places such as Mabul, Kapalai and Sipadan offer clear water, coral and marine life, while Bohey Dulang provides a viewpoint over the sea. It suits island breaks, diving and coastal scenery."
+        }
+      }
+    },
+    {
+      "entityType": "region",
+      "entityId": "92",
+      "locale": "en",
+      "canonicalPath": "/region/langkawi-92",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/regions.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "shortSummary": {
+          "source": "兰卡威位于吉打州，以海滩、森林、山景与海岛自驾行程为主。",
+          "text": "Langkawi is in Kedah, with beaches, forests, mountain views and island self-drive routes."
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "339",
+      "locale": "en",
+      "canonicalPath": "/spot/otaru-canal-339",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/otaru-canal-339.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "description": {
+          "source": "冬季限定浪漫！傍晚蓝色时刻+煤气灯亮起，积雪仓库倒映水中。",
+          "text": "A romantic winter scene: arrive around the evening blue hour as the gas lamps light up and snow-covered warehouses reflect in the canal."
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "374",
+      "locale": "en",
+      "canonicalPath": "/spot/ningle-terrace-374",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/ningle-terrace-374.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "description": {
+          "source": "从新千岁机场租车开过来，傍晚时分刚好抵达精灵露台。森林里散落着一座座小木屋，天黑亮灯后非常梦幻，仿佛走进了童话世界。建议下午3点半到4点左右到，可以同时看到白天和夜晚两种不同的景色。冬季体感很冷，实测零下8度，台阶也比较湿滑，记得穿防滑靴。 Renting a car from New Chitose Airport and driving over, we",
+          "text": "We rented a car at New Chitose Airport and reached Ningle Terrace around dusk. Small wooden cabins are scattered through the forest; once their lights came on, the setting felt like a fairytale. Arriving around 3:30–4 pm lets you see both the daytime and evening scenes. It felt very cold on our winter visit, with a measured temperature of −8°C. The steps were slippery too, so wear boots with good grip."
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "446",
+      "locale": "en",
+      "canonicalPath": "/spot/shang-hai-xin-tian-di-shanghai-446",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/spot-446.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "title": {
+          "source": "上海新天地",
+          "text": "Shanghai Xintiandi"
+        },
+        "description": {
+          "source": "来上海，如果想找一个既有历史感又不失精致氛围的地方，新天地是很容易被安排进路线的一站。这里在老上海石库门建筑基础上改造而成，保留了红砖外墙和拱门结构，同时融入了大量餐厅、咖啡馆和生活方式店铺。 🌇 街区氛围 白天的新天地比较安静，适合慢慢走走看看建筑细节；到了晚上灯光亮起之后，整体氛围会更明显，街区也会变得更热闹一些。走在石库门之间，会有一种介于历史与现代",
+          "text": "Xintiandi is an easy addition to a Shanghai walk if you enjoy history with a polished modern atmosphere. The area reworks old shikumen buildings, keeping red-brick walls and arches alongside restaurants, cafés and lifestyle shops.\n\nDaytime is quieter and suits a slow look at the architecture. After dark, the lights bring out a livelier side of the neighbourhood."
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "449",
+      "locale": "en",
+      "canonicalPath": "/spot/the-bund-shanghai-449",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/spot-449.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "title": {
+          "source": "上海外滩",
+          "text": "The Bund, Shanghai"
+        },
+        "description": {
+          "source": "来上海，外滩基本是一定会出现的一站。 这一段沿着黄浦江展开的建筑群，是整座城市最有代表性的画面之一。 🌇 建筑与景观 外滩这一排万国建筑群层次很丰富，走到江边可以直接看到对岸陆家嘴。东方明珠和整片天际线同框，是最经典的上海画面。 🚶 路线走法（推荐） 可以从南京东路一路走过来，再转进九江路往外滩方向走。 这一段沿途都会慢慢看到东方明珠出现在视线里，不同角",
+          "text": "The Bund is one of Shanghai’s defining views: a row of historic buildings along the Huangpu River, facing Lujiazui across the water. From the waterfront, the Oriental Pearl Tower appears together with the wider skyline.\n\nOne walking approach starts on Nanjing East Road and turns into Jiujiang Road towards the Bund, with the Oriental Pearl gradually coming into view along the way."
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "810",
+      "locale": "en",
+      "canonicalPath": "/spot/langkawi-sky-bridge-810",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/langkawi-sky-bridge-810.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "description": {
+          "source": "天空之桥架在 Machinchang 山区，弧形桥面把山谷、森林与远海放在同一条视线上。它适合与 SkyCab 缆车一起安排，重点是上山后的步行与观景。\n\n自驾应先到山脚 Oriental Village，再按现场指引上山；地图上的桥梁坐标不是车辆入口。购买前核对套票是否包含 SkyBridge、接驳方式及其他项目，别只看套票名称。\n\n高处视野受云雾影响，缆车和桥梁也可能因天气或维护调整开放。出发前查看官方营运日历，行程中留出排队和往返时间。\n\n电话：+60 4-961 2000；网站：https://panoramalangkawi.com/skybridge/",
+          "text": "The curved Sky Bridge spans the Machinchang mountains, bringing valleys, forest and the distant sea into one view. Combine it with the SkyCab cable car and allow time for walking and enjoying the scenery at the top.\n\nIf driving, head first to Oriental Village at the foot of the mountain and follow the signs uphill. The bridge’s map coordinates are not a vehicle entrance. Before buying, check whether a package includes SkyBridge admission, transfers and other activities rather than relying on the package name alone.\n\nCloud and mist affect the views. Weather or maintenance may also change cable-car and bridge opening arrangements. Check the official operating calendar before setting out and allow time for queues and the return journey.\n\nTelephone: +60 4-961 2000. Website: https://panoramalangkawi.com/skybridge/"
+        }
+      }
+    },
+    {
+      "entityType": "spot",
+      "entityId": "829",
+      "locale": "en",
+      "canonicalPath": "/spot/golden-bamboo-cafe-829",
+      "translationStatus": "complete",
+      "source": {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/public-data/spots/golden-bamboo-cafe-829.json",
+        "capturedAt": "2026-09-08"
+      },
+      "fields": {
+        "description": {
+          "source": "Golden Bamboo Cafe 在珍南一带，以竹构空间和白天餐饮为特色，适合把早餐、午餐或咖啡时间放进海滩行程。\n\n从海边主街转进 Jalan Lye 后，按地图与店招找入口。可以把停留当作休息和用餐，不必为了拍建筑而影响其他客人。\n\n公开资料的门牌与联系电话有不同版本，这里仅保留道路地址，未核实号码留空。营业时段也请留意临时公告，餐点与份量按现场菜单决定。",
+          "text": "Golden Bamboo Cafe is near Cenang, with a bamboo setting and daytime dining. Fit breakfast, lunch or a coffee break into your beach outing.\n\nTurn off the main beach street into Jalan Lye and use the map and signs to find the entrance. Enjoy a rest and a meal while keeping other guests in mind when photographing the building.\n\nPublic sources give different street numbers and telephone contacts, so only the road address is retained here. Unverified telephone numbers are omitted. Check temporary opening announcements and choose meals and portions from the menu on site."
+        },
+        "opening_hours": {
+          "source": "{\"isUnknown\":false,\"is24Hours\":false,\"scheduleGroups\":[],\"open\":\"09:00\",\"close\":\"17:00\",\"closedDays\":[2],\"remarks\":\"Apple Maps 与商家管理的 Tripadvisor 页面均列 09:00–17:00、周二休息；核实 2026-09-05。\"}",
+          "text": "{\"isUnknown\":false,\"is24Hours\":false,\"scheduleGroups\":[],\"open\":\"09:00\",\"close\":\"17:00\",\"closedDays\":[2],\"remarks\":\"Apple Maps and the business-managed Tripadvisor page listed 09:00–17:00, closed Tuesdays; checked on 5 September 2026.\"}"
+        }
+      }
+    }
+  ]
+}

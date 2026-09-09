@@ -1,19 +1,24 @@
 'use client'
 
-import { useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import Link from 'next/link'
-import { Search, Globe, MapPin, Compass } from 'lucide-react'
+import { Search, MapPin, Compass } from 'lucide-react'
+import LanguageSwitcher from '@/components/LanguageSwitcher'
+import { ui } from '@/lib/locale'
 
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 interface TopFloatingIslandProps {
   onSearch: (term: string) => void
-  onLanguageChange: () => void
 }
 
-export default function TopFloatingIsland({ onSearch, onLanguageChange }: TopFloatingIslandProps) {
+export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) {
   const [searchTerm, setSearchTerm] = useState('')
+  const initialSearch = useRef(onSearch)
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search).get('q') || ''
+    if (query) { setSearchTerm(query); initialSearch.current(query) }
+  }, [])
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value
@@ -40,7 +45,7 @@ export default function TopFloatingIsland({ onSearch, onLanguageChange }: TopFlo
               <Input
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder="Search spots, regions, or tags / 搜索景点、地区或标签"
+                placeholder={ui('zh', 'searchPlaceholder')}
                 className="h-8 rounded-full border border-white/10 bg-white/6 pl-8 pr-3 text-[11px] text-white placeholder:text-white/45 focus-visible:ring-1 focus-visible:ring-amber-200/50 md:h-11 md:pl-11 md:pr-4 md:text-sm"
               />
             </div>
@@ -53,15 +58,7 @@ export default function TopFloatingIsland({ onSearch, onLanguageChange }: TopFlo
                 <Compass className="h-3 w-3 shrink-0 text-amber-200 md:h-4 md:w-4" />
                 <span className="truncate">Regions / 地区目录</span>
               </Link>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onLanguageChange}
-                className="h-7 w-7 rounded-full text-white/80 hover:bg-white/10 hover:text-white md:h-10 md:w-10"
-                title="Language options coming soon"
-              >
-                <Globe className="h-3 w-3 md:h-4 md:w-4" />
-              </Button>
+              <LanguageSwitcher />
             </div>
           </div>
         </div>
