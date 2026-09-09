@@ -52,3 +52,7 @@ English HTML/ISR paths and localization document keys are locale-specific. Raw e
 - All 3,567 baseline user files retained their hashes before commit. Original Admin/data/config work is excluded from this release commit.
 
 Detailed local receipts are in `artifacts/bilingual-v1/`: publication, HTTP, route regression, cache trace, tests and build logs. Production receipts are added there after the release. The existing name cleanup commit is `9096b9e9ac14f0d772728d6ca01a5672fa7439ed`; the bilingual foundation is committed separately.
+
+## Serverless acceptance correction
+
+Initial Production acceptance found a 500 on an English Guide not included in the prebuilt pilot. Next's file tracer had omitted dynamically addressed JSON files from the ISR function, although they existed in the local workspace. The snapshot reader now uses traceable literal paths. After each build, run `node scripts/check-bilingual-bundle.mjs`: it verifies the actual English function manifest contains all five shared fallback snapshots and all 548 bundled Spot documents. This correction changes packaging/read paths only; it does not change Guangzhou content or budget. The full 644-route Chinese Production check passed before this correction.

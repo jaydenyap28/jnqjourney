@@ -27,7 +27,22 @@ export async function readBilingualSnapshot<T>(key: string, fallback: () => Prom
 }
 
 export async function readBundledJson<T>(file: string): Promise<T> {
-  return JSON.parse((await fs.readFile(path.join(process.cwd(), file), 'utf8')).replace(/^\uFEFF/, '')) as T
+  // Literal paths let Next's output tracer include these files in serverless ISR.
+  // A generic cwd + caller string works locally but omits them from deployment.
+  let text: string
+  switch (file) {
+    case 'public-data/locations.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/locations.json'), 'utf8'); break
+    case 'public-data/regions.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/regions.json'), 'utf8'); break
+    case 'public-data/guide-trip-costs.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/guide-trip-costs.json'), 'utf8'); break
+    case 'data/guides.json': text = await fs.readFile(path.join(process.cwd(), 'data/guides.json'), 'utf8'); break
+    case 'data/location-slugs.json': text = await fs.readFile(path.join(process.cwd(), 'data/location-slugs.json'), 'utf8'); break
+    default: {
+      const slug = file.match(/^public-data\/spots\/([a-zA-Z0-9-]+)\.json$/)?.[1]
+      if (!slug) throw new Error('Unsupported bundled public snapshot')
+      text = await fs.readFile(path.join(process.cwd(), 'public-data/spots', `${slug}.json`), 'utf8')
+    }
+  }
+  return JSON.parse(text.replace(/^\uFEFF/, '')) as T
 }
 
 export async function readLocalizationSnapshot(locale: Locale): Promise<LocalizationSnapshot> {
