@@ -1,0 +1,91 @@
+
+import {PublicCopy} from '@/components/PublicLocale'
+import type {TravelGuide} from '@/lib/guides'
+import {PublicLink as Link} from '@/components/PublicLocale'
+import type { Metadata } from 'next'
+import { ArrowRight, CalendarDays, Wallet } from 'lucide-react'
+import SiteFooter from '@/components/SiteFooter'
+import FallbackImage from '@/components/FallbackImage'
+import { getGuideDisplayPair } from '@/lib/content-display'
+import { resolveGuidePublicMedia } from '@/lib/server/public-content-media'
+
+
+
+
+
+export default function GuideIndexView({guides}:{guides:TravelGuide[]}) {
+  return (
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
+      <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-12">
+        <div className="rounded-[32px] border border-white/10 bg-white/5 p-6 md:p-8">
+          <p className="section-kicker text-xs text-amber-300/80"><PublicCopy text={"Travel Guides / 完整旅程攻略"}/></p>
+          <h1 className="font-display mt-4 text-5xl leading-none text-white md:text-6xl"><PublicCopy text={"Travel Routes / 完整旅程攻略"}/></h1>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-300 md:text-base">
+            Full route guides with daily plans, budgets, transport, stays, and linked spot pages for each trip.
+          </p>
+        </div>
+
+        <section className="mt-8 grid gap-6 lg:grid-cols-2">
+          {guides.map((guide) => {
+            const title = getGuideDisplayPair(guide)
+
+            return (
+              <Link
+                key={guide.slug}
+                href={`/guide/${guide.slug}`}
+                className="group overflow-hidden rounded-[32px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
+              >
+                <div className={`relative min-h-[300px] overflow-hidden p-6 md:p-8 ${guide.coverAccent}`}>
+                {guide.coverImage ? (
+                  <FallbackImage
+                    src={guide.coverImage}
+                    alt={`${title.primary} travel guide cover`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                  />
+                ) : null}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
+                <div className="relative z-10">
+                  <p className="text-sm uppercase tracking-[0.28em] text-amber-100/80">{guide.travelStyle}</p>
+                    <h2 className="font-display mt-4 text-4xl leading-none text-white md:text-5xl">{title.primary}</h2>
+                    {title.secondary ? (
+                      <p className="mt-3 text-lg leading-snug text-white/72 md:text-xl">{title.secondary}</p>
+                    ) : null}
+                  <p className="mt-4 max-w-xl text-sm leading-7 text-white/78 md:text-base">{guide.tagline}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {guide.highlightTags.slice(0, 4).map((tag) => (
+                      <span key={tag} className="rounded-full border border-white/10 bg-black/25 px-3 py-1 text-xs text-white/90">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="grid gap-4 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+                <div>
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-white/70">
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4 text-amber-200" />
+                      {guide.duration}
+                    </span>
+                    <span className="inline-flex items-center gap-2">
+                      <Wallet className="h-4 w-4 text-amber-200" />
+                      {guide.budget}
+                    </span>
+                  </div>
+                  <p className="mt-4 text-sm leading-7 text-gray-300">{guide.summary}</p>
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition group-hover:bg-amber-50"><PublicCopy text={"\n                    Open guide / 打开攻略\n                  "}/><ArrowRight className="h-4 w-4" />
+                </div>
+              </div>
+              </Link>
+            )
+          })}
+        </section>
+      </div>
+
+      <SiteFooter />
+    </main>
+  )
+}

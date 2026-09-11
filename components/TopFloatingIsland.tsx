@@ -1,9 +1,12 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
-import Link from 'next/link'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import { Search, MapPin, Compass } from 'lucide-react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
+import {usePublicLocale} from './PublicLocale'
 import { ui } from '@/lib/locale'
 
 import { Input } from '@/components/ui/input'
@@ -13,6 +16,7 @@ interface TopFloatingIslandProps {
 }
 
 export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) {
+  const locale=usePublicLocale()
   const [searchTerm, setSearchTerm] = useState('')
   const initialSearch = useRef(onSearch)
   useEffect(() => {
@@ -45,7 +49,7 @@ export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) 
               <Input
                 value={searchTerm}
                 onChange={handleSearch}
-                placeholder={ui('zh', 'searchPlaceholder')}
+                placeholder={ui(locale, 'searchPlaceholder')}
                 className="h-8 rounded-full border border-white/10 bg-white/6 pl-8 pr-3 text-[11px] text-white placeholder:text-white/45 focus-visible:ring-1 focus-visible:ring-amber-200/50 md:h-11 md:pl-11 md:pr-4 md:text-sm"
               />
             </div>
@@ -56,9 +60,9 @@ export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) 
                 className="inline-flex min-w-0 items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] text-white/90 transition hover:bg-white/10 md:gap-2 md:px-4 md:py-2 md:text-sm"
               >
                 <Compass className="h-3 w-3 shrink-0 text-amber-200 md:h-4 md:w-4" />
-                <span className="truncate">Regions / 地区目录</span>
+                <span className="truncate"><PublicCopy text={"Regions / 地区目录"}/></span>
               </Link>
-              <LanguageSwitcher />
+              <LanguageSwitcher initialPath={locale==='en'?'/en':'/'} />
             </div>
           </div>
         </div>

@@ -1,3 +1,8 @@
+import priceHighlights from '@/data/guide-price-highlights.json'
+import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
+import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
+import type { LongformNote } from '@/lib/notes'
+import type { TravelPackage } from '@/lib/server/travel-packages'
 import type { PublicLocation, PublicRegion } from '@/lib/public-data'
 import type { SearchLocation } from '@/components/PublicSearch'
 import type { PublicSpotRecord } from '@/lib/public-spot'
@@ -6,10 +11,14 @@ import { resolvePublicGuideTripCost, type PublicGuideTripCost } from '@/lib/guid
 import { applyLocalization, localizationRecord, type TranslationStatus, type LocalizationSnapshot } from '@/lib/localization'
 import { resolveEntityDisplayName } from '@/lib/entity-display-name'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
-import { resolveGuidePublicMedia } from '@/lib/server/public-content-media'
+import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 
 export interface EnglishPageData {
+  priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
+  fullGuides?:TravelGuide[]
+  notes?:LongformNote[]
+  packages?:TravelPackage[]
   kind: 'home' | 'region' | 'regions' | 'guide' | 'guides' | 'spot' | 'search' | 'about' | 'fallback'
   path: string
   status: TranslationStatus
@@ -26,8 +35,8 @@ export interface EnglishPageData {
 }
 export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   const result={...data}
-  if(data.kind==='home'||data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region})=>({id,name,slug,region:region?{name:region.name}:null}))
-  if(['home','search','regions','guides','about','fallback'].includes(data.kind)) result.locations=[]
+  if(data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region})=>({id,name,slug,region:region?{name:region.name}:null}))
+  if(['search','regions','guides','about','fallback'].includes(data.kind)) result.locations=[]
   if(!['home','regions','search'].includes(data.kind)) result.regions=[]
   if(!['home','guides','spot','search'].includes(data.kind)) result.guides=[]
   return result
@@ -56,8 +65,16 @@ export async function englishPageData(parts: string[] = []): Promise<{data:Engli
   const { locations, regions, guides, localization } = collection
   const path = `/${parts.join('/')}`
   const data: EnglishPageData = {kind:'home',path,status:'partial', title:'See the world together', description:'Travel maps, places, routes and stories, collected along the way by Jayden & Qing.', locations, regions, guides:guides.map(g=>localizedGuide(g,localization))}
-  if (!parts.length) return {data}
-  if(parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright','notes','packages'].includes(parts[0])) {
+  if (!parts.length || ['region','guide','spot'].includes(parts[0])) data.packages=await readPublishedPackagesUncached()
+  if (!parts.length || ['guide','region'].includes(parts[0])) data.fullGuides=guides.map(g=>applyLocalization(g,localizationRecord(localization,'guide',g.slug)).value)
+  if (!parts.length) {
+    data.fullGuides=data.fullGuides!.slice(0,6)
+    data.regions=regions.map(region=>applyLocalization(region,localizationRecord(localization,'region',region.id)).value)
+    const notes=await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
+    data.notes=notes.notes.filter(note=>note.published && note.slug && note.title).map(note=>resolveNotePublicMedia(note,locations))
+    return {data}
+  }
+  if((parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright'].includes(parts[0])) || (parts.length<=2 && ['notes','packages'].includes(parts[0]))) {
     data.kind='fallback';data.status='missing';data.title='English translation in progress';data.description='This page is available in its original Chinese version.'
     return {data}
   }
@@ -105,6 +122,7 @@ export async function englishPageData(parts: string[] = []): Promise<{data:Engli
     if (source.slug!==slug) return {redirect:`/en/guide/${source.slug}`}
     const result=applyLocalization(source,localizationRecord(localization,'guide',source.slug))
     data.kind='guide'; data.guide=result.value; data.status=result.status; data.title=result.value.title; data.description=result.value.summary || result.value.tagline
+    data.priceHighlights=(priceHighlights as GuidePriceHighlight[]).filter(item=>item.guideSlug===source.slug).sort((a,b)=>a.displayPriority-b.displayPriority).map(toPublicGuidePriceHighlight).filter((item):item is NonNullable<typeof item>=>Boolean(item))
     const refs = [...(source.attractions||[]),...source.days.flatMap(d=>d.attractions||[]),...(source.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))]
     const ids=new Set([...refs.map(r=>r.spotId),...(source.accommodationStays||[]).map(s=>s.accommodationId),...(source.itinerarySegments||[]).flatMap(s=>(s.accommodationStays||[]).map(a=>a.accommodationId))])
     const legacyNames=new Set([...source.days.map(d=>d.stay),...(source.featuredSpotNames||[]),...source.days.flatMap(d=>d.linkedSpots||[])].filter(Boolean))

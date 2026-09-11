@@ -1,5 +1,7 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { trackEvent } from '@/lib/analytics'
@@ -75,14 +77,14 @@ export default function GuideQuickNav({ guideSlug, days, hasMap, hasBudget }: Gu
     >
       <div className="mx-auto max-w-7xl px-4 md:px-8">
         <div className="relative py-3 md:hidden">
-          <label htmlFor="guide-day-nav" className="sr-only">选择攻略章节</label>
+          <label htmlFor="guide-day-nav" className="sr-only"><PublicCopy text={"选择攻略章节"}/></label>
           <select
             id="guide-day-nav"
             value={activeId}
             onChange={(event) => jumpTo(event.target.value)}
             className="h-11 w-full appearance-none rounded-xl border border-white/12 bg-white/[0.06] px-4 pr-10 text-sm text-white outline-none focus:border-amber-300 focus:ring-2 focus:ring-amber-300/25"
           >
-            {items.map((item) => <option key={item.id} value={item.id} className="bg-slate-950">{item.label}</option>)}
+            {items.map((item) => <option key={item.id} value={item.id} className="bg-slate-950"><PublicCopy text={item.label}/></option>)}
           </select>
           <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/55" />
         </div>
@@ -101,7 +103,7 @@ export default function GuideQuickNav({ guideSlug, days, hasMap, hasBudget }: Gu
                   : 'text-white/62 hover:bg-white/8 hover:text-white'
               }`}
             >
-              {item.shortLabel}
+              <PublicCopy text={item.shortLabel}/>
             </button>
           ))}
         </div>

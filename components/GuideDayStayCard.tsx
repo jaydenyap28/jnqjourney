@@ -1,5 +1,7 @@
+
+import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
-import Link from 'next/link'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import { BedDouble, ExternalLink } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
@@ -47,7 +49,7 @@ export default function GuideDayStayCard({
         <p className="font-medium text-white"><EntityName entity={{ name: staySpot?.name || stay, name_cn: staySpot?.name_cn, displayName }} /></p>
         <p className="mt-1 text-xs text-white/52">{region}</p>
         {note ? <p className="mt-2 text-sm leading-6 text-white/65">{formatShortText(note)}</p> : null}
-        {staySpot ? <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-sky-100">查看酒店详情 <ExternalLink className="h-3 w-3" /></span> : null}
+        {staySpot ? <span className="mt-3 inline-flex items-center gap-1.5 text-xs text-sky-100"><PublicCopy text={"查看酒店详情 "}/><ExternalLink className="h-3 w-3" /></span> : null}
       </div>
     </>
   )

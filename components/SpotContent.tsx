@@ -1,11 +1,13 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
 
 
 import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
-import Link from 'next/link'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
@@ -736,7 +738,7 @@ export default function SpotContent({
                 <div className={`mt-5 grid gap-3 ${isFoodSpot ? 'grid-cols-1 xl:grid-cols-2' : location.category === 'accommodation' ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-2'}`}>
                   {showStayPricing ? (
                     <div className="rounded-[18px] border border-white/10 bg-black/20 p-3 md:rounded-[24px] md:p-4">
-                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Room Rate / 参考房价</p>
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Room Rate / 参考房价"}/></p>
                       <div className="mt-4 space-y-3 text-sm">
                         <div className="flex items-start justify-between gap-4">
                           <span className="text-gray-400">Estimated range</span>
@@ -765,11 +767,11 @@ export default function SpotContent({
 
                   {showAdmissionPricing ? (
                     <div className={`rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5 ${priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? 'xl:col-span-2' : ''}`}>
-                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Admission / 门票</p>
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Admission / 门票"}/></p>
                       <div className="mt-4 space-y-3.5 text-sm">
                         {priceInfo.admissionLocalAdult ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Local Adult / 本地成人</span>
+                            <span className="text-gray-400"><PublicCopy text={"Local Adult / 本地成人"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency, priceInfo.admissionLocalAdultSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionLocalAdult, priceInfo.currency, priceInfo.admissionLocalAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -782,7 +784,7 @@ export default function SpotContent({
                         ) : null}
                         {priceInfo.admissionLocalChild ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Local Child / 本地小孩</span>
+                            <span className="text-gray-400"><PublicCopy text={"Local Child / 本地小孩"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency, priceInfo.admissionLocalChildSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionLocalChild, priceInfo.currency, priceInfo.admissionLocalChildSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -795,7 +797,7 @@ export default function SpotContent({
                         ) : null}
                         {priceInfo.admissionForeignAdult ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Foreign Adult / 外国成人</span>
+                            <span className="text-gray-400"><PublicCopy text={"Foreign Adult / 外国成人"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency, priceInfo.admissionForeignAdultSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionForeignAdult, priceInfo.currency, priceInfo.admissionForeignAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -808,7 +810,7 @@ export default function SpotContent({
                         ) : null}
                         {priceInfo.admissionForeignChild ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Foreign Child / 外国小孩</span>
+                            <span className="text-gray-400"><PublicCopy text={"Foreign Child / 外国小孩"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency, priceInfo.admissionForeignChildSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionForeignChild, priceInfo.currency, priceInfo.admissionForeignChildSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -821,7 +823,7 @@ export default function SpotContent({
                         ) : null}
                         {priceInfo.admissionAdult ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Adult / 成人</span>
+                            <span className="text-gray-400"><PublicCopy text={"Adult / 成人"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionAdult, priceInfo.currency, priceInfo.admissionAdultSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionAdult, priceInfo.currency, priceInfo.admissionAdultSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -834,7 +836,7 @@ export default function SpotContent({
                         ) : null}
                         {priceInfo.admissionChild ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Child / 儿童</span>
+                            <span className="text-gray-400"><PublicCopy text={"Child / 儿童"}/></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.admissionChild, priceInfo.currency, priceInfo.admissionChildSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.admissionChild, priceInfo.currency, priceInfo.admissionChildSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -846,9 +848,7 @@ export default function SpotContent({
                           </div>
                         ) : null}
                         {priceInfo.isFree && !hasTieredAdmission && !priceInfo.admissionAdult && !priceInfo.admissionChild ? (
-                          <div className="rounded-[22px] border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-base font-medium text-emerald-100">
-                            This spot is free to enter. / 这个景点可免费进入。
-                          </div>
+                          <div className="rounded-[22px] border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-base font-medium text-emerald-100"><PublicCopy text={"\n                            This spot is free to enter. / 这个景点可免费进入。\n                          "}/></div>
                         ) : null}
                       </div>
                     </div>
@@ -856,27 +856,27 @@ export default function SpotContent({
 
                   {showMealPricing ? (
                     <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5">
-                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Meals / 吃喝参考</p>
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Meals / 吃喝参考"}/></p>
                       <div className="mt-4 space-y-3 text-sm">
                         <div className="flex items-start justify-between gap-4">
-                          <span className="text-gray-400">Estimated Total / 总价参考</span>
+                          <span className="text-gray-400"><PublicCopy text={"Estimated Total / 总价参考"}/></span>
                           <span className="text-right font-medium text-white">{formattedMealBudget?.primary}</span>
                         </div>
                         {formattedMealBudget?.secondary ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Estimated Total / 第二币种</span>
+                            <span className="text-gray-400"><PublicCopy text={"Estimated Total / 第二币种"}/></span>
                             <span className="text-right font-medium text-amber-100">{formattedMealBudget.secondary}</span>
                           </div>
                         ) : null}
                         {formattedMealBudget?.perPersonPrimary ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Per Person / 人均</span>
+                            <span className="text-gray-400"><PublicCopy text={"Per Person / 人均"}/></span>
                             <span className="text-right font-medium text-white">{formattedMealBudget.perPersonPrimary}</span>
                           </div>
                         ) : null}
                         {formattedMealBudget?.perPersonSecondary ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Per Person / 第二币种人均</span>
+                            <span className="text-gray-400"><PublicCopy text={"Per Person / 第二币种人均"}/></span>
                             <span className="text-right font-medium text-amber-100">{formattedMealBudget.perPersonSecondary}</span>
                           </div>
                         ) : null}
@@ -935,7 +935,7 @@ export default function SpotContent({
 
                 {showPriceInfoImages ? (
                   <div className="mt-4 rounded-[20px] border border-white/10 bg-black/15 p-3 md:mt-5 md:rounded-[24px] md:p-4">
-                    <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Price Board / 现场价目图</p>
+                    <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Price Board / 现场价目图"}/></p>
                     <div className="mt-4 grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                       {priceInfo.infoImages.map((url, index) => (
                         <a
@@ -956,7 +956,7 @@ export default function SpotContent({
                             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
                           </div>
                           <div className="flex items-center justify-between gap-3 px-4 py-3 text-sm text-white/88">
-                            <span>Open image / 查看原图</span>
+                            <span><PublicCopy text={"Open image / 查看原图"}/></span>
                             <ExternalLink className="h-4 w-4" />
                           </div>
                         </a>
@@ -1023,8 +1023,8 @@ export default function SpotContent({
             {!isDrawer && relatedPackages.length > 0 ? (
               <section className="space-y-4 rounded-[24px] border border-emerald-200/15 bg-emerald-400/[0.05] p-5">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Trip planning / 行程咨询</p>
-                  <h3 className="mt-2 text-2xl font-bold text-white">想把这个景点安排进完整行程？</h3>
+                  <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70"><PublicCopy text={"Trip planning / 行程咨询"}/></p>
+                  <h3 className="mt-2 text-2xl font-bold text-white"><PublicCopy text={"想把这个景点安排进完整行程？"}/></h3>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
                   {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}

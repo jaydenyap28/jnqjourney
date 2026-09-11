@@ -1,5 +1,7 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import { useEffect } from 'react'
 
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -41,9 +43,9 @@ export default function TiomanPackageComparison({ packages, preview = false }: {
 
   return (
     <section className="border-y border-white/10 py-10 md:py-14">
-      <p className="text-xs uppercase text-emerald-200/70">Pulau Tioman / 刁曼岛</p>
-      <h2 className="mt-2 text-3xl font-semibold">3天2夜浮潜配套比较</h2>
-      <p className="mt-3 max-w-3xl leading-7 text-white/60">三间 Resort 为独立配套，价格单位、船票和接送安排不同；付款前请以旅行社或 Resort 的最终确认资料为准。</p>
+      <p className="text-xs uppercase text-emerald-200/70"><PublicCopy text={"Pulau Tioman / 刁曼岛"}/></p>
+      <h2 className="mt-2 text-3xl font-semibold"><PublicCopy text={"3天2夜浮潜配套比较"}/></h2>
+      <p className="mt-3 max-w-3xl leading-7 text-white/60"><PublicCopy text={"三间 Resort 为独立配套，价格单位、船票和接送安排不同；付款前请以旅行社或 Resort 的最终确认资料为准。"}/></p>
 
       <div className="mt-7 hidden overflow-x-auto border border-white/10 md:block">
         <table className="w-full min-w-[56rem] border-collapse text-left text-sm">
@@ -51,7 +53,7 @@ export default function TiomanPackageComparison({ packages, preview = false }: {
             <tr><th className="w-36 p-4 font-medium text-white/55">Resort</th>{items.map((item) => <th key={item.id} className="min-w-56 p-4 text-base font-semibold">{getTiomanComparison(item)?.resortName}</th>)}</tr>
           </thead>
           <tbody>{rows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="p-4 font-medium text-white/55">{label}</th>{items.map((item) => <td key={item.id} className="p-4 leading-6 text-white/75">{getValue(item)}</td>)}</tr>)}</tbody>
-          <tfoot><tr className="border-t border-white/10 bg-white/[0.03]"><th className="p-4" /><td colSpan={items.length} className="p-4 text-xs leading-6 text-white/45">配套资料与价格根据旅行社提供的 2026 配套整理。房况、船班、税费、活动安排和最终价格可能调整，付款前请以旅行社或 Resort 最终确认为准。</td></tr></tfoot>
+          <tfoot><tr className="border-t border-white/10 bg-white/[0.03]"><th className="p-4" /><td colSpan={items.length} className="p-4 text-xs leading-6 text-white/45"><PublicCopy text={"配套资料与价格根据旅行社提供的 2026 配套整理。房况、船班、税费、活动安排和最终价格可能调整，付款前请以旅行社或 Resort 最终确认为准。"}/></td></tr></tfoot>
         </table>
       </div>
 

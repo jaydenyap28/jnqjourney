@@ -1,5 +1,5 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
-import EnglishSite from '@/components/EnglishSite'
+import EnglishRouteAdapter from '@/components/EnglishRouteAdapter'
 import { compactEnglishPageData, englishPageData, type EnglishPageData } from '@/lib/server/english-page-data'
 import pilot from '@/public-data/i18n/en/records.json'
 
@@ -13,4 +13,4 @@ export const getStaticProps: GetStaticProps<{data:EnglishPageData}> = async ({pa
   if ('redirect' in value) return {redirect:{destination:value.redirect,permanent:true}}
   return {props:JSON.parse(JSON.stringify({data:compactEnglishPageData(value.data)})),revalidate:600}
 }
-export default EnglishSite
+export default EnglishRouteAdapter

@@ -35,6 +35,7 @@ export async function readBundledJson<T>(file: string): Promise<T> {
     case 'public-data/regions.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/regions.json'), 'utf8'); break
     case 'public-data/guide-trip-costs.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/guide-trip-costs.json'), 'utf8'); break
     case 'data/guides.json': text = await fs.readFile(path.join(process.cwd(), 'data/guides.json'), 'utf8'); break
+    case 'data/notes.json': text = await fs.readFile(path.join(process.cwd(), 'data/notes.json'), 'utf8'); break
     case 'data/location-slugs.json': text = await fs.readFile(path.join(process.cwd(), 'data/location-slugs.json'), 'utf8'); break
     default: {
       const slug = file.match(/^public-data\/spots\/([a-zA-Z0-9-]+)\.json$/)?.[1]

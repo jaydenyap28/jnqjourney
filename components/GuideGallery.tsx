@@ -1,5 +1,7 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react'
 import FallbackImage from '@/components/FallbackImage'
@@ -36,7 +38,7 @@ export default function GuideGallery({
   return (
     <>
       <div className="mt-5" data-guide-gallery={dayNumber ? 'day' : 'guide'}>
-        <p className="text-xs uppercase tracking-[0.2em] text-white/48">{title}</p>
+        <p className="text-xs uppercase tracking-[0.2em] text-white/48"><PublicCopy text={title}/></p>
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {images.slice(0, 3).map((image, index) => (
             <button
@@ -49,7 +51,7 @@ export default function GuideGallery({
               <span className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent" />
               <Expand className="absolute right-3 top-3 h-4 w-4 text-white drop-shadow" />
               {index === 2 && images.length > 3 ? (
-                <span className="absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-semibold text-white">查看全部 {images.length} 张</span>
+                <span className="absolute inset-0 flex items-center justify-center bg-black/45 text-sm font-semibold text-white"><PublicCopy text={"查看全部 "}/>{images.length}<PublicCopy text={" 张"}/></span>
               ) : null}
             </button>
           ))}

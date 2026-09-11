@@ -1,4 +1,6 @@
-import Link from 'next/link'
+
+import {PublicCopy} from '@/components/PublicLocale'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import { ArrowRight, PenLine } from 'lucide-react'
 
 export default function AuthorTrustBlock({ compact = false }: { compact?: boolean }) {
@@ -10,15 +12,12 @@ export default function AuthorTrustBlock({ compact = false }: { compact?: boolea
             <PenLine className="h-5 w-5" aria-hidden="true" />
           </div>
           <div>
-            <p className="text-xs uppercase text-amber-200/70">作者与整理</p>
+            <p className="text-xs uppercase text-amber-200/70"><PublicCopy text={"作者与整理"}/></p>
             <h2 className="mt-1 text-xl font-semibold text-white">Jayden &amp; Qing</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-white/58">
-              JnQ Journey 旅游内容创作者，通过实拍照片、影片和路线整理分享马来西亚与海外旅行经验；资料型内容会结合公开来源核对，并持续更新。
-            </p>
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-white/58"><PublicCopy text={"\n              JnQ Journey 旅游内容创作者，通过实拍照片、影片和路线整理分享马来西亚与海外旅行经验；资料型内容会结合公开来源核对，并持续更新。\n            "}/></p>
           </div>
         </div>
-        <Link href="/about" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-amber-100 transition hover:text-white">
-          认识我们 <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        <Link href="/about" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-amber-100 transition hover:text-white"><PublicCopy text={"\n          认识我们 "}/><ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
     </section>

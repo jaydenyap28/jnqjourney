@@ -24,7 +24,7 @@ test('missing, empty or whitespace custom names fall back to canonical then exis
 })
 
 test('daily and segmented renderers use the shared precedence for card title and image alt', () => {
-  const daily = fs.readFileSync(new URL('../app/guide/[slug]/page.tsx', import.meta.url), 'utf8')
+  const daily = fs.readFileSync(new URL('../components/GuidePageView.tsx', import.meta.url), 'utf8')
   const segment = fs.readFileSync(new URL('../components/GuideSegmentItinerarySection.tsx', import.meta.url), 'utf8')
   assert.match(daily, /attractionDisplayName: attraction\.displayName/)
   assert.equal(daily.split('guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)').length - 1, 2)

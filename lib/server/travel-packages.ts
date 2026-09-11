@@ -96,7 +96,8 @@ function createServerClient() {
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 }
 
-async function readPublishedPackagesUncached() {
+// Pages Router build/ISR uses this query directly; App Router keeps the cache below.
+export async function readPublishedPackagesUncached() {
   const supabase = createServerClient()
   if (!supabase) return []
   const { data, error } = await supabase

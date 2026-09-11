@@ -2,6 +2,8 @@
 
 import React, { forwardRef } from 'react'
 import Map, { Marker, MapRef, NavigationControl } from 'react-map-gl/mapbox'
+import {usePublicLocale} from './PublicLocale'
+import {resolveEntityDisplayName} from '@/lib/entity-display-name'
 import type { PublicLocation } from '@/lib/public-data'
 
 interface MapViewProps {
@@ -12,6 +14,7 @@ interface MapViewProps {
 }
 
 const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation, className, flyToLocation }, ref) => {
+  const locale=usePublicLocale()
   const internalMapRef = React.useRef<MapRef>(null)
 
   React.useImperativeHandle(ref, () => internalMapRef.current!, [])
@@ -63,7 +66,7 @@ const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation,
               <span className="relative inline-flex w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.8)] border border-white"></span>
               
               <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs px-2 py-1 rounded shadow-xl">
-                {location.name}
+                {resolveEntityDisplayName(location,locale).primary}
               </div>
             </div>
           </Marker>

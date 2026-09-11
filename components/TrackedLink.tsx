@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import type { MouseEvent, ReactNode } from 'react'
 
 import { getDeviceType, trackEvent, type AnalyticsEventName } from '@/lib/analytics'

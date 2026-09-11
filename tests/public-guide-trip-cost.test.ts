@@ -57,7 +57,8 @@ test('public read is CDN cached, detail-only, and does not expand the Guide list
 
 test('there is one public renderer and admin writes keep private no-store semantics', () => {
   const page = read('app/guide/[slug]/page.tsx')
-  assert.match(page, /<GuideTripCost tripCost=\{publicTripCost\}/)
+  assert.match(page, /<GuidePageView/)
+  assert.match(read('components/GuidePageView.tsx'), /<GuideTripCost tripCost=\{publicTripCost\}/)
   assert.equal(fs.existsSync('components/GuideBudgetSection.tsx'), false)
   assert.match(read('app/api/admin/guides/route.ts'), /PRIVATE_NO_STORE/)
   assert.match(read('app/api/admin/guide-budget-snapshots/route.ts'), /PRIVATE_NO_STORE/)

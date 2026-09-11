@@ -1,4 +1,6 @@
-import Link from 'next/link'
+
+import {PublicCopy} from '@/components/PublicLocale'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import type { ReactNode } from 'react'
 
@@ -36,9 +38,8 @@ export default function PolicyPageLayout({
             JnQ Journey
           </Link>
           <nav aria-label="网站说明导航" className="flex items-center gap-4 text-sm text-white/60">
-            <Link href="/about" className="hidden transition hover:text-white sm:inline">关于我们</Link>
-            <Link href="/contact" className="inline-flex items-center gap-1.5 transition hover:text-white">
-              联系我们 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            <Link href="/about" className="hidden transition hover:text-white sm:inline"><PublicCopy text={"关于我们"}/></Link>
+            <Link href="/contact" className="inline-flex items-center gap-1.5 transition hover:text-white"><PublicCopy text={"\n              联系我们 "}/><ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </nav>
         </div>
@@ -48,11 +49,11 @@ export default function PolicyPageLayout({
         <section className="border-b border-white/10 bg-[linear-gradient(125deg,#111a24_0%,#071017_55%,#10120f_100%)]">
           <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-20">
             <p className="text-xs uppercase text-amber-200/75">{eyebrow}</p>
-            <h1 className="font-cjk-display mt-4 max-w-4xl text-4xl leading-tight md:text-6xl">{title}</h1>
+            <h1 className="font-cjk-display mt-4 max-w-4xl text-4xl leading-tight md:text-6xl"><PublicCopy text={title}/></h1>
             <div className="mt-7 max-w-3xl text-base leading-8 text-white/68 md:text-lg md:leading-9">
               {introduction}
             </div>
-            {updatedAt ? <p className="mt-6 text-xs text-white/38">最近更新：{updatedAt}</p> : null}
+            {updatedAt ? <p className="mt-6 text-xs text-white/38"><PublicCopy text={"最近更新："}/>{updatedAt}</p> : null}
           </div>
         </section>
 
@@ -64,7 +65,7 @@ export default function PolicyPageLayout({
                   <p className="text-sm font-semibold text-amber-200/70">{String(index + 1).padStart(2, '0')}</p>
                   <div>
                     {section.eyebrow ? <p className="text-xs uppercase text-white/38">{section.eyebrow}</p> : null}
-                    <h2 className="font-cjk-display text-2xl leading-tight text-white md:text-3xl">{section.title}</h2>
+                    <h2 className="font-cjk-display text-2xl leading-tight text-white md:text-3xl"><PublicCopy text={section.title}/></h2>
                     <div className="mt-4 space-y-4 text-sm leading-7 text-white/66 md:text-base md:leading-8">
                       {section.content}
                     </div>

@@ -1,4 +1,6 @@
-import Link from 'next/link'
+
+import {PublicCopy} from '@/components/PublicLocale'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import { CalendarDays, CornerDownRight, Route } from 'lucide-react'
 
 import {
@@ -50,10 +52,8 @@ export default function GuidePriceHighlightsSection({
   return (
     <section aria-labelledby="guide-key-prices-heading" className="border-t border-white/10 pt-7">
       <div>
-        <p id="guide-key-prices-heading" className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/76">
-          KEY PRICES / 重点价格
-        </p>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/48">旅程中较重要的门票与体验价格。</p>
+        <p id="guide-key-prices-heading" className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/76"><PublicCopy text={"\n          KEY PRICES / 重点价格\n        "}/></p>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/48"><PublicCopy text={"旅程中较重要的门票与体验价格。"}/></p>
       </div>
 
       <div className="mt-5 grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -91,8 +91,7 @@ export default function GuidePriceHighlightsSection({
                 <Link
                   href={`#day-${primary.dayNumber}`}
                   className="inline-flex min-h-6 items-center gap-1.5 font-medium text-amber-100/76 transition hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
-                >
-                  查看 Day {primary.dayNumber}
+                ><PublicCopy text={"\n                  查看 Day "}/>{primary.dayNumber}
                   <CornerDownRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -101,9 +100,7 @@ export default function GuidePriceHighlightsSection({
         })}
       </div>
 
-      <p className="mt-4 border-l border-white/12 pl-3 text-xs leading-5 text-white/38">
-        价格为当次旅程记录，可能因季节、日期、票种及购买渠道而调整。
-      </p>
+      <p className="mt-4 border-l border-white/12 pl-3 text-xs leading-5 text-white/38"><PublicCopy text={"\n        价格为当次旅程记录，可能因季节、日期、票种及购买渠道而调整。\n      "}/></p>
     </section>
   )
 }

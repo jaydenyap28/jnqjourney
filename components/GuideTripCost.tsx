@@ -1,3 +1,5 @@
+
+import {PublicCopy} from '@/components/PublicLocale'
 import {
   BedDouble,
   Calculator,
@@ -44,8 +46,8 @@ function formatDate(value: string) {
 function SummaryMetric({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
   return (
     <div className="min-w-0 border-t border-white/10 pt-3 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-      <dt className="flex items-center gap-1.5 text-xs text-white/42">{icon}{label}</dt>
-      <dd className="mt-1.5 break-words text-sm font-medium tabular-nums text-white">{value}</dd>
+      <dt className="flex items-center gap-1.5 text-xs text-white/42">{icon}<PublicCopy text={label}/></dt>
+      <dd className="mt-1.5 break-words text-sm font-medium tabular-nums text-white"><PublicCopy text={value}/></dd>
     </div>
   )
 }
@@ -65,14 +67,14 @@ export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripC
     <section id="budget" className="min-w-0 scroll-mt-24">
       <div className="border-b border-white/10 pb-5">
         <h2 className="font-display text-4xl leading-none text-white md:text-5xl">
-          Trip Cost <span className="text-white/42">/ 旅程花费</span>
+          Trip Cost <span className="text-white/42"><PublicCopy text={"/ 旅程花费"}/></span>
         </h2>
       </div>
 
       <div className="mt-6">
         <div className="border border-amber-200/14 bg-[#0b111d] p-5 md:p-6">
           <span className="inline-flex rounded-full border border-amber-200/20 bg-amber-300/[0.08] px-3 py-1 text-[10px] font-semibold tracking-[0.16em] text-amber-100/80">
-            {tripCost.source === 'published_actual' ? '实际花费' : '预算'}
+            <PublicCopy text={tripCost.source === 'published_actual' ? '实际花费' : '预算'}/>
           </span>
           <div className="mt-5 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1.85fr)] lg:items-end">
             <div className="min-w-0">
@@ -89,9 +91,7 @@ export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripC
             {metrics.length ? (
               <dl className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">{metrics}</dl>
             ) : (
-              <p className="max-w-lg border-t border-white/10 pt-4 text-sm leading-6 text-white/48 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-                金额会因人数、汇率与消费习惯不同而变化。
-              </p>
+              <p className="max-w-lg border-t border-white/10 pt-4 text-sm leading-6 text-white/48 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"><PublicCopy text={"\n                金额会因人数、汇率与消费习惯不同而变化。\n              "}/></p>
             )}
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripC
             return (
               <article key={item.key} className="min-w-0 border border-white/10 bg-[#0b111d] px-4 py-4 md:px-5">
                 <p className="flex items-center gap-2 break-words text-xs font-medium leading-5 text-white/62">
-                  <Icon className="h-3.5 w-3.5 shrink-0" />{item.label}
+                  <Icon className="h-3.5 w-3.5 shrink-0" /><PublicCopy text={item.label}/>
                 </p>
                 <p className="mt-2 break-words text-lg font-semibold leading-tight tabular-nums text-white md:text-xl">
                   {formatGuideBudgetCents(currency, item.amountCents)}

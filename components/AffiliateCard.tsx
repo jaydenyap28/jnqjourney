@@ -1,5 +1,7 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, Hotel, MapPin, Star, Ticket, Train, TrendingUp } from 'lucide-react'
 
@@ -406,7 +408,7 @@ export default function AffiliateCard({
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge className="border border-white/10 bg-white/10 px-2 py-0 text-[10px] text-white">{providerName}</Badge>
-                    <span className="text-xs text-white/48">第三方价格与房况会随时变动</span>
+                    <span className="text-xs text-white/48"><PublicCopy text={"第三方价格与房况会随时变动"}/></span>
                   </div>
                   <p className="mt-2 line-clamp-1 text-sm text-white/72">{previewTitle}</p>
                 </div>
@@ -519,11 +521,8 @@ export default function AffiliateCard({
         })}
       </CardContent>
       {showDisclosure ? (
-        <CardFooter className="border-t border-white/10 pt-4 text-xs leading-6 text-white/45">
-          部分链接为联盟链接。通过链接预订不会增加你的费用，我们可能获得少量佣金，用于支持网站内容制作。
-        </CardFooter>
+        <CardFooter className="border-t border-white/10 pt-4 text-xs leading-6 text-white/45"><PublicCopy text={"\n          部分链接为联盟链接。通过链接预订不会增加你的费用，我们可能获得少量佣金，用于支持网站内容制作。\n        "}/></CardFooter>
       ) : null}
     </Card>
   )
 }
-

@@ -1,7 +1,9 @@
 'use client'
 
+
+import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
-import Link from 'next/link'
+import {PublicLink as Link} from '@/components/PublicLocale'
 import React, { useEffect, useRef, useState } from 'react'
 import { MapPin, ArrowRight } from 'lucide-react'
 
@@ -135,9 +137,7 @@ export default function BottomFloatingDock({
               onMouseMove={handleMouseMove}
             >
               {locations.length === 0 ? (
-                <div className="px-4 py-4 text-xs italic text-white/55 md:py-8 md:text-sm">
-                  No matching spots yet. Try another search / 目前没有符合条件的景点，请换一个关键词。
-                </div>
+                <div className="px-4 py-4 text-xs italic text-white/55 md:py-8 md:text-sm"><PublicCopy text={"\n                  No matching spots yet. Try another search / 目前没有符合条件的景点，请换一个关键词。\n                "}/></div>
               ) : (
                 locations.map((location, index) => {
                   const coverImage = location.thumbnail || '/placeholder-image.jpg'

@@ -1,4 +1,5 @@
 'use client'
+import {usePublicLocale} from './PublicLocale'
 
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
@@ -41,7 +42,7 @@ export default function GuideRouteMapCanvas({
   mode = 'detailed',
   showCards,
   guideSlug,
-  locale = 'zh',
+  locale: explicitLocale,
   connectPoints = true,
 }: {
   points: GuideRouteMapPoint[]
@@ -54,6 +55,8 @@ export default function GuideRouteMapCanvas({
   locale?: Locale
   connectPoints?: boolean
 }) {
+  const inheritedLocale=usePublicLocale()
+  const locale=explicitLocale || inheritedLocale
   const mapPoints = points.filter(
     (point) => Number.isFinite(point.latitude) && Number.isFinite(point.longitude)
   )

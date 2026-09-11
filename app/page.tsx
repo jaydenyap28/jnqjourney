@@ -1,4 +1,4 @@
-import HomePageClient from '@/components/HomePageClient'
+import HomePageClient from '@/components/AppHomePageClient'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'

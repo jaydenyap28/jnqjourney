@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
 import SiteFooter from '@/components/SiteFooter'
-import SpotContent from '@/components/SpotContent'
+import SpotPageView from '@/components/SpotPageView'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
@@ -172,20 +172,10 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   return (
-    <main
-      className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.15),transparent_22%),linear-gradient(180deg,#111827_0%,#020617_48%,#000000_100%)] text-white"
-      data-jnq-data-source={resolved.source}
-    >
+    <SpotPageView location={location} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
-      <SpotContent
-        location={location}
-        mode="page"
-        relatedLocations={relatedLocations}
-        relatedGuides={relatedGuides}
-        relatedPackages={relatedPackages}
-      />
-      <SiteFooter />
-    </main>
+
+    </SpotPageView>
   )
 }

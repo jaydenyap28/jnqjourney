@@ -1,4 +1,5 @@
 'use client'
+import {usePublicLocale} from './PublicLocale'
 
 import { useState } from 'react'
 import { ExternalLink, Play } from 'lucide-react'
@@ -11,7 +12,7 @@ export default function GuideVideoCard({
   title,
   guideSlug,
   dayNumber,
-  locale = 'zh',
+  locale: explicitLocale,
 }: {
   videoId: string
   title: string
@@ -19,6 +20,8 @@ export default function GuideVideoCard({
   dayNumber?: number
   locale?: Locale
 }) {
+  const inheritedLocale=usePublicLocale()
+  const locale=explicitLocale || inheritedLocale
   const [playing, setPlaying] = useState(false)
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`
   const videoLabel = locale === 'en' ? 'Travel Video' : dayNumber ? '当日旅行影片' : '完整旅行影片'

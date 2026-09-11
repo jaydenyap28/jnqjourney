@@ -84,5 +84,5 @@ test('English Pages Router client graph does not use App Router-only navigation 
       if(target&&/\.tsx?$/.test(target)) visit(target)
     }
   }
-  visit('components/EnglishSite.tsx');visit('pages/_app.tsx')
+  visit('components/EnglishRouteAdapter.tsx');visit('pages/_app.tsx')
 })

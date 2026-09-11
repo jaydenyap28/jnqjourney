@@ -1,7 +1,9 @@
 'use client'
+import {PublicCopy, usePublicLocale} from './PublicLocale'
+import { publicCopy } from '@/lib/public-copy'
 
 import { MessageCircle } from 'lucide-react'
-import { usePathname } from 'next/navigation'
+
 
 import { getDeviceType, trackEvent, type AnalyticsEventName } from '@/lib/analytics'
 import { buildWhatsAppUrl, type WhatsAppPageType } from '@/lib/whatsapp'
@@ -55,7 +57,8 @@ export default function WhatsAppButton({
   track = true,
   eventName,
 }: WhatsAppButtonProps) {
-  const pathname = usePathname()
+  const locale = usePublicLocale()
+  const pathname = typeof window==='undefined' ? '' : window.location.pathname
   const href = buildWhatsAppUrl({
     pageType,
     region,
@@ -71,8 +74,8 @@ export default function WhatsAppButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      title={compactOnMobile ? label : undefined}
-      aria-label={`${label}，将在新窗口打开 WhatsApp`}
+      title={compactOnMobile ? publicCopy(locale, label) : undefined}
+      aria-label={`${publicCopy(locale, label)}${locale === 'en' ? ', ' : '，'}${publicCopy(locale, '将在新窗口打开 WhatsApp')}`}
       onClick={() => {
         if (!track) return
         trackEvent(eventName || (pageType === 'package' ? 'package_whatsapp_click' : pageType === 'contact' ? 'contact_whatsapp_click' : 'whatsapp_click'), {
@@ -117,7 +120,7 @@ export default function WhatsAppButton({
       className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-[#062d18] shadow-[0_10px_30px_rgba(37,211,102,0.22)] transition hover:-translate-y-0.5 hover:bg-[#35df76] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${className}`}
     >
       <MessageCircle className="h-4 w-4" aria-hidden="true" />
-      <span className={compactOnMobile ? 'sr-only md:not-sr-only' : undefined}>{label}</span>
+      <span className={compactOnMobile ? 'sr-only md:not-sr-only' : undefined}><PublicCopy text={label}/></span>
     </a>
   )
 }
