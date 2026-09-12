@@ -46,8 +46,17 @@ export async function readBundledJson<T>(file: string): Promise<T> {
   return JSON.parse(text.replace(/^\uFEFF/, '')) as T
 }
 
-export async function readLocalizationSnapshot(locale: Locale): Promise<LocalizationSnapshot> {
+export async function readLocalizationSnapshot(locale: Locale, fresh = false): Promise<LocalizationSnapshot> {
   if (locale === 'zh') return { schemaVersion: 1, locale: 'en', version: 'source', records: [] }
+  if (fresh && base()) {
+    // On-demand Pages ISR after Admin publication must not reuse an older process/CDN cache.
+    const response = await fetch(`${base()}/public-data/i18n/en/records.json?publication=${Date.now()}`, {signal:AbortSignal.timeout(10000),next:{revalidate:0}})
+    if (!response.ok) throw new Error('Published localization unavailable during page refresh')
+    const value = await response.json() as LocalizationSnapshot
+    if (value.schemaVersion !== 1 || value.locale !== 'en' || !Array.isArray(value.records)) throw new Error('Invalid published localization')
+    cache.set('i18n/en/records.json',{until:Date.now()+60000,promise:Promise.resolve(value)})
+    return value
+  }
   return readBilingualSnapshot('i18n/en/records.json', async () => bundled as unknown as LocalizationSnapshot, value => {
     const record = value as LocalizationSnapshot
     return record?.schemaVersion === 1 && record.locale === 'en' && Array.isArray(record.records) && record.records.every(r => r.locale === 'en' && r.fields && ['missing','partial','complete'].includes(r.translationStatus))

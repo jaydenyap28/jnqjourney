@@ -13,6 +13,7 @@ import {
 } from '@/lib/region-utils'
 import { Button } from '@/components/ui/button'
 import AdminAffiliateLinksPanel from '@/components/AdminAffiliateLinksPanel'
+import SpotEnglishEditor from '@/components/SpotEnglishEditor'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -105,6 +106,7 @@ interface EnrichmentSuggestionState {
 }
 
 export default function AdminLocationForm({ initialData, mode }: AdminLocationFormProps) {
+  const [editingLanguage, setEditingLanguage] = useState<'zh' | 'en'>('zh')
   const router = useRouter()
   const galleryFileInputRef = useRef<HTMLInputElement | null>(null)
   const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null)
@@ -1612,7 +1614,12 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         ) : null}
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {mode === 'edit' && initialData?.id ? <div className="mb-5 flex gap-2" role="tablist" aria-label="编辑语言">
+          <button type="button" role="tab" aria-selected={editingLanguage==='zh'} className="rounded border px-4 py-2 aria-selected:bg-blue-600 aria-selected:text-white" onClick={()=>setEditingLanguage('zh')}>中文</button>
+          <button type="button" role="tab" aria-selected={editingLanguage==='en'} className="rounded border px-4 py-2 aria-selected:bg-blue-600 aria-selected:text-white" onClick={()=>setEditingLanguage('en')}>English</button>
+        </div> : null}
+        {editingLanguage==='en' && initialData?.id ? <SpotEnglishEditor spotId={Number(initialData.id)} /> : null}
+        <form hidden={editingLanguage==='en'} onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4 border-b pb-4">
             <h3 className="font-semibold text-gray-700">基础信息</h3>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

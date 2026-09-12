@@ -37,7 +37,8 @@ export function applyLocalization<T>(source: T, record: LocalizationRecord | und
     let parent: any = value
     for (const key of parts.slice(0, -1)) parent = parent?.[key]
     const key = parts.at(-1)!
-    if (!parent || parent[key] !== field.source || typeof field.text !== 'string') { stale = true; continue }
+    const sourceValue = parent?.[key] ?? (['description', 'review', 'address'].includes(path) ? '' : undefined)
+    if (!parent || sourceValue !== field.source || typeof field.text !== 'string') { stale = true; continue }
     if (path === 'opening_hours') {
       try {
         const original = JSON.parse(field.source), translated = JSON.parse(field.text)

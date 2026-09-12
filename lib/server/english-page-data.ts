@@ -41,12 +41,12 @@ export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   if(!['home','guides','spot','search'].includes(data.kind)) result.guides=[]
   return result
 }
-export async function readEnglishCollections() {
+export async function readEnglishCollections(freshLocalization = false) {
   const [locationData, regionData, guideData, localization, slugMap] = await Promise.all([
     readBilingualSnapshot<{locations:PublicLocation[]}>('locations.json', () => readBundledJson('public-data/locations.json'), x => Array.isArray((x as any)?.locations)),
     readBilingualSnapshot<{regions:PublicRegion[]}>('regions.json', () => readBundledJson('public-data/regions.json'), x => Array.isArray((x as any)?.regions)),
     readBilingualSnapshot<{guides:TravelGuide[]}>('guides.json', async () => { const raw = await readBundledJson<any>('data/guides.json'); return {guides:Array.isArray(raw)?raw:raw.guides} }, x => Array.isArray((x as any)?.guides)),
-    readLocalizationSnapshot('en'),
+    readLocalizationSnapshot('en',freshLocalization),
     readBundledJson<Record<string,string>>('data/location-slugs.json'),
   ])
   const snapshotSlugs=Object.fromEntries(locationData.locations.map(location=>[location.id,location.slug]))
@@ -59,9 +59,9 @@ function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot) {
   return {slug,title,duration,tagline,coverImage,translationStatus:result.status}
 }
 
-export async function englishPageData(parts: string[] = []): Promise<{data:EnglishPageData} | {redirect:string} | null> {
+export async function englishPageData(parts: string[] = [], freshLocalization = false): Promise<{data:EnglishPageData} | {redirect:string} | null> {
   if (parts[0] === 'regions') return {redirect:`/en/region${parts.length > 1 ? `/${parts.slice(1).join('/')}` : ''}`}
-  const collection = await readEnglishCollections()
+  const collection = await readEnglishCollections(freshLocalization)
   const { locations, regions, guides, localization } = collection
   const path = `/${parts.join('/')}`
   const data: EnglishPageData = {kind:'home',path,status:'partial', title:'See the world together', description:'Travel maps, places, routes and stories, collected along the way by Jayden & Qing.', locations, regions, guides:guides.map(g=>localizedGuide(g,localization))}
