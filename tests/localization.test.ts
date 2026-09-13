@@ -46,10 +46,11 @@ test('incomplete English has no hreflang and cannot be indexed',()=>{
   assert.deepEqual(localizedAlternates('/spot/a-820','en','complete'),{canonical:'/en/spot/a-820',languages:{zh:'/spot/a-820',en:'/en/spot/a-820','x-default':'/spot/a-820'}})
   assert.equal(localizedAlternates('/spot/a-820','zh','complete').canonical,'/spot/a-820')
 })
-test('curated pilot contains exactly 5 regions, 3 guides, 6 spots and only permitted text fields',()=>{
+test('bundled localization preserves pilot entities and includes all homepage card records',()=>{
   const snapshot=JSON.parse(fs.readFileSync('public-data/i18n/en/records.json','utf8')) as LocalizationSnapshot
   assert.equal(snapshot.records.filter(r=>r.entityType==='region').length,5)
-  assert.equal(snapshot.records.filter(r=>r.entityType==='guide').length,3)
+  assert.equal(snapshot.records.filter(r=>r.entityType==='guide').length,7)
+  assert.equal(snapshot.records.filter(r=>r.entityType==='page').length,3)
   assert.equal(snapshot.records.filter(r=>r.entityType==='spot').length,6)
   for(const record of snapshot.records) for(const [path,field] of Object.entries(record.fields)) {
     assert.ok(isLocalizedTextPath(path),path)

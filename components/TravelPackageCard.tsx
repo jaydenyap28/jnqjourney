@@ -29,7 +29,7 @@ export default function TravelPackageCard({ item, compact = false, showWhatsApp 
         {item.price_display ? <p className="mt-4 text-lg font-semibold text-amber-100">{item.price_display}</p> : null}
         <div className="mt-5 flex flex-wrap gap-2.5">
           <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black"><PublicCopy text={detailLabel}/> <ArrowRight className="h-4 w-4" /></Link>
-          {showWhatsApp ? <WhatsAppButton pageType="package" packageName={item.title_zh} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" /> : null}
+          {showWhatsApp ? <WhatsAppButton pageType="package" packageName={name} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" /> : null}
         </div>
       </div>
     </article>

@@ -13,6 +13,7 @@ import { resolveEntityDisplayName } from '@/lib/entity-display-name'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
+import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
 
 export interface EnglishPageData {
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
@@ -68,10 +69,11 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
   if (!parts.length || ['region','guide','spot'].includes(parts[0])) data.packages=await readPublishedPackagesUncached()
   if (!parts.length || ['guide','region'].includes(parts[0])) data.fullGuides=guides.map(g=>applyLocalization(g,localizationRecord(localization,'guide',g.slug)).value)
   if (!parts.length) {
+    data.packages=data.packages!.map(item=>localizeHomepagePackage(item,localization))
     data.fullGuides=data.fullGuides!.slice(0,6)
     data.regions=regions.map(region=>applyLocalization(region,localizationRecord(localization,'region',region.id)).value)
     const notes=await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
-    data.notes=notes.notes.filter(note=>note.published && note.slug && note.title).map(note=>resolveNotePublicMedia(note,locations))
+    data.notes=notes.notes.filter(note=>note.published && note.slug && note.title).map(note=>localizeHomepageNote(resolveNotePublicMedia(note,locations),localization))
     return {data}
   }
   if((parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright'].includes(parts[0])) || (parts.length<=2 && ['notes','packages'].includes(parts[0]))) {

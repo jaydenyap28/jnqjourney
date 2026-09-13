@@ -14,7 +14,7 @@ export interface LocalizationRecord {
 export interface LocalizationSnapshot { schemaVersion: 1; locale: 'en'; version: string; records: LocalizationRecord[] }
 
 // Leaf-only text overlay. Identity, binding, money, coordinates, order and media are never writable.
-const textKeys = new Set(['title', 'shortTitle', 'tagline', 'summary', 'shortSummary', 'description', 'review', 'duration', 'travelStyle',
+const textKeys = new Set(['title', 'shortTitle', 'tagline', 'summary', 'shortSummary', 'description', 'review', 'duration', 'travelStyle', 'destination', 'priceDisplay', 'whatsappMessage',
   'name', 'displayName', 'guideSummary', 'routeNote', 'tips', 'note', 'stayNote', 'accommodationNote', 'transport', 'reminder', 'city', 'label', 'dayLabel', 'alt', 'caption', 'address', 'opening_hours'])
 const textArrays = new Set(['highlightTags', 'heroBullets', 'highlights', 'bestFor', 'notes', 'practicalTips', 'actualExperiences', 'pendingItems'])
 export function isLocalizedTextPath(path: string) {
@@ -39,6 +39,11 @@ export function applyLocalization<T>(source: T, record: LocalizationRecord | und
     const key = parts.at(-1)!
     const sourceValue = parent?.[key] ?? (['description', 'review', 'address'].includes(path) ? '' : undefined)
     if (!parent || sourceValue !== field.source || typeof field.text !== 'string') { stale = true; continue }
+    if (path === 'priceDisplay') {
+      // Translate units/prose only; amounts and currency must survive verbatim.
+      const facts = (text: string) => text.match(/\d+(?:[.,]\d+)*|\b[A-Z]{2,3}(?=\b|\d)|[$€£¥]/g) || []
+      if (JSON.stringify(facts(field.source)) !== JSON.stringify(facts(field.text))) { stale = true; continue }
+    }
     if (path === 'opening_hours') {
       try {
         const original = JSON.parse(field.source), translated = JSON.parse(field.text)

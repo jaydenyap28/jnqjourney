@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "locale": "en",
-  "version": "2026-09-08-v1",
+  "version": "homepage-english-cards-v1",
   "records": [
     {
       "entityType": "guide",
@@ -1322,6 +1322,261 @@
         "opening_hours": {
           "source": "{\"isUnknown\":false,\"is24Hours\":false,\"scheduleGroups\":[],\"open\":\"09:00\",\"close\":\"17:00\",\"closedDays\":[2],\"remarks\":\"Apple Maps 与商家管理的 Tripadvisor 页面均列 09:00–17:00、周二休息；核实 2026-09-05。\"}",
           "text": "{\"isUnknown\":false,\"is24Hours\":false,\"scheduleGroups\":[],\"open\":\"09:00\",\"close\":\"17:00\",\"closedDays\":[2],\"remarks\":\"Apple Maps and the business-managed Tripadvisor page listed 09:00–17:00, closed Tuesdays; checked on 5 September 2026.\"}"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "malaysia-east-coast-route3-10d9n",
+      "locale": "en",
+      "canonicalPath": "/guide/malaysia-east-coast-route3-10d9n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/guide/malaysia-east-coast-route3-10d9n",
+        "capturedAt": "2026-09-13T23:48:19.933Z"
+      },
+      "fields": {
+        "title": {
+          "source": "马来西亚-关丹·登嘉楼·吉兰丹",
+          "text": "Malaysia: Kuantan, Terengganu & Kelantan"
+        },
+        "shortTitle": {
+          "source": "东海岸三号公路",
+          "text": "East Coast Route 3"
+        },
+        "travelStyle": {
+          "source": "自驾游",
+          "text": "Road trip"
+        },
+        "tagline": {
+          "source": "从柔佛一路往北到关丹,登嘉楼和吉兰丹，沿着海岸线慢慢开，把海滩、小镇、瀑布、博物馆和寺庙串成一趟完整的东海岸自驾游。",
+          "text": "Drive north from Johor to Kuantan, Terengganu and Kelantan, following the coast at a relaxed pace and connecting beaches, small towns, waterfalls, museums and temples in one East Coast road trip."
+        },
+        "route.0.name": {
+          "source": "关丹",
+          "text": "Kuantan"
+        },
+        "route.1.name": {
+          "source": "登嘉楼",
+          "text": "Terengganu"
+        },
+        "route.2.name": {
+          "source": "吉兰丹",
+          "text": "Kelantan"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "china-harbin-xuegu-changbai-beijing-11d10n",
+      "locale": "en",
+      "canonicalPath": "/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+        "capturedAt": "2026-09-13T23:48:19.934Z"
+      },
+      "fields": {
+        "title": {
+          "source": "哈尔滨·雪谷·长白山·北京",
+          "text": "Harbin, Xuegu, Changbai Mountain & Beijing"
+        },
+        "shortTitle": {
+          "source": "中国东北冬季游",
+          "text": "Northeast China in Winter"
+        },
+        "travelStyle": {
+          "source": "自由行",
+          "text": "Independent travel"
+        },
+        "tagline": {
+          "source": "从哈尔滨出发，走进雪谷、长白山，再用北京收尾，把冬季雪景与城市经典串成完整路线",
+          "text": "Start in Harbin, continue through Xuegu and Changbai Mountain, and finish in Beijing, combining winter landscapes and city highlights in one route."
+        },
+        "route.0.name": {
+          "source": "哈尔滨",
+          "text": "Harbin"
+        },
+        "route.1.name": {
+          "source": "雪谷",
+          "text": "Xuegu"
+        },
+        "route.2.name": {
+          "source": "长白山",
+          "text": "Changbai Mountain"
+        },
+        "route.3.name": {
+          "source": "北京",
+          "text": "Beijing"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "china-dali-shangri-la-lijiang-11d10n",
+      "locale": "en",
+      "canonicalPath": "/guide/china-dali-shangri-la-lijiang-11d10n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/guide/china-dali-shangri-la-lijiang-11d10n",
+        "capturedAt": "2026-09-13T23:48:19.934Z"
+      },
+      "fields": {
+        "title": {
+          "source": "大理·丽江·香格里拉",
+          "text": "Dali, Lijiang & Shangri-La"
+        },
+        "shortTitle": {
+          "source": "中国云南夏季游",
+          "text": "Yunnan in Summer"
+        },
+        "travelStyle": {
+          "source": "自由行",
+          "text": "Independent travel"
+        },
+        "tagline": {
+          "source": "从大理出发，接着走进香格里拉高原，最后回到丽江看雪山、蓝月谷和古城风景",
+          "text": "Start in Dali, continue to the Shangri-La highlands, then return to Lijiang for snow mountains, Blue Moon Valley and old-town scenery."
+        },
+        "route.0.name": {
+          "source": "大理",
+          "text": "Dali"
+        },
+        "route.1.name": {
+          "source": "香格里拉",
+          "text": "Shangri-La"
+        },
+        "route.2.name": {
+          "source": "丽江",
+          "text": "Lijiang"
+        }
+      }
+    },
+    {
+      "entityType": "guide",
+      "entityId": "china-guangzhou-8d7n",
+      "locale": "en",
+      "canonicalPath": "/guide/china-guangzhou-8d7n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/guide/china-guangzhou-8d7n",
+        "capturedAt": "2026-09-13T23:48:19.935Z"
+      },
+      "fields": {
+        "title": {
+          "source": "广州·番禺",
+          "text": "Guangzhou & Panyu"
+        },
+        "shortTitle": {
+          "source": "中国广州夏季游",
+          "text": "Guangzhou in Summer"
+        },
+        "travelStyle": {
+          "source": "自由行",
+          "text": "Independent travel"
+        },
+        "tagline": {
+          "source": "把老城区、荔湾西关、番禺园林和珠江新城排成一趟节奏舒服的广州路线。",
+          "text": "A comfortably paced Guangzhou route through the old city, Liwan and Xiguan, the gardens of Panyu and Zhujiang New Town."
+        },
+        "summary": {
+          "source": "这篇广州游记按你最新的打卡日期整理成 8 天版本，适合继续补每天的影片、交通和预算。",
+          "text": "This Guangzhou travelogue is arranged as an 8-day itinerary using the latest recorded visit dates, ready for daily videos, transport and budget details to be added."
+        },
+        "route.0.name": {
+          "source": "广州老城",
+          "text": "Guangzhou Old City"
+        },
+        "route.1.name": {
+          "source": "荔湾西关",
+          "text": "Liwan & Xiguan"
+        },
+        "route.2.name": {
+          "source": "番禺与白云",
+          "text": "Panyu & Baiyun"
+        },
+        "route.3.name": {
+          "source": "珠江新城与天河",
+          "text": "Zhujiang New Town & Tianhe"
+        }
+      }
+    },
+    {
+      "entityType": "page",
+      "entityId": "notes/malaysia-turtle-night-terengganu",
+      "locale": "en",
+      "canonicalPath": "/notes/malaysia-turtle-night-terengganu",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/notes/malaysia-turtle-night-terengganu",
+        "capturedAt": "2026-09-13T23:48:19.935Z"
+      },
+      "fields": {
+        "title": {
+          "source": "马来西亚海龟奇妙夜：在东海岸看见生命奔向大海",
+          "text": "A Magical Turtle Night in Malaysia: Watching Life Head for the Sea on the East Coast"
+        },
+        "shortTitle": {
+          "source": "马来西亚海龟奇妙夜：在东海岸看见生命奔向大海",
+          "text": "A Magical Turtle Night in Malaysia: Watching Life Head for the Sea on the East Coast"
+        }
+      }
+    },
+    {
+      "entityType": "page",
+      "entityId": "packages/batam-3d2n",
+      "locale": "en",
+      "canonicalPath": "/packages/batam-3d2n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/packages/batam-3d2n",
+        "capturedAt": "2026-09-13T23:48:19.935Z"
+      },
+      "fields": {
+        "duration": {
+          "source": "3天2夜",
+          "text": "3 Days / 2 Nights"
+        },
+        "shortSummary": {
+          "source": "适合情侣、家庭、朋友及小型团体的巴淡岛 3天2夜配套，包含来回船票、酒店住宿、指定餐食、按摩体验及中文司机／导游安排。实际价格会根据出发日期、人数、房型及出发码头调整。",
+          "text": "A 3-day, 2-night Batam package for couples, families, friends and small groups, including return ferry tickets, hotel accommodation, selected meals, a massage experience and a Chinese-speaking driver/guide. Prices vary with departure date, group size, room type and departure terminal."
+        },
+        "priceDisplay": {
+          "source": "请查询最新价格",
+          "text": "Ask for the latest price"
+        },
+        "whatsappMessage": {
+          "source": "你好，我们从 JnQ Journey 看到巴淡岛 3天2夜旅游配套，想查询最新价格和可出发日期。\n\n预计日期：\n成人：\n儿童：\n出发码头：\n房间数量：\n其他要求：\n\n来源：JNQ-BATAM-PACKAGE",
+          "text": "Hello, we saw the Batam 3D2N Travel Package on JnQ Journey and would like to ask about current prices and available dates.\n\nPreferred dates:\nAdults:\nChildren:\nDeparture terminal:\nNumber of rooms:\nOther requests:\n\nSource: JNQ-BATAM-PACKAGE"
+        }
+      }
+    },
+    {
+      "entityType": "page",
+      "entityId": "packages/tioman-3d2n",
+      "locale": "en",
+      "canonicalPath": "/packages/tioman-3d2n",
+      "translationStatus": "partial",
+      "source": {
+        "url": "/packages/tioman-3d2n",
+        "capturedAt": "2026-09-13T23:48:19.935Z"
+      },
+      "fields": {
+        "duration": {
+          "source": "3天2夜",
+          "text": "3 Days / 2 Nights"
+        },
+        "shortSummary": {
+          "source": "刁曼岛 3天2夜浮潜配套提供多家 Resort 与不同预算选择，可根据人数、房型、出发日期和住宿偏好比较适合的方案。配套内容可能包括住宿、餐食、船票、浮潜或码头接送，具体项目以所选择的 Resort 为准。",
+          "text": "This 3-day, 2-night Tioman snorkeling package offers a range of resorts and budgets. Compare options by group size, room type, departure date and accommodation preferences. Packages may include accommodation, meals, ferry tickets, snorkeling or jetty transfers; inclusions depend on the selected resort."
+        },
+        "priceDisplay": {
+          "source": "每人 RM509 起",
+          "text": "From RM509 per person"
+        },
+        "whatsappMessage": {
+          "source": "你好，我从 JnQ Journey 看到刁曼岛 3天2夜浮潜配套，想请你们帮我比较适合的 Resort。\n\n预计日期：\n成人：\n儿童及年龄：\n预计预算：\n出发码头：\n偏好：\n其他要求：\n\n来源：JNQ-TIOMAN-COMPARE",
+          "text": "Hello, I saw the Tioman 3D2N Snorkeling Package on JnQ Journey and would like help comparing suitable resorts.\n\nPreferred dates:\nAdults:\nChildren and ages:\nEstimated budget:\nDeparture terminal:\nPreferences:\nOther requests:\n\nSource: JNQ-TIOMAN-COMPARE"
         }
       }
     }
