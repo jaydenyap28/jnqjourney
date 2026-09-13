@@ -5,7 +5,7 @@ import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
 
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import { ArrowRight, RefreshCw } from 'lucide-react'
 import { usePublicLocale } from '@/components/PublicLocale'
@@ -27,6 +27,7 @@ import type { TravelPackage } from '@/lib/server/travel-packages'
 import { resolveGuideMedia } from '@/lib/guide-media'
 import type { PublicLocation as Location, PublicRegion as Region } from '@/lib/public-data'
 import { fetchPublicData } from '@/lib/client/public-data'
+import { compareLocationsByVisitDate, homepageShowcase, type RegionHighlight } from '@/lib/homepage-order'
 
 interface NoteData {
   slug: string
@@ -40,18 +41,6 @@ interface NoteData {
   published?: boolean
 }
 
-interface RegionHighlight {
-  id: number
-  slug: string
-  name: string
-  country?: string | null
-  count: number
-  coverImage?: string
-  sampleText?: string
-  pinned?: boolean
-}
-
-function compareLocationsByVisitDate(left: Location, right: Location) { return right.id - left.id }
 
 function getCategoryLabel(category?: string | null) {
   switch (category) {
@@ -64,14 +53,6 @@ function getCategoryLabel(category?: string | null) {
   }
 }
 
-function parseRegionCodeTokens(code?: string | null) {
-  return new Set(
-    String(code || '')
-      .split(/[,\s;|]+/)
-      .map((token) => token.trim().toLowerCase())
-      .filter(Boolean)
-  )
-}
 
 function getGuideCoverImage(guide: TravelGuide) {
   return resolveGuideMedia(guide).coverImage || ''
@@ -223,7 +204,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
   )
 }
 
-function LocationCard({ location, onOpen }: { location: Location; onOpen: (location: Location) => void }) {
+function LocationCard({ location, onOpen, onImageError }: { location: Location; onOpen: (location: Location) => void; onImageError: (url: string) => void }) {
   const coverImage = location.thumbnail || '/placeholder-image.jpg'
 
   return (
@@ -233,6 +214,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
           <FallbackImage
             src={coverImage}
             alt={location.name}
+            onError={() => onImageError(coverImage)}
             fill
             className="object-cover transition duration-700 group-hover:scale-105"
           />
@@ -275,7 +257,7 @@ function LocationCard({ location, onOpen }: { location: Location; onOpen: (locat
   )
 }
 
-function RegionCard({ region }: { region: RegionHighlight }) {
+function RegionCard({ region, onImageError }: { region: RegionHighlight; onImageError: (url: string) => void }) {
   const href = `/region/${region.slug}`
 
   return (
@@ -288,6 +270,7 @@ function RegionCard({ region }: { region: RegionHighlight }) {
           <FallbackImage
             src={region.coverImage}
             alt={region.name}
+            onError={() => onImageError(region.coverImage)}
             fill
             className="object-cover transition duration-700 group-hover:scale-105"
           />
@@ -462,108 +445,12 @@ export default function HomePageClient({
     [filteredLocations]
   )
 
-  const latestLocations = useMemo(() => visibleLocations.slice(0, 8), [visibleLocations])
-  const regionsById = useMemo(() => new Map(regions.map((region) => [region.id, region])), [regions])
-
-  const malaysiaRegions = useMemo(
-    () => {
-      const regionMap = new Map<number, RegionHighlight>()
-
-      for (const location of visibleLocations) {
-        const region = location.region
-        if (!region?.id || !region.name) continue
-        const regionRecord = regionsById.get(region.id)
-        const regionCountry = region.country
-        if (regionCountry !== 'Malaysia') continue
-
-        const pinned = parseRegionCodeTokens(region.code).has('home-malaysia')
-        const existing = regionMap.get(region.id)
-
-        if (existing) {
-          existing.count += 1
-          existing.pinned = existing.pinned || pinned
-          if (regionRecord?.thumbnail) {
-            existing.coverImage = regionRecord.thumbnail
-          }
-          if (!existing.sampleText && regionRecord?.shortSummary) {
-            existing.sampleText = regionRecord.shortSummary
-          }
-          continue
-        }
-
-        regionMap.set(region.id, {
-          id: region.id,
-          slug: region.slug,
-          name: region.name,
-          country: regionCountry,
-          count: 1,
-          coverImage: regionRecord?.thumbnail || undefined,
-          sampleText: regionRecord?.shortSummary || undefined,
-          pinned,
-        })
-      }
-
-      return [...regionMap.values()]
-        .sort((left, right) => {
-          const leftPinned = Number(Boolean(left.pinned))
-          const rightPinned = Number(Boolean(right.pinned))
-          if (rightPinned !== leftPinned) return rightPinned - leftPinned
-          if (right.count !== left.count) return right.count - left.count
-          return left.name.localeCompare(right.name)
-        })
-    },
-    [regionsById, visibleLocations]
-  )
-
-  const globalRegions = useMemo(
-    () => {
-      const regionMap = new Map<number, RegionHighlight>()
-
-      for (const location of visibleLocations) {
-        const region = location.region
-        if (!region?.id || !region.name) continue
-        const regionRecord = regionsById.get(region.id)
-        const regionCountry = region.country
-        if (regionCountry === 'Malaysia') continue
-
-        const pinned = parseRegionCodeTokens(region.code).has('home-global')
-        const existing = regionMap.get(region.id)
-
-        if (existing) {
-          existing.count += 1
-          existing.pinned = existing.pinned || pinned
-          if (regionRecord?.thumbnail) {
-            existing.coverImage = regionRecord.thumbnail
-          }
-          if (!existing.sampleText && regionRecord?.shortSummary) {
-            existing.sampleText = regionRecord.shortSummary
-          }
-          continue
-        }
-
-        regionMap.set(region.id, {
-          id: region.id,
-          slug: region.slug,
-          name: region.name,
-          country: regionCountry,
-          count: 1,
-          coverImage: regionRecord?.thumbnail || undefined,
-          sampleText: regionRecord?.shortSummary || undefined,
-          pinned,
-        })
-      }
-
-      return [...regionMap.values()]
-        .sort((left, right) => {
-          const leftPinned = Number(Boolean(left.pinned))
-          const rightPinned = Number(Boolean(right.pinned))
-          if (rightPinned !== leftPinned) return rightPinned - leftPinned
-          if (right.count !== left.count) return right.count - left.count
-          return left.name.localeCompare(right.name)
-        })
-    },
-    [regionsById, visibleLocations]
-  )
+  const [failedImages, setFailedImages] = useState<Set<string>>(() => new Set())
+  const onImageError = useCallback((url: string) => setFailedImages(previous => new Set([...previous, url])), [])
+  const showcase = useMemo(() => homepageShowcase(visibleLocations, regions, failedImages), [visibleLocations, regions, failedImages])
+  const latestLocations = showcase.latest
+  const malaysiaRegions = showcase.malaysia
+  const globalRegions = showcase.global
 
   const topTags = useMemo(() => {
     const tagCounts = new Map<string, number>()
@@ -686,7 +573,7 @@ export default function HomePageClient({
             {malaysiaRegions.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2 md:gap-5 xl:grid-cols-3">
                 {malaysiaRegions.map((region) => (
-                  <RegionCard key={region.id} region={region} />
+                  <RegionCard key={region.id} region={region} onImageError={onImageError} />
                 ))}
               </div>
             ) : null}
@@ -701,7 +588,7 @@ export default function HomePageClient({
             {globalRegions.length > 0 ? (
               <div className="grid gap-3 sm:grid-cols-2 md:gap-5 xl:grid-cols-3">
                 {globalRegions.map((region) => (
-                  <RegionCard key={region.id} region={region} />
+                  <RegionCard key={region.id} region={region} onImageError={onImageError} />
                 ))}
               </div>
             ) : null}
@@ -746,7 +633,7 @@ export default function HomePageClient({
             </div>
             <div className="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-4">
               {latestLocations.map((location) => (
-                <LocationCard key={location.id} location={location} onOpen={handleLocationOpen} />
+                <LocationCard key={location.id} location={location} onOpen={handleLocationOpen} onImageError={onImageError} />
               ))}
             </div>
           </section>

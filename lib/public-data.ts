@@ -27,6 +27,7 @@ export interface PublicLocation {
   longitude: number
   thumbnail: string | null
   shortSummary: string | null
+  visitDate?: string | null
 }
 
 export interface PublicLocationsPayload {

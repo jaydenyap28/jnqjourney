@@ -19,7 +19,7 @@ test('public locations snapshot has the lightweight schema', async () => {
   const payload = JSON.parse(await read('public-data/locations.json'))
   assert.equal(payload.schemaVersion, 1)
   assert.ok(payload.locations.length > 0)
-  const allowed = ['category', 'id', 'latitude', 'longitude', 'name', 'region', 'shortSummary', 'slug', 'thumbnail']
+  const allowed = ['category', 'id', 'latitude', 'longitude', 'name', 'region', 'shortSummary', 'slug', 'thumbnail', 'visitDate']
   for (const location of payload.locations) {
     assert.deepEqual(Object.keys(location).sort(), allowed)
   }
