@@ -2,7 +2,7 @@
 
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Image as ImageIcon, Plus, Save, Search, Trash2 } from 'lucide-react'
+import { Image as ImageIcon, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
 
 import type { LongformNote, NoteBlock, NoteImageSize } from '@/lib/notes'
 import {
@@ -389,9 +389,11 @@ export default function AdminNotesPage() {
   const [selectedAffiliateIds, setSelectedAffiliateIds] = useState<number[]>([])
   const [selectedKlookWidgetIds, setSelectedKlookWidgetIds] = useState<string[]>([])
   const [imageInsertSize, setImageInsertSize] = useState<NoteImageSize>('wide')
+  const [uploadingCoverImage, setUploadingCoverImage] = useState(false)
   const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
+  const coverImageInputRef = useRef<HTMLInputElement | null>(null)
   const standaloneImageInputRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
@@ -577,6 +579,45 @@ export default function AdminNotesPage() {
   function openStandaloneImageUpload() {
     rememberMarkdownSelection()
     standaloneImageInputRef.current?.click()
+  }
+
+  async function uploadCoverImage(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setUploadingCoverImage(true)
+    setMessage('Uploading cover image to Cloudflare R2...')
+
+    try {
+      const payload = new FormData()
+      payload.append('category', 'notes')
+      payload.append('field', 'cover')
+      payload.append('target', 'cover')
+      payload.append('locationSlug', form.slug || slugifyNote(form.title) || 'longform-note')
+      payload.append('files', file)
+
+      const response = await adminFetch('/api/upload/r2', {
+        method: 'POST',
+        body: payload,
+      })
+      const result = await response.json()
+      if (!response.ok || result?.success === false) {
+        throw new Error(result?.error || `Upload failed for ${file.name}`)
+      }
+
+      const uploaded = (Array.isArray(result?.items) ? result.items : Array.isArray(result?.files) ? result.files : [])
+        .find((item: { url?: string }) => Boolean(item?.url))
+      const coverImage = String(uploaded?.url || result?.url || '').trim()
+      if (!coverImage) throw new Error('Upload completed but no Cloudflare R2 URL was returned.')
+
+      updateForm({ coverImage })
+      setMessage('Cover image uploaded to Cloudflare R2. Save the note to publish this change.')
+    } catch (error: any) {
+      setMessage(`Error: ${error?.message || 'Failed to upload cover image.'}`)
+    } finally {
+      setUploadingCoverImage(false)
+      event.target.value = ''
+    }
   }
 
   function rememberMarkdownSelection() {
@@ -876,7 +917,27 @@ export default function AdminNotesPage() {
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label>Cover Image URL</Label>
-                <Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} placeholder="https://..." />
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Input value={form.coverImage || ''} onChange={(event) => updateForm({ coverImage: event.target.value })} placeholder="https://..." />
+                  <input
+                    ref={coverImageInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    onChange={uploadCoverImage}
+                    disabled={uploadingCoverImage}
+                  />
+                  <Button type="button" variant="outline" className="shrink-0 border-white/10 bg-transparent text-white hover:bg-white/10" onClick={() => coverImageInputRef.current?.click()} disabled={uploadingCoverImage}>
+                    {uploadingCoverImage ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                    {uploadingCoverImage ? 'Uploading...' : 'Upload cover'}
+                  </Button>
+                </div>
+                <p className="text-xs text-white/50">Upload sends the image to Cloudflare R2 and fills this URL automatically. Save the note to keep it.</p>
+                {form.coverImage ? (
+                  <div className="relative h-44 max-w-md overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                    <FallbackImage src={form.coverImage} alt={`${form.title || 'Note'} cover preview`} fill sizes="448px" className="object-cover" />
+                  </div>
+                ) : null}
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label>Cover Video URL</Label>
