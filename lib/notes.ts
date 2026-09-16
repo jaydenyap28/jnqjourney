@@ -17,12 +17,14 @@ export interface NoteImageItem {
 }
 
 export type NoteImageSize = 'full' | 'wide' | 'medium' | 'small'
+export type NoteHeadingLevel = 2 | 3 | 4
 
 export interface NoteBlock {
   id: string
   type: NoteBlockType
   title?: string
   content?: string
+  headingLevel?: NoteHeadingLevel
   imageUrl?: string
   videoUrl?: string
   imageSize?: NoteImageSize
@@ -71,6 +73,11 @@ export function slugifyNote(value: string) {
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]+/gu, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+export function normalizeNoteHeadingLevel(value: unknown): NoteHeadingLevel {
+  const level = Number(value)
+  return level === 3 || level === 4 ? level : 2
 }
 
 export function parseSummary(summary: string): SummaryPart[] {
@@ -282,7 +289,7 @@ export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
   return blocks
     .map((block) => {
       if (block.type === 'heading') {
-        return `## ${block.content || ''}`
+        return `${'#'.repeat(normalizeNoteHeadingLevel(block.headingLevel))} ${block.content || ''}`
       }
       if (block.type === 'quote') {
         return `> ${block.content || ''}`
@@ -340,6 +347,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
           id: blockId,
           type: 'heading',
           content: levelMatch[2].trim(),
+          headingLevel: normalizeNoteHeadingLevel(levelMatch[1].length),
         })
         return
       }
@@ -350,6 +358,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         id: blockId,
         type: 'heading',
         content: text.replace(/[:：]$/, '').trim(),
+        headingLevel: 2,
       })
       return
     }

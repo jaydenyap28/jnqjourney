@@ -13,6 +13,7 @@ import {
   getRenderableNoteBlocks,
   convertBlocksToMarkdown,
   parseMarkdownToBlocks,
+  normalizeNoteHeadingLevel,
   slugifyNote,
 } from '@/lib/notes'
 import { adminFetch } from '@/lib/admin-fetch'
@@ -162,17 +163,19 @@ function BlockPreview({
   index?: number
 }) {
   if (block.type === 'heading') {
+    const headingLevel = normalizeNoteHeadingLevel(block.headingLevel)
+    const Heading = `h${headingLevel}` as const
     if (isFullPreview) {
       return (
-        <h2 id={`heading-${createNoteHeadingId(block.content, index)}`} className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24">
+        <Heading id={`heading-${createNoteHeadingId(block.content, index)}`} className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}>
           {block.content}
-        </h2>
+        </Heading>
       )
     }
     return (
-      <h3 className="pt-6 pb-2 text-2xl font-bold tracking-tight text-white border-l-2 border-amber-400 pl-3">
+      <Heading className={headingLevel === 2 ? 'border-l-2 border-amber-400 pl-3 pt-6 pb-2 text-[25px] font-bold leading-tight tracking-tight text-white md:text-[31px]' : headingLevel === 3 ? 'border-l-2 border-amber-400/70 pl-3 pt-5 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:text-[23px]' : 'border-l-2 border-amber-400/40 pl-3 pt-4 pb-1 text-[17px] font-semibold leading-snug tracking-tight text-white md:text-[19px]'}>
         {block.content}
-      </h3>
+      </Heading>
     )
   }
 
@@ -1107,15 +1110,21 @@ export default function AdminNotesPage() {
                           </option>
                         ))}
                       </select>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
-                        onClick={() => insertTextAtCursor('## ')}
+                      <select
+                        defaultValue=""
+                        onChange={(event) => {
+                          const prefix = event.target.value
+                          if (prefix) insertTextAtCursor(prefix)
+                          event.target.value = ''
+                        }}
+                        className="h-9 rounded-md border border-white/10 bg-[#121214] px-3 text-sm text-white outline-none focus:border-amber-300/60"
+                        aria-label="Heading level"
                       >
-                        标题 (H2)
-                      </Button>
+                        <option value="" disabled>标题</option>
+                        <option value="## ">章节标题 H2</option>
+                        <option value="### ">小标题 H3</option>
+                        <option value="#### ">细分标题 H4</option>
+                      </select>
                       <Button
                         type="button"
                         size="sm"

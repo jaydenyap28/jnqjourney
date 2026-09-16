@@ -17,7 +17,7 @@ import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, normalizeNoteHeadingLevel, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
@@ -168,14 +168,16 @@ export const revalidate = 600
 function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
   if (block.type === 'heading') {
     const headingId = `heading-${createNoteHeadingId(block.content, index)}`
+    const headingLevel = normalizeNoteHeadingLevel(block.headingLevel)
+    const Heading = `h${headingLevel}` as const
     return (
-      <h2
+      <Heading
         id={headingId}
         key={block.id}
-        className="max-w-2xl mx-auto pt-10 pb-4 text-3xl font-semibold tracking-tight text-white md:text-5xl scroll-mt-24"
+        className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}
       >
         {block.content}
-      </h2>
+      </Heading>
     )
   }
 

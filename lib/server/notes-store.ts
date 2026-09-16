@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
 import type { LongformNote, NoteBlock } from '@/lib/notes'
-import { createNoteImageItem, DEFAULT_NOTE_COVER_ACCENT, getRenderableNoteBlocks, normalizeNoteImageSize } from '@/lib/notes'
+import { createNoteImageItem, DEFAULT_NOTE_COVER_ACCENT, getRenderableNoteBlocks, normalizeNoteHeadingLevel, normalizeNoteImageSize } from '@/lib/notes'
 
 const notesFilePath = path.join(process.cwd(), 'data', 'notes.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
@@ -56,6 +56,7 @@ function normalizeBlock(value: any): NoteBlock | null {
     type,
     title: String(value?.title || '').trim() || undefined,
     content: String(value?.content || '').trim() || undefined,
+    headingLevel: type === 'heading' ? normalizeNoteHeadingLevel(value?.headingLevel) : undefined,
     imageUrl: String(value?.imageUrl || '').trim() || undefined,
     videoUrl: String(value?.videoUrl || '').trim() || undefined,
     imageSize: normalizeNoteImageSize(value?.imageSize),
