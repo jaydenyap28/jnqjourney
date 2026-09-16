@@ -294,14 +294,6 @@ function splitImageOnlySection(section: string) {
   return allImages ? lines : [section]
 }
 
-function isImplicitHeading(text: string) {
-  const value = String(text || '').trim()
-  if (!value || value.includes('\n') || value.length > 80) return false
-  if (/[:：]$/.test(value) && value.length <= 48) return true
-  const latinLetters = value.replace(/[^A-Za-z]/g, '')
-  return latinLetters.length >= 3 && latinLetters === latinLetters.toUpperCase() && /[A-Z]/.test(latinLetters)
-}
-
 export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
   if (!Array.isArray(blocks) || blocks.length === 0) return ''
 
@@ -370,16 +362,6 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         })
         return
       }
-    }
-
-    if (isImplicitHeading(text)) {
-      blocks.push({
-        id: blockId,
-        type: 'heading',
-        content: text.replace(/[:：]$/, '').trim(),
-        headingLevel: 2,
-      })
-      return
     }
 
     // 2. Blockquote
