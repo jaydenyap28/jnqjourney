@@ -17,7 +17,7 @@ import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, createNoteHeadingId, getRenderableNoteBlocks, normalizeNoteHeadingLevel, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { buildFallbackAlt, createNoteHeadingId, getNoteTableOfContentsItems, getRenderableNoteBlocks, normalizeNoteHeadingLevel, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
@@ -401,12 +401,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const klookWidgetById = new Map(allKlookWidgets.filter((widget) => widget.isActive).map((widget) => [widget.id, widget]))
   const textExcerpt = getTextExcerpt(note)
 
-  const headings = contentBlocks
-    .filter((block) => block.type === 'heading' && block.content)
-    .map((block, index) => ({
-      id: createNoteHeadingId(block.content, index),
-      content: block.content || '',
-    }))
+  const headings = getNoteTableOfContentsItems(contentBlocks)
 
   const structuredData = {
     '@context': 'https://schema.org',

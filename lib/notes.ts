@@ -66,6 +66,12 @@ export interface SummaryPart {
   spotId?: number
 }
 
+export interface NoteTableOfContentsItem {
+  id: string
+  content: string
+  level: 2 | 3
+}
+
 export function slugifyNote(value: string) {
   return String(value || '')
     .normalize('NFKD')
@@ -239,6 +245,19 @@ export function createNoteHeadingId(content?: string | null, fallback?: string |
     .replace(/^-+|-+$/g, '')
 
   return base || `section-${fallback || 'note'}`
+}
+
+export function getNoteTableOfContentsItems(blocks: NoteBlock[]): NoteTableOfContentsItem[] {
+  return blocks.flatMap((block, index) => {
+    if (block.type !== 'heading' || !block.content) return []
+    const level = normalizeNoteHeadingLevel(block.headingLevel)
+    if (level === 4) return []
+    return [{
+      id: createNoteHeadingId(block.content, index),
+      content: block.content,
+      level,
+    }]
+  })
 }
 
 function parseImageList(value: string) {

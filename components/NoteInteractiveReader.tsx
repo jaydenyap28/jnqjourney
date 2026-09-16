@@ -7,6 +7,7 @@ import FallbackImage from '@/components/FallbackImage'
 interface HeadingItem {
   id: string
   content: string
+  level: 2 | 3
 }
 
 interface NoteInteractiveReaderProps {
@@ -224,7 +225,7 @@ export function NoteTableOfContents({ headings }: NoteInteractiveReaderProps) {
               key={heading.id}
               href={`#heading-${heading.id}`}
               onClick={(event) => handleScrollTo(event, heading.id)}
-              className={`w-full text-left rounded-xl px-3 py-2 text-sm transition-all duration-200 flex items-start gap-2 ${
+              className={`${heading.level === 3 ? 'ml-4 w-[calc(100%-1rem)] text-[13px]' : 'w-full text-sm'} text-left rounded-xl px-3 py-2 transition-all duration-200 flex items-start gap-2 ${
                 isActive
                   ? 'bg-amber-400/10 text-amber-200 border-l-2 border-amber-400 pl-2 font-medium'
                   : 'text-white/60 hover:text-white hover:bg-white/5 border-l border-transparent'
