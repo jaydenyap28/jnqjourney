@@ -64,6 +64,15 @@ export interface SummaryPart {
   spotId?: number
 }
 
+export function slugifyNote(value: string) {
+  return String(value || '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 export function parseSummary(summary: string): SummaryPart[] {
   if (!summary) return []
 

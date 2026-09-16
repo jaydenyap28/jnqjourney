@@ -13,6 +13,7 @@ import {
   getRenderableNoteBlocks,
   convertBlocksToMarkdown,
   parseMarkdownToBlocks,
+  slugifyNote,
 } from '@/lib/notes'
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
@@ -57,15 +58,6 @@ interface KlookWidgetOption {
   title: string
   description?: string
   isActive: boolean
-}
-
-function slugify(value: string) {
-  return String(value || '')
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
 }
 
 function parseCommaSeparated(value: string) {
@@ -648,7 +640,7 @@ export default function AdminNotesPage() {
         payload.append('category', 'notes')
         payload.append('field', 'inline')
         payload.append('target', 'inline')
-        payload.append('locationSlug', form.slug || slugify(form.title) || 'longform-note')
+        payload.append('locationSlug', form.slug || slugifyNote(form.title) || 'longform-note')
         payload.append('files', file)
 
         const response = await adminFetch('/api/upload/r2', {
@@ -725,7 +717,7 @@ export default function AdminNotesPage() {
 
     const payload: LongformNote & { previousSlug?: string } = {
       ...form,
-      slug: form.slug || slugify(form.title),
+      slug: form.slug || slugifyNote(form.title),
       shortTitle: form.shortTitle || form.title,
       tags: parseCommaSeparated(stringifyCommaSeparated(form.tags)),
       content: markdownText.trim(),
@@ -864,7 +856,7 @@ export default function AdminNotesPage() {
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
-                <Input value={form.slug} onChange={(event) => updateForm({ slug: slugify(event.target.value) })} placeholder="cameron-highlands-trip" />
+                <Input value={form.slug} onChange={(event) => updateForm({ slug: slugifyNote(event.target.value) })} placeholder="cameron-highlands-trip" />
               </div>
               <div className="space-y-2">
                 <Label>Short Title</Label>
