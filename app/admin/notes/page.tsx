@@ -20,6 +20,7 @@ import {
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
 import FallbackImage from '@/components/FallbackImage'
+import InlineMarkdown from '@/components/InlineMarkdown'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -169,13 +170,13 @@ function BlockPreview({
     if (isFullPreview) {
       return (
         <Heading id={`heading-${createNoteHeadingId(block.content, index)}`} className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}>
-          {block.content}
+          <InlineMarkdown>{block.content}</InlineMarkdown>
         </Heading>
       )
     }
     return (
       <Heading className={headingLevel === 2 ? 'border-l-2 border-amber-400 pl-3 pt-6 pb-2 text-[25px] font-bold leading-tight tracking-tight text-white md:text-[31px]' : headingLevel === 3 ? 'border-l-2 border-amber-400/70 pl-3 pt-5 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:text-[23px]' : 'border-l-2 border-amber-400/40 pl-3 pt-4 pb-1 text-[17px] font-semibold leading-snug tracking-tight text-white md:text-[19px]'}>
-        {block.content}
+        <InlineMarkdown>{block.content}</InlineMarkdown>
       </Heading>
     )
   }
@@ -362,12 +363,12 @@ function BlockPreview({
   if (isFullPreview) {
     return (
       <p className="max-w-2xl mx-auto text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem] tracking-wide my-6 text-left">
-        {block.content}
+        <InlineMarkdown>{block.content}</InlineMarkdown>
       </p>
     )
   }
 
-  return <p className="text-base leading-8 text-gray-200 whitespace-pre-wrap my-4 text-left">{block.content}</p>
+  return <p className="text-base leading-8 text-gray-200 whitespace-pre-wrap my-4 text-left"><InlineMarkdown>{block.content}</InlineMarkdown></p>
 }
 
 export default function AdminNotesPage() {

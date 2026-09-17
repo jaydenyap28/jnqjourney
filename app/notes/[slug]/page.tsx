@@ -11,6 +11,7 @@ import SupportSidebarCard from '@/components/SupportSidebarCard'
 import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInteractiveReader'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
+import InlineMarkdown from '@/components/InlineMarkdown'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
@@ -176,7 +177,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
         key={block.id}
         className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}
       >
-        {block.content}
+        <InlineMarkdown>{block.content}</InlineMarkdown>
       </Heading>
     )
   }
@@ -349,7 +350,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
       key={block.id}
       className="max-w-2xl mx-auto text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem] tracking-wide my-6"
     >
-      {block.content}
+      <InlineMarkdown>{block.content}</InlineMarkdown>
     </p>
   )
 }

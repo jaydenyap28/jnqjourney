@@ -20,6 +20,11 @@ export type NoteImageSize = 'full' | 'wide' | 'medium' | 'small'
 export type NoteHeadingLevel = 2 | 3 | 4
 export type NoteVideoAspect = 'auto' | 'landscape' | 'portrait'
 
+export type InlineMarkdownToken =
+  | { type: 'text'; value: string }
+  | { type: 'bold' | 'italic' | 'code'; value: string }
+  | { type: 'link'; value: string; href: string }
+
 export interface NoteBlock {
   id: string
   type: NoteBlockType
@@ -226,6 +231,48 @@ export function normalizeNoteVideoAspect(value?: string | null): NoteVideoAspect
   const aspect = String(value || '').trim().toLowerCase()
   if (aspect === 'landscape' || aspect === 'portrait') return aspect
   return 'auto'
+}
+
+function normalizeInlineMarkdownHref(value: string) {
+  const href = String(value || '').trim()
+  if (!href) return null
+  if (href.startsWith('/') && !href.startsWith('//')) return href
+
+  try {
+    const url = new URL(href)
+    return url.protocol === 'http:' || url.protocol === 'https:' || url.protocol === 'mailto:' ? href : null
+  } catch {
+    return null
+  }
+}
+
+export function parseInlineMarkdown(value?: string | null): InlineMarkdownToken[] {
+  const text = String(value || '')
+  const tokens: InlineMarkdownToken[] = []
+  const pattern = /(`[^`\n]+`)|(\[([^\]\n]+)\]\(([^)\s]+)\))|(\*\*([^*\n]+)\*\*)|(\*([^*\n]+)\*)/g
+  let lastIndex = 0
+
+  for (const match of text.matchAll(pattern)) {
+    const index = match.index || 0
+    if (index > lastIndex) tokens.push({ type: 'text', value: text.slice(lastIndex, index) })
+
+    if (match[1]) {
+      tokens.push({ type: 'code', value: match[1].slice(1, -1) })
+    } else if (match[2]) {
+      const href = normalizeInlineMarkdownHref(match[4])
+      if (href) tokens.push({ type: 'link', value: match[3], href })
+      else tokens.push({ type: 'text', value: match[2] })
+    } else if (match[5]) {
+      tokens.push({ type: 'bold', value: match[6] })
+    } else if (match[7]) {
+      tokens.push({ type: 'italic', value: match[8] })
+    }
+
+    lastIndex = index + match[0].length
+  }
+
+  if (lastIndex < text.length) tokens.push({ type: 'text', value: text.slice(lastIndex) })
+  return tokens.length ? tokens : [{ type: 'text', value: text }]
 }
 
 function isLikelyImageUrl(value: string) {
