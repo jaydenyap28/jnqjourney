@@ -4,7 +4,7 @@ import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
 
-import type { LongformNote, NoteBlock, NoteImageSize } from '@/lib/notes'
+import type { LongformNote, NoteBlock, NoteImageSize, NoteVideoAspect } from '@/lib/notes'
 import {
   buildFallbackAlt,
   createNoteHeadingId,
@@ -14,6 +14,7 @@ import {
   convertBlocksToMarkdown,
   parseMarkdownToBlocks,
   normalizeNoteHeadingLevel,
+  normalizeNoteVideoAspect,
   slugifyNote,
 } from '@/lib/notes'
 import { adminFetch } from '@/lib/admin-fetch'
@@ -198,18 +199,19 @@ function BlockPreview({
 
   if (block.type === 'video' && block.videoUrl) {
     const title = block.title || 'Article video'
+    const isPortrait = normalizeNoteVideoAspect(block.videoAspect) === 'portrait'
     if (isFullPreview) {
       return (
-        <figure className="max-w-4xl mx-auto w-full my-10">
-          <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+        <figure className={`${isPortrait ? 'max-w-[480px]' : 'max-w-4xl'} mx-auto w-full my-10`}>
+          <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]`}>
             <CoverVideoPreview url={block.videoUrl} title={title} />
           </div>
         </figure>
       )
     }
     return (
-      <figure className="max-w-3xl mx-auto w-full my-6">
-        <div className="relative aspect-video overflow-hidden rounded-[24px] border border-white/10 bg-black/40 shadow-lg">
+      <figure className={`${isPortrait ? 'max-w-[480px]' : 'max-w-3xl'} mx-auto w-full my-6`}>
+        <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[24px] border border-white/10 bg-black/40 shadow-lg`}>
           <CoverVideoPreview url={block.videoUrl} title={title} />
         </div>
       </figure>
@@ -392,6 +394,7 @@ export default function AdminNotesPage() {
   const [selectedAffiliateIds, setSelectedAffiliateIds] = useState<number[]>([])
   const [selectedKlookWidgetIds, setSelectedKlookWidgetIds] = useState<string[]>([])
   const [imageInsertSize, setImageInsertSize] = useState<NoteImageSize>('wide')
+  const [videoAspect, setVideoAspect] = useState<NoteVideoAspect>('auto')
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false)
   const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
@@ -1125,6 +1128,16 @@ export default function AdminNotesPage() {
                         <option value="### ">小标题 H3</option>
                         <option value="#### ">细分标题 H4</option>
                       </select>
+                      <select
+                        value={videoAspect}
+                        onChange={(event) => setVideoAspect(event.target.value as NoteVideoAspect)}
+                        className="h-9 rounded-md border border-white/10 bg-[#121214] px-3 text-sm text-white outline-none focus:border-amber-300/60"
+                        aria-label="Video aspect"
+                      >
+                        <option value="auto">影片：Auto</option>
+                        <option value="landscape">影片：Landscape</option>
+                        <option value="portrait">影片：Portrait</option>
+                      </select>
                       <Button
                         type="button"
                         size="sm"
@@ -1149,7 +1162,7 @@ export default function AdminNotesPage() {
                         size="sm"
                         variant="outline"
                         className="border-white/10 bg-[#121214] text-white hover:bg-white/10"
-                        onClick={() => insertTextAtCursor('[video url="https://" title=""]')}
+                        onClick={() => insertTextAtCursor(`[video url="https://" title=""${videoAspect === 'auto' ? '' : ` aspect="${videoAspect}"`}]`)}
                       >
                         插入影片链接
                       </Button>

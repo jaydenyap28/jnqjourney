@@ -17,7 +17,7 @@ import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, createNoteHeadingId, getNoteTableOfContentsItems, getRenderableNoteBlocks, normalizeNoteHeadingLevel, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { buildFallbackAlt, createNoteHeadingId, getNoteTableOfContentsItems, getRenderableNoteBlocks, normalizeNoteHeadingLevel, normalizeNoteVideoAspect, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
@@ -194,9 +194,10 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
   }
 
   if (block.type === 'video' && block.videoUrl) {
+    const isPortrait = normalizeNoteVideoAspect(block.videoAspect) === 'portrait'
     return (
-      <figure key={block.id} className="max-w-4xl mx-auto w-full my-10">
-        <div className="relative aspect-video overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]">
+      <figure key={block.id} className={`${isPortrait ? 'max-w-[480px]' : 'max-w-4xl'} mx-auto w-full my-10`}>
+        <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]`}>
           <CoverVideoEmbed url={block.videoUrl} title={block.title || 'Article video'} />
         </div>
       </figure>

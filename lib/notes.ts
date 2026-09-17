@@ -18,6 +18,7 @@ export interface NoteImageItem {
 
 export type NoteImageSize = 'full' | 'wide' | 'medium' | 'small'
 export type NoteHeadingLevel = 2 | 3 | 4
+export type NoteVideoAspect = 'auto' | 'landscape' | 'portrait'
 
 export interface NoteBlock {
   id: string
@@ -27,6 +28,7 @@ export interface NoteBlock {
   headingLevel?: NoteHeadingLevel
   imageUrl?: string
   videoUrl?: string
+  videoAspect?: NoteVideoAspect
   imageSize?: NoteImageSize
   alt?: string
   caption?: string
@@ -220,6 +222,12 @@ export function normalizeNoteImageSize(value?: string | null): NoteImageSize | u
   return undefined
 }
 
+export function normalizeNoteVideoAspect(value?: string | null): NoteVideoAspect {
+  const aspect = String(value || '').trim().toLowerCase()
+  if (aspect === 'landscape' || aspect === 'portrait') return aspect
+  return 'auto'
+}
+
 function isLikelyImageUrl(value: string) {
   const text = String(value || '').trim()
   if (!/^https?:\/\/\S+$/i.test(text)) return false
@@ -313,7 +321,9 @@ export function convertBlocksToMarkdown(blocks: NoteBlock[]): string {
         return `![${altText}](${urlText})${sizeText}${captionText}`
       }
       if (block.type === 'video') {
-        return `[video url="${block.videoUrl || ''}" title="${block.title || ''}"]`
+        const aspect = normalizeNoteVideoAspect(block.videoAspect)
+        const aspectText = aspect === 'auto' ? '' : ` aspect="${aspect}"`
+        return `[video url="${block.videoUrl || ''}" title="${block.title || ''}"${aspectText}]`
       }
       if (block.type === 'spotImages' || block.type === 'gallery') {
         const imagesList = (block.images || []).map((img) => img.src).join('|')
@@ -384,6 +394,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         type: 'video',
         videoUrl,
         title: attrs.title || undefined,
+        videoAspect: normalizeNoteVideoAspect(attrs.aspect),
       })
       return
     }
@@ -393,6 +404,7 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
         id: blockId,
         type: 'video',
         videoUrl: text,
+        videoAspect: 'auto',
       })
       return
     }
