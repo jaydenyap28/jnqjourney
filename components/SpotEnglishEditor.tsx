@@ -14,6 +14,18 @@ interface EditorData {
   revalidated?: boolean
 }
 
+const fieldCopy: Record<typeof spotTranslationFields[number], { label: string; help?: string }> = {
+  description: {
+    label: '景点资讯英文版 / Spot Details',
+    help: '这里的内容会直接显示在英文景点详情页的 Spot Details 区块',
+  },
+  review: {
+    label: '个人体验英文版 / Review',
+    help: '可选，仅当景点资讯为空时作为备用内容',
+  },
+  address: { label: '地址英文版 / Address' },
+}
+
 export default function SpotEnglishEditor({spotId}:{spotId:number}) {
   const [data,setData] = useState<EditorData | null>(null)
   const [fields,setFields] = useState<SpotTranslationEdits | null>(null)
@@ -52,7 +64,8 @@ export default function SpotEnglishEditor({spotId}:{spotId:number}) {
     {data && fields ? <>
       <p role="status">当前有效状态：<strong>{data.status}</strong></p>
       {spotTranslationFields.map(key=><div key={key} className="space-y-2">
-        <label htmlFor={`en-${key}`} className="block font-medium">English {key}</label>
+        <label htmlFor={`en-${key}`} className="block font-medium">{fieldCopy[key].label}</label>
+        {fieldCopy[key].help ? <p className="text-sm text-gray-600">{fieldCopy[key].help}</p> : null}
         <details><summary className="text-sm text-gray-600">当前中文／原文</summary><p className="whitespace-pre-wrap text-sm">{data.source[key] || '（空）'}</p></details>
         {fields[key].text && fields[key].source !== data.source[key] ? <div className="rounded border border-amber-300 bg-amber-50 p-3 text-sm">
           原文已变化，此译文已过期。请核对后修改，或确认译文仍然准确。

@@ -463,7 +463,7 @@ export default function SpotContent({
             className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80 transition hover:bg-white/10 hover:text-white"
           >
             <MapPin className="h-4 w-4" />
-            Back to map
+            <PublicCopy text="返回地图" />
           </Link>
         </div>
       ) : null}
@@ -475,7 +475,7 @@ export default function SpotContent({
               <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.3em] text-red-200/70">YouTube</p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">Video Preview</h3>
+                  <h3 className="mt-1 text-lg font-semibold text-white"><PublicCopy text="影片预览" /></h3>
                 </div>
                 <a
                   href={location.video_url || '#'}
@@ -483,7 +483,7 @@ export default function SpotContent({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/90 transition hover:bg-white/10"
                 >
-                  Watch on YouTube
+                  <PublicCopy text="在 YouTube 观看" />
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
@@ -506,7 +506,7 @@ export default function SpotContent({
                       className="inline-flex items-center gap-3 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-3 text-sm text-red-100 transition hover:bg-red-500/15"
                     >
                       <Youtube className="h-4 w-4" />
-                      Open YouTube video
+                      <PublicCopy text="打开 YouTube 影片" />
                     </a>
                   </div>
                 )}
@@ -519,7 +519,7 @@ export default function SpotContent({
               <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.3em] text-blue-200/70">Facebook</p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">Preview</h3>
+                  <h3 className="mt-1 text-lg font-semibold text-white"><PublicCopy text="预览" /></h3>
                 </div>
                 <a
                   href={facebookVideoUrl || '#'}
@@ -527,7 +527,7 @@ export default function SpotContent({
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-white/90 transition hover:bg-white/10"
                 >
-                  Watch on Facebook
+                  <PublicCopy text="在 Facebook 观看" />
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               </div>
@@ -555,7 +555,7 @@ export default function SpotContent({
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white">
                       <Facebook className="h-4 w-4" />
                     </span>
-                    Open Facebook video
+                    <PublicCopy text="打开 Facebook 影片" />
                     <ExternalLink className="h-4 w-4" />
                   </span>
                 </div>
@@ -623,7 +623,7 @@ export default function SpotContent({
         </div>
       ) : !(hasYoutubeLink || hasFacebookLink) ? (
         <div className="relative flex aspect-video w-full items-center justify-center rounded-t-2xl bg-muted text-muted-foreground">
-          <span className="text-sm">No images or videos available yet.</span>
+          <span className="text-sm"><PublicCopy text="暂时没有图片或影片。" /></span>
           {isDrawer && onClose ? (
             <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-4 top-4 z-10 rounded-full bg-black/50 text-white hover:bg-black/70">
               <X className="h-5 w-5" />
@@ -642,7 +642,7 @@ export default function SpotContent({
                   <span>{[location.regions?.country, location.regions?.name].filter(Boolean).join(' / ')}</span>
                   {regionPath ? (
                     <Link href={regionPath} className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/90 transition hover:bg-white/10 md:px-3 md:text-xs">
-                      View region
+                      <PublicCopy text="查看地区" />
                       <ExternalLink className="h-3 w-3" />
                     </Link>
                   ) : null}
@@ -658,7 +658,7 @@ export default function SpotContent({
                       ? 'border-emerald-500/30 bg-emerald-500/20 text-emerald-200'
                       : 'border-blue-500/30 bg-blue-500/20 text-blue-200'
                 }`}>
-                  {location.category === 'food' ? 'Food' : location.category === 'accommodation' ? 'Stay' : 'Spot'}
+                  <PublicCopy text={location.category === 'food' ? '美食' : location.category === 'accommodation' ? '住宿' : '景点'} />
                 </Badge>
               ) : null}
               {visibleTags[0] ? <Badge className="border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] text-white shadow-sm md:px-3 md:text-sm">{visibleTags[0]}</Badge> : null}
@@ -678,7 +678,7 @@ export default function SpotContent({
             </div>
             {location.visit_date ? (
               <div className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2 py-1">
-                <span className="font-bold text-amber-400">DATE</span>
+                <span className="font-bold text-amber-400"><PublicCopy text="日期" /></span>
                 <span>{new Date(location.visit_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}</span>
               </div>
             ) : null}
@@ -692,7 +692,7 @@ export default function SpotContent({
             </div>
             <div className="flex-1 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h4 className="text-sm font-bold uppercase tracking-wider text-sky-100">Address</h4>
+                <h4 className="text-sm font-bold uppercase tracking-wider text-sky-100"><PublicCopy text="地址" /></h4>
                 <Button
                   type="button"
                   variant="ghost"
@@ -701,7 +701,7 @@ export default function SpotContent({
                   onClick={() => handleCopy(location.address || '', 'address')}
                 >
                   <Copy className="mr-1.5 h-3.5 w-3.5" />
-                  {copiedField === 'address' ? 'Address copied' : 'Copy address'}
+                  <PublicCopy text={copiedField === 'address' ? '地址已复制' : '复制地址'} />
                 </Button>
               </div>
               <p className="text-sm leading-6 text-gray-200">{location.address}</p>
@@ -715,22 +715,22 @@ export default function SpotContent({
               <div className="overflow-hidden rounded-[24px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3.5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:rounded-[32px] md:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.25em] text-amber-200/80">Price Guide</p>
+                    <p className="text-xs uppercase tracking-[0.25em] text-amber-200/80"><PublicCopy text="价格参考" /></p>
                     <h3 className="mt-2 text-2xl font-semibold text-white md:text-[1.95rem]">{priceHeading}</h3>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-amber-100">
-                        Currency: {priceCurrencyLabel}
+                        <PublicCopy text="货币：" />{priceCurrencyLabel}
                       </span>
                       {location.category === 'accommodation' ? (
                         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-white/75">
-                          Estimated room rate
+                          <PublicCopy text="参考房价" />
                         </span>
                       ) : null}
                     </div>
                   </div>
                   {priceInfo.isFree ? (
                     <Badge className="border border-emerald-400/30 bg-emerald-500/15 px-3 py-1 text-emerald-100">
-                      Free Entry
+                      <PublicCopy text="免费进入" />
                     </Badge>
                   ) : null}
                 </div>
@@ -741,25 +741,25 @@ export default function SpotContent({
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Room Rate / 参考房价"}/></p>
                       <div className="mt-4 space-y-3 text-sm">
                         <div className="flex items-start justify-between gap-4">
-                          <span className="text-gray-400">Estimated range</span>
+                          <span className="text-gray-400"><PublicCopy text="预计范围" /></span>
                           <span className="text-right font-medium text-white">{stayPriceRange || formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency)}</span>
                         </div>
                         {stayPriceRangeSecondary || priceInfo.accommodationBudgetSecondary ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Second currency</span>
+                            <span className="text-gray-400"><PublicCopy text="第二币种" /></span>
                             <span className="text-right font-medium text-amber-100">
                               {stayPriceRangeSecondary || formatBudgetLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency)}
                             </span>
                           </div>
                         ) : null}
                         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-200">
-                          Reference room rate: {stayPriceRange || formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency)}
+                          <PublicCopy text="参考房价：" />{stayPriceRange || formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency)}
                           {stayPriceRangeSecondary || priceInfo.accommodationBudgetSecondary ? (
                             <span className="block mt-1 text-amber-100">
                               {stayPriceRangeSecondary || formatBudgetLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency)}
                             </span>
                           ) : null}
-                          <span className="mt-1 block text-xs text-white/60">Rates may vary by season and booking date.</span>
+                          <span className="mt-1 block text-xs text-white/60"><PublicCopy text="房价会随季节和预订日期变化。" /></span>
                         </div>
                       </div>
                     </div>
@@ -886,11 +886,11 @@ export default function SpotContent({
 
                   {showParkingPricing ? (
                     <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:rounded-[28px] md:p-5">
-                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Parking</p>
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text="停车" /></p>
                       <div className="mt-4 space-y-3 text-sm">
                         {showParkingPricing ? (
                           <div className="flex items-start justify-between gap-4">
-                            <span className="text-gray-400">Parking</span>
+                            <span className="text-gray-400"><PublicCopy text="停车" /></span>
                             <span className="text-right font-medium text-white">
                               {buildDualBudgetLabel(priceInfo.parkingBudget, priceInfo.currency, priceInfo.parkingBudgetSecondary, priceInfo.secondaryCurrency).primary}
                               {buildDualBudgetLabel(priceInfo.parkingBudget, priceInfo.currency, priceInfo.parkingBudgetSecondary, priceInfo.secondaryCurrency).secondary ? (
@@ -907,7 +907,7 @@ export default function SpotContent({
 
                   {showCustomPricing ? (
                     <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:col-span-2 md:rounded-[28px] md:p-5 xl:col-span-2">
-                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70">Extra Cost Notes</p>
+                      <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text="额外费用说明" /></p>
                       <div className="mt-4 grid gap-3 md:grid-cols-2">
                         {priceInfo.customItems.map((item, index) => (
                           <div key={`${item.label}-${item.value}-${index}`} className="rounded-2xl border border-white/10 bg-white/5 p-4">
@@ -978,7 +978,7 @@ export default function SpotContent({
             <div>
               <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-white">
                 <span className="h-6 w-1 rounded-full bg-amber-400"></span>
-                Spot Details
+                <PublicCopy text="景点资讯" />
               </h3>
               {spotDescription ? (
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-inner backdrop-blur-md md:p-6">
@@ -986,7 +986,7 @@ export default function SpotContent({
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-5 text-center md:p-8">
-                  <p className="italic text-gray-400">A full write-up for this spot has not been added yet.</p>
+                  <p className="italic text-gray-400"><PublicCopy text="这个景点暂时还没有完整介绍。" /></p>
                 </div>
               )}
             </div>
@@ -995,8 +995,8 @@ export default function SpotContent({
               <section className="space-y-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">Travel Guide Match</p>
-                    <h3 className="mt-2 text-2xl font-bold text-white">View the full travel guide</h3>
+                    <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70"><PublicCopy text="相关旅行攻略" /></p>
+                    <h3 className="mt-2 text-2xl font-bold text-white"><PublicCopy text="查看完整旅行攻略" /></h3>
                   </div>
                 </div>
                 <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -1036,12 +1036,12 @@ export default function SpotContent({
               <section className="space-y-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">Continue Exploring</p>
-                    <h3 className="mt-2 text-2xl font-bold text-white">Nearby in the same area</h3>
+                    <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70"><PublicCopy text="继续探索" /></p>
+                    <h3 className="mt-2 text-2xl font-bold text-white"><PublicCopy text="同区域附近景点" /></h3>
                   </div>
                   {regionPath ? (
                     <Link href={regionPath} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/90 transition hover:bg-white/10">
-                      View more in this region
+                      <PublicCopy text="查看该地区更多景点" />
                       <ExternalLink className="h-4 w-4" />
                     </Link>
                   ) : null}
@@ -1069,28 +1069,28 @@ export default function SpotContent({
             {!isDrawer ? <SupportSidebarCard className="bg-white/5" /> : null}
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70">{isDrawer ? 'Quick Actions' : 'Navigation Maps'}</p>
+              <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70"><PublicCopy text={isDrawer ? '快速操作' : '导航地图'} /></p>
               <div className="mt-4 grid gap-3">
                 {isChinaLocation ? (
                   <>
                     <Button className="h-12 gap-3 rounded-xl bg-[#2b66f6] text-white hover:bg-[#1f54d6]" onClick={handleOpenBaiduMap}>
                       <MapPin className="h-5 w-5 fill-current" />
-                      Open Baidu Maps
+                      <PublicCopy text="打开百度地图" />
                     </Button>
                     <Button className="h-12 gap-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700" onClick={handleNavigateGoogle}>
                       <Navigation className="h-5 w-5 fill-current" />
-                      Open Google Maps
+                      <PublicCopy text="打开 Google 地图" />
                     </Button>
                   </>
                 ) : (
                   <>
                     <Button className="h-12 gap-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700" onClick={handleNavigateGoogle}>
                       <Navigation className="h-5 w-5 fill-current" />
-                      Open Google Maps
+                      <PublicCopy text="打开 Google 地图" />
                     </Button>
                     <Button className="h-12 gap-3 rounded-xl bg-cyan-500 text-white hover:bg-cyan-600" onClick={handleNavigateWaze}>
                       <Navigation className="h-5 w-5" />
-                      Open Waze
+                      <PublicCopy text="打开 Waze" />
                     </Button>
                   </>
                 )}
@@ -1099,7 +1099,7 @@ export default function SpotContent({
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="inline-flex items-center gap-2 font-semibold text-amber-100">
                         <Clock className="h-4 w-4 text-amber-300" />
-                        Opening Hours
+                        <PublicCopy text="营业时间" />
                       </div>
                       {openingHoursDisplay.statusLabel ? (
                         <span className={`rounded-full border px-2.5 py-1 text-[11px] ${
@@ -1132,7 +1132,7 @@ export default function SpotContent({
                     onClick={() => handleCopy(location.address || '', 'address')}
                   >
                     <Copy className="h-4 w-4" />
-                    {copiedField === 'address' ? 'Address copied' : 'Copy address'}
+                    <PublicCopy text={copiedField === 'address' ? '地址已复制' : '复制地址'} />
                   </Button>
                 ) : null}
                 <Button
@@ -1141,12 +1141,12 @@ export default function SpotContent({
                   onClick={() => handleCopy(`${location.latitude}, ${location.longitude}`, 'coords')}
                 >
                   <Copy className="h-4 w-4" />
-                  {copiedField === 'coords' ? 'Coordinates copied' : 'Copy coordinates'}
+                  <PublicCopy text={copiedField === 'coords' ? '坐标已复制' : '复制坐标'} />
                 </Button>
                   {isDrawer ? (
                   <Link href={locationPath} className="inline-flex h-12 items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 text-white transition hover:bg-white/10">
                     <ExternalLink className="h-4 w-4" />
-                    Open spot page
+                    <PublicCopy text="打开景点页面" />
                   </Link>
                 ) : (
                   <>
@@ -1207,4 +1207,3 @@ export default function SpotContent({
     </div>
   )
 }
-
