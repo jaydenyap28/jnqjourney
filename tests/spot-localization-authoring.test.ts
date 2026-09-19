@@ -30,6 +30,7 @@ function publicPageData(published:LocalizationSnapshot, canonical:typeof spot) {
     '@/lib/entity-display-name':{resolveEntityDisplayName:()=>({primary:canonical.name})},
     '@/lib/public-region-media':{resolvePublicRegionMedia:(regions:unknown)=>regions},
     '@/lib/server/public-content-media':{resolveGuidePublicMedia:(guide:unknown)=>guide},
+    '@/lib/homepage-localization':{localizeHomepageNote:(note:unknown)=>note,localizeHomepagePackage:(item:unknown)=>item},
     './localization-snapshot':snapshotTransport,
   }
   const compiled=ts.transpileModule(fs.readFileSync('lib/server/english-page-data.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText
@@ -109,4 +110,14 @@ test('Admin uses authentication; canonical form remains separate; Pages ISR refr
   const route=fs.readFileSync('pages/en/[[...path]].tsx','utf8')
   assert.match(route,/revalidateReason === 'on-demand'/)
   assert.match(fs.readFileSync('lib/server/english-page-data.ts','utf8'),/applyLocalization\(source,localizationRecord\(localization,'spot',source.id\)\)/)
+})
+
+test('Admin stale translation actions retain English text while rebinding its current Chinese source',()=>{
+  const editor=fs.readFileSync('components/SpotEnglishEditor.tsx','utf8')
+  assert.match(editor,/中文内容已更新，当前英文版暂时不会显示/)
+  assert.match(editor,/确认现有英文仍然适用/)
+  assert.match(editor,/修改英文/)
+  assert.match(editor,/source:data\.source\[key\]/)
+  assert.match(editor,/保存并发布英文版/)
+  assert.match(editor,/英文版已保存、发布并刷新英文景点页面。/)
 })
