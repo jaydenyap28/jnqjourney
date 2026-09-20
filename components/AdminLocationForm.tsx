@@ -112,7 +112,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const [editingLanguage, setEditingLanguage] = useState<'zh' | 'en'>('zh')
   const [contentFields, setContentFields] = useState<SpotContentFields>({})
   useEffect(() => {
-    const keys = ['seo_title_zh', 'seo_description_zh', 'seo_title_en', 'seo_description_en', 'experience_zh', 'experience_en', 'related_note_slugs', 'image_metadata', 'redirect_url', 'redirect_type'] as const
+    const keys = ['publication_status', 'seo_title_zh', 'seo_description_zh', 'seo_title_en', 'seo_description_en', 'experience_zh', 'experience_en', 'related_note_slugs', 'image_metadata', 'redirect_url', 'redirect_type'] as const
     setContentFields(Object.fromEntries(keys.filter(key => initialData?.[key] != null).map(key => [key, initialData[key]])))
   }, [initialData])
   const router = useRouter()

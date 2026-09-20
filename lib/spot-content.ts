@@ -1,6 +1,10 @@
 export interface SpotImageText { alt_zh?: string; alt_en?: string; caption?: string }
-export const SPOT_CONTENT_SELECT = 'seo_title_zh,seo_description_zh,seo_title_en,seo_description_en,experience_zh,experience_en,related_note_slugs,image_metadata'
+export const SPOT_CONTENT_SELECT = 'publication_status,seo_title_zh,seo_description_zh,seo_title_en,seo_description_en,experience_zh,experience_en,related_note_slugs,image_metadata'
+export function isSpotPublished(spot: { publication_status?: string | null }) {
+  return spot.publication_status == null || spot.publication_status === 'published'
+}
 export interface SpotContentFields {
+  publication_status?: 'published' | 'draft' | 'hidden' | null
   seo_title_zh?: string | null
   seo_description_zh?: string | null
   seo_title_en?: string | null

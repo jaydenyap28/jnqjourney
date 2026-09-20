@@ -18,7 +18,7 @@ import {
 import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
-import { SPOT_CONTENT_SELECT } from '@/lib/spot-content'
+import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
@@ -67,7 +67,7 @@ export function normalizeSupabasePublicData(locationRows: any[], regionRows: any
     code: row.code || null,
   }))
   const regionById = new Map(regions.map((region) => [region.id, region]))
-  const locations: PublicLocation[] = locationRows.filter(hasValidCoordinates).map((row) => {
+  const locations: PublicLocation[] = locationRows.filter(isSpotPublished).filter(hasValidCoordinates).map((row) => {
     const region = regionById.get(Number(row.region_id))
     return {
       id: Number(row.id),
@@ -147,10 +147,13 @@ async function readSupabase(): Promise<ResolvedPublicData | null> {
   if (!url || !key) return null
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   try {
-    const [locationsResult, regionsResult] = await withTimeout(Promise.all([
-      supabase.from('locations').select(LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }),
+    let [locationsResult, regionsResult] = await withTimeout(Promise.all([
+      supabase.from('locations').select(`${LOCATIONS_SELECT},publication_status`).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>(),
       supabase.from('regions').select(REGIONS_SELECT).order('id', { ascending: true }),
     ]), 'Supabase public data')
+    if (locationsResult.error && ['42703', 'PGRST204'].includes(locationsResult.error.code)) {
+      locationsResult = await supabase.from('locations').select(LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>()
+    }
     if (locationsResult.error || regionsResult.error) return null
     const normalized = normalizeSupabasePublicData(locationsResult.data || [], regionsResult.data || [])
     return { ...normalized, source: 'supabase' }

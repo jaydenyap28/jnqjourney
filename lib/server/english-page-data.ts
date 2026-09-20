@@ -111,6 +111,7 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     if (summary.slug !== slug) return {redirect:`/en/spot/${summary.slug}`}
     const snapshotSlug=collection.snapshotSlugs[summary.id]
     const snapshot = await readBilingualSnapshot<{spot:PublicSpotRecord}>(`spots/${snapshotSlug}.json`,()=>readBundledJson(`public-data/spots/${snapshotSlug}.json`),x => (x as any)?.spot?.id===summary.id, freshLocalization)
+    if (snapshot.spot.publication_status && snapshot.spot.publication_status !== 'published') return null
     const source = {...snapshot.spot,title:snapshot.spot.name}
     const result = applyLocalization(source,localizationRecord(localization,'spot',source.id))
     data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary

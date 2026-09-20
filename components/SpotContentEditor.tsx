@@ -43,6 +43,7 @@ export default function SpotContentEditor({ value, onChange, images }: {
       </fieldset>)}
     </div></details>
     <details className="rounded-xl border p-4"><summary className="cursor-pointer font-medium">Redirect / Advanced</summary><div className="mt-4 space-y-3">
+      <label className="block text-sm">发布状态 / Publication<select className="ml-3 rounded border bg-background p-2" value={value.publication_status || ''} onChange={e => patch({ publication_status: (e.target.value || null) as SpotContentFields['publication_status'] })}><option value="">沿用原有发布行为</option><option value="published">Published</option><option value="draft">Draft</option><option value="hidden">Hidden</option></select></label>
       <label className="block text-sm">Redirect URL<Input value={value.redirect_url || ''} onChange={e => patch({ redirect_url: e.target.value })} placeholder="/notes/article-slug" /></label>
       <label className="block text-sm">Redirect type<select className="ml-3 rounded border bg-background p-2" value={value.redirect_type || 301} onChange={e => patch({ redirect_type: Number(e.target.value) as 301 | 302 })}><option value={301}>301 Permanent</option><option value={302}>302 Temporary</option></select></label>
       <p className="text-sm text-muted-foreground">仅接受站内 /notes/ 或 /spot/ 地址。设置后旧网址将返回 HTTP 重定向；留空恢复正常发布状态。</p>

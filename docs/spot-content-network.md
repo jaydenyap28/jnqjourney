@@ -7,7 +7,7 @@ continue to work before migration; saving newly filled fields requires the schem
 
 ## Storage and publishing
 
-- `locations`: four localized SEO fields, two experience fields,
+- `locations`: optional `publication_status` (published/draft/hidden; NULL preserves legacy behavior), four localized SEO fields, two experience fields,
   `related_note_slugs text[]`, `image_metadata jsonb`, `redirect_url text`,
   `redirect_type integer` (301 by default; 302 supported).
 - Image metadata is keyed by the existing image URL without its focus fragment;
@@ -23,6 +23,9 @@ continue to work before migration; saving newly filled fields requires the schem
 - With no manual Spots, recommendations use explicit region IDs and descendants,
   or geography from embedded Spot references. Unknown geography produces no
   recommendations. Related Notes additionally require overlapping tags.
+
+The existing business/operating `status` is unchanged. Publication and redirect checks
+use the separate nullable `publication_status`; existing business filters remain intact.
 
 ## Redirect boundary
 

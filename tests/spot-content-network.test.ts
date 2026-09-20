@@ -89,9 +89,10 @@ test('redirects validate schemes, self aliases, multi-hop loops, hidden states a
   for (const target of ['https://evil.test', '//evil.test', '/spot/a-1?x=y', '/spot/%2e%2e', '/notes/a#b', '/notes/../a', '/notes/a\\b']) assert.throws(() => normalizeSpotRedirect(target))
   await assert.rejects(resolveSpotRouting(1, async id => ({ id, status: 'active', redirect_url: '/spot/alias-1' })), /loop/)
   await assert.rejects(resolveSpotRouting(1, async id => ({ id, status: 'active', redirect_url: `/spot/alias-${id === 1 ? 2 : 1}` })), /loop/)
-  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, status: 'hidden' })), { visible: false })
-  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, status: 'hidden', redirect_url: '/notes/shanghai-ferry' })), { visible: false, destination: '/notes/shanghai-ferry', status: 301 })
-  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, status: 'active' })), { visible: true })
+  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, publication_status: 'hidden' })), { visible: false })
+  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, publication_status: 'hidden', redirect_url: '/notes/shanghai-ferry' })), { visible: false, destination: '/notes/shanghai-ferry', status: 301 })
+  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, status: 'closed', publication_status: null })), { visible: true })
+  assert.deepEqual(await resolveSpotRouting(1, async id => ({ id, status: 'active', publication_status: 'draft' })), { visible: false })
   assert.equal((await resolveSpotRouting(1, async id => ({ id, status: 'active', redirect_type: 302, redirect_url: id === 1 ? '/spot/new-2' : '/notes/ferry' }))).status, 302)
 })
 test('real middleware produces HTTP 301 and Location for both locale paths and old aliases', async () => {

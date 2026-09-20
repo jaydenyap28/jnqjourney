@@ -1,6 +1,7 @@
 -- Additive only: do not rewrite existing editorial content, URLs or images.
 begin;
 alter table public.locations
+  add column if not exists publication_status text,
   add column if not exists seo_title_zh text,
   add column if not exists seo_description_zh text,
   add column if not exists seo_title_en text,
@@ -12,8 +13,10 @@ alter table public.locations
   add column if not exists redirect_url text,
   add column if not exists redirect_type integer default 301;
 
--- The existing status (active/hidden/etc.) stays authoritative. A redirect is
--- an explicit independent instruction and works even for a hidden source.
+-- status remains the existing business/operating status, untouched.
+-- NULL publication_status preserves legacy publication behavior; no backfill.
+alter table public.locations add constraint locations_publication_status_check
+  check (publication_status is null or publication_status in ('published', 'draft', 'hidden'));
 alter table public.locations add constraint locations_redirect_type_check
   check (redirect_type is null or redirect_type in (301, 302));
 alter table public.locations add constraint locations_image_metadata_check

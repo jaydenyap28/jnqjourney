@@ -5,7 +5,7 @@ import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
-import { SPOT_CONTENT_SELECT } from '@/lib/spot-content'
+import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
@@ -117,7 +117,7 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
       result = await withTimeout(supabase.from('locations').select(LEGACY_SPOT_SELECT).eq('id', id).eq('status', 'active').maybeSingle(), 'Legacy public spot')
     }
     if (result.error) return { status: 'failure', error: result.error }
-    if (!result.data) return { status: 'not-found' }
+    if (!result.data || !isSpotPublished(result.data as unknown as PublicSpotRecord)) return { status: 'not-found', authoritative: true }
     return { status: 'found', spot: { ...(result.data as unknown as PublicSpotRecord), slug } }
   } catch (error) {
     return { status: 'failure', error }
@@ -152,7 +152,7 @@ async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | n
     supabase: () => readSupabaseSpot(slug),
     fallback: () => readStaticSpot(slug),
   })
-  if (result.status === 'found') return { spot: result.spot, source: result.source }
+  if (result.status === 'found') return isSpotPublished(result.spot) ? { spot: result.spot, source: result.source } : null
   if (result.status === 'not-found') return null
   throw new PublicSpotUnavailableError(slug)
 }
@@ -188,6 +188,7 @@ export async function readAuthoritativePublicSpotById(id: number) {
   if (result.error) throw new Error(result.error.message || 'Unable to read authoritative public spot.')
   if (!result.data) return null
   const row = result.data as unknown as Omit<PublicSpotRecord, 'slug'>
+  if (!isSpotPublished(row)) return null
   const canonicalPath = await buildCanonicalLocationPath(row.name, row.id)
   return { ...row, slug: canonicalPath.replace('/spot/', '') } as PublicSpotRecord
 }

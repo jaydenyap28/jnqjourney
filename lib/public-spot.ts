@@ -112,6 +112,7 @@ export function publicSpotFromSupabaseRow(
   regionRow?: Record<string, any> | null
 ): PublicSpotRecord {
   return {
+    publication_status: row.publication_status,
     seo_title_zh: row.seo_title_zh, seo_title_en: row.seo_title_en,
     seo_description_zh: row.seo_description_zh, seo_description_en: row.seo_description_en,
     experience_zh: row.experience_zh, experience_en: row.experience_en,

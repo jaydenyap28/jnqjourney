@@ -1,4 +1,5 @@
-export interface SpotRoutingRecord { id: number; status?: string | null; redirect_url?: string | null; redirect_type?: number | null }
+import { isSpotPublished } from './spot-content.ts'
+export interface SpotRoutingRecord { id: number; publication_status?: string | null; redirect_url?: string | null; redirect_type?: number | null }
 
 // Local editorial URLs only: prevents open redirects and encoded path tricks.
 export function normalizeSpotRedirect(value: unknown) {
@@ -20,7 +21,7 @@ export async function resolveSpotRouting(id: number, read: (id: number) => Promi
     const row = await read(currentId)
     if (!row) return { visible: false }
     const target = normalizeSpotRedirect(row.redirect_url)
-    if (!target) return { visible: row.status === 'active', ...(destination && row.status === 'active' ? { destination, status } : {}) }
+    if (!target) return { visible: isSpotPublished(row), ...(destination && isSpotPublished(row) ? { destination, status } : {}) }
     if (depth === 0) status = row.redirect_type === 302 ? 302 : 301
     destination = target
     if (!/\/spot\//.test(target)) return { visible: false, destination, status }

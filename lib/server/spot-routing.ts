@@ -8,11 +8,11 @@ export async function readSpotRouting(id: number) {
   if (!url || !key) throw new Error('Spot routing service is unavailable.')
   const client = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   return resolveSpotRouting(id, async spotId => {
-    let result = await client.from('locations').select('id,status,redirect_url,redirect_type').eq('id', spotId).abortSignal(AbortSignal.timeout(4000)).maybeSingle()
+    let result = await client.from('locations').select('id,publication_status,redirect_url,redirect_type').eq('id', spotId).abortSignal(AbortSignal.timeout(4000)).maybeSingle()
     // During additive migration rollout old rows remain readable. Never silently
     // ignore any error other than the genuinely absent optional columns.
     if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
-      const legacy = await client.from('locations').select('id,status').eq('id', spotId).abortSignal(AbortSignal.timeout(4000)).maybeSingle()
+      const legacy = await client.from('locations').select('id').eq('id', spotId).abortSignal(AbortSignal.timeout(4000)).maybeSingle()
       if (legacy.error) throw new Error(legacy.error.message)
       return legacy.data
     }
