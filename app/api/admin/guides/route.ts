@@ -54,6 +54,7 @@ export async function POST(request: Request) {
     )
 
     if (existingIndex >= 0) {
+      payload.aliases = Array.from(new Set([...(guides[existingIndex].aliases || []), ...(payload.aliases || []), guides[existingIndex].slug])).filter((slug) => slug !== payload.slug)
       guides[existingIndex] = payload
     } else {
       guides.unshift(payload)
@@ -71,6 +72,10 @@ export async function POST(request: Request) {
     } catch (error: any) {
       tripCostSnapshotUpdated = false
       tripCostSnapshotWarning = error?.message || 'Guide saved, but the public Trip Cost snapshot was not updated.'
+    }
+    for (const alias of savedGuide.aliases || []) {
+      revalidateTag(`guide:${alias}`)
+      revalidatePath(`/guide/${alias}`)
     }
     revalidateTag('guides')
     revalidateTag(`guide:${payload.slug}`)

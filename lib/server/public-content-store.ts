@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { freshGuideSnapshotUrl } from '@/lib/guide-publication'
 import { unstable_cache } from 'next/cache'
 
 import type { TravelGuide } from '@/lib/guides'
@@ -31,9 +32,9 @@ async function readCdnCollection<T>(fileName: string, key: 'guides' | 'notes', t
   const base = cdnBase()
   if (!base) return null
   try {
-    const response = await withTimeout(fetch(`${base}/public-data/${fileName}`, {
-      next: { revalidate: 3600, tags },
-    }), `Public ${key} CDN`)
+    const response = await withTimeout(fetch(key === 'guides' ? freshGuideSnapshotUrl(base) : `${base}/public-data/${fileName}`, key === 'guides'
+      ? { cache: 'no-store' }
+      : { next: { revalidate: 3600, tags } }), `Public ${key} CDN`)
     if (!response.ok) return null
     const payload = await response.json() as Record<string, unknown>
     return payload?.schemaVersion === 1 && Array.isArray(payload[key]) ? payload[key] as unknown[] : null
@@ -70,7 +71,7 @@ async function readPublicNoteBySlugUncached(slug: string): Promise<LongformNote 
   return notes.find((note) => note.slug === slug || note.aliases?.includes(slug)) || null
 }
 
-const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v1'], {
+const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v2'], {
   revalidate: 3600,
   tags: ['guides'],
 })
@@ -86,8 +87,8 @@ export function readPublicGuides() {
 export async function readPublicGuideBySlug(slug: string) {
   return unstable_cache(
     () => readPublicGuideBySlugUncached(slug),
-    ['public-guide-v1', slug],
-    { revalidate: 3600, tags: [`guide:${slug}`] },
+    ['public-guide-v2', slug],
+    { revalidate: 3600, tags: ['guides', `guide:${slug}`] },
   )()
 }
 

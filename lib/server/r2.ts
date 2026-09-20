@@ -1,5 +1,6 @@
 import 'server-only'
 
+import { verifyGuidePublication } from '@/lib/guide-publication'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
@@ -195,14 +196,14 @@ export async function uploadPublicDataSnapshot(fileName: 'locations.json' | 'reg
   return `${getR2PublicBaseUrl()}/${key}`
 }
 
-async function uploadPublicJsonObject(key: string, body: Buffer | Uint8Array) {
+async function uploadPublicJsonObject(key: string, body: Buffer | Uint8Array, cacheControl = 'public, max-age=3600, stale-while-revalidate=86400') {
   assertR2Env()
   await getR2Client().send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME!,
     Key: key,
     Body: body,
     ContentType: 'application/json; charset=utf-8',
-    CacheControl: 'public, max-age=3600, stale-while-revalidate=86400',
+    CacheControl: cacheControl,
   }))
   return `${getR2PublicBaseUrl()}/${key}`
 }
@@ -217,8 +218,10 @@ export function uploadPublicSpotIndex(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/spots/index.json', body)
 }
 
-export function uploadPublicGuidesSnapshot(body: Buffer | Uint8Array) {
-  return uploadPublicJsonObject('public-data/guides.json', body)
+export async function uploadPublicGuidesSnapshot(body: Buffer | Uint8Array) {
+  const url = await uploadPublicJsonObject('public-data/guides.json', body, 'no-store, max-age=0')
+  await verifyGuidePublication(getR2PublicBaseUrl(), body)
+  return url
 }
 
 export function uploadPublicGuideTripCostsSnapshot(body: Buffer | Uint8Array) {

@@ -1,3 +1,6 @@
+import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
+import { getRenderableNoteBlocks } from '@/lib/notes'
+import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
@@ -45,7 +48,7 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url)
-  const linkIds = parseIdList(url.searchParams.get('ids'))
+  let linkIds = parseIdList(url.searchParams.get('ids'))
   const locationId = parsePositiveInteger(url.searchParams.get('locationId'))
   const regionId = parsePositiveInteger(url.searchParams.get('regionId'))
   const noteSlug = String(url.searchParams.get('noteSlug') || '').trim()
@@ -53,20 +56,24 @@ export async function GET(request: Request) {
   const requestedLimit = parsePositiveInteger(url.searchParams.get('limit')) || 18
   const limit = Math.min(Math.max(requestedLimit, 1), 50)
 
-  if (!linkIds.length && !locationId && !regionId && !noteSlug) {
+  if (noteSlug && !linkIds.length) {
+    const note = await readPublicNoteBySlug(noteSlug)
+    linkIds = note ? explicitNoteAffiliateIds(getRenderableNoteBlocks(note)) : []
+    if (!linkIds.length) return NextResponse.json({ links: [] })
+  }
+
+  if (!linkIds.length && !locationId && !regionId) {
     return NextResponse.json({ links: [] })
   }
 
   let query = supabase
     .from('affiliate_links')
-    .select('id,provider,link_type,url,title,description,commission_rate,clicks,location_id,region_id,note_slug,locations(name,name_cn,image_url,images),regions(name,name_cn,country,image_url)')
+    .select('id,provider,link_type,url,title,description,commission_rate,clicks,location_id,region_id,locations(name,name_cn,image_url,images),regions(name,name_cn,country,image_url)')
     .eq('is_active', true)
     .order('clicks', { ascending: false })
 
   if (linkIds.length) {
     query = query.in('id', linkIds)
-  } else if (noteSlug) {
-    query = query.eq('note_slug', noteSlug)
   } else if (locationId && regionId) {
     query = query.or(`location_id.eq.${locationId},region_id.eq.${regionId}`)
   } else if (locationId) {

@@ -43,7 +43,6 @@ interface AffiliateLink {
   clicks?: number | null
   location_id?: number | null
   region_id?: number | null
-  note_slug?: string | null
   locations?: {
     name?: string | null
     name_cn?: string | null
@@ -166,7 +165,6 @@ function getTypePriority(category?: string | null) {
 function getLinkScope(link: AffiliateLink, locationId?: number, regionId?: number, noteSlug?: string) {
   if (locationId && link.location_id === locationId) return 'location'
   if (regionId && link.region_id === regionId) return 'region'
-  if (noteSlug && link.note_slug === noteSlug) return 'note'
   return 'other'
 }
 
