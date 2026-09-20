@@ -25,6 +25,13 @@ function getAdminSupabaseClient() {
 
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => {
+      const url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url)
+      if (url.pathname.includes('/storage/v1/object/') && (!init?.method || init.method === 'GET')) {
+        url.searchParams.set('_fresh', crypto.randomUUID())
+      }
+      return fetch(url, { ...init, cache: 'no-store' })
+    } },
   })
 }
 
@@ -199,6 +206,40 @@ async function readStorageNotes() {
     return parsed.map(normalizeNotePayload).filter((note) => note.slug && note.title)
   } catch {
     return null
+  }
+}
+
+// Admin reads fail closed: no local file, memory cache, or older snapshot fallback.
+export async function readAuthoritativeNotes(): Promise<LongformNote[]> {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) throw new Error('Notes cloud storage is not configured.')
+  const bucket = supabase.storage.from(STORAGE_BUCKET)
+  const { data: pointer, error } = await bucket.download(STORAGE_LATEST_POINTER_PATH)
+  if (error || !pointer) throw new Error('Unable to read authoritative Notes pointer.')
+  const latestPath = (await pointer.text()).trim()
+  if (!latestPath.startsWith(VERSIONED_STORAGE_DIR + '/')) throw new Error('Invalid Notes pointer.')
+  const { data, error: snapshotError } = await bucket.download(latestPath)
+  if (snapshotError || !data) throw new Error('Unable to read authoritative Notes snapshot.')
+  const parsed = JSON.parse((await data.text()).replace(/^\uFEFF/, ''))
+  if (!Array.isArray(parsed)) throw new Error('Invalid Notes snapshot.')
+  return sortNotes(parsed.map(normalizeNotePayload))
+}
+
+// Atomic create serializes read/merge/write across servers. Never steal a lock:
+// a paused writer must not be allowed to overwrite another writer's changes.
+export async function mutateAuthoritativeNotes(mutate: (notes: LongformNote[]) => LongformNote[]) {
+  const supabase = getAdminSupabaseClient()
+  if (!supabase) throw new Error('Notes cloud storage is not configured.')
+  const bucket = supabase.storage.from(STORAGE_BUCKET)
+  const lockPath = '_system/notes-write-lock.webp'
+  const { error } = await bucket.upload(lockPath, Buffer.from(crypto.randomUUID()), {
+    upsert: false, contentType: 'image/webp', cacheControl: '0',
+  })
+  if (error) throw new Error('Notes cloud save is busy or unavailable. Please retry.')
+  try {
+    return await saveNotes(mutate(await readAuthoritativeNotes()))
+  } finally {
+    await bucket.remove([lockPath])
   }
 }
 

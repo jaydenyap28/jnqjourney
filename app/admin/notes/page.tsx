@@ -18,6 +18,7 @@ import {
   normalizeNoteVideoAspect,
   slugifyNote,
 } from '@/lib/notes'
+import { noteEditorKey, scheduleNoteAutosave } from '@/lib/note-sync'
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
 import FallbackImage from '@/components/FallbackImage'
@@ -400,6 +401,15 @@ export default function AdminNotesPage() {
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false)
   const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
+  const [baseline, setBaseline] = useState(() => noteEditorKey(EMPTY_NOTE, ''))
+  const [saveState, setSaveState] = useState('')
+  const inFlight = useRef(false)
+  const editorKey = noteEditorKey(form, markdownText)
+  const dirty = editorKey !== baseline
+  const live = useRef({ form, markdownText, selectedSlug, editorKey, dirty })
+  live.current = { form, markdownText, selectedSlug, editorKey, dirty }
+  const refreshSequence = useRef(0)
+  const saveRef = useRef<() => Promise<void>>(async () => {})
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
   const coverImageInputRef = useRef<HTMLInputElement | null>(null)
   const standaloneImageInputRef = useRef<HTMLInputElement | null>(null)
@@ -425,7 +435,8 @@ export default function AdminNotesPage() {
           adminFetch('/api/admin/klook-widgets', { cache: 'no-store' }),
         ])
 
-        const notesResult = notesResponse.ok ? await notesResponse.json() : { notes: [] }
+        if (!notesResponse.ok) throw new Error('Unable to load Notes from cloud.')
+        const notesResult = await notesResponse.json()
         const widgetsResult = widgetsResponse.ok ? await widgetsResponse.json() : { widgets: [] }
         if (cancelled) return
 
@@ -449,14 +460,15 @@ export default function AdminNotesPage() {
             ...firstNote,
             blocks: renderableBlocks(firstNote),
           }
-          setForm(hydrated)
-          setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
+          hydrateNote(hydrated)
         } else {
           setForm(EMPTY_NOTE)
           setMarkdownText('')
         }
       } catch {
         if (!cancelled) {
+          setSaveState('Save failed')
+          setMessage('Unable to load Notes from cloud. Reload to retry.')
           setNotes([])
           setLocations([])
           setAffiliateLinks([])
@@ -473,18 +485,49 @@ export default function AdminNotesPage() {
     }
   }, [])
 
-  useEffect(() => {
-    if (!selectedSlug) return
-    const selected = notes.find((item) => item.slug === selectedSlug)
-    if (!selected) return
-    const hydrated = {
-      ...selected,
-      blocks: renderableBlocks(selected),
-    }
+  function hydrateNote(note: LongformNote) {
+    const hydrated = { ...note, blocks: renderableBlocks(note) }
+    const markdown = hydrated.content || convertBlocksToMarkdown(hydrated.blocks)
     setForm(hydrated)
-    setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
-    setMessage('')
-  }, [notes, selectedSlug])
+    setMarkdownText(markdown)
+    setBaseline(noteEditorKey(hydrated, markdown))
+    setSaveState(note.updatedAt && Number.isFinite(Date.parse(note.updatedAt))
+      ? 'Saved to cloud ' + new Date(note.updatedAt).toLocaleTimeString('en-GB', { hour12: false }) : '')
+  }
+
+  useEffect(() => {
+    async function refresh() {
+      const before = live.current
+      if (!before.selectedSlug || before.dirty || inFlight.current || document.visibilityState === 'hidden') return
+      const sequence = ++refreshSequence.current
+      try {
+        const response = await adminFetch('/api/admin/notes', { cache: 'no-store' })
+        if (!response.ok) throw new Error('Unable to refresh Notes from cloud.')
+        const result = await response.json()
+        const current = live.current
+        if (sequence !== refreshSequence.current || inFlight.current || current.dirty ||
+            current.selectedSlug !== before.selectedSlug || current.editorKey !== before.editorKey) return
+        setNotes(result.notes)
+        const note = (result.notes as LongformNote[]).find((item) => item.slug === before.selectedSlug)
+        if (note) hydrateNote(note)
+        else setSaveState('Newer cloud version detected')
+      } catch {
+        if (sequence === refreshSequence.current) setSaveState('Save failed')
+      }
+    }
+    void refresh()
+    window.addEventListener('focus', refresh)
+    document.addEventListener('visibilitychange', refresh)
+    return () => {
+      refreshSequence.current++
+      window.removeEventListener('focus', refresh)
+      document.removeEventListener('visibilitychange', refresh)
+    }
+  }, [selectedSlug])
+
+  useEffect(() => scheduleNoteAutosave(() => { void saveRef.current() }, dirty,
+    loading || saving || !form.title.trim() || saveState === 'Save failed' || saveState === 'Newer cloud version detected'),
+  [editorKey, dirty, loading, saving, saveState, form.title])
 
   const locationsById = useMemo(() => new Map(locations.map((location) => [location.id, location])), [locations])
   const lockedSpot = lockedSpotId ? locationsById.get(lockedSpotId) || null : null
@@ -534,6 +577,9 @@ export default function AdminNotesPage() {
   const previewBlocks = useMemo(() => parseMarkdownToBlocks(markdownText), [markdownText])
 
   function createNewNote() {
+    if (inFlight.current || (dirty && !window.confirm('Discard unsaved Note edits?'))) return
+    setBaseline(noteEditorKey(EMPTY_NOTE, ''))
+    setSaveState('')
     setSelectedSlug('')
     setForm(EMPTY_NOTE)
     setMarkdownText('')
@@ -759,19 +805,24 @@ export default function AdminNotesPage() {
   }
 
   async function saveNote() {
+    if (inFlight.current || !dirty || saveState === 'Newer cloud version detected') return
+    inFlight.current = true
+    refreshSequence.current++
+    const submittedKey = editorKey
+    setSaveState('Saving...')
     setSaving(true)
     setMessage('')
 
     const parsedBlocks = parseMarkdownToBlocks(markdownText)
 
-    const payload: LongformNote & { previousSlug?: string } = {
+    const payload: LongformNote & { previousSlug?: string; expectedUpdatedAt: string } = {
       ...form,
       slug: form.slug || slugifyNote(form.title),
       shortTitle: form.shortTitle || form.title,
       tags: parseCommaSeparated(stringifyCommaSeparated(form.tags)),
       content: markdownText.trim(),
       blocks: parsedBlocks,
-      updatedAt: new Date().toISOString(),
+      expectedUpdatedAt: form.updatedAt || '',
       previousSlug: selectedSlug || undefined,
     }
 
@@ -783,6 +834,11 @@ export default function AdminNotesPage() {
       })
 
       const result = await response.json()
+      if (response.status === 409) {
+        setSaveState('Newer cloud version detected')
+        setMessage('Newer cloud version detected. Local edits are preserved; copy them before reloading.')
+        return
+      }
       if (!response.ok) throw new Error(result?.error || 'Failed to save note.')
 
       const nextNote = result.note as LongformNote
@@ -797,32 +853,56 @@ export default function AdminNotesPage() {
         return [hydrated, ...current]
       })
       setSelectedSlug(hydrated.slug)
-      setForm(hydrated)
-      setMarkdownText(hydrated.content || convertBlocksToMarkdown(hydrated.blocks))
+      if (live.current.editorKey === submittedKey) {
+        hydrateNote(hydrated)
+      } else {
+        // Keep keystrokes made during the request, but advance their cloud base version.
+        const nextForm = { ...live.current.form, updatedAt: hydrated.updatedAt, createdAt: hydrated.createdAt }
+        if (nextForm.slug === form.slug) nextForm.slug = hydrated.slug
+        setForm(nextForm)
+        setBaseline(noteEditorKey({ ...form, slug: hydrated.slug }, markdownText))
+      }
+      setSaveState('Saved to cloud ' + new Date().toLocaleTimeString('en-GB', { hour12: false }))
       setMessage(hydrated.published ? 'Published note saved.' : 'Draft saved.')
     } catch (error: any) {
+      setSaveState('Save failed')
       setMessage(error?.message || 'Failed to save note.')
     } finally {
+      inFlight.current = false
       setSaving(false)
     }
   }
 
+  saveRef.current = saveNote
+
   async function deleteCurrentNote() {
+    if (inFlight.current) return
     if (!form.slug) return
+    inFlight.current = true
+    refreshSequence.current++
+    setSaving(true)
     try {
-      const response = await adminFetch(`/api/admin/notes?slug=${encodeURIComponent(form.slug)}`, { method: 'DELETE' })
+      const response = await adminFetch(`/api/admin/notes?slug=${encodeURIComponent(form.slug)}&expectedUpdatedAt=${encodeURIComponent(form.updatedAt || '')}`, { method: 'DELETE' })
+      if (response.status === 409) {
+        setSaveState('Newer cloud version detected')
+        return
+      }
       if (!response.ok) throw new Error('Failed to delete note.')
       const remaining = notes.filter((item) => item.slug !== form.slug)
       setNotes(remaining)
       if (remaining.length) {
         setSelectedSlug(remaining[0].slug)
-        setForm({ ...remaining[0], blocks: renderableBlocks(remaining[0]) })
+        hydrateNote(remaining[0])
       } else {
-        createNewNote()
+        setSelectedSlug('')
+        hydrateNote(EMPTY_NOTE)
       }
       setMessage('Note deleted.')
     } catch (error: any) {
       setMessage(error?.message || 'Failed to delete note.')
+    } finally {
+      inFlight.current = false
+      setSaving(false)
     }
   }
 
@@ -854,7 +934,11 @@ export default function AdminNotesPage() {
                   <button
                      key={note.slug}
                      type="button"
-                     onClick={() => setSelectedSlug(note.slug)}
+                     onClick={() => {
+                       if (inFlight.current || (dirty && !window.confirm('Discard unsaved Note edits?'))) return
+                       hydrateNote(note)
+                       setSelectedSlug(note.slug)
+                     }}
                      className={`w-full rounded-2xl border px-4 py-3 text-left transition ${selectedSlug === note.slug ? 'border-amber-300/40 bg-amber-400/10' : 'border-white/10 bg-black/20 hover:bg-white/5'}`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -892,6 +976,7 @@ export default function AdminNotesPage() {
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete
                 </Button>
+                <span role="status" className="self-center text-xs text-white/60">{saveState === 'Saving...' || saveState === 'Save failed' || saveState === 'Newer cloud version detected' ? saveState : dirty ? 'Unsaved' : saveState}</span>
                 <Button type="button" onClick={saveNote} disabled={saving} className="bg-white text-black hover:bg-amber-50">
                   <Save className="mr-2 h-4 w-4" />
                   {saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}
