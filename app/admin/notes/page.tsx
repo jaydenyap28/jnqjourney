@@ -1,5 +1,6 @@
 'use client'
 
+import OrderedRelationPicker from '@/components/OrderedRelationPicker'
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { Image as ImageIcon, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
@@ -953,6 +954,11 @@ export default function AdminNotesPage() {
               <div className="space-y-2">
                 <Label>Tags</Label>
                 <Input value={stringifyCommaSeparated(form.tags)} onChange={(event) => updateForm({ tags: parseCommaSeparated(event.target.value) })} placeholder="cameron highlands, tea plantation" />
+              </div>
+              <div className="space-y-4 md:col-span-2">
+                <OrderedRelationPicker label="自动推荐地区 / Geography" options={[...new Map(locations.flatMap(l => l.regions ? [[l.regions.id, l.regions] as const] : [])).values()].map(r => ({ id: String(r.id), label: [r.country, r.name_cn || r.name].filter(Boolean).join(' / ') }))} value={(form.relatedRegionIds || []).map(String)} onChange={ids => updateForm({ relatedRegionIds: ids.map(Number) })} />
+                <OrderedRelationPicker label="Related Spots / 相关景点" options={locations.map(l => ({ id: String(l.id), label: [l.name_cn, l.name, l.regions?.country, l.regions?.name].filter(Boolean).join(' / ') }))} value={(form.relatedSpotIds || []).map(String)} onChange={ids => updateForm({ relatedSpotIds: ids.map(Number) })} />
+                <OrderedRelationPicker label="Related Notes / 延伸阅读" options={notes.filter(n => n.slug !== form.slug).map(n => ({ id: n.slug, label: n.title }))} value={form.relatedNoteSlugs || []} onChange={ids => updateForm({ relatedNoteSlugs: ids })} />
               </div>
               <div className="flex items-center gap-3 pt-8">
                 <input id="published" type="checkbox" checked={form.published} onChange={(event) => updateForm({ published: event.target.checked })} />

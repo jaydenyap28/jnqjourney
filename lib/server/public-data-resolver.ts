@@ -18,10 +18,12 @@ import {
 import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
+import { SPOT_CONTENT_SELECT } from '@/lib/spot-content'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
-const SNAPSHOT_LOCATIONS_SELECT = `${LOCATIONS_SELECT},images,description,tags,video_url,facebook_video_url,opening_hours,price_info,address`
+const LEGACY_SNAPSHOT_SELECT = `${LOCATIONS_SELECT},images,description,tags,video_url,facebook_video_url,opening_hours,price_info,address`
+const SNAPSHOT_LOCATIONS_SELECT: string = `${LEGACY_SNAPSHOT_SELECT},${SPOT_CONTENT_SELECT}`
 const SNAPSHOT_REGIONS_SELECT = `${REGIONS_SELECT},description`
 const TIMEOUT_MS = 4000
 
@@ -168,10 +170,13 @@ async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null
   if (!url || !key) return null
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   try {
-    const [locationsResult, regionsResult] = await withTimeout(Promise.all([
-      supabase.from('locations').select(SNAPSHOT_LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }),
+    let [locationsResult, regionsResult] = await withTimeout(Promise.all([
+      supabase.from('locations').select(SNAPSHOT_LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>(),
       supabase.from('regions').select(SNAPSHOT_REGIONS_SELECT).order('id', { ascending: true }),
     ]), 'Supabase snapshot data')
+    if (locationsResult.error && ['42703', 'PGRST204'].includes(locationsResult.error.code)) {
+      locationsResult = await withTimeout(Promise.resolve(supabase.from('locations').select(LEGACY_SNAPSHOT_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>()), 'Legacy snapshot data')
+    }
     if (locationsResult.error || regionsResult.error) return null
     const locationRows = locationsResult.data || []
     const regionRows = regionsResult.data || []

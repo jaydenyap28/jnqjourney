@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
 import ts from 'typescript'
+import { selectRelatedNotes } from '../lib/content-relations.ts'
 import { editSpotTranslation, type SpotTranslationEdits } from '../lib/spot-localization-authoring.ts'
 import { applyLocalization, localizationRecord, type LocalizationSnapshot } from '../lib/localization.ts'
 import { readAuthoritativeLocalization, saveAndPublishLocalization, localizationPointer, localizationPublicKey } from '../lib/server/localization-publisher.mjs'
@@ -23,6 +24,7 @@ function publicPageData(published:LocalizationSnapshot, canonical:typeof spot) {
     readBilingualSnapshot:async(key:string)=>key==='locations.json'?{locations:[{...canonical,slug}]}:key==='regions.json'?{regions:[]}:key==='guides.json'?{guides:[]}:{spot:{...canonical,slug}},
   }
   const modules:Record<string,unknown>={
+    '@/lib/content-relations':{selectRelatedNotes},
     '@/data/guide-price-highlights.json':[],
     '@/lib/server/travel-packages':{readPublishedPackagesUncached:async()=>[]},
     '@/lib/guide-price-highlights':{}, '@/lib/guide-budget':{},

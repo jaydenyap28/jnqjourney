@@ -1,6 +1,10 @@
 'use client'
 
 
+import { spotImageText, type SpotContentFields } from '@/lib/spot-content'
+import type { RelatedNoteCard } from '@/lib/content-relations'
+import RelatedNoteCards from './RelatedNoteCards'
+import { usePublicLocale } from './PublicLocale'
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
 
@@ -53,7 +57,7 @@ interface RelatedLocation {
   distanceKm?: number
 }
 
-interface Location {
+interface Location extends SpotContentFields {
   id: number
   name: string
   name_cn?: string | null
@@ -83,6 +87,7 @@ interface SpotContentProps {
   location: Location
   mode?: 'drawer' | 'page'
   onClose?: () => void
+  relatedNotes?: RelatedNoteCard[]
   relatedLocations?: RelatedLocation[]
   relatedGuides?: Array<{
     slug: string
@@ -266,10 +271,13 @@ export default function SpotContent({
   location,
   mode = 'drawer',
   onClose,
+  relatedNotes = [],
   relatedLocations = [],
   relatedGuides = [],
   relatedPackages = [],
 }: SpotContentProps) {
+  const locale = usePublicLocale()
+  const experience = location[`experience_${locale}`]?.trim()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
@@ -568,13 +576,13 @@ export default function SpotContent({
       {validImages.length > 0 ? (
         <div className="group relative h-[31vh] min-h-[196px] w-full max-h-[500px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
           <div className="absolute inset-0 z-0">
-            <FallbackImage key={validImages[currentImageIndex]} src={validImages[currentImageIndex]} alt="background blur" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
+            <FallbackImage key={validImages[currentImageIndex]} src={validImages[currentImageIndex]} alt="" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
           </div>
           <div className="relative z-10 h-full w-full p-0 transition-transform duration-500 ease-out md:p-4">
             <FallbackImage
               key={validImages[currentImageIndex]}
               src={validImages[currentImageIndex]}
-              alt={location.name}
+              alt={spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).alt}
               fill
               className="object-contain drop-shadow-2xl"
               priority
@@ -588,6 +596,7 @@ export default function SpotContent({
             />
           </div>
 
+          {spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).caption ? <p className="absolute inset-x-0 bottom-0 z-10 bg-black/65 px-4 py-2 text-center text-sm text-white">{spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).caption}</p> : null}
           {isDrawer && onClose ? (
             <Button variant="ghost" size="icon" onClick={onClose} className="absolute right-3 top-3 z-20 h-9 w-9 rounded-full bg-black/40 text-white backdrop-blur-sm hover:bg-black/60 md:right-4 md:top-4">
               <X className="h-5 w-5" />
@@ -990,6 +999,12 @@ export default function SpotContent({
                 </div>
               )}
             </div>
+
+            {experience ? <section className="space-y-4">
+              <h2 className="text-xl font-bold text-white">{locale === 'en' ? 'JnQ Experience' : 'JnQ Experience｜我们的体验'}</h2>
+              <div className="whitespace-pre-line rounded-xl border border-amber-300/20 bg-amber-300/5 p-5 text-lg leading-relaxed text-gray-200">{experience}</div>
+            </section> : null}
+            {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} /> : null}
 
             {!isDrawer && relatedGuides.length > 0 ? (
               <section className="space-y-4">

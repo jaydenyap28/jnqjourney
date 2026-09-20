@@ -13,6 +13,9 @@ import {
 } from '@/lib/region-utils'
 import { Button } from '@/components/ui/button'
 import AdminAffiliateLinksPanel from '@/components/AdminAffiliateLinksPanel'
+import SpotContentEditor from '@/components/SpotContentEditor'
+import type { SpotContentFields } from '@/lib/spot-content'
+import { normalizeSpotRedirect } from '@/lib/spot-redirect'
 import SpotEnglishEditor from '@/components/SpotEnglishEditor'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -107,6 +110,11 @@ interface EnrichmentSuggestionState {
 
 export default function AdminLocationForm({ initialData, mode }: AdminLocationFormProps) {
   const [editingLanguage, setEditingLanguage] = useState<'zh' | 'en'>('zh')
+  const [contentFields, setContentFields] = useState<SpotContentFields>({})
+  useEffect(() => {
+    const keys = ['seo_title_zh', 'seo_description_zh', 'seo_title_en', 'seo_description_en', 'experience_zh', 'experience_en', 'related_note_slugs', 'image_metadata', 'redirect_url', 'redirect_type'] as const
+    setContentFields(Object.fromEntries(keys.filter(key => initialData?.[key] != null).map(key => [key, initialData[key]])))
+  }, [initialData])
   const router = useRouter()
   const galleryFileInputRef = useRef<HTMLInputElement | null>(null)
   const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null)
@@ -1382,6 +1390,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     console.log('[save-location] image_url:', formData.image_url)
     console.log('[save-location] images:', formData.images)
     try {
+      const target = normalizeSpotRedirect(contentFields.redirect_url)
+      if (target && /\/spot\//.test(target) && Number(target.match(/-(\d+)$/)?.[1]) === Number(initialData?.id)) throw new Error('不能重定向到此景点自身或其别名。')
       assertStoredImageUrlsAreR2(formData.image_url, formData.images)
     } catch (error: any) {
       setLoading(false)
@@ -1393,6 +1403,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     // if the user hasn't run the migration script yet.
     // The 'description' column already exists in the table.
     const submissionData = {
+      ...contentFields,
+      ...(contentFields.redirect_url !== undefined ? { redirect_url: normalizeSpotRedirect(contentFields.redirect_url) } : {}),
       name: formData.name,
       name_cn: formData.name_cn,
       category: formData.category,
@@ -1499,6 +1511,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           const snapshotPayload = await snapshotResponse.json().catch(() => ({}))
           console.warn('Spot snapshot refresh failed after database save:', snapshotPayload?.error || snapshotResponse.status)
           setMessage(`${mode === 'edit' ? '更新' : '发布'}成功，但公开 fallback 快照刷新失败；上一份有效快照会继续使用。`)
+        } else {
+          const englishResponse = await adminFetch(`/api/admin/spot-content-revalidate/${savedRecord.id}`, { method: 'POST' })
+          if (!englishResponse.ok) setMessage('内容已保存并发布，但英文页面刷新失败；稍后可重新保存以重试。')
         }
       }
 
@@ -1509,6 +1524,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       router.refresh()
       
       if (mode === 'add') {
+        setContentFields({})
         // Reset form only on add
         setFormData({
           name: '',
@@ -2782,6 +2798,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             />
           </div>
 
+          <SpotContentEditor value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} />
+
           {mode === 'edit' && initialData?.id ? (
             <AdminAffiliateLinksPanel
               locationId={initialData.id}
@@ -2823,6 +2841,4 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     </Card>
   )
 }
-
-
 

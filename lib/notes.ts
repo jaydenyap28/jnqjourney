@@ -61,6 +61,7 @@ export interface LongformNote {
   tags: string[]
   relatedRegionIds: number[]
   relatedSpotIds: number[]
+  relatedNoteSlugs?: string[]
   blocks: NoteBlock[]
   createdAt?: string
   updatedAt?: string

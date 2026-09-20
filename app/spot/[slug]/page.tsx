@@ -1,16 +1,17 @@
+import { spotSeo } from '@/lib/spot-content'
+import { selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
-import SiteFooter from '@/components/SiteFooter'
 import SpotPageView from '@/components/SpotPageView'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
-import { readPublicGuides } from '@/lib/server/public-content-store'
+import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
-import { buildCanonicalUrl, buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
+import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
 export const revalidate = 600
@@ -41,18 +42,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     notFound()
   }
 
-  const regionName = location.regions?.name_cn || location.regions?.name || ''
-  const readableName = location.name_cn ? `${location.name_cn} / ${location.name}` : location.name
-  const categoryLabel =
-    location.category === 'food' ? 'food spot' : location.category === 'accommodation' ? 'stay' : 'travel spot'
-  const seoTitle = regionName ? `${readableName} in ${regionName} - ${categoryLabel} guide` : `${readableName} ${categoryLabel} guide`
-  const fallbackDesc = `Plan your visit to ${readableName}${regionName ? ` in ${regionName}` : ''} with photos, address, map location, opening hours, travel notes, and booking references from JnQ Journey.`
-  const description = buildMetaDescription(location.description || location.review, fallbackDesc)
+  const { title: seoTitle, description } = spotSeo(location, 'zh')
   const canonicalPath = await buildCanonicalLocationPath(location.name, location.id)
   const coverImage = getCoverImage(location)
 
   return {
-    title: seoTitle,
+    title: { absolute: seoTitle },
     description,
     alternates: await chineseLocalizedAlternates(canonicalPath, 'spot', location.id, {...location,title:location.name}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, coverImage, 'article'),
@@ -73,10 +68,11 @@ export default async function SpotPage({ params }: PageProps) {
     redirect(canonicalPath)
   }
 
-  const [relatedLocations, allGuides, allPackages] = await Promise.all([
+  const [relatedLocations, allGuides, allPackages, allNotes] = await Promise.all([
     fetchRelatedLocations(location, 6),
     readPublicGuides(),
     readPublishedPackages(),
+    readPublicNotes(),
   ])
   const relatedPackages = allPackages.filter((item) =>
     item.region_id === location.region_id || item.related_location_ids?.includes(location.id)
@@ -172,9 +168,9 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   return (
-    <SpotPageView location={location} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
+    <SpotPageView location={location} relatedNotes={selectRelatedNotes(location.related_note_slugs, allNotes).map(toRelatedNoteCard)} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData).replace(/</g, '\\u003c') }} />
 
     </SpotPageView>
   )

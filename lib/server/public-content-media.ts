@@ -145,7 +145,7 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     ...(note.relatedSpotIds || []),
     ...(note.blocks || []).flatMap((block) => block.spotId ? [block.spotId] : []),
   ]
-  const relatedSpots = selectPublicSpotCards(locations, { ids: relatedIds })
+  const relatedSpots = relatedIds.length ? selectPublicSpotCards(locations, { ids: relatedIds }) : []
   const blockImages = (note.blocks || []).flatMap((block) => [
     block.imageUrl,
     ...(block.images || []).map((image) => image.src),

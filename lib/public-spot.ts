@@ -1,6 +1,7 @@
+import type { SpotContentFields } from './spot-content'
 import type { PublicLocation, PublicLocationRegion } from '@/lib/public-data'
 
-export interface PublicSpotRecord {
+export interface PublicSpotRecord extends SpotContentFields {
   id: number
   slug: string
   name: string
@@ -111,6 +112,10 @@ export function publicSpotFromSupabaseRow(
   regionRow?: Record<string, any> | null
 ): PublicSpotRecord {
   return {
+    seo_title_zh: row.seo_title_zh, seo_title_en: row.seo_title_en,
+    seo_description_zh: row.seo_description_zh, seo_description_en: row.seo_description_en,
+    experience_zh: row.experience_zh, experience_en: row.experience_en,
+    related_note_slugs: row.related_note_slugs, image_metadata: row.image_metadata,
     id: Number(row.id),
     slug: location.slug,
     name: String(row.name || '').trim(),

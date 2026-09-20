@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { spotSeo } from '@/lib/spot-content'
 import type { EnglishPageData } from '@/lib/server/english-page-data'
 import { PublicLocaleProvider } from './PublicLocale'
 import LanguageSwitcher from './LanguageSwitcher'
@@ -19,8 +20,9 @@ import { absoluteUrl } from '@/lib/site'
 /** Route/SEO adapter only: every public body uses the Chinese production renderer. */
 export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
   const alternates=localizedAlternates(data.path,'en',data.status),robots=localizedRobots('en',data.status)
-  const image=data.guide?.coverImage || data.spot?.image_url || data.region?.thumbnail
-  const description=data.description.slice(0,180)
+  const image=data.spot ? data.spot.image_url || data.spot.images?.[0] || absoluteUrl('/icon.png') : data.guide?.coverImage || data.region?.thumbnail
+  const seo = data.spot ? spotSeo(data.spot, 'en') : {title:`${data.title} | JnQ Journey`, description:data.description.slice(0,180)}
+  const description=seo.description
   const fullGuides=data.fullGuides || []
   const packages=data.packages || []
   let body
@@ -30,13 +32,18 @@ export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
     case 'region': body=<RegionPageView locale="en" region={{...data.region,image_url:data.region?.thumbnail,description:data.region?.shortSummary}} locations={data.locations.map(publicSpotFromLocationSummary)} allGuides={fullGuides} relatedPackages={packages.filter(p=>p.region_id===data.region?.id)}/>;break
     case 'guides': body=<GuideIndexView guides={fullGuides}/>;break
     case 'guide': body=data.guide&&data.tripCost?<GuidePageView locale="en" guide={data.guide} publicData={{locations:data.locations}} publicTripCost={data.tripCost} approvedPriceHighlights={data.priceHighlights || []} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(data.guide!.slug))} allGuides={fullGuides}/>:null;break
-    case 'spot': body=data.spot?<SpotPageView location={data.spot} relatedLocations={data.locations.map(publicSpotFromLocationSummary)} relatedGuides={data.guides} relatedPackages={packages.filter(p=>p.region_id===data.spot!.region_id)} dataSource="public-snapshot"/>:null;break
+    case 'spot': body=data.spot?<SpotPageView location={data.spot} relatedNotes={data.relatedNotes || []} relatedLocations={data.locations.map(publicSpotFromLocationSummary)} relatedGuides={data.guides} relatedPackages={packages.filter(p=>p.region_id===data.spot!.region_id)} dataSource="public-snapshot">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@graph':[
+        {'@type':data.spot.category==='food'?'Restaurant':data.spot.category==='accommodation'?'Hotel':'TouristAttraction',name:data.title,description,url:absoluteUrl(alternates.canonical),image,address:data.spot.address || undefined,geo:{'@type':'GeoCoordinates',latitude:data.spot.latitude,longitude:data.spot.longitude}},
+        {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:absoluteUrl('/en')},{'@type':'ListItem',position:2,name:data.title,item:absoluteUrl(alternates.canonical)}]}
+      ]}).replace(/</g,'\\u003c')}} />
+    </SpotPageView>:null;break
     case 'search': body=<SearchPageView locale="en" locations={data.searchLocations || data.locations} regions={data.regions} guides={data.guides}/>;break
     case 'about': body=<AboutPageView/>;break
     default: body=<PolicyPageLayout title={data.title} eyebrow="JnQ Journey" introduction={<a href={data.path}>Read the original Chinese page →</a>} sections={[]}/>
   }
   return <PublicLocaleProvider locale="en">
-    <Head><title>{`${data.title} | JnQ Journey`}</title><meta name="description" content={description}/><meta name="robots" content={`${robots.index?'index':'noindex'},follow`}/><link rel="canonical" href={absoluteUrl(alternates.canonical)}/>{Object.entries(alternates.languages||{}).map(([lang,path])=><link key={lang} rel="alternate" hrefLang={lang} href={absoluteUrl(path)}/>)}<meta property="og:title" content={data.title}/><meta property="og:description" content={description}/><meta property="og:url" content={absoluteUrl(alternates.canonical)}/><meta property="og:locale" content="en_US"/>{image?<meta property="og:image" content={image}/>:null}<link rel="icon" href="/icon.png?v=3"/></Head>
+    <Head><title>{seo.title}</title><meta name="description" content={description}/><meta name="robots" content={`${robots.index?'index':'noindex'},follow`}/><link rel="canonical" href={absoluteUrl(alternates.canonical)}/>{Object.entries(alternates.languages||{}).map(([lang,path])=><link key={lang} rel="alternate" hrefLang={lang} href={absoluteUrl(path)}/>)}<meta property="og:title" content={data.spot ? seo.title : data.title}/><meta property="og:description" content={description}/><meta property="og:url" content={absoluteUrl(alternates.canonical)}/><meta property="og:locale" content="en_US"/>{image?<meta property="og:image" content={image}/>:null}{data.spot ? <><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content={seo.title}/><meta name="twitter:description" content={description}/><meta name="twitter:image" content={image || undefined}/></> : null}<link rel="icon" href="/icon.png?v=3"/></Head>
     {data.kind!=='home'?<div className="flex justify-end border-b border-white/5 bg-[#080d16] px-4 py-2 md:px-8"><LanguageSwitcher initialPath={localizedPath(data.path,'en')}/></div>:null}
     <div data-translation-status={data.status}>
       {data.status!=='complete' && !['home','regions','guides','search'].includes(data.kind)?<p className="bg-[#080d16] px-5 py-2 text-center text-xs text-white/60" role="status">{ui('en','fallback')}</p>:null}

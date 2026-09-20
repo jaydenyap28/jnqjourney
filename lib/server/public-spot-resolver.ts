@@ -5,6 +5,7 @@ import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
+import { SPOT_CONTENT_SELECT } from '@/lib/spot-content'
 
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
@@ -17,13 +18,14 @@ import {
   type PublicSpotSource,
 } from '@/lib/public-spot'
 
-const SPOT_DETAIL_SELECT = `
+const LEGACY_SPOT_SELECT = `
   id,name,name_cn,category,latitude,longitude,image_url,images,description,tags,
   video_url,facebook_video_url,visit_date,opening_hours,price_info,address,region_id,
   regions:region_id (
     id,name,name_cn,country,description,image_url,parent_id,code
   )
 `
+const SPOT_DETAIL_SELECT = `${SPOT_CONTENT_SELECT},${LEGACY_SPOT_SELECT}`
 const TIMEOUT_MS = 4000
 
 export class PublicSpotUnavailableError extends Error {
@@ -102,7 +104,7 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
   if (!url || !key) return { status: 'failure', error: new Error('Missing Supabase public environment variables') }
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   try {
-    const result = await withTimeout(
+    let result = await withTimeout(
       supabase
         .from('locations')
         .select(SPOT_DETAIL_SELECT)
@@ -111,6 +113,9 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
         .maybeSingle(),
       'Supabase public spot'
     )
+    if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
+      result = await withTimeout(supabase.from('locations').select(LEGACY_SPOT_SELECT).eq('id', id).eq('status', 'active').maybeSingle(), 'Legacy public spot')
+    }
     if (result.error) return { status: 'failure', error: result.error }
     if (!result.data) return { status: 'not-found' }
     return { status: 'found', spot: { ...(result.data as unknown as PublicSpotRecord), slug } }
@@ -168,7 +173,7 @@ export async function readAuthoritativePublicSpotById(id: number) {
   if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
   if (!Number.isInteger(id) || id <= 0) throw new Error('Invalid Spot id.')
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  const result = await withTimeout(
+  let result = await withTimeout(
     supabase
       .from('locations')
       .select(SPOT_DETAIL_SELECT)
@@ -177,6 +182,9 @@ export async function readAuthoritativePublicSpotById(id: number) {
       .maybeSingle(),
     'Authoritative public spot'
   )
+  if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
+    result = await withTimeout(supabase.from('locations').select(LEGACY_SPOT_SELECT).eq('id', id).eq('status', 'active').maybeSingle(), 'Legacy authoritative spot')
+  }
   if (result.error) throw new Error(result.error.message || 'Unable to read authoritative public spot.')
   if (!result.data) return null
   const row = result.data as unknown as Omit<PublicSpotRecord, 'slug'>

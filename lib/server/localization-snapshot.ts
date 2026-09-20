@@ -8,18 +8,19 @@ const cache = new Map<string, { until: number; promise: Promise<unknown> }>()
 const base = () => String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
 
 /** Raw public snapshots are shared; localized documents have an explicit locale key and tag. No database fallback. */
-export async function readBilingualSnapshot<T>(key: string, fallback: () => Promise<T>, validate: (value: unknown) => boolean): Promise<T> {
+export async function readBilingualSnapshot<T>(key: string, fallback: () => Promise<T>, validate: (value: unknown) => boolean, fresh = false): Promise<T> {
   const entry = cache.get(key)
-  if (entry && entry.until > Date.now()) return entry.promise as Promise<T>
+  if (!fresh && entry && entry.until > Date.now()) return entry.promise as Promise<T>
   const promise = (async () => {
     try {
       if (base()) {
-        const response = await fetch(`${base()}/public-data/${key}`, {
-          signal: AbortSignal.timeout(4000), next: { revalidate: 3600, tags: [`bilingual:${key}`] },
+        const response = await fetch(`${base()}/public-data/${key}${fresh ? `?publication=${Date.now()}` : ''}`, {
+          signal: AbortSignal.timeout(4000), next: { revalidate: fresh ? 0 : 3600, tags: [`bilingual:${key}`] },
         })
         if (response.ok) { const value = await response.json(); if (validate(value)) return value as T }
+        if (fresh) throw new Error('Published snapshot unavailable during page refresh')
       }
-    } catch { /* An unavailable CDN must not introduce live PostgREST requests. */ }
+    } catch (error) { if (fresh) throw error /* Keep the prior ISR page when publication cannot be verified. */ }
     return fallback()
   })()
   cache.set(key, { until: Date.now() + 60_000, promise })

@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 async function guardSpot(request: NextRequest) {
-  const slug = request.nextUrl.pathname.split('/').filter(Boolean)[1]
+  const slug = request.nextUrl.pathname.split('/').filter(Boolean).at(-1)
   if (!slug) return NextResponse.next()
+  // This uncached routing decision precedes static page/alias resolution, so
+  // hidden source pages and every old alias return an actual HTTP 301/302.
+  try {
+    const routingResponse = await fetch(new URL(`/api/spot-routing/${encodeURIComponent(slug)}`, request.url), { cache: 'no-store' })
+    if (!routingResponse.ok) throw new Error('Spot routing unavailable')
+    const routing = await routingResponse.json()
+    if (routing.destination) return NextResponse.redirect(new URL(routing.destination, request.url), routing.status === 302 ? 302 : 301)
+    if (!routing.visible) return new NextResponse('Not Found', { status: 404, headers: { 'X-Robots-Tag': 'noindex, nofollow' } })
+  } catch {
+    return new NextResponse('Spot temporarily unavailable.', { status: 503, headers: { 'Retry-After': '30', 'X-Robots-Tag': 'noindex' } })
+  }
   const endpoint = new URL(`/api/spots/${encodeURIComponent(slug)}`, request.url)
   try {
     const response = await fetch(endpoint, { cache: 'force-cache' })
@@ -71,10 +82,10 @@ async function guardPackage(request: NextRequest) {
 }
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/spot/')) return guardSpot(request)
+  if (/^\/(?:en\/)?spot\//.test(request.nextUrl.pathname)) return guardSpot(request)
   return guardPackage(request)
 }
 
 export const config = {
-  matcher: ['/packages/:path*', '/spot/:path*'],
+  matcher: ['/packages/:path*', '/spot/:path*', '/en/spot/:path*'],
 }

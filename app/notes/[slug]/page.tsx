@@ -1,3 +1,5 @@
+import RelatedNoteCards from '@/components/RelatedNoteCards'
+import { selectNoteSpotIds, relatedNotesForNote } from '@/lib/content-relations'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -15,7 +17,7 @@ import TravelPackageCard from '@/components/TravelPackageCard'
 import InlineMarkdown from '@/components/InlineMarkdown'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
-import { readPublicNoteBySlug } from '@/lib/server/public-content-store'
+import { readPublicNoteBySlug, readPublicNotes } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
@@ -377,7 +379,9 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const affiliateIds = explicitNoteAffiliateIds(affiliateBlocks)
   const klookWidgetIds = Array.from(new Set(klookBlocks.flatMap((block) => block.klookWidgetIds || [])))
 
-  const relatedSpots = selectPublicSpotCards(publicData.locations, { ids: spotIds }) as LocationData[]
+  const relatedIds = selectNoteSpotIds(note, publicData.locations, publicData.regions)
+  const relatedSpots = (relatedIds.length ? selectPublicSpotCards(publicData.locations, { ids: relatedIds }) : []) as LocationData[]
+  const relatedNotes = relatedNotesForNote(note, await readPublicNotes(), publicData.locations, publicData.regions)
   const [affiliateLinks, allKlookWidgets, noteKlookWidgets, publishedPackages] = await Promise.all([
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
@@ -386,7 +390,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
   ])
   const relatedPackages = publishedPackages.filter((item) => item.related_note_slugs?.includes(note.slug))
 
-  const locationsById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
+  const locationsById = new Map((spotIds.length ? selectPublicSpotCards(publicData.locations, { ids: spotIds }) : []).map((spot) => [spot.id, spot as LocationData]))
   const affiliateById = new Map(affiliateLinks.map((link) => [link.id, link]))
   const klookWidgetById = new Map(allKlookWidgets.filter((widget) => widget.isActive).map((widget) => [widget.id, widget]))
   const textExcerpt = getTextExcerpt(note)
@@ -535,6 +539,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
               />
             ))}
 
+            <RelatedNoteCards notes={relatedNotes} heading="延伸阅读" />
             {relatedSpots.length ? (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
                 <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Related Spots</p>
