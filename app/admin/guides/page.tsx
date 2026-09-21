@@ -928,6 +928,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
   }
 
   function rebuildDaysFromVisitDates() {
+    if (form.days.length > 0 && !window.confirm(
+      'Rebuild from visit dates? This will replace current day routes, manual Spot ordering (including repeated Spots across days), Longform Note route items, day titles/summaries/highlights, accommodation adjustments, and other manually adjusted daily structure. Cancel to keep your existing days.'
+    )) return
+
     const nextDays = buildGuideDaysFromVisitDates(locations, form.route.map((stop) => stop.name))
     if (!nextDays.length) {
       setMessage('No dated spots matched the current route yet.')
