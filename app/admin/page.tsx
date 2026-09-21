@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { mutateAdminLocations } from '@/lib/admin-locations'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -356,7 +357,7 @@ export default function AdminDashboard() {
   const handleDelete = async (id: number) => {
     setDeletingId(id)
     try {
-      const { error } = await supabase.from('locations').delete().eq('id', id)
+      const { error } = await mutateAdminLocations('DELETE', { id })
       if (error) throw error
       setLocations((prev) => prev.filter((loc) => loc.id !== id))
       setSelectedIds((prev) => prev.filter((sid) => sid !== id))
@@ -373,7 +374,7 @@ export default function AdminDashboard() {
     if (!selectedIds.length) return
     setIsProcessingBulk(true)
     try {
-      const { error } = await supabase.from('locations').delete().in('id', selectedIds)
+      const { error } = await mutateAdminLocations('DELETE', { ids: selectedIds })
       if (error) throw error
       setLocations((prev) => prev.filter((loc) => !selectedIds.includes(loc.id)))
       setSelectedIds([])
@@ -392,7 +393,7 @@ export default function AdminDashboard() {
     setIsProcessingBulk(true)
     try {
       const targetRegion = allRegions.find((region) => region.id.toString() === moveTargetRegionId) || null
-      const { error } = await supabase.from('locations').update({ region_id: Number.parseInt(moveTargetRegionId, 10) }).in('id', selectedIds)
+      const { error } = await mutateAdminLocations('PATCH', { ids: selectedIds, data: { region_id: Number.parseInt(moveTargetRegionId, 10) } })
       if (error) throw error
       setLocations((prev) =>
         prev.map((loc) =>
@@ -418,7 +419,7 @@ export default function AdminDashboard() {
     setIsProcessingBulk(true)
     try {
       const nextVisitDate = bulkVisitDate || null
-      const { error } = await supabase.from('locations').update({ visit_date: nextVisitDate }).in('id', selectedIds)
+      const { error } = await mutateAdminLocations('PATCH', { ids: selectedIds, data: { visit_date: nextVisitDate } })
       if (error) throw error
       setLocations((prev) =>
         prev.map((loc) => (selectedIds.includes(loc.id) ? { ...loc, visit_date: nextVisitDate } : loc))
@@ -440,7 +441,7 @@ export default function AdminDashboard() {
     setIsProcessingBulk(true)
     try {
       const nextVideoUrl = bulkVideoUrl.trim() || null
-      const { error } = await supabase.from('locations').update({ video_url: nextVideoUrl }).in('id', selectedIds)
+      const { error } = await mutateAdminLocations('PATCH', { ids: selectedIds, data: { video_url: nextVideoUrl } })
       if (error) throw error
       setLocations((prev) =>
         prev.map((loc) => (selectedIds.includes(loc.id) ? { ...loc, video_url: nextVideoUrl } : loc))

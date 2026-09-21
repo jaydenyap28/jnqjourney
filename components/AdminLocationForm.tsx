@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
+import { mutateAdminLocations } from '@/lib/admin-locations'
 import { createDefaultPriceInfo, parsePriceInfo, serializePriceInfo, StructuredPriceInfo } from '@/lib/price-utils'
 import {
   findRegionById,
@@ -317,10 +318,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     if (!window.confirm(confirmMessage)) return
 
     if (mode === 'edit' && initialData?.id) {
-      const { error } = await supabase
-        .from('locations')
-        .update({ image_url: '' })
-        .eq('id', initialData.id)
+      const { error } = await mutateAdminLocations('PATCH', {
+        id: initialData.id,
+        data: { image_url: '' },
+      })
 
       if (error) {
         setMessage(`Error: Failed to clear cover from database: ${error.message}`)
@@ -1428,21 +1429,12 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       status: formData.status || 'active',
     }
 
-    // Helper to execute DB operation
+    // Keep the database result shape for safe-save fallback and publishing.
     const executeSave = async (data: any) => {
       if (mode === 'edit' && initialData?.id) {
-        return await supabase
-          .from('locations')
-          .update(data)
-          .eq('id', initialData.id)
-          .select('id, updated_at')
-          .single()
+        return mutateAdminLocations('PATCH', { id: initialData.id, data, returning: true })
       } else {
-        return await supabase
-          .from('locations')
-          .insert([data])
-          .select('id, updated_at')
-          .single()
+        return mutateAdminLocations('POST', { data })
       }
     }
 
