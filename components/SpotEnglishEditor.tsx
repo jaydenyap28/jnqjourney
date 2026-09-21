@@ -31,6 +31,7 @@ export default function SpotEnglishEditor({spotId}:{spotId:number}) {
   const [fields,setFields] = useState<SpotTranslationEdits | null>(null)
   const [status,setStatus] = useState<TranslationStatus>('missing')
   const [busy,setBusy] = useState(false)
+  const [generating,setGenerating] = useState(false)
   const [message,setMessage] = useState('')
   const fieldRefs = useRef<Partial<Record<typeof spotTranslationFields[number], HTMLTextAreaElement>>>({})
   const url = `/api/admin/spot-localization/${spotId}`
@@ -60,10 +61,22 @@ export default function SpotEnglishEditor({spotId}:{spotId:number}) {
       setMessage(value.revalidated?'英文版已保存、发布并刷新英文景点页面。':'英文版已保存并发布；英文景点页面刷新失败，请稍后重试刷新。')
     } catch(error) {setMessage(error instanceof Error?error.message:'保存失败')} finally {setBusy(false)}
   }
+  async function generate() {
+    if (!data || !fields) return
+    if (spotTranslationFields.some((key) => fields[key].text.trim()) && !window.confirm('这会覆盖当前未保存的英文内容，继续生成？')) return
+    setBusy(true); setGenerating(true); setMessage('')
+    try {
+      const response = await adminFetch(`${url}/generate`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ revision: data.revision, source: data.source }) })
+      const value = await response.json()
+      if (!response.ok) throw Error(value.error || 'AI 英文草稿生成失败。')
+      setFields(value.fields as SpotTranslationEdits)
+      setMessage('AI 草稿已生成，请检查后再保存发布')
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'AI 英文草稿生成失败。') } finally { setBusy(false); setGenerating(false) }
+  }
   return <section aria-label="Spot English translation" className="space-y-5">
     <p className="text-sm text-gray-600">编辑独立的英文译文。原名称与中文资料不会改变；原文以已保存的中文资料为准。</p>
     {data && fields ? <>
-      <p role="status">当前有效状态：<strong>{data.status}</strong></p>
+      <div className="flex flex-wrap items-center gap-3"><p role="status">当前有效状态：<strong>{data.status}</strong></p><button type="button" disabled={busy} onClick={generate} className="rounded border border-blue-600 px-4 py-2 text-blue-700 disabled:opacity-50">{generating ? 'AI 生成中…' : 'AI 生成英文草稿'}</button></div>
       {spotTranslationFields.map(key=><div key={key} className="space-y-2">
         <label htmlFor={`en-${key}`} className="block font-medium">{fieldCopy[key].label}</label>
         {fieldCopy[key].help ? <p className="text-sm text-gray-600">{fieldCopy[key].help}</p> : null}

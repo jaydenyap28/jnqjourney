@@ -5,6 +5,10 @@ export type SpotTranslationField = typeof spotTranslationFields[number]
 export type SpotTranslationSource = { id: number; name: string; [key: string]: unknown }
 export type SpotTranslationEdits = Record<SpotTranslationField, { source: string; text: string }>
 
+export function spotTranslationSource(spot: SpotTranslationSource): Record<SpotTranslationField, string> {
+  return Object.fromEntries(spotTranslationFields.map((key) => [key, String(spot[key] ?? '')])) as Record<SpotTranslationField, string>
+}
+
 export function editSpotTranslation(snapshot: LocalizationSnapshot, spot: SpotTranslationSource, canonicalPath: string,
   edits: SpotTranslationEdits, requestedStatus: TranslationStatus, version: string) {
   if (!['missing', 'partial', 'complete'].includes(requestedStatus)) throw new Error('Invalid translation status')

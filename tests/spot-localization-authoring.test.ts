@@ -5,6 +5,7 @@ import vm from 'node:vm'
 import ts from 'typescript'
 import { selectRelatedNotes } from '../lib/content-relations.ts'
 import { editSpotTranslation, type SpotTranslationEdits } from '../lib/spot-localization-authoring.ts'
+import { assertCurrentSpotGenerationRequest, parseSpotEnglishGeneration } from '../lib/spot-localization-generation.ts'
 import { applyLocalization, localizationRecord, type LocalizationSnapshot } from '../lib/localization.ts'
 import { readAuthoritativeLocalization, saveAndPublishLocalization, localizationPointer, localizationPublicKey } from '../lib/server/localization-publisher.mjs'
 
@@ -122,4 +123,25 @@ test('Admin stale translation actions retain English text while rebinding its cu
   assert.match(editor,/source:data\.source\[key\]/)
   assert.match(editor,/保存并发布英文版/)
   assert.match(editor,/英文版已保存、发布并刷新英文景点页面。/)
+})
+
+test('AI generation accepts only the current revision/source and preserves the exact source with its draft text',()=>{
+  const source={description:spot.description,review:'',address:spot.address}
+  assert.doesNotThrow(()=>assertCurrentSpotGenerationRequest({revision:'current',source},'current',source))
+  assert.throws(()=>assertCurrentSpotGenerationRequest({revision:'old',source},'current',source),/Revision conflict/)
+  assert.throws(()=>assertCurrentSpotGenerationRequest({revision:'current',source:{...source,description:'旧中文'}},'current',source),/Source conflict/)
+  const generated=parseSpotEnglishGeneration({description:'A bamboo-themed cafe.',review:'',address:'Jalan Lye, Langkawi'},source)
+  const fields=Object.fromEntries(Object.entries(generated).map(([key,text])=>[key,{source:source[key as keyof typeof source],text}])) as SpotTranslationEdits
+  assert.deepEqual(fields.description,{source:spot.description,text:'A bamboo-themed cafe.'})
+  assert.deepEqual(fields.review,{source:'',text:''})
+})
+
+test('AI generation rejects malformed output and content for an empty source without saving or publishing',()=>{
+  const source={description:spot.description,review:'',address:spot.address}
+  assert.throws(()=>parseSpotEnglishGeneration({description:'ok',review:'',address:4},source),/invalid translation result/)
+  assert.throws(()=>parseSpotEnglishGeneration({description:'ok',review:'Invented',address:'ok'},source),/empty review/)
+  const api=fs.readFileSync('pages/api/admin/spot-localization/[id]/generate.ts','utf8')
+  assert.match(api,/requireAdminRequest/)
+  assert.match(api,/readAuthoritativeLocalization/)
+  assert.doesNotMatch(api,/saveAndPublishLocalization|\.update\(|\.insert\(|\.upsert\(/)
 })
