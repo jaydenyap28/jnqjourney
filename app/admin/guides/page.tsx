@@ -1738,10 +1738,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
                               <Label>Published Longform Notes</Label>
                               <Input value={dayNoteSearches[index] || ''} onChange={(e) => setDayNoteSearches((prev) => ({ ...prev, [index]: e.target.value }))} placeholder="Search published Notes" />
                               {noteLoadError ? <p role="alert" className="text-sm text-amber-200">{noteLoadError}</p> : null}
-                              {isEditorOpen ? <div className="max-h-48 space-y-1 overflow-y-auto">{routeNotes.filter((note) => matchesSearchQuery([note.title, note.shortTitle, note.slug], dayNoteSearches[index] || '')).map((note) => {
+                              <div className="max-h-48 space-y-1 overflow-y-auto">{routeNotes.filter((note) => matchesSearchQuery([note.title, note.shortTitle, note.slug], dayNoteSearches[index] || '')).map((note) => {
                                 const selected = routeItems.some((item) => item.type === 'note' && item.noteSlug === note.slug)
                                 return <button key={note.slug} type="button" disabled={selected} onClick={() => updateDayRoute(index, [...routeItems, { type: 'note', noteSlug: note.slug, displayName: note.title }])} className="block w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm disabled:opacity-50">{note.title}{selected ? ' - Added' : ' + Add Note'}</button>
-                              })}</div> : null}
+                              })}</div>
                             </div>
                             {routeItems.length ? (
                               <div className="space-y-2">
