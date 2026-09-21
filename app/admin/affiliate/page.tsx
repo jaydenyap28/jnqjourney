@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Download, Edit, ExternalLink, Filter, Plus, Trash2, X } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { mutateAdminAffiliateLinks } from '@/lib/admin-affiliate-links'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -378,23 +379,23 @@ function AffiliatePageContent() {
     if (editingLinkId) {
       const [primaryLocationId, ...extraLocationIds] = locationIds
 
-      const updateResult = await supabase
-        .from('affiliate_links')
-        .update({
+      const updateResult = await mutateAdminAffiliateLinks('PATCH', {
+        id: editingLinkId,
+        data: {
           ...basePayload,
           location_id: primaryLocationId || null,
-        })
-        .eq('id', editingLinkId)
+        },
+      })
 
       if (updateResult.error) {
         error = updateResult.error
       } else if (extraLocationIds.length) {
-        const insertResult = await supabase.from('affiliate_links').insert(
-          extraLocationIds.map((locationId) => ({
+        const insertResult = await mutateAdminAffiliateLinks('POST', {
+          data: extraLocationIds.map((locationId) => ({
             ...basePayload,
             location_id: locationId,
-          }))
-        )
+          })),
+        })
 
         if (insertResult.error) {
           error = insertResult.error
@@ -412,7 +413,7 @@ function AffiliatePageContent() {
         payloads = [{ ...basePayload, location_id: null }]
       }
 
-      const insertResult = await supabase.from('affiliate_links').insert(payloads)
+      const insertResult = await mutateAdminAffiliateLinks('POST', { data: payloads })
       if (insertResult.error) {
         error = insertResult.error
       }
@@ -456,7 +457,7 @@ function AffiliatePageContent() {
   const handleDelete = async (id: number) => {
     if (!window.confirm('确定删除这条联盟链接吗？')) return
 
-    const { error } = await supabase.from('affiliate_links').delete().eq('id', id)
+    const { error } = await mutateAdminAffiliateLinks('DELETE', { id })
     if (error) {
       alert(`删除失败: ${error.message}`)
       return
@@ -470,10 +471,10 @@ function AffiliatePageContent() {
   }
 
   const handleToggleActive = async (id: number, current: boolean) => {
-    const { error } = await supabase
-      .from('affiliate_links')
-      .update({ is_active: !current })
-      .eq('id', id)
+    const { error } = await mutateAdminAffiliateLinks('PATCH', {
+      id,
+      data: { is_active: !current },
+    })
 
     if (error) {
       alert(`更新失败: ${error.message}`)

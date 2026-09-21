@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ExternalLink, Link2, Loader2, Plus, Trash2 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { mutateAdminAffiliateLinks } from '@/lib/admin-affiliate-links'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -146,7 +147,7 @@ export default function AdminAffiliateLinksPanel({
       region_id: scope === 'region' ? regionId || null : null,
     }
 
-    const { error } = await supabase.from('affiliate_links').insert(payload)
+    const { error } = await mutateAdminAffiliateLinks('POST', { data: payload })
 
     if (error) {
       setMessage(`添加失败：${error.message}`)
@@ -168,10 +169,10 @@ export default function AdminAffiliateLinksPanel({
   }
 
   const handleToggleActive = async (link: AffiliateLinkRecord) => {
-    const { error } = await supabase
-      .from('affiliate_links')
-      .update({ is_active: !link.is_active })
-      .eq('id', link.id)
+    const { error } = await mutateAdminAffiliateLinks('PATCH', {
+      id: link.id,
+      data: { is_active: !link.is_active },
+    })
 
     if (error) {
       setMessage(`更新失败：${error.message}`)
@@ -186,7 +187,7 @@ export default function AdminAffiliateLinksPanel({
   const handleDelete = async (id: number) => {
     if (!window.confirm('确定删除这条联盟链接吗？')) return
 
-    const { error } = await supabase.from('affiliate_links').delete().eq('id', id)
+    const { error } = await mutateAdminAffiliateLinks('DELETE', { id })
 
     if (error) {
       setMessage(`删除失败：${error.message}`)
