@@ -1,5 +1,7 @@
 
 import {PublicCopy} from '@/components/PublicLocale'
+import RelatedNoteCards from '@/components/RelatedNoteCards'
+import type { RelatedNoteCard } from '@/lib/content-relations'
 import type {TravelGuide} from '@/lib/guides'
 import type {TravelPackage} from '@/lib/server/travel-packages'
 import type {Locale} from '@/lib/locale'
@@ -53,7 +55,7 @@ function SpotCard({ spot, regionName }: { spot: any, regionName: string }) {
   )
 }
 
-export default function RegionPageView({region,locations,relatedPackages,allGuides,locale='zh'}:{region:any;locations:any[];relatedPackages:TravelPackage[];allGuides:TravelGuide[];locale?:Locale}) {
+export default function RegionPageView({region,locations,relatedPackages,allGuides,relatedNotes=[],locale='zh'}:{region:any;locations:any[];relatedPackages:TravelPackage[];allGuides:TravelGuide[];relatedNotes?:RelatedNoteCard[];locale?:Locale}) {
   const readableName = resolveEntityDisplayName(region,locale).primary
 
   // Guides matching
@@ -237,6 +239,8 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
             </div>
           </section>
         )}
+
+        <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} />
 
         {/* Cameron Special Sections */}
         {isCameron && (

@@ -12,7 +12,9 @@ import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
 import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { fetchLocationsByRegion, fetchRegionBySlug } from '@/lib/server/public-location-data'
-import { readPublicGuides } from '@/lib/server/public-content-store'
+import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
+import { resolvePublicData } from '@/lib/server/public-data-resolver'
+import { noteRegionIds, toRelatedNoteCard } from '@/lib/content-relations'
 import { absoluteUrl } from '@/lib/site'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 import TravelPackageCard from '@/components/TravelPackageCard'
@@ -56,6 +58,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 export default async function RegionPage({params}:PageProps) {
  const region=await fetchRegionBySlug(params.slug);if(!region) notFound();
- const [locations,packages,allGuides]=await Promise.all([fetchLocationsByRegion(region.id,100),readPublishedPackages(),readPublicGuides()]);
- return <RegionPageView region={region} locations={locations} relatedPackages={packages.filter(p=>p.region_id===region.id)} allGuides={allGuides}/>
+ const [locations,packages,allGuides,notes,publicData]=await Promise.all([fetchLocationsByRegion(region.id,100),readPublishedPackages(),readPublicGuides(),readPublicNotes(),resolvePublicData()]);
+ const relatedNotes=notes.filter(note=>note.published && noteRegionIds(note,publicData.locations,publicData.regions).has(region.id)).map(toRelatedNoteCard);
+ return <RegionPageView region={region} locations={locations} relatedPackages={packages.filter(p=>p.region_id===region.id)} allGuides={allGuides} relatedNotes={relatedNotes}/>
 }
