@@ -1,3 +1,5 @@
+import { spotDescriptionExcerpt } from './spot-description'
+
 export interface SpotImageText { alt_zh?: string; alt_en?: string; caption?: string }
 export const SPOT_CONTENT_SELECT = 'publication_status,seo_title_zh,seo_description_zh,seo_title_en,seo_description_en,experience_zh,experience_en,related_note_slugs,image_metadata'
 export function isSpotPublished(spot: { publication_status?: string | null }) {
@@ -31,6 +33,6 @@ export function spotSeo(spot: SpotContentFields & { name: string; name_cn?: stri
   const name = locale === 'zh' ? spot.name_cn || spot.name : spot.title || spot.name
   return {
     title: clean(spot[`seo_title_${locale}`]) || `${name} | JnQ Journey`,
-    description: (clean(spot[`seo_description_${locale}`]) || clean(spot.description || spot.review) || (locale === 'zh' ? `探索${name}：照片、地址和旅行资讯。JnQ Journey。` : `Explore ${name}: photos, address and travel information from JnQ Journey.`)).slice(0, 160),
+    description: (clean(spot[`seo_description_${locale}`]) || spotDescriptionExcerpt(spot.description || spot.review) || (locale === 'zh' ? `探索${name}：照片、地址和旅行资讯。JnQ Journey。` : `Explore ${name}: photos, address and travel information from JnQ Journey.`)).slice(0, 160),
   }
 }

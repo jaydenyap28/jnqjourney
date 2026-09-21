@@ -1,4 +1,5 @@
 import { spotSeo } from '@/lib/spot-content'
+import { spotDescriptionExcerpt } from '@/lib/spot-description'
 import { selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
@@ -114,7 +115,7 @@ export default async function SpotPage({ params }: PageProps) {
     '@type': baseType,
     name: location.name_cn || location.name,
     alternateName: location.name_cn ? location.name : undefined,
-    description: location.description || location.review || undefined,
+    description: spotDescriptionExcerpt(location.description || location.review) || undefined,
     image: getCoverImage(location) || undefined,
     url: absoluteUrl(canonicalPath),
   }

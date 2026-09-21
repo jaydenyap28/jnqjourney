@@ -7,6 +7,7 @@ import RelatedNoteCards from './RelatedNoteCards'
 import { usePublicLocale } from './PublicLocale'
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
+import SpotDescription from './SpotDescription'
 
 
 import dynamic from 'next/dynamic'
@@ -991,7 +992,7 @@ export default function SpotContent({
               </h3>
               {spotDescription ? (
                 <div className="rounded-xl border border-white/10 bg-white/5 p-4 shadow-inner backdrop-blur-md md:p-6">
-                  <div className="whitespace-pre-line [overflow-wrap:anywhere] text-lg leading-relaxed text-gray-200">{spotDescription}</div>
+                  {isDrawer ? <div className="whitespace-pre-line [overflow-wrap:anywhere] text-lg leading-relaxed text-gray-200">{spotDescription}</div> : <SpotDescription>{spotDescription}</SpotDescription>}
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-5 text-center md:p-8">
