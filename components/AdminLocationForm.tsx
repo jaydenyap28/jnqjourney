@@ -19,6 +19,7 @@ import { normalizeSpotRedirect } from '@/lib/spot-redirect'
 import SpotEnglishEditor from '@/components/SpotEnglishEditor'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import SpotDescriptionEditor from '@/components/SpotDescriptionEditor'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Search, Loader2, Save, Upload, ImagePlus, ExternalLink, MapPin, GripVertical, ArrowUp, ArrowDown, Trash2 } from 'lucide-react'
@@ -2788,13 +2789,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
 
           <div className="space-y-2">
             <Label htmlFor="review">景点资讯 / Description</Label>
-            <Textarea
-              id="review"
-              name="review"
+            <SpotDescriptionEditor
               value={formData.review}
-              onChange={handleChange}
-              placeholder="补充景点特色、注意事项、推荐玩法等"
-              rows={5}
+              onChange={(review) => setFormData((previous) => ({ ...previous, review }))}
             />
           </div>
 
