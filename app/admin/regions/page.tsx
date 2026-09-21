@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Textarea } from '@/components/ui/textarea'
 import { adminFetch } from '@/lib/admin-fetch'
+import { mutateAdminRegions } from '@/lib/admin-regions'
 import { getRegionPathLabel, type RegionLike } from '@/lib/region-utils'
 import { supabase } from '@/lib/supabase'
 
@@ -244,8 +245,8 @@ export default function RegionsPage() {
 
     try {
       const result = editingId
-        ? await supabase.from('regions').update(payload).eq('id', editingId)
-        : await supabase.from('regions').insert([payload])
+        ? await mutateAdminRegions('PATCH', { id: editingId, data: payload })
+        : await mutateAdminRegions('POST', { data: payload })
 
       if (result.error) throw result.error
 
@@ -271,7 +272,7 @@ export default function RegionsPage() {
     const confirmed = window.confirm(`Delete region "${region.name_cn || region.name}"?`)
     if (!confirmed) return
 
-    const { error } = await supabase.from('regions').delete().eq('id', region.id)
+    const { error } = await mutateAdminRegions('DELETE', { id: region.id })
     if (error) {
       setErrorMsg(error.message || 'Failed to delete region.')
       return
