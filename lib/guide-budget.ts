@@ -118,6 +118,47 @@ export function formatGuideBudgetCents(currency: string, cents: number) {
   return `${currency} ${guideBudgetCentsToMoney(cents)}`
 }
 
+export const GUIDE_DISPLAY_CURRENCIES = ['MYR', 'CNY', 'USD', 'JPY', 'SGD'] as const
+export type GuideDisplayCurrency = (typeof GUIDE_DISPLAY_CURRENCIES)[number]
+
+/** Normalizes reader-facing currency labels without changing stored budget data. */
+export function normalizeGuideDisplayCurrency(value: unknown): GuideDisplayCurrency | null {
+  const currency = String(value || '').trim().toUpperCase()
+  const normalized = currency === 'RM' ? 'MYR' : currency === 'RMB' ? 'CNY' : currency
+  return GUIDE_DISPLAY_CURRENCIES.includes(normalized as GuideDisplayCurrency)
+    ? normalized as GuideDisplayCurrency
+    : null
+}
+
+export function formatGuideDisplayAmount(currency: GuideDisplayCurrency, amount: number) {
+  const fractionDigits = currency === 'JPY' ? 0 : 2
+  const formatted = new Intl.NumberFormat('en-MY', {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(amount)
+  const prefix: Record<GuideDisplayCurrency, string> = {
+    MYR: 'RM ',
+    CNY: '¥',
+    USD: 'US$',
+    JPY: '¥',
+    SGD: 'S$',
+  }
+  return `${prefix[currency]}${formatted}`
+}
+
+/** Converts an integer source-cent amount for display only; it is not accounting data. */
+export function convertGuideBudgetCents(cents: number, rate: number, target: GuideDisplayCurrency) {
+  if (!Number.isSafeInteger(cents) || !Number.isFinite(rate) || rate <= 0) return null
+  const converted = (cents / 100) * rate
+  const factor = target === 'JPY' ? 1 : 100
+  return Math.round((converted + Number.EPSILON) * factor) / factor
+}
+
+export function formatConvertedGuideBudgetCents(cents: number, rate: number, target: GuideDisplayCurrency) {
+  const converted = convertGuideBudgetCents(cents, rate, target)
+  return converted === null ? null : formatGuideDisplayAmount(target, converted)
+}
+
 export interface CanonicalGuideBudgetItem {
   key: GuideTripCostCategoryKey
   label: string
