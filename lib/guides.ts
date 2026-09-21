@@ -41,6 +41,11 @@ export interface GuideAttractionRef {
   tips?: string
 }
 
+// Array order is canonical. Notes never carry coordinates.
+export type GuideDayRouteItem =
+  | ({ type: 'spot' } & GuideAttractionRef)
+  | { type: 'note'; noteSlug: string; displayName: string }
+
 export interface GuideDayPlan {
   dayLabel: string
   date?: string
@@ -48,6 +53,7 @@ export interface GuideDayPlan {
   summary: string
   highlights: string[]
   attractions?: GuideAttractionRef[]
+  routeItems?: GuideDayRouteItem[]
   linkedSpots?: string[]
   videoUrl?: string
   transport?: string
@@ -67,6 +73,7 @@ export interface GuideItineraryRoute {
   title: string
   summary?: string
   attractions?: GuideAttractionRef[]
+  routeItems?: GuideDayRouteItem[]
   linkedSpots?: string[]
   status?: 'visited' | 'reference' | 'pending'
 }

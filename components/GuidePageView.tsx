@@ -1,3 +1,4 @@
+import GuideDayRoute from '@/components/GuideDayRoute'
 
 import {PublicCopy} from '@/components/PublicLocale'
 import { publicCopy } from '@/lib/public-copy'
@@ -394,6 +395,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
       : ''
 
     return {
+      routeSource: day,
       date: persistedDate,
       formattedDate,
       dayNumber,
@@ -725,22 +727,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
                     {videoId ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><Film className="h-3.5 w-3.5" /><PublicCopy text={"有影片"}/></span> : null}
                   </div>
 
-                  {day.displaySpots.length > 1 ? (
-                    <nav aria-label={`Day ${day.dayNumber} 今日路线`} className="mt-6 border-y border-white/10 py-4">
-                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
-                        <Navigation className="h-3.5 w-3.5" /><PublicCopy text={" 今日路线\n                      "}/></div>
-                      <ol className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-                        {day.displaySpots.map((spot, index) => (
-                          <li key={`route-${day.dayNumber}-${spot.id}`} className="flex min-w-0 items-center gap-2">
-                            <Link href={buildLocationPath(spot.name, spot.id)} className="truncate text-sm text-white/82 transition hover:text-amber-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300">
-                              {guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)}
-                            </Link>
-                            {index < day.displaySpots.length - 1 ? <ArrowRight className="h-3.5 w-3.5 shrink-0 rotate-90 text-amber-200/45 sm:rotate-0" /> : null}
-                          </li>
-                        ))}
-                      </ol>
-                    </nav>
-                  ) : null}
+                  <GuideDayRoute dayNumber={day.dayNumber} source={day.routeSource} spots={allGuideSpots} />
 
                   {shouldShowDaySummary(day.summary) ? (
                     <div className="mt-6 max-w-[800px] space-y-4 text-[15px] leading-[1.85] text-white/76 md:text-base">

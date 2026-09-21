@@ -1,5 +1,8 @@
 ﻿'use client'
 
+import type { GuideDayRouteItem } from '@/lib/guides'
+import type { LongformNote } from '@/lib/notes'
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import {
@@ -20,7 +23,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type GuideAttractionRef, type TravelGuide } from '@/lib/guides'
-import { attractionKey, orderedGuideAttractions } from '@/lib/guide-attractions'
+import { attractionKey, orderedGuideAttractions, orderedGuideDayRoute } from '@/lib/guide-attractions'
 import { migrateLegacyGuideAttractionsUnique } from '@/lib/guide-legacy-migration'
 import { buildLocationSlug } from '@/lib/location-routing'
 import { canonicalGuideBudgetItems, formatGuideBudgetCents, GUIDE_TRIP_COST_CATEGORIES, guideBudgetMoneyToCents, canonicalTripCostCategory } from '@/lib/guide-budget'
@@ -161,6 +164,7 @@ function attractionFromLocation(location: LocationOption, displayOrder: number):
 }
 
 function migrateLegacyAttractions(day: TravelGuide['days'][number], locations: LocationOption[]) {
+  if (Array.isArray(day.routeItems)) return orderedGuideAttractions(day)
   return migrateLegacyGuideAttractionsUnique(day, locations)
 }
 
@@ -341,6 +345,7 @@ function segmentDaysForEditor(guide: TravelGuide, locations: LocationOption[] = 
           title: route.title,
           summary: route.summary || '',
           highlights: [],
+          routeItems: route.routeItems,
           attractions: Array.isArray(route.attractions)
             ? route.attractions
             : (route.linkedSpots || []).flatMap((name, index) => {
@@ -389,7 +394,7 @@ function applyEditorDaysToSegments(guide: TravelGuide, days: TravelGuide['days']
       ...segment,
       verifiedRoutes: segment.verifiedRoutes.map((route) => {
       const day = typeof route.dayNumber === 'number' ? byDay.get(route.dayNumber) : null
-      return day ? { ...route, title: day.title, summary: day.summary, attractions: orderedGuideAttractions(day), linkedSpots: [] } : route
+      return day ? { ...route, title: day.title, summary: day.summary, routeItems: day.routeItems, attractions: orderedGuideAttractions(day), linkedSpots: [] } : route
       }),
       // Every save writes the exact per-day stay state. In particular, [] is a
       // durable deletion marker and prevents legacy seed data from returning.
@@ -420,6 +425,9 @@ function categoryLabel(category?: string | null) {
 }
 
 export default function AdminGuidesPage() {
+  const [routeNotes, setRouteNotes] = useState<LongformNote[]>([])
+  const [noteLoadError, setNoteLoadError] = useState('')
+  const [dayNoteSearches, setDayNoteSearches] = useState<Record<number, string>>({})
   const [guides, setGuides] = useState<TravelGuide[]>([])
   const [locations, setLocations] = useState<LocationOption[]>([])
   const [affiliateLinks, setAffiliateLinks] = useState<AffiliateLinkOption[]>([])
@@ -677,6 +685,13 @@ export default function AdminGuidesPage() {
 
   useEffect(() => {
     loadData()
+    adminFetch('/api/admin/notes', { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Failed to load published Notes.')
+        const data = await response.json()
+        setRouteNotes((data.notes || []).filter((note: LongformNote) => note.published))
+      })
+      .catch((error) => setNoteLoadError(error.message))
   }, [loadData])
 
   function updateField<K extends keyof TravelGuide>(field: K, value: TravelGuide[K]) {
@@ -862,31 +877,29 @@ function removeDay(index: number) {
     )
   }
 
+function dayRoute(dayIndex: number): GuideDayRouteItem[] {
+  const day = form.days[dayIndex]
+  return orderedGuideDayRoute(Array.isArray(day.routeItems) ? day : { attractions: migrateLegacyAttractions(day, locations) })
+}
+
+function updateDayRoute(dayIndex: number, items: GuideDayRouteItem[]) {
+  const routeItems = items.map((item, displayOrder) => item.type === 'spot' ? { ...item, displayOrder } : item)
+  updateDay(dayIndex, { routeItems, attractions: orderedGuideAttractions({ routeItems }), linkedSpots: [] })
+}
+
 function toggleDayLinkedSpot(dayIndex: number, location: LocationOption) {
-  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
+  const current = dayRoute(dayIndex)
   const key = attractionKey(attractionFromLocation(location, 0))
-  const exists = current.some((item) => attractionKey(item) === key)
-  updateDay(dayIndex, {
-      attractions: (exists ? current.filter((item) => attractionKey(item) !== key) : [...current, attractionFromLocation(location, current.length)])
-        .map((item, displayOrder) => ({ ...item, displayOrder })),
-      linkedSpots: [],
-  })
+  const matches = (item: GuideDayRouteItem) => item.type === 'spot' && attractionKey(item) === key
+  updateDayRoute(dayIndex, current.some(matches) ? current.filter((item) => !matches(item)) : [...current, { ...attractionFromLocation(location, current.length), type: 'spot' }])
 }
 
-function moveDayLinkedSpot(dayIndex: number, spotIndex: number, direction: 'up' | 'down') {
-  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
-  updateDay(dayIndex, {
-    attractions: moveArrayItem(current, spotIndex, direction).map((item, displayOrder) => ({ ...item, displayOrder })),
-    linkedSpots: [],
-  })
+function moveDayLinkedSpot(dayIndex: number, itemIndex: number, direction: 'up' | 'down') {
+  updateDayRoute(dayIndex, moveArrayItem(dayRoute(dayIndex), itemIndex, direction))
 }
 
-function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'start' | 'end') {
-  const current = migrateLegacyAttractions(form.days[dayIndex], locations)
-  updateDay(dayIndex, {
-    attractions: moveArrayItemToEdge(current, spotIndex, edge).map((item, displayOrder) => ({ ...item, displayOrder })),
-    linkedSpots: [],
-  })
+function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'start' | 'end') {
+  updateDayRoute(dayIndex, moveArrayItemToEdge(dayRoute(dayIndex), itemIndex, edge))
 }
 
   function setDayStay(dayIndex: number, stayName: string) {
@@ -1546,6 +1559,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                 {form.days.length ? (
                   form.days.map((day, index) => {
                     const linkedSpots = migrateLegacyAttractions(day, locations)
+                    const routeItems = dayRoute(index)
                     const isEditorOpen = activeDayEditor === index
                     const dayQuery = String(daySpotSearches[index] || '').trim()
                     const linkedSpotIdSet = new Set(linkedSpots.map((item) => item.spotId).filter((item): item is number => typeof item === 'number'))
@@ -1720,13 +1734,22 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                               </div>
                             )}
 
-                            {linkedSpots.length ? (
+                            <div className="space-y-2">
+                              <Label>Published Longform Notes</Label>
+                              <Input value={dayNoteSearches[index] || ''} onChange={(e) => setDayNoteSearches((prev) => ({ ...prev, [index]: e.target.value }))} placeholder="Search published Notes" />
+                              {noteLoadError ? <p role="alert" className="text-sm text-amber-200">{noteLoadError}</p> : null}
+                              {isEditorOpen ? <div className="max-h-48 space-y-1 overflow-y-auto">{routeNotes.filter((note) => matchesSearchQuery([note.title, note.shortTitle, note.slug], dayNoteSearches[index] || '')).map((note) => {
+                                const selected = routeItems.some((item) => item.type === 'note' && item.noteSlug === note.slug)
+                                return <button key={note.slug} type="button" disabled={selected} onClick={() => updateDayRoute(index, [...routeItems, { type: 'note', noteSlug: note.slug, displayName: note.title }])} className="block w-full rounded-xl border border-white/10 px-3 py-2 text-left text-sm disabled:opacity-50">{note.title}{selected ? ' - Added' : ' + Add Note'}</button>
+                              })}</div> : null}
+                            </div>
+                            {routeItems.length ? (
                               <div className="space-y-2">
-                                <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Selected for this day</div>
+                                <div className="text-xs font-medium uppercase tracking-[0.18em] text-slate-400">Ordered route: Spots & Notes</div>
                                 <div className="flex flex-wrap gap-2">
-                                  {linkedSpots.map((spot, spotIndex) => (
-                                    <div key={`${attractionKey(spot)}-${spotIndex}`} className="flex items-center gap-1 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-sm text-sky-50">
-                                      <span>{spot.displayName || locations.find((location) => location.id === spot.spotId)?.name_cn || locations.find((location) => location.id === spot.spotId)?.name || 'Spot'}</span>
+                                  {routeItems.map((spot, spotIndex) => (
+                                    <div key={`${spot.type === 'note' ? spot.noteSlug : attractionKey(spot)}-${spotIndex}`} className="flex items-center gap-1 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-sm text-sky-50">
+                                      <span>{spot.type === 'note' ? `Note: ${spot.displayName}` : spot.displayName || locations.find((location) => location.id === spot.spotId)?.name_cn || locations.find((location) => location.id === spot.spotId)?.name || 'Spot'}</span>
                                       <button type="button" onClick={() => moveDayLinkedSpotToEdge(index, spotIndex, 'start')} className="rounded-full px-1.5 py-1 text-[11px] font-medium hover:bg-sky-100" title="Move to top">
                                         Top
                                       </button>
@@ -1739,7 +1762,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, spotIndex: number, edge: 'sta
                                       <button type="button" onClick={() => moveDayLinkedSpotToEdge(index, spotIndex, 'end')} className="rounded-full px-1.5 py-1 text-[11px] font-medium hover:bg-sky-100" title="Move to bottom">
                                         Bottom
                                       </button>
-                                      <button type="button" onClick={() => { const location = locations.find((item) => item.id === spot.spotId); if (location) toggleDayLinkedSpot(index, location) }} className="rounded-full p-1 hover:bg-sky-100" title="Remove">
+                                      <button type="button" onClick={() => updateDayRoute(index, routeItems.filter((_, itemIndex) => itemIndex !== spotIndex))} className="rounded-full p-1 hover:bg-sky-100" title="Remove">
                                         <X className="h-3 w-3" />
                                       </button>
                                     </div>
