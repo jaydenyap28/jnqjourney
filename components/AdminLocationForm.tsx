@@ -2787,7 +2787,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             />
           </div>
 
-          <SpotContentEditor value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} />
+          <SpotContentEditor spotId={initialData?.id} value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} />
 
           {mode === 'edit' && initialData?.id ? (
             <AdminAffiliateLinksPanel

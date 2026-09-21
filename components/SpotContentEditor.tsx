@@ -2,16 +2,18 @@
 import { useEffect, useState } from 'react'
 import { adminFetch } from '@/lib/admin-fetch'
 import type { SpotContentFields } from '@/lib/spot-content'
-import { imageTextKey } from '@/lib/spot-content'
+import { imageTextKey, spotContentChineseSource } from '@/lib/spot-content'
 import OrderedRelationPicker from './OrderedRelationPicker'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
-export default function SpotContentEditor({ value, onChange, images }: {
-  value: SpotContentFields; onChange: (value: SpotContentFields) => void; images: string[]
+export default function SpotContentEditor({ value, onChange, images, spotId }: {
+  value: SpotContentFields; onChange: (value: SpotContentFields) => void; images: string[]; spotId?: number
 }) {
   const [notes, setNotes] = useState<Array<{ slug: string; title: string; published: boolean }>>([])
   const [error, setError] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [generationMessage, setGenerationMessage] = useState('')
   useEffect(() => {
     let cancelled = false
     adminFetch('/api/admin/notes').then(async response => {
@@ -21,7 +23,21 @@ export default function SpotContentEditor({ value, onChange, images }: {
     return () => { cancelled = true }
   }, [])
   const patch = (update: Partial<SpotContentFields>) => onChange({ ...value, ...update })
+  async function generateEnglishDraft() {
+    if (!spotId) return
+    if (['experience_en', 'seo_title_en', 'seo_description_en'].some((key) => String(value[key as keyof SpotContentFields] || '').trim()) && !window.confirm('这会覆盖当前未保存的 Experience / SEO 英文内容，继续生成？')) return
+    const source = spotContentChineseSource(value)
+    setGenerating(true); setGenerationMessage('')
+    try {
+      const response = await adminFetch(`/api/admin/spot-content/${spotId}/generate-english`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source }) })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload.error || 'AI 英文草稿生成失败。')
+      patch(payload.fields)
+      setGenerationMessage('AI 草稿已生成，请检查后再保存。')
+    } catch (generationError) { setGenerationMessage(generationError instanceof Error ? generationError.message : 'AI 英文草稿生成失败。') } finally { setGenerating(false) }
+  }
   return <div className="space-y-5">
+    {spotId ? <div className="flex flex-wrap items-center gap-3"><button type="button" disabled={generating} onClick={generateEnglishDraft} className="rounded border border-blue-600 px-3 py-1.5 text-sm text-blue-700 disabled:opacity-50">{generating ? 'AI 生成中…' : 'AI 生成 Experience + SEO 英文'}</button>{generationMessage ? <p role="status" className="text-sm">{generationMessage}</p> : null}</div> : null}
     <fieldset className="space-y-3 rounded-xl border p-4"><legend className="px-2 font-medium">我们的体验 / JnQ Experience</legend>
       <p className="text-sm text-muted-foreground">仅填写亲身体验；与景点介绍分开。留空不显示。</p>
       {(['zh', 'en'] as const).map(lang => <label key={lang} className="block space-y-2 text-sm">{lang === 'zh' ? '中文体验' : 'English experience'}<Textarea rows={4} value={value[`experience_${lang}`] || ''} onChange={e => patch({ [`experience_${lang}`]: e.target.value })} /></label>)}

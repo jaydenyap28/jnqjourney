@@ -1,4 +1,4 @@
-import { spotDescriptionExcerpt } from './spot-description'
+import { spotDescriptionExcerpt } from './spot-description.ts'
 
 export interface SpotImageText { alt_zh?: string; alt_en?: string; caption?: string }
 export const SPOT_CONTENT_SELECT = 'publication_status,seo_title_zh,seo_description_zh,seo_title_en,seo_description_en,experience_zh,experience_en,related_note_slugs,image_metadata'
@@ -17,6 +17,18 @@ export interface SpotContentFields {
   image_metadata?: Record<string, SpotImageText> | null
   redirect_url?: string | null
   redirect_type?: 301 | 302 | null
+}
+
+export const spotContentEnglishFields = ['experience_en', 'seo_title_en', 'seo_description_en'] as const
+export type SpotContentEnglishField = typeof spotContentEnglishFields[number]
+export type SpotContentChineseSource = Record<'experience_zh' | 'seo_title_zh' | 'seo_description_zh', string>
+
+export function spotContentChineseSource(spot: Pick<SpotContentFields, 'experience_zh' | 'seo_title_zh' | 'seo_description_zh'>): SpotContentChineseSource {
+  return {
+    experience_zh: String(spot.experience_zh || ''),
+    seo_title_zh: String(spot.seo_title_zh || ''),
+    seo_description_zh: String(spot.seo_description_zh || ''),
+  }
 }
 
 export function imageTextKey(url: string) { return url.split('#')[0] }
