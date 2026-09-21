@@ -1,4 +1,5 @@
 import { spotSeo } from '@/lib/spot-content'
+import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
 import { spotDescriptionExcerpt } from '@/lib/spot-description'
 import { selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
@@ -85,6 +86,7 @@ export default async function SpotPage({ params }: PageProps) {
   ].filter(Boolean))
   const relatedGuides = allGuides
     .filter((guide) => {
+      if (guideRouteSpotIds(guide).has(location.id)) return true
       if (guide.attractions?.some(ref => ref.enabled !== false && ref.spotId === location.id) ||
           guide.accommodationStays?.some(stay => stay.accommodationId === location.id)) return true
       const guideNames = new Set(

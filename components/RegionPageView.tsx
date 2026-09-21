@@ -1,5 +1,6 @@
 
 import {PublicCopy} from '@/components/PublicLocale'
+import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
 import RelatedNoteCards from '@/components/RelatedNoteCards'
 import type { RelatedNoteCard } from '@/lib/content-relations'
 import type {TravelGuide} from '@/lib/guides'
@@ -55,7 +56,7 @@ function SpotCard({ spot, regionName }: { spot: any, regionName: string }) {
   )
 }
 
-export default function RegionPageView({region,locations,relatedPackages,allGuides,relatedNotes=[],locale='zh'}:{region:any;locations:any[];relatedPackages:TravelPackage[];allGuides:TravelGuide[];relatedNotes?:RelatedNoteCard[];locale?:Locale}) {
+export default function RegionPageView({region,locations,relatedPackages,allGuides,relatedNotes=[],relatedGuideSpotIds=locations.map(location=>location.id),locale='zh'}:{region:any;locations:any[];relatedPackages:TravelPackage[];allGuides:TravelGuide[];relatedNotes?:RelatedNoteCard[];relatedGuideSpotIds?:number[];locale?:Locale}) {
   const readableName = resolveEntityDisplayName(region,locale).primary
 
   // Guides matching
@@ -68,6 +69,8 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
 
   const relatedGuides = allGuides
     .filter((guide) => {
+      const canonicalIds = guideRouteSpotIds(guide)
+      if (relatedGuideSpotIds.some(id => canonicalIds.has(id))) return true
       const titleLower = guide.title.toLowerCase()
       if (titleLower.includes(region.name.toLowerCase()) || (region.name_cn && titleLower.includes(region.name_cn.toLowerCase()))) return true
       
