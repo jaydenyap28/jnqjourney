@@ -7,8 +7,8 @@ import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
-import { extractLocationIdFromSlug } from '@/lib/location-routing'
-import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
+import { extractLocationIdFromSlug, slugifyLocationName } from '@/lib/location-routing'
+import { buildCanonicalLocationPath, readLocationSlugMap } from '@/lib/server/location-slugs-store'
 import {
   resolvePublicSpotSources,
   type PublicSpotIndexSnapshot,
@@ -166,6 +166,46 @@ function resolveCached(slug: string) {
 }
 
 export const getPublicSpotBySlug = cache(async (slug: string) => resolveCached(String(slug || '').trim()))
+
+export async function readAuthoritativePublicSpotsByIds(ids: number[]) {
+  const uniqueIds = Array.from(new Set(ids)).filter((id) => Number.isInteger(id) && id > 0)
+  if (!uniqueIds.length) return [] as PublicSpotRecord[]
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
+
+  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+  let result = await withTimeout(
+    supabase
+      .from('locations')
+      .select(SPOT_DETAIL_SELECT)
+      .in('id', uniqueIds)
+      .eq('status', 'active'),
+    'Authoritative public spots'
+  )
+  if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
+    result = await withTimeout(
+      supabase
+        .from('locations')
+        .select(LEGACY_SPOT_SELECT)
+        .in('id', uniqueIds)
+        .eq('status', 'active'),
+      'Legacy authoritative spots'
+    )
+  }
+  if (result.error) throw new Error(result.error.message || 'Unable to read authoritative public spots.')
+
+  const slugMap = await readLocationSlugMap()
+  return (result.data || [])
+    .map((raw) => raw as unknown as Omit<PublicSpotRecord, 'slug'>)
+    .filter(isSpotPublished)
+    .map((row) => {
+      const customSlug = slugMap[String(row.id)] || ''
+      const base = customSlug || slugifyLocationName(row.name) || 'spot'
+      return { ...row, slug: `${base}-${row.id}` } as PublicSpotRecord
+    })
+}
 
 export async function readAuthoritativePublicSpotById(id: number) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
