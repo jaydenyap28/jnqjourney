@@ -3,7 +3,7 @@
 import OrderedRelationPicker from '@/components/OrderedRelationPicker'
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Eye, Heading2, Heading3, Image as ImageIcon, ListTree, Loader2, PencilLine, Plus, Quote, Save, Search, Trash2, Upload, Video } from 'lucide-react'
+import { Eye, Heading2, Heading3, Image as ImageIcon, Languages, ListTree, Loader2, PencilLine, Plus, Quote, Save, Search, Trash2, Upload, Video } from 'lucide-react'
 
 import type { LongformNote, NoteBlock, NoteImageSize, NoteVideoAspect } from '@/lib/notes'
 import {
@@ -409,6 +409,7 @@ export default function AdminNotesPage() {
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false)
   const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
   const [cleaningImages, setCleaningImages] = useState(false)
+  const [syncingEnglishCards, setSyncingEnglishCards] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
   const [baseline, setBaseline] = useState(() => noteEditorKey(EMPTY_NOTE, ''))
   const [saveState, setSaveState] = useState('')
@@ -877,7 +878,7 @@ export default function AdminNotesPage() {
     setMessage(`Inserted ${selectedKlookWidgetIds.length} Klook widget${selectedKlookWidgetIds.length > 1 ? 's' : ''} at the saved cursor position.`)
   }
 
-  async function saveNote() {
+  async function saveNote(options: { syncEnglish?: boolean } = {}) {
     if (inFlight.current || saveState === 'Newer cloud version detected') return
     if (!form.title.trim()) {
       setSaveState('Save failed')
@@ -893,7 +894,7 @@ export default function AdminNotesPage() {
 
     const parsedBlocks = parseMarkdownToBlocks(markdownText)
 
-    const payload: LongformNote & { previousSlug?: string; expectedUpdatedAt: string } = {
+    const payload: LongformNote & { previousSlug?: string; expectedUpdatedAt: string; syncEnglish?: boolean } = {
       ...form,
       slug: form.slug || slugifyNote(form.title),
       shortTitle: form.shortTitle || form.title,
@@ -902,6 +903,7 @@ export default function AdminNotesPage() {
       blocks: parsedBlocks,
       expectedUpdatedAt: form.updatedAt || '',
       previousSlug: selectedSlug || undefined,
+      syncEnglish: options.syncEnglish === true,
     }
 
     try {
@@ -945,7 +947,14 @@ export default function AdminNotesPage() {
       const freed = Number(result?.cleanup?.bytesFreed || 0)
       const cleanupText = cleaned > 0 ? ` 已清理 ${cleaned} 张未使用图片（${formatBytes(freed)}）。` : ''
       const warningText = result?.cleanupWarning ? ` 图片清理提示：${result.cleanupWarning}` : ''
-      setMessage(`${hydrated.published ? 'Published note saved.' : 'Draft saved.'}${cleanupText}${warningText}`)
+      const englishText = result?.english
+        ? ` 英文首页卡片：更新 ${Number(result.english.translated || 0)}，已是最新 ${Number(result.english.skipped || 0)}。`
+        : ''
+      const englishWarningText = result?.englishWarning ? ` 英文同步提示：${result.englishWarning}` : ''
+      if (options.syncEnglish && hydrated.published && result?.english && !result?.englishWarning) {
+        await adminFetch('/api/admin/note-homepage-revalidate', { method: 'POST' }).catch(() => null)
+      }
+      setMessage(`${hydrated.published ? 'Published note saved.' : 'Draft saved.'}${englishText}${cleanupText}${warningText}${englishWarningText}`)
     } catch (error: any) {
       setSaveState('Save failed')
       setMessage(error?.message || 'Failed to save note.')
@@ -955,7 +964,56 @@ export default function AdminNotesPage() {
     }
   }
 
-  saveRef.current = saveNote
+  saveRef.current = () => saveNote()
+
+  async function syncPublishedEnglishCards() {
+    if (syncingEnglishCards || inFlight.current) return
+    const slugs = notes.filter((note) => note.published && note.slug).map((note) => note.slug)
+    if (!slugs.length) {
+      setMessage('目前没有已发布的 Longform Note 可以同步英文首页卡片。')
+      return
+    }
+
+    setSyncingEnglishCards(true)
+    setMessage(`正在同步 ${slugs.length} 篇已发布 Note 的英文首页卡片...`)
+    try {
+      let translated = 0
+      let current = 0
+      const warnings: string[] = []
+
+      for (let index = 0; index < slugs.length; index += 4) {
+        const chunk = slugs.slice(index, index + 4)
+        const response = await adminFetch('/api/admin/notes', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'sync-english-cards', slugs: chunk }),
+        })
+        const result = await response.json()
+        if (!response.ok) throw new Error(result?.error || '英文首页卡片同步失败。')
+
+        translated += Number(result?.english?.translated || 0)
+        if (Array.isArray(result?.english?.items)) {
+          for (const item of result.english.items) {
+            if (item?.reason === 'English is already current') current += 1
+            else if (item?.skipped && item?.reason) warnings.push(`${item.slug}: ${item.reason}`)
+          }
+        }
+      }
+
+      const revalidateResponse = await adminFetch('/api/admin/note-homepage-revalidate', { method: 'POST' })
+      const revalidateResult = await revalidateResponse.json().catch(() => ({}))
+      if (!revalidateResponse.ok) warnings.push(revalidateResult?.error || '英文首页刷新失败，翻译已保存，稍后会自动更新。')
+
+      setMessage(
+        `英文首页卡片同步完成：更新 ${translated} 篇，${current} 篇已是最新。` +
+        (warnings.length ? ` 提示：${warnings.join('；')}` : '')
+      )
+    } catch (error: any) {
+      setMessage(`英文首页卡片同步失败：${error?.message || 'Unknown error'}`)
+    } finally {
+      setSyncingEnglishCards(false)
+    }
+  }
 
   async function cleanupUnusedImages() {
     if (cleaningImages || inFlight.current) return
@@ -1083,9 +1141,13 @@ export default function AdminNotesPage() {
                   Delete
                 </Button>
                 <span role="status" className="self-center text-xs text-white/60">{saveState === 'Saving...' || saveState === 'Save failed' || saveState === 'Newer cloud version detected' ? saveState : dirty ? 'Unsaved' : saveState}</span>
-                <Button type="button" onClick={saveNote} disabled={saving} className="bg-white text-black hover:bg-amber-50">
+                <Button type="button" variant="outline" onClick={syncPublishedEnglishCards} disabled={saving || syncingEnglishCards} className="border-sky-300/20 bg-sky-400/10 text-sky-100 hover:bg-sky-400/20">
+                  {syncingEnglishCards ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Languages className="mr-2 h-4 w-4" />}
+                  {syncingEnglishCards ? 'Syncing English...' : 'Sync all English cards'}
+                </Button>
+                <Button type="button" onClick={() => void saveNote({ syncEnglish: form.published })} disabled={saving} className="bg-white text-black hover:bg-amber-50">
                   <Save className="mr-2 h-4 w-4" />
-                  {saving ? 'Saving...' : form.published ? 'Save & Update' : 'Save Draft'}
+                  {saving ? 'Saving...' : form.published ? 'Save & Update + English' : 'Save Draft'}
                 </Button>
               </div>
             </CardHeader>
