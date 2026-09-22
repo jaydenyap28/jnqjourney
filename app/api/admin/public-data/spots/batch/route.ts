@@ -1,12 +1,7 @@
 import { NextResponse } from 'next/server'
-import { revalidatePath, revalidateTag } from 'next/cache'
-
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { resolvePublicSnapshotBundleUncached } from '@/lib/server/public-data-resolver'
-import { syncSpotEnglishTranslations } from '@/lib/server/spot-english-sync'
-import { readAuthoritativePublicSpotById } from '@/lib/server/public-spot-resolver'
-import { uploadPublicDataSnapshot, uploadPublicSpotIndex, uploadPublicSpotSnapshot } from '@/lib/server/r2'
+import { publishSpotBatch } from '@/lib/server/spot-publication'
 
 export const runtime = 'nodejs'
 const HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
@@ -38,71 +33,8 @@ export async function POST(request: Request) {
   }
 
   try {
-    const generatedAt = new Date().toISOString()
-    const source = { type: 'supabase-admin-spot-batch-refresh', generatedAt }
-    const english = await syncSpotEnglishTranslations(ids)
-    const { data } = await resolvePublicSnapshotBundleUncached()
-    const { locations } = data
-
-    const refreshed: Array<{ id: number; slug: string; url: string }> = []
-    const skipped: number[] = []
-
-    for (const id of ids) {
-      const spot = await readAuthoritativePublicSpotById(id)
-      if (!spot) {
-        skipped.push(id)
-        continue
-      }
-      const url = await uploadPublicSpotSnapshot(
-        spot.slug,
-        Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, spot })}\n`)
-      )
-      refreshed.push({ id: spot.id, slug: spot.slug, url })
-    }
-
-    const refreshedIdSet = new Set(ids)
-    const slugs = locations
-      .map((location) => location.slug)
-      .filter((slug) => {
-        const match = String(slug || '').match(/-(\d+)$/)
-        return !match || !refreshedIdSet.has(Number(match[1]))
-      })
-
-    for (const item of refreshed) slugs.push(item.slug)
-
-    const [locationsUrl, indexUrl] = await Promise.all([
-      uploadPublicDataSnapshot(
-        'locations.json',
-        Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, locations })}\n`)
-      ),
-      uploadPublicSpotIndex(
-        Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, slugs: Array.from(new Set(slugs)).sort() })}\n`)
-      ),
-    ])
-
-    revalidateTag('public-data')
-    revalidateTag('public-locations')
-    revalidateTag('public-spots')
-
-    for (const item of refreshed) {
-      revalidateTag(`public-spot:${item.slug}`)
-      revalidatePath(`/spot/${item.slug}`)
-      revalidatePath(`/en/spot/${item.slug}`)
-      revalidatePath(`/api/spots/${item.slug}`)
-    }
-
-    return NextResponse.json(
-      {
-        ok: true,
-        generatedAt,
-        refreshed,
-        skipped,
-        english,
-        locationsUrl,
-        indexUrl,
-      },
-      { headers: HEADERS }
-    )
+    const result = await publishSpotBatch(ids, 'supabase-admin-spot-batch-refresh')
+    return NextResponse.json({ ok: true, ...result }, { headers: HEADERS })
   } catch (error: any) {
     return NextResponse.json(
       { ok: false, error: error?.message || 'Batch Spot snapshot refresh failed; previous snapshots remain active.' },
