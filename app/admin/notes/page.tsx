@@ -948,11 +948,15 @@ export default function AdminNotesPage() {
       const cleanupText = cleaned > 0 ? ` 已清理 ${cleaned} 张未使用图片（${formatBytes(freed)}）。` : ''
       const warningText = result?.cleanupWarning ? ` 图片清理提示：${result.cleanupWarning}` : ''
       const englishText = result?.english
-        ? ` 英文首页卡片：更新 ${Number(result.english.translated || 0)}，已是最新 ${Number(result.english.skipped || 0)}。`
+        ? ` 英文长文：更新 ${Number(result.english.translated || 0)}，已是最新 ${Number(result.english.skipped || 0)}。`
         : ''
       const englishWarningText = result?.englishWarning ? ` 英文同步提示：${result.englishWarning}` : ''
       if (options.syncEnglish && hydrated.published && result?.english && !result?.englishWarning) {
-        await adminFetch('/api/admin/note-homepage-revalidate', { method: 'POST' }).catch(() => null)
+        await adminFetch('/api/admin/note-homepage-revalidate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slugs: [hydrated.slug] }),
+        }).catch(() => null)
       }
       setMessage(`${hydrated.published ? 'Published note saved.' : 'Draft saved.'}${englishText}${cleanupText}${warningText}${englishWarningText}`)
     } catch (error: any) {
@@ -970,23 +974,22 @@ export default function AdminNotesPage() {
     if (syncingEnglishCards || inFlight.current) return
     const slugs = notes.filter((note) => note.published && note.slug).map((note) => note.slug)
     if (!slugs.length) {
-      setMessage('目前没有已发布的 Longform Note 可以同步英文首页卡片。')
+      setMessage('目前没有已发布的 Longform Note 可以同步英文版。')
       return
     }
 
     setSyncingEnglishCards(true)
-    setMessage(`正在同步 ${slugs.length} 篇已发布 Note 的英文首页卡片...`)
+    setMessage(`正在逐篇同步 ${slugs.length} 篇已发布 Note 的完整英文版...`)
     try {
       let translated = 0
       let current = 0
       const warnings: string[] = []
 
-      for (let index = 0; index < slugs.length; index += 4) {
-        const chunk = slugs.slice(index, index + 4)
+      for (const slug of slugs) {
         const response = await adminFetch('/api/admin/notes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'sync-english-cards', slugs: chunk }),
+          body: JSON.stringify({ action: 'sync-english', slugs: [slug] }),
         })
         const result = await response.json()
         if (!response.ok) throw new Error(result?.error || '英文首页卡片同步失败。')
@@ -1000,16 +1003,20 @@ export default function AdminNotesPage() {
         }
       }
 
-      const revalidateResponse = await adminFetch('/api/admin/note-homepage-revalidate', { method: 'POST' })
+      const revalidateResponse = await adminFetch('/api/admin/note-homepage-revalidate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slugs }),
+      })
       const revalidateResult = await revalidateResponse.json().catch(() => ({}))
       if (!revalidateResponse.ok) warnings.push(revalidateResult?.error || '英文首页刷新失败，翻译已保存，稍后会自动更新。')
 
       setMessage(
-        `英文首页卡片同步完成：更新 ${translated} 篇，${current} 篇已是最新。` +
+        `英文 Longform Notes 同步完成：更新 ${translated} 篇，${current} 篇已是最新。` +
         (warnings.length ? ` 提示：${warnings.join('；')}` : '')
       )
     } catch (error: any) {
-      setMessage(`英文首页卡片同步失败：${error?.message || 'Unknown error'}`)
+      setMessage(`英文 Longform Notes 同步失败：${error?.message || 'Unknown error'}`)
     } finally {
       setSyncingEnglishCards(false)
     }
@@ -1143,7 +1150,7 @@ export default function AdminNotesPage() {
                 <span role="status" className="self-center text-xs text-white/60">{saveState === 'Saving...' || saveState === 'Save failed' || saveState === 'Newer cloud version detected' ? saveState : dirty ? 'Unsaved' : saveState}</span>
                 <Button type="button" variant="outline" onClick={syncPublishedEnglishCards} disabled={saving || syncingEnglishCards} className="border-sky-300/20 bg-sky-400/10 text-sky-100 hover:bg-sky-400/20">
                   {syncingEnglishCards ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Languages className="mr-2 h-4 w-4" />}
-                  {syncingEnglishCards ? 'Syncing English...' : 'Sync all English cards'}
+                  {syncingEnglishCards ? 'Syncing English...' : 'Sync all English Notes'}
                 </Button>
                 <Button type="button" onClick={() => void saveNote({ syncEnglish: form.published })} disabled={saving} className="bg-white text-black hover:bg-amber-50">
                   <Save className="mr-2 h-4 w-4" />
