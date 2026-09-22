@@ -6,7 +6,7 @@ import spotIndex from '@/public-data/spots/index.json'
 
 const bundledSpotIds = new Set(
   spotIndex.slugs
-    .map((slug) => Number(String(slug).match(/-(\\d+)$/)?.[1] || 0))
+    .map((slug) => Number(String(slug).match(/-(\d+)$/)?.[1] || 0))
     .filter((id) => Number.isSafeInteger(id) && id > 0)
 )
 
