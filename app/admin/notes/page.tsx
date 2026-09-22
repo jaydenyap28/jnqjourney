@@ -3,7 +3,7 @@
 import OrderedRelationPicker from '@/components/OrderedRelationPicker'
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Image as ImageIcon, Loader2, Plus, Save, Search, Trash2, Upload } from 'lucide-react'
+import { Eye, Heading2, Heading3, Image as ImageIcon, ListTree, Loader2, PencilLine, Plus, Quote, Save, Search, Trash2, Upload, Video } from 'lucide-react'
 
 import type { LongformNote, NoteBlock, NoteImageSize, NoteVideoAspect } from '@/lib/notes'
 import {
@@ -384,6 +384,7 @@ export default function AdminNotesPage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [workspaceMode, setWorkspaceMode] = useState<'split' | 'preview'>('split')
+  const [showQuickToc, setShowQuickToc] = useState(false)
 
   const [pickerOpen, setPickerOpen] = useState(false)
   const [affiliatePickerOpen, setAffiliatePickerOpen] = useState(false)
@@ -411,6 +412,8 @@ export default function AdminNotesPage() {
   const refreshSequence = useRef(0)
   const saveRef = useRef<() => Promise<void>>(async () => {})
   const markdownSelectionRef = useRef({ start: 0, end: 0 })
+  const editorViewRef = useRef({ start: 0, end: 0, textareaScrollTop: 0, windowScrollY: 0 })
+  const restoreEditorViewRef = useRef(false)
   const coverImageInputRef = useRef<HTMLInputElement | null>(null)
   const standaloneImageInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -529,6 +532,23 @@ export default function AdminNotesPage() {
     loading || saving || !form.title.trim() || saveState === 'Save failed' || saveState === 'Newer cloud version detected'),
   [editorKey, dirty, loading, saving, saveState, form.title])
 
+  useEffect(() => {
+    if (workspaceMode !== 'split' || !restoreEditorViewRef.current) return
+    restoreEditorViewRef.current = false
+    window.requestAnimationFrame(() => {
+      const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement | null
+      if (!textarea) return
+      const saved = editorViewRef.current
+      const start = Math.min(saved.start, textarea.value.length)
+      const end = Math.min(saved.end, textarea.value.length)
+      textarea.focus({ preventScroll: true })
+      textarea.setSelectionRange(start, end)
+      textarea.scrollTop = saved.textareaScrollTop
+      markdownSelectionRef.current = { start, end }
+      window.scrollTo({ top: saved.windowScrollY, behavior: 'auto' })
+    })
+  }, [workspaceMode])
+
   const locationsById = useMemo(() => new Map(locations.map((location) => [location.id, location])), [locations])
   const lockedSpot = lockedSpotId ? locationsById.get(lockedSpotId) || null : null
 
@@ -575,6 +595,16 @@ export default function AdminNotesPage() {
   const selectedSpotImages = useMemo(() => getLocationImages(selectedSpot), [selectedSpot])
 
   const previewBlocks = useMemo(() => parseMarkdownToBlocks(markdownText), [markdownText])
+  const quickHeadings = useMemo(() => {
+    const headings: Array<{ level: number; title: string; start: number }> = []
+    const pattern = /^(#{2,4})[ \t]+(.+)$/gm
+    let match: RegExpExecArray | null
+    while ((match = pattern.exec(markdownText)) !== null) {
+      const title = String(match[2] || '').replace(/\s+#+\s*$/, '').trim()
+      if (title) headings.push({ level: match[1].length, title, start: match.index })
+    }
+    return headings
+  }, [markdownText])
 
   function createNewNote() {
     if (inFlight.current || (dirty && !window.confirm('Discard unsaved Note edits?'))) return
@@ -672,6 +702,41 @@ export default function AdminNotesPage() {
       setUploadingCoverImage(false)
       event.target.value = ''
     }
+  }
+
+  function captureEditorView() {
+    const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement | null
+    const selection = textarea
+      ? { start: textarea.selectionStart ?? 0, end: textarea.selectionEnd ?? textarea.selectionStart ?? 0 }
+      : markdownSelectionRef.current
+    markdownSelectionRef.current = selection
+    editorViewRef.current = {
+      ...selection,
+      textareaScrollTop: textarea?.scrollTop ?? 0,
+      windowScrollY: window.scrollY,
+    }
+  }
+
+  function openPreviewFromEditor() {
+    captureEditorView()
+    setWorkspaceMode('preview')
+  }
+
+  function returnToEditorPosition() {
+    restoreEditorViewRef.current = true
+    setWorkspaceMode('split')
+  }
+
+  function jumpToMarkdownHeading(start: number) {
+    const textarea = document.getElementById('markdown-editor') as HTMLTextAreaElement | null
+    if (!textarea) return
+    const position = Math.max(0, Math.min(start, textarea.value.length))
+    const lineNumber = textarea.value.slice(0, position).split('\n').length - 1
+    const lineHeight = Number.parseFloat(window.getComputedStyle(textarea).lineHeight) || 28
+    textarea.focus({ preventScroll: true })
+    textarea.setSelectionRange(position, position)
+    textarea.scrollTop = Math.max(0, lineNumber * lineHeight - textarea.clientHeight * 0.25)
+    markdownSelectionRef.current = { start: position, end: position }
   }
 
   function rememberMarkdownSelection() {
@@ -1065,7 +1130,7 @@ export default function AdminNotesPage() {
             <div className="flex items-center bg-black/40 p-1.5 rounded-2xl border border-white/5 shadow-inner">
               <button
                 type="button"
-                onClick={() => setWorkspaceMode('split')}
+                onClick={workspaceMode === 'preview' ? returnToEditorPosition : undefined}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'split' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
               >
                 编辑画布 (Editor)
@@ -1080,7 +1145,7 @@ export default function AdminNotesPage() {
               </button>
               <button
                 type="button"
-                onClick={() => setWorkspaceMode('preview')}
+                onClick={openPreviewFromEditor}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all duration-200 ${workspaceMode === 'preview' ? 'bg-amber-400 text-black shadow-[0_4px_12px_rgba(245,158,11,0.3)] scale-[1.03]' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
               >
                 ✨ 实境预览 (True Preview)
@@ -1091,6 +1156,14 @@ export default function AdminNotesPage() {
           {workspaceMode === 'preview' ? (
             /* TRUE PREVIEW MODE: Highly Realistic 100% Simulation of Frontend Page Layout */
             <div className="order-1 flex flex-col gap-6">
+              <button
+                type="button"
+                onClick={returnToEditorPosition}
+                className="fixed bottom-6 right-6 z-50 inline-flex min-h-11 items-center gap-2 rounded-full border border-amber-200/30 bg-[#16120a]/95 px-5 py-3 text-sm font-semibold text-amber-50 shadow-[0_18px_50px_rgba(0,0,0,0.45)] backdrop-blur transition hover:bg-amber-300 hover:text-black focus:outline-none focus:ring-2 focus:ring-amber-200/60"
+              >
+                <PencilLine className="h-4 w-4" />
+                返回编辑位置
+              </button>
               {/* Simulated Glowing Progress Bar */}
               <div className="w-full h-[4px] bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 rounded-full opacity-90 shadow-[0_0_12px_rgba(245,158,11,0.4)] animate-pulse" />
 
@@ -1291,7 +1364,7 @@ export default function AdminNotesPage() {
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4">
-                  <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_190px]">
+                  <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_220px]">
                   <input
                     ref={standaloneImageInputRef}
                     type="file"
@@ -1319,6 +1392,91 @@ export default function AdminNotesPage() {
                         <Button
                           type="button"
                           size="sm"
+                          className="justify-start border-amber-300/25 bg-amber-300/15 text-amber-50 hover:bg-amber-300/25"
+                          onClick={openPreviewFromEditor}
+                        >
+                          <Eye className="mr-2 h-4 w-4" />
+                          实境预览
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10"
+                          onClick={() => setShowQuickToc((current) => !current)}
+                          aria-expanded={showQuickToc}
+                        >
+                          <ListTree className="mr-2 h-4 w-4" />
+                          Table of Contents / 目录
+                        </Button>
+                        {showQuickToc ? (
+                          <div className="max-h-64 overflow-y-auto rounded-xl border border-white/10 bg-black/35 p-2">
+                            {quickHeadings.length ? (
+                              <div className="grid gap-1">
+                                {quickHeadings.map((heading, index) => (
+                                  <button
+                                    key={`${heading.start}-${heading.title}`}
+                                    type="button"
+                                    onClick={() => jumpToMarkdownHeading(heading.start)}
+                                    className={`rounded-lg px-2 py-1.5 text-left text-xs leading-5 text-white/65 transition hover:bg-white/8 hover:text-amber-100 ${heading.level === 3 ? 'pl-4' : heading.level === 4 ? 'pl-6' : ''}`}
+                                  >
+                                    <span className="mr-1 text-white/30">{index + 1}.</span>
+                                    {heading.title}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="px-2 py-2 text-xs leading-5 text-white/40">还没有 H2–H4 标题，加入标题后会自动出现在这里</p>
+                            )}
+                          </div>
+                        ) : null}
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="justify-start border-white/10 bg-[#121214] px-2 text-white hover:bg-white/10"
+                            onClick={() => insertTextAtCursor('## 新章节标题')}
+                          >
+                            <Heading2 className="mr-1.5 h-4 w-4" />
+                            H2
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="justify-start border-white/10 bg-[#121214] px-2 text-white hover:bg-white/10"
+                            onClick={() => insertTextAtCursor('### 新小标题')}
+                          >
+                            <Heading3 className="mr-1.5 h-4 w-4" />
+                            H3
+                          </Button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="justify-start border-white/10 bg-[#121214] px-2 text-white hover:bg-white/10"
+                            onClick={() => insertTextAtCursor('> 引用内容')}
+                          >
+                            <Quote className="mr-1.5 h-4 w-4" />
+                            引用
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            className="justify-start border-white/10 bg-[#121214] px-2 text-white hover:bg-white/10"
+                            onClick={() => insertTextAtCursor(`[video url="https://" title=""${videoAspect === 'auto' ? '' : ` aspect="${videoAspect}"`}]`)}
+                          >
+                            <Video className="mr-1.5 h-4 w-4" />
+                            影片
+                          </Button>
+                        </div>
+                        <Button
+                          type="button"
+                          size="sm"
                           className="justify-start border-emerald-400/20 bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30"
                           onClick={openMarkdownSpotPicker}
                         >
@@ -1333,7 +1491,7 @@ export default function AdminNotesPage() {
                           onClick={openStandaloneImageUpload}
                           disabled={uploadingStandaloneImage}
                         >
-                          <ImageIcon className="mr-2 h-4 w-4" />
+                          <Upload className="mr-2 h-4 w-4" />
                           {uploadingStandaloneImage ? '上传中' : '上传图片'}
                         </Button>
                         <Button
@@ -1355,6 +1513,17 @@ export default function AdminNotesPage() {
                         >
                           <Search className="mr-2 h-4 w-4" />
                           Klook
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10 disabled:opacity-40"
+                          onClick={() => { void saveRef.current() }}
+                          disabled={saving || !dirty || saveState === 'Newer cloud version detected'}
+                        >
+                          <Save className="mr-2 h-4 w-4" />
+                          {saving ? '保存中' : '保存'}
                         </Button>
                       </div>
                       {lockedSpot ? (
