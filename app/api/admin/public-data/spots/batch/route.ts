@@ -4,12 +4,13 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { resolvePublicSnapshotBundleUncached } from '@/lib/server/public-data-resolver'
+import { syncSpotEnglishTranslations } from '@/lib/server/spot-english-sync'
 import { readAuthoritativePublicSpotById } from '@/lib/server/public-spot-resolver'
 import { uploadPublicDataSnapshot, uploadPublicSpotIndex, uploadPublicSpotSnapshot } from '@/lib/server/r2'
 
 export const runtime = 'nodejs'
 const HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
-const MAX_BATCH_SIZE = 100
+const MAX_BATCH_SIZE = 6
 
 function validIds(value: unknown) {
   if (!Array.isArray(value)) return null
@@ -39,6 +40,7 @@ export async function POST(request: Request) {
   try {
     const generatedAt = new Date().toISOString()
     const source = { type: 'supabase-admin-spot-batch-refresh', generatedAt }
+    const english = await syncSpotEnglishTranslations(ids)
     const { data } = await resolvePublicSnapshotBundleUncached()
     const { locations } = data
 
@@ -85,6 +87,7 @@ export async function POST(request: Request) {
     for (const item of refreshed) {
       revalidateTag(`public-spot:${item.slug}`)
       revalidatePath(`/spot/${item.slug}`)
+      revalidatePath(`/en/spot/${item.slug}`)
       revalidatePath(`/api/spots/${item.slug}`)
     }
 
@@ -94,6 +97,7 @@ export async function POST(request: Request) {
         generatedAt,
         refreshed,
         skipped,
+        english,
         locationsUrl,
         indexUrl,
       },
