@@ -1,7 +1,7 @@
+import { createClient } from '@supabase/supabase-js'
 import priceHighlights from '@/data/guide-price-highlights.json'
 import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
-import { readAuthoritativePublicSpotById } from '@/lib/server/public-spot-resolver'
 import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
 import type { LongformNote } from '@/lib/notes'
 import type { TravelPackage } from '@/lib/server/travel-packages'
@@ -16,6 +16,27 @@ import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
+
+async function readPagesPublicSpotFallback(id: number, slug: string): Promise<PublicSpotRecord | null> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!url || !key) return null
+
+  const supabase = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  })
+
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*,regions:region_id (*)')
+    .eq('id', id)
+    .eq('status', 'active')
+    .maybeSingle()
+
+  if (error || !data) return null
+  if (data.publication_status && data.publication_status !== 'published') return null
+  return { ...(data as unknown as PublicSpotRecord), slug }
+}
 
 export interface EnglishPageData {
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
@@ -123,9 +144,9 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
       )
       sourceSpot = snapshot.spot
     } catch {
-      const authoritative = await readAuthoritativePublicSpotById(summary.id)
-      if (!authoritative) return null
-      sourceSpot = authoritative
+      const fallbackSpot = await readPagesPublicSpotFallback(summary.id, summary.slug)
+      if (!fallbackSpot) return null
+      sourceSpot = fallbackSpot
     }
     if (sourceSpot.publication_status && sourceSpot.publication_status !== 'published') return null
     const source = {...sourceSpot,title:sourceSpot.name}
