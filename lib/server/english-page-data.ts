@@ -1,6 +1,7 @@
 import priceHighlights from '@/data/guide-price-highlights.json'
 import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
+import { readAuthoritativePublicSpotById } from '@/lib/server/public-spot-resolver'
 import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
 import type { LongformNote } from '@/lib/notes'
 import type { TravelPackage } from '@/lib/server/travel-packages'
@@ -112,9 +113,22 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     const spotLocalization=localizationRecord(localization,'spot',summary.id)
     const sourceSnapshotSlug=String(spotLocalization?.source?.url || '').match(/\/spots\/([^/?]+)\.json(?:[?#].*)?$/)?.[1]
     const snapshotSlug=sourceSnapshotSlug || collection.snapshotSlugs[summary.id]
-    const snapshot = await readBilingualSnapshot<{spot:PublicSpotRecord}>(`spots/${snapshotSlug}.json`,()=>readBundledJson(`public-data/spots/${snapshotSlug}.json`),x => (x as any)?.spot?.id===summary.id, freshLocalization)
-    if (snapshot.spot.publication_status && snapshot.spot.publication_status !== 'published') return null
-    const source = {...snapshot.spot,title:snapshot.spot.name}
+    let sourceSpot: PublicSpotRecord
+    try {
+      const snapshot = await readBilingualSnapshot<{spot:PublicSpotRecord}>(
+        `spots/${snapshotSlug}.json`,
+        () => readBundledJson(`public-data/spots/${snapshotSlug}.json`),
+        x => (x as any)?.spot?.id===summary.id,
+        freshLocalization
+      )
+      sourceSpot = snapshot.spot
+    } catch {
+      const authoritative = await readAuthoritativePublicSpotById(summary.id)
+      if (!authoritative) return null
+      sourceSpot = authoritative
+    }
+    if (sourceSpot.publication_status && sourceSpot.publication_status !== 'published') return null
+    const source = {...sourceSpot,title:sourceSpot.name}
     const result = applyLocalization(source,spotLocalization)
     data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
     data.description=result.value.description || result.value.review || ''
