@@ -124,9 +124,10 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     }
 
     if (parts.length === 2) {
-      const source = publishedNotes.find(note => note.slug === slug || note.aliases?.includes(slug))
+      const noteSlug = parts[1]
+      const source = publishedNotes.find(note => note.slug === noteSlug || note.aliases?.includes(noteSlug))
       if (!source) return null
-      if (source.slug !== slug) return { redirect: `/en/notes/${source.slug}` }
+      if (source.slug !== noteSlug) return { redirect: `/en/notes/${source.slug}` }
 
       const localized = localizeLongformNote(source, localization)
       data.kind = 'note'
