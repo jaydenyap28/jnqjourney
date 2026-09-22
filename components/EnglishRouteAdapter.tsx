@@ -12,6 +12,7 @@ import SpotPageView from './SpotPageView'
 import SearchPageView from './SearchPageView'
 import AboutPageView from './AboutPageView'
 import PolicyPageLayout from './PolicyPageLayout'
+import { EnglishNoteView, EnglishNotesIndex } from './EnglishNotesView'
 import { publicSpotFromLocationSummary } from '@/lib/public-spot'
 import { localizedAlternates, localizedRobots } from '@/lib/localized-metadata'
 import { localizedPath, ui } from '@/lib/locale'
@@ -20,7 +21,7 @@ import { absoluteUrl } from '@/lib/site'
 /** Route/SEO adapter only: every public body uses the Chinese production renderer. */
 export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
   const alternates=localizedAlternates(data.path,'en',data.status),robots=localizedRobots('en',data.status)
-  const image=data.spot ? data.spot.image_url || data.spot.images?.[0] || absoluteUrl('/icon.png') : data.guide?.coverImage || data.region?.thumbnail
+  const image=data.spot ? data.spot.image_url || data.spot.images?.[0] || absoluteUrl('/icon.png') : data.note?.coverImage || data.guide?.coverImage || data.region?.thumbnail
   const seo = data.spot ? spotSeo(data.spot, 'en') : {title:`${data.title} | JnQ Journey`, description:data.description.slice(0,180)}
   const description=seo.description
   const fullGuides=data.fullGuides || []
@@ -32,6 +33,8 @@ export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
     case 'region': body=<RegionPageView locale="en" region={{...data.region,image_url:data.region?.thumbnail,description:data.region?.shortSummary}} locations={data.locations.map(publicSpotFromLocationSummary)} allGuides={fullGuides} relatedPackages={packages.filter(p=>p.region_id===data.region?.id)}/>;break
     case 'guides': body=<GuideIndexView guides={fullGuides}/>;break
     case 'guide': body=data.guide&&data.tripCost?<GuidePageView locale="en" guide={data.guide} publicData={{locations:data.locations}} publicTripCost={data.tripCost} approvedPriceHighlights={data.priceHighlights || []} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(data.guide!.slug))} allGuides={fullGuides}/>:null;break
+    case 'notes': body=<EnglishNotesIndex notes={data.notes || []}/>;break
+    case 'note': body=data.note?<EnglishNoteView note={data.note} locations={data.locations}/>:null;break
     case 'spot': body=data.spot?<SpotPageView location={data.spot} relatedNotes={data.relatedNotes || []} relatedLocations={data.locations.map(publicSpotFromLocationSummary)} relatedGuides={data.guides} relatedPackages={packages.filter(p=>p.region_id===data.spot!.region_id)} dataSource="public-snapshot">
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@graph':[
         {'@type':data.spot.category==='food'?'Restaurant':data.spot.category==='accommodation'?'Hotel':'TouristAttraction',name:data.title,description,url:absoluteUrl(alternates.canonical),image,address:data.spot.address || undefined,geo:{'@type':'GeoCoordinates',latitude:data.spot.latitude,longitude:data.spot.longitude}},
