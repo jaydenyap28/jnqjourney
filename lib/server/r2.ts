@@ -3,7 +3,7 @@ import 'server-only'
 import { verifyGuidePublication } from '@/lib/guide-publication'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { DeleteObjectsCommand, ListObjectsV2Command, S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const REQUIRED_R2_ENV = [
   'R2_ACCOUNT_ID',
@@ -102,7 +102,7 @@ export function safeFileName(fileName: string, contentType?: string | null) {
   return `${baseName || 'image'}${ext}`
 }
 
-function safePathSegment(value?: string | null, fallback = 'general') {
+export function safeR2PathSegment(value?: string | null, fallback = 'general') {
   const normalized = String(value || '')
     .trim()
     .toLowerCase()
@@ -118,14 +118,12 @@ export function buildR2ObjectKey(options: BuildR2ObjectKeyOptions) {
   const date = new Date().toISOString().slice(0, 10)
   const fileName = safeFileName(options.fileName, options.contentType)
   const uuid = randomUUID()
-  const fieldSegment = options.field ? `${safePathSegment(options.field, 'image')}/` : ''
+  const fieldSegment = options.field ? `${safeR2PathSegment(options.field, 'image')}/` : ''
 
-  if (options.country || options.city || options.locationSlug || options.category === 'locations') {
+  if (options.category === 'notes') {
     return [
-      'locations',
-      safePathSegment(options.country),
-      safePathSegment(options.city),
-      safePathSegment(options.locationSlug, 'uncategorized'),
+      'notes',
+      safeR2PathSegment(options.locationSlug, 'longform-note'),
       fieldSegment ? fieldSegment.slice(0, -1) : null,
       date,
       `${uuid}-${fileName}`,
@@ -134,7 +132,21 @@ export function buildR2ObjectKey(options: BuildR2ObjectKeyOptions) {
       .join('/')
   }
 
-  const category = safePathSegment(options.category, 'uploads')
+  if (options.country || options.city || options.locationSlug || options.category === 'locations') {
+    return [
+      'locations',
+      safeR2PathSegment(options.country),
+      safeR2PathSegment(options.city),
+      safeR2PathSegment(options.locationSlug, 'uncategorized'),
+      fieldSegment ? fieldSegment.slice(0, -1) : null,
+      date,
+      `${uuid}-${fileName}`,
+    ]
+      .filter(Boolean)
+      .join('/')
+  }
+
+  const category = safeR2PathSegment(options.category, 'uploads')
   return `${category}/${fieldSegment}${date}/${uuid}-${fileName}`
 }
 
@@ -230,4 +242,83 @@ export function uploadPublicGuideTripCostsSnapshot(body: Buffer | Uint8Array) {
 
 export function uploadPublicNotesSnapshot(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/notes.json', body)
+}
+
+
+export interface R2ObjectInfo {
+  key: string
+  size: number
+  lastModified?: string
+}
+
+export function r2ObjectKeyFromPublicUrl(value?: string | null) {
+  const url = String(value || '').trim()
+  if (!url) return null
+  const base = getR2PublicBaseUrl()
+  if (!url.startsWith(`${base}/`)) return null
+  const encodedKey = url.slice(base.length + 1).split('#')[0].split('?')[0]
+  if (!encodedKey) return null
+  try {
+    return decodeURIComponent(encodedKey)
+  } catch {
+    return encodedKey
+  }
+}
+
+export function modernNoteR2Prefix(slug: string) {
+  return `notes/${safeR2PathSegment(slug, 'longform-note')}/`
+}
+
+export function legacyNoteR2Prefix(slug: string) {
+  return `locations/general/general/${safeR2PathSegment(slug, 'longform-note')}/`
+}
+
+export async function listR2Objects(prefix: string): Promise<R2ObjectInfo[]> {
+  assertR2Env()
+  const items: R2ObjectInfo[] = []
+  let continuationToken: string | undefined
+
+  do {
+    const response = await getR2Client().send(new ListObjectsV2Command({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Prefix: prefix,
+      ContinuationToken: continuationToken,
+      MaxKeys: 1000,
+    }))
+    for (const item of response.Contents || []) {
+      if (!item.Key) continue
+      items.push({
+        key: item.Key,
+        size: Number(item.Size || 0),
+        lastModified: item.LastModified?.toISOString(),
+      })
+    }
+    continuationToken = response.IsTruncated ? response.NextContinuationToken : undefined
+  } while (continuationToken)
+
+  return items
+}
+
+export async function deleteR2Objects(keys: string[]) {
+  assertR2Env()
+  const uniqueKeys = Array.from(new Set(keys.map((key) => String(key || '').trim()).filter(Boolean)))
+  let deleted = 0
+
+  for (let index = 0; index < uniqueKeys.length; index += 1000) {
+    const batch = uniqueKeys.slice(index, index + 1000)
+    if (!batch.length) continue
+    const response = await getR2Client().send(new DeleteObjectsCommand({
+      Bucket: process.env.R2_BUCKET_NAME!,
+      Delete: {
+        Objects: batch.map((Key) => ({ Key })),
+        Quiet: true,
+      },
+    }))
+    if (response.Errors?.length) {
+      throw new Error(`Cloudflare R2 refused to delete ${response.Errors.length} object(s).`)
+    }
+    deleted += batch.length
+  }
+
+  return deleted
 }
