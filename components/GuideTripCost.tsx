@@ -73,8 +73,7 @@ function SummaryMetric({ icon, label, value, converted }: { icon: ReactNode; lab
   )
 }
 
-export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripCost }) {
-  if (tripCost.source === 'hidden') return null
+function GuideTripCostVisible({ tripCost }: { tripCost: PublicGuideTripCost }) {
   const sourceCurrency = normalizeGuideDisplayCurrency(tripCost.currency)
   const currency = currencyLabel(tripCost.currency)
   const originalAmount = (cents: number) => sourceCurrency
@@ -213,4 +212,10 @@ export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripC
       </div>
     </section>
   )
+}
+
+
+export default function GuideTripCost({ tripCost }: { tripCost: PublicGuideTripCost }) {
+  if (tripCost.source === 'hidden') return null
+  return <GuideTripCostVisible tripCost={tripCost} />
 }
