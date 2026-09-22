@@ -87,6 +87,9 @@ function validateOutput(value: unknown, sourceEntries: TranslationSegment[]): Re
     if (path !== source.path || typeof text !== 'string' || text.length > spotTranslationFieldLimit) {
       throw new Error('AI returned an invalid Note translation.')
     }
+    if (source.text.trim() && !text.trim()) {
+      throw new Error(`AI returned an empty translation for ${source.path}.`)
+    }
     translated[source.path] = text.trim()
   })
   return translated
