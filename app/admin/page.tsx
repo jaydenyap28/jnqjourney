@@ -17,12 +17,14 @@ import {
   Link2,
   MapPin,
   Plus,
+  RefreshCw,
   Search,
   Trash2,
   X,
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { adminFetch } from '@/lib/admin-fetch'
 import { mutateAdminLocations } from '@/lib/admin-locations'
 import {
   AlertDialog,
@@ -436,6 +438,30 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleBulkPublishSnapshots = async () => {
+    if (!selectedIds.length) return
+    setIsProcessingBulk(true)
+    try {
+      const response = await adminFetch('/api/admin/public-data/spots/batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedIds }),
+      })
+      const payload = await response.json()
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || '批量发布公开快照失败。')
+      }
+      const refreshed = Array.isArray(payload?.refreshed) ? payload.refreshed.length : 0
+      const skipped = Array.isArray(payload?.skipped) ? payload.skipped.length : 0
+      showToast(`已发布 ${refreshed} 个景点公开快照${skipped ? `，跳过 ${skipped} 个` : ''}`)
+    } catch (error) {
+      console.error('Bulk snapshot publish error:', error)
+      alert(error instanceof Error ? error.message : '批量发布公开快照失败，请稍后再试。')
+    } finally {
+      setIsProcessingBulk(false)
+    }
+  }
+
   const handleBulkVideoUpdate = async () => {
     if (!selectedIds.length) return
     setIsProcessingBulk(true)
@@ -669,6 +695,7 @@ export default function AdminDashboard() {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div className="flex items-center gap-2"><div className="rounded-full bg-blue-600 px-2 py-1 text-xs font-bold text-white">{selectedIds.length}</div><span className="text-sm font-medium text-slate-700">已选景点</span></div>
               <div className="flex flex-wrap items-center gap-2">
+                <Button variant="outline" size="sm" onClick={handleBulkPublishSnapshots} disabled={isProcessingBulk} className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"><RefreshCw className={`mr-2 h-4 w-4 ${isProcessingBulk ? 'animate-spin' : ''}`} />发布公开快照</Button>
                 <Button variant="outline" size="sm" onClick={() => setIsBulkVideoDialogOpen(true)} className="border-rose-200 text-rose-700 hover:bg-rose-50"><Film className="mr-2 h-4 w-4" />批量 YouTube</Button>
                 <Button variant="outline" size="sm" onClick={() => setIsBulkDateDialogOpen(true)} className="border-amber-200 text-amber-700 hover:bg-amber-50"><CalendarDays className="mr-2 h-4 w-4" />批量日期</Button>
                 <Button variant="outline" size="sm" onClick={() => setIsMoveDialogOpen(true)} className="border-blue-200 text-blue-600 hover:bg-blue-50"><MapPin className="mr-2 h-4 w-4" />批量地区</Button>
