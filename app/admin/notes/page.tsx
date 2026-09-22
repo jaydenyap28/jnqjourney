@@ -81,6 +81,13 @@ function getLocationLabel(location?: LocationOption | null) {
   return location.name_cn || location.name
 }
 
+function formatBytes(value: number) {
+  const bytes = Number(value || 0)
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
+}
+
 const IMAGE_SIZE_OPTIONS: { value: NoteImageSize; label: string }[] = [
   { value: 'wide', label: 'Wide' },
   { value: 'medium', label: 'Medium' },
@@ -401,6 +408,7 @@ export default function AdminNotesPage() {
   const [videoAspect, setVideoAspect] = useState<NoteVideoAspect>('auto')
   const [uploadingCoverImage, setUploadingCoverImage] = useState(false)
   const [uploadingStandaloneImage, setUploadingStandaloneImage] = useState(false)
+  const [cleaningImages, setCleaningImages] = useState(false)
   const [markdownText, setMarkdownText] = useState('')
   const [baseline, setBaseline] = useState(() => noteEditorKey(EMPTY_NOTE, ''))
   const [saveState, setSaveState] = useState('')
@@ -870,7 +878,12 @@ export default function AdminNotesPage() {
   }
 
   async function saveNote() {
-    if (inFlight.current || !dirty || saveState === 'Newer cloud version detected') return
+    if (inFlight.current || saveState === 'Newer cloud version detected') return
+    if (!form.title.trim()) {
+      setSaveState('Save failed')
+      setMessage('请先填写标题再保存草稿。')
+      return
+    }
     inFlight.current = true
     refreshSequence.current++
     const submittedKey = editorKey
@@ -928,7 +941,11 @@ export default function AdminNotesPage() {
         setBaseline(noteEditorKey({ ...form, slug: hydrated.slug }, markdownText))
       }
       setSaveState('Saved to cloud ' + new Date().toLocaleTimeString('en-GB', { hour12: false }))
-      setMessage(hydrated.published ? 'Published note saved.' : 'Draft saved.')
+      const cleaned = Number(result?.cleanup?.deleted || 0)
+      const freed = Number(result?.cleanup?.bytesFreed || 0)
+      const cleanupText = cleaned > 0 ? ` 已清理 ${cleaned} 张未使用图片（${formatBytes(freed)}）。` : ''
+      const warningText = result?.cleanupWarning ? ` 图片清理提示：${result.cleanupWarning}` : ''
+      setMessage(`${hydrated.published ? 'Published note saved.' : 'Draft saved.'}${cleanupText}${warningText}`)
     } catch (error: any) {
       setSaveState('Save failed')
       setMessage(error?.message || 'Failed to save note.')
@@ -939,6 +956,30 @@ export default function AdminNotesPage() {
   }
 
   saveRef.current = saveNote
+
+  async function cleanupUnusedImages() {
+    if (cleaningImages || inFlight.current) return
+    setCleaningImages(true)
+    setMessage('正在扫描并清理未被任何 Note 使用的 Cloudflare R2 图片...')
+    try {
+      const response = await adminFetch('/api/admin/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'cleanup-unused-images' }),
+      })
+      const result = await response.json()
+      if (!response.ok) throw new Error(result?.error || '清理未使用图片失败。')
+      const deleted = Number(result?.cleanup?.deleted || 0)
+      const freed = Number(result?.cleanup?.bytesFreed || 0)
+      setMessage(deleted > 0
+        ? `已从 Cloudflare R2 删除 ${deleted} 张未使用的 Note 图片，释放约 ${formatBytes(freed)}。`
+        : '扫描完成，目前没有可清理的未使用 Note 图片。')
+    } catch (error: any) {
+      setMessage(`Error: ${error?.message || '清理未使用图片失败。'}`)
+    } finally {
+      setCleaningImages(false)
+    }
+  }
 
   async function deleteCurrentNote() {
     if (inFlight.current) return
@@ -1520,10 +1561,21 @@ export default function AdminNotesPage() {
                           variant="outline"
                           className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10 disabled:opacity-40"
                           onClick={() => { void saveRef.current() }}
-                          disabled={saving || !dirty || saveState === 'Newer cloud version detected'}
+                          disabled={saving || saveState === 'Newer cloud version detected'}
                         >
                           <Save className="mr-2 h-4 w-4" />
                           {saving ? '保存中' : '保存'}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="justify-start border-white/10 bg-[#121214] text-white hover:bg-white/10 disabled:opacity-40"
+                          onClick={cleanupUnusedImages}
+                          disabled={cleaningImages || saving}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          {cleaningImages ? '清理中' : '清理未使用图片'}
                         </Button>
                       </div>
                       {lockedSpot ? (
