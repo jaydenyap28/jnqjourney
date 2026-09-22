@@ -176,7 +176,7 @@ export async function readAuthoritativePublicSpotsByIds(ids: number[]) {
   if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
 
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  let result = await withTimeout(
+  const currentResult = await withTimeout(
     supabase
       .from('locations')
       .select(SPOT_DETAIL_SELECT)
@@ -184,8 +184,10 @@ export async function readAuthoritativePublicSpotsByIds(ids: number[]) {
       .eq('status', 'active'),
     'Authoritative public spots'
   )
-  if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
-    result = await withTimeout(
+
+  let rows: unknown[] = []
+  if (currentResult.error && ['42703', 'PGRST204'].includes(currentResult.error.code)) {
+    const legacyResult = await withTimeout(
       supabase
         .from('locations')
         .select(LEGACY_SPOT_SELECT)
@@ -193,11 +195,15 @@ export async function readAuthoritativePublicSpotsByIds(ids: number[]) {
         .eq('status', 'active'),
       'Legacy authoritative spots'
     )
+    if (legacyResult.error) throw new Error(legacyResult.error.message || 'Unable to read authoritative public spots.')
+    rows = legacyResult.data || []
+  } else {
+    if (currentResult.error) throw new Error(currentResult.error.message || 'Unable to read authoritative public spots.')
+    rows = currentResult.data || []
   }
-  if (result.error) throw new Error(result.error.message || 'Unable to read authoritative public spots.')
 
   const slugMap = await readLocationSlugMap()
-  return (result.data || [])
+  return rows
     .map((raw) => raw as unknown as Omit<PublicSpotRecord, 'slug'>)
     .filter(isSpotPublished)
     .map((row) => {
