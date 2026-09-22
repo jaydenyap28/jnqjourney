@@ -1003,7 +1003,9 @@ export default function SpotContent({
 
             {experience ? <section className="space-y-4">
               <h2 className="text-xl font-bold text-white">{locale === 'en' ? 'JnQ Experience' : 'JnQ Experience｜我们的体验'}</h2>
-              <div className="whitespace-pre-line rounded-xl border border-amber-300/20 bg-amber-300/5 p-5 text-lg leading-relaxed text-gray-200">{experience}</div>
+              <div className="rounded-xl border border-amber-300/20 bg-amber-300/5 p-5">
+                <SpotDescription>{experience}</SpotDescription>
+              </div>
             </section> : null}
             {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} /> : null}
 
