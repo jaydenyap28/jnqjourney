@@ -4,6 +4,7 @@ import { adminFetch } from '@/lib/admin-fetch'
 import type { SpotContentFields } from '@/lib/spot-content'
 import { imageTextKey, spotContentChineseSource } from '@/lib/spot-content'
 import OrderedRelationPicker from './OrderedRelationPicker'
+import SpotDescriptionEditor from './SpotDescriptionEditor'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
@@ -38,9 +39,24 @@ export default function SpotContentEditor({ value, onChange, images, spotId }: {
   }
   return <div className="space-y-5">
     {spotId ? <div className="flex flex-wrap items-center gap-3"><button type="button" disabled={generating} onClick={generateEnglishDraft} className="rounded border border-blue-600 px-3 py-1.5 text-sm text-blue-700 disabled:opacity-50">{generating ? 'AI 生成中…' : 'AI 生成 Experience + SEO 英文'}</button>{generationMessage ? <p role="status" className="text-sm">{generationMessage}</p> : null}</div> : null}
-    <fieldset className="space-y-3 rounded-xl border p-4"><legend className="px-2 font-medium">我们的体验 / JnQ Experience</legend>
-      <p className="text-sm text-muted-foreground">仅填写亲身体验；与景点介绍分开。留空不显示。</p>
-      {(['zh', 'en'] as const).map(lang => <label key={lang} className="block space-y-2 text-sm">{lang === 'zh' ? '中文体验' : 'English experience'}<Textarea rows={4} value={value[`experience_${lang}`] || ''} onChange={e => patch({ [`experience_${lang}`]: e.target.value })} /></label>)}
+    <fieldset className="space-y-4 rounded-xl border p-4"><legend className="px-2 font-medium">我们的体验 / JnQ Experience</legend>
+      <p className="text-sm text-muted-foreground">只写亲身体验、主观感受和实际建议；不要重复景点资讯。留空就不会显示。支持与景点资讯相同的 Markdown 排版。</p>
+      {(['zh', 'en'] as const).map(lang => (
+        <div key={lang} className="space-y-2 text-sm">
+          <p className="font-medium">{lang === 'zh' ? '中文体验' : 'English experience'}</p>
+          <SpotDescriptionEditor
+            id={`experience-${lang}`}
+            name={`experience_${lang}`}
+            rows={6}
+            value={value[`experience_${lang}`] || ''}
+            onChange={next => patch({ [`experience_${lang}`]: next })}
+            placeholder={lang === 'zh' ? '例如：我们实际几点到、人潮如何、哪个角度最好拍、值不值得特地来…' : 'What we actually experienced, what worked, what we would do differently, and practical tips.'}
+            hint={lang === 'zh'
+              ? '支持 Markdown：## H2、### H3、#### H4、**粗体**、*斜体*、[链接](https://...)、> 引用、`行内代码`'
+              : 'Markdown supported: H2–H4, bold, italic, links, quotes, and inline code.'}
+          />
+        </div>
+      ))}
     </fieldset>
     <details className="rounded-xl border p-4"><summary className="cursor-pointer font-medium">SEO</summary><div className="mt-4 grid gap-4 md:grid-cols-2">
       {(['zh', 'en'] as const).map(lang => <div key={lang} className="space-y-3">
