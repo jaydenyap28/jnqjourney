@@ -3,7 +3,8 @@ import priceHighlights from '@/data/guide-price-highlights.json'
 import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
-import type { LongformNote } from '@/lib/notes'
+import { getRenderableNoteBlocks, type LongformNote } from '@/lib/notes'
+import { localizeLongformNote } from '@/lib/note-localization'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 import type { PublicLocation, PublicRegion } from '@/lib/public-data'
 import type { SearchLocation } from '@/components/PublicSearch'
@@ -42,9 +43,10 @@ export interface EnglishPageData {
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
   fullGuides?:TravelGuide[]
   notes?:LongformNote[]
+  note?:LongformNote
   relatedNotes?:RelatedNoteCard[]
   packages?:TravelPackage[]
-  kind: 'home' | 'region' | 'regions' | 'guide' | 'guides' | 'spot' | 'search' | 'about' | 'fallback'
+  kind: 'home' | 'region' | 'regions' | 'guide' | 'guides' | 'spot' | 'notes' | 'note' | 'search' | 'about' | 'fallback'
   path: string
   status: TranslationStatus
   title: string
@@ -61,7 +63,7 @@ export interface EnglishPageData {
 export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   const result={...data}
   if(data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region})=>({id,name,slug,region:region?{name:region.name}:null}))
-  if(['search','regions','guides','about','fallback'].includes(data.kind)) result.locations=[]
+  if(['search','regions','guides','notes','about','fallback'].includes(data.kind)) result.locations=[]
   if(!['home','regions','search'].includes(data.kind)) result.regions=[]
   if(!['home','guides','spot','search'].includes(data.kind)) result.guides=[]
   return result
@@ -100,7 +102,54 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     data.notes=notes.notes.filter(note=>note.published && note.slug && note.title).map(note=>localizeHomepageNote(resolveNotePublicMedia(note,locations),localization))
     return {data}
   }
-  if((parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright'].includes(parts[0])) || (parts.length<=2 && ['notes','packages'].includes(parts[0]))) {
+  if (parts[0] === 'notes') {
+    const notesSnapshot = await readBilingualSnapshot<{notes:LongformNote[]}>(
+      'notes.json',
+      () => readBundledJson('data/notes.json').then(raw => ({ notes: Array.isArray(raw) ? raw : [] })),
+      value => Array.isArray((value as {notes?:unknown})?.notes)
+    )
+    const publishedNotes = notesSnapshot.notes
+      .filter(note => note.published && note.slug && note.title)
+      .map(note => resolveNotePublicMedia(note, locations))
+
+    if (parts.length === 1) {
+      const localized = publishedNotes.map(note => localizeLongformNote(note, localization))
+      data.kind = 'notes'
+      data.notes = localized.map(result => result.value)
+      data.status = localized.length && localized.every(result => result.status === 'complete') ? 'complete' : 'partial'
+      data.title = 'Longform Notes'
+      data.description = 'In-depth JnQ Journey travel stories, practical route notes, transport guides, and first-hand experiences.'
+      data.locations = []
+      return { data }
+    }
+
+    if (parts.length === 2) {
+      const source = publishedNotes.find(note => note.slug === slug || note.aliases?.includes(slug))
+      if (!source) return null
+      if (source.slug !== slug) return { redirect: `/en/notes/${source.slug}` }
+
+      const localized = localizeLongformNote(source, localization)
+      data.kind = 'note'
+      data.note = localized.value
+      data.status = localized.status
+      data.title = localized.value.title
+      data.description = localized.value.tagline || localized.value.summary || localized.value.title
+
+      const spotIds = new Set<number>([
+        ...(source.relatedSpotIds || []),
+        ...getRenderableNoteBlocks(source)
+          .map(block => block.spotId)
+          .filter((id): id is number => Number.isFinite(id)),
+      ])
+      data.locations = locations.filter(location => spotIds.has(location.id))
+      data.guides = []
+      return { data }
+    }
+
+    return null
+  }
+
+  if((parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright'].includes(parts[0])) || (parts.length<=2 && ['packages'].includes(parts[0]))) {
     data.kind='fallback';data.status='missing';data.title='English translation in progress';data.description='This page is available in its original Chinese version.'
     return {data}
   }
