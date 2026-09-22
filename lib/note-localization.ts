@@ -53,6 +53,10 @@ export function noteTranslationIsCurrent(note: LongformNote, snapshot: Localizat
 
   for (const [path, sourceText] of Object.entries(source)) {
     const field = record.fields[path]
+    if (!sourceText.trim()) {
+      if (field?.text?.trim()) return false
+      continue
+    }
     if (!field?.text?.trim() || field.source !== sourceText) return false
   }
 
