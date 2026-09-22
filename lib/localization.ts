@@ -8,7 +8,7 @@ export interface LocalizationRecord {
   locale: 'en'
   canonicalPath: string
   translationStatus: TranslationStatus
-  source: { url: string; capturedAt: string }
+  source: { url: string; capturedAt: string; contentHash?: string }
   fields: Record<string, { source: string; text: string }>
 }
 export interface LocalizationSnapshot { schemaVersion: 1; locale: 'en'; version: string; records: LocalizationRecord[] }
