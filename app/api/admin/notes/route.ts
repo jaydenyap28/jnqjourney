@@ -5,6 +5,7 @@ import { normalizeNotePayload, readAuthoritativeNotes, mutateAuthoritativeNotes 
 import { mergeNoteSave, NoteConflictError } from '@/lib/note-sync'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { cleanupUnusedNoteImages } from '@/lib/server/note-image-cleanup'
+import { syncNoteCardEnglish } from '@/lib/server/note-card-english-sync'
 
 export const runtime = 'nodejs'
 const ADMIN_HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
@@ -33,6 +34,19 @@ export async function POST(request: Request) {
       })
       return NextResponse.json({ ok: true, cleanup }, { headers: ADMIN_HEADERS })
     }
+    if (rawPayload?.action === 'sync-english-cards') {
+      const requestedSlugs = Array.isArray(rawPayload?.slugs)
+        ? Array.from(new Set(rawPayload.slugs.map((value: unknown) => String(value || '').trim()).filter(Boolean)))
+        : []
+      if (!requestedSlugs.length || requestedSlugs.length > 4) {
+        return NextResponse.json({ error: '请提供 1-4 个 Note slug。' }, { status: 400, headers: ADMIN_HEADERS })
+      }
+      const notes = await readAuthoritativeNotes()
+      const selected = notes.filter((note) => requestedSlugs.includes(note.slug) && note.published)
+      const english = await syncNoteCardEnglish(selected)
+      revalidatePath('/en')
+      return NextResponse.json({ ok: true, english }, { headers: ADMIN_HEADERS })
+    }
     if (rawPayload?.action === 'revalidate-public') {
       const slug = String(rawPayload?.slug || '').trim()
       if (!slug) return NextResponse.json({ error: '缺少 slug。' }, { status: 400, headers: ADMIN_HEADERS })
@@ -55,6 +69,17 @@ export async function POST(request: Request) {
       mergeNoteSave(notes, payload, previousSlug, rawPayload.expectedUpdatedAt)
     )
     const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
+    let english = null
+    let englishWarning = ''
+    if (rawPayload?.syncEnglish === true && savedNote.published) {
+      try {
+        english = await syncNoteCardEnglish([savedNote])
+        revalidatePath('/en')
+      } catch (error: any) {
+        englishWarning = error?.message || 'English Note card sync failed.'
+        console.warn('[notes] English card sync failed after save:', englishWarning)
+      }
+    }
     let cleanup = null
     let cleanupWarning = ''
     try {
@@ -70,7 +95,13 @@ export async function POST(request: Request) {
     revalidatePath('/api/notes')
     revalidatePath(`/notes/${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/notes/${previousSlug}`)
-    return NextResponse.json({ note: savedNote, cleanup, cleanupWarning: cleanupWarning || undefined }, { headers: ADMIN_HEADERS })
+    return NextResponse.json({
+      note: savedNote,
+      english,
+      englishWarning: englishWarning || undefined,
+      cleanup,
+      cleanupWarning: cleanupWarning || undefined,
+    }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存笔记失败。' }, { status: error instanceof NoteConflictError ? 409 : 500, headers: ADMIN_HEADERS })
   }
