@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeNotePayload, readAuthoritativeNotes, mutateAuthoritativeNotes } from '@/lib/server/notes-store'
 import { mergeNoteSave, NoteConflictError } from '@/lib/note-sync'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
+import { cleanupUnusedNoteImages } from '@/lib/server/note-image-cleanup'
 
 export const runtime = 'nodejs'
 const ADMIN_HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
@@ -24,6 +25,14 @@ export async function POST(request: Request) {
   if (!adminCheck.ok) return adminCheck.response
   try {
     const rawPayload = await request.json()
+    if (rawPayload?.action === 'cleanup-unused-images') {
+      const notes = await readAuthoritativeNotes()
+      const cleanup = await cleanupUnusedNoteImages(notes, undefined, {
+        includeAllModern: true,
+        includeLegacyInlineSweep: true,
+      })
+      return NextResponse.json({ ok: true, cleanup }, { headers: ADMIN_HEADERS })
+    }
     if (rawPayload?.action === 'revalidate-public') {
       const slug = String(rawPayload?.slug || '').trim()
       if (!slug) return NextResponse.json({ error: '缺少 slug。' }, { status: 400, headers: ADMIN_HEADERS })
@@ -46,6 +55,14 @@ export async function POST(request: Request) {
       mergeNoteSave(notes, payload, previousSlug, rawPayload.expectedUpdatedAt)
     )
     const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
+    let cleanup = null
+    let cleanupWarning = ''
+    try {
+      cleanup = await cleanupUnusedNoteImages(savedNotes, [payload.slug, previousSlug].filter(Boolean))
+    } catch (error: any) {
+      cleanupWarning = error?.message || 'Unused Note image cleanup failed.'
+      console.warn('[notes] R2 cleanup failed after save:', cleanupWarning)
+    }
     revalidateTag('notes')
     revalidateTag(`note:${payload.slug}`)
     revalidatePath('/')
@@ -53,7 +70,7 @@ export async function POST(request: Request) {
     revalidatePath('/api/notes')
     revalidatePath(`/notes/${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/notes/${previousSlug}`)
-    return NextResponse.json({ note: savedNote }, { headers: ADMIN_HEADERS })
+    return NextResponse.json({ note: savedNote, cleanup, cleanupWarning: cleanupWarning || undefined }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存笔记失败。' }, { status: error instanceof NoteConflictError ? 409 : 500, headers: ADMIN_HEADERS })
   }
@@ -69,18 +86,26 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: '缺少 slug。' }, { status: 400 })
     }
 
-    await mutateAuthoritativeNotes((notes) => {
+    const savedNotes = await mutateAuthoritativeNotes((notes) => {
       const existing = notes.find((item) => item.slug === slug)
       if (existing && (existing.updatedAt || '') !== searchParams.get('expectedUpdatedAt')) throw new NoteConflictError()
       return notes.filter((item) => item.slug !== slug)
     })
+    let cleanup = null
+    let cleanupWarning = ''
+    try {
+      cleanup = await cleanupUnusedNoteImages(savedNotes, [slug])
+    } catch (error: any) {
+      cleanupWarning = error?.message || 'Unused Note image cleanup failed.'
+      console.warn('[notes] R2 cleanup failed after delete:', cleanupWarning)
+    }
     revalidateTag('notes')
     revalidateTag(`note:${slug}`)
     revalidatePath('/')
     revalidatePath('/notes')
     revalidatePath('/api/notes')
     revalidatePath(`/notes/${slug}`)
-    return NextResponse.json({ ok: true }, { headers: ADMIN_HEADERS })
+    return NextResponse.json({ ok: true, cleanup, cleanupWarning: cleanupWarning || undefined }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '删除笔记失败。' }, { status: error instanceof NoteConflictError ? 409 : 500, headers: ADMIN_HEADERS })
   }
