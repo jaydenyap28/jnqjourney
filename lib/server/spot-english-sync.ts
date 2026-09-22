@@ -201,7 +201,7 @@ export async function syncSpotEnglishTranslations(ids: number[]): Promise<SpotEn
   const { data: rows, error } = await db.from('locations').select('*').in('id', uniqueIds)
   if (error) throw new Error(error.message || 'Unable to read Spots for English synchronization.')
 
-  const rowMap = new Map((rows || []).map((row: any) => [Number(row.id), row]))
+  const rowMap = new Map<number, any>((rows || []).map((row: any) => [Number(row.id), row] as [number, any]))
   const io = createLocalizationIO()
   const current = await readAuthoritativeLocalization(io)
   const generated: Array<{
