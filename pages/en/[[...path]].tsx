@@ -17,6 +17,7 @@ export const getStaticPaths: GetStaticPaths = async () => ({
     '/en/guide',
     '/en/search',
     '/en/about',
+    '/en/notes',
     ...pilot.records
       .filter((record) => record.entityType !== 'spot' || bundledSpotIds.has(Number(record.entityId)))
       .map((record) => `/en${record.canonicalPath}`),
