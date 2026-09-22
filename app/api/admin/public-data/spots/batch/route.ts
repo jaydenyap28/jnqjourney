@@ -10,7 +10,7 @@ import { uploadPublicDataSnapshot, uploadPublicSpotIndex, uploadPublicSpotSnapsh
 
 export const runtime = 'nodejs'
 const HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
-const MAX_BATCH_SIZE = 6
+const MAX_BATCH_SIZE = 4
 
 function validIds(value: unknown) {
   if (!Array.isArray(value)) return null
