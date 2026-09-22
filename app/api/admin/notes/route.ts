@@ -8,6 +8,7 @@ import { cleanupUnusedNoteImages } from '@/lib/server/note-image-cleanup'
 import { syncNoteCardEnglish } from '@/lib/server/note-card-english-sync'
 
 export const runtime = 'nodejs'
+export const maxDuration = 60
 const ADMIN_HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
 
 export async function GET(request: Request) {
@@ -34,12 +35,12 @@ export async function POST(request: Request) {
       })
       return NextResponse.json({ ok: true, cleanup }, { headers: ADMIN_HEADERS })
     }
-    if (rawPayload?.action === 'sync-english-cards') {
+    if (rawPayload?.action === 'sync-english-cards' || rawPayload?.action === 'sync-english') {
       const requestedSlugs = Array.isArray(rawPayload?.slugs)
         ? Array.from(new Set(rawPayload.slugs.map((value: unknown) => String(value || '').trim()).filter(Boolean)))
         : []
-      if (!requestedSlugs.length || requestedSlugs.length > 4) {
-        return NextResponse.json({ error: '请提供 1-4 个 Note slug。' }, { status: 400, headers: ADMIN_HEADERS })
+      if (requestedSlugs.length !== 1) {
+        return NextResponse.json({ error: '每次请提供 1 个 Note slug，系统会逐篇同步完整英文长文。' }, { status: 400, headers: ADMIN_HEADERS })
       }
       const notes = await readAuthoritativeNotes()
       const selected = notes.filter((note) => requestedSlugs.includes(note.slug) && note.published)
