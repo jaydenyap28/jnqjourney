@@ -14,7 +14,7 @@ export interface LocalizationRecord {
 export interface LocalizationSnapshot { schemaVersion: 1; locale: 'en'; version: string; records: LocalizationRecord[] }
 
 // Leaf-only text overlay. Identity, binding, money, coordinates, order and media are never writable.
-const textKeys = new Set(['title', 'shortTitle', 'tagline', 'summary', 'shortSummary', 'description', 'review', 'duration', 'travelStyle', 'destination', 'priceDisplay', 'whatsappMessage',
+const textKeys = new Set(['title', 'shortTitle', 'kicker', 'tagline', 'summary', 'content', 'shortSummary', 'description', 'review', 'duration', 'travelStyle', 'destination', 'priceDisplay', 'whatsappMessage',
   'name', 'displayName', 'guideSummary', 'routeNote', 'tips', 'note', 'stayNote', 'accommodationNote', 'transport', 'reminder', 'city', 'label', 'dayLabel', 'alt', 'caption', 'address', 'opening_hours'])
 const textArrays = new Set(['highlightTags', 'heroBullets', 'highlights', 'bestFor', 'notes', 'practicalTips', 'actualExperiences', 'pendingItems'])
 export function isLocalizedTextPath(path: string) {
