@@ -53,7 +53,9 @@ async function runOne() {
     }
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Automatic Spot publication failed.'
-    await supabase.rpc('fail_spot_publication_sync', { p_spot_id: id, p_error: message }).catch(() => null)
+    try {
+      await supabase.rpc('fail_spot_publication_sync', { p_spot_id: id, p_error: message })
+    } catch {}
     return {
       ok: false,
       processed: true,
