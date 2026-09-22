@@ -22,6 +22,9 @@ function loader() {
         PublicCopy: ({ text }) => text,
         PublicLink: ({ children, ...props }) => React.createElement('a', props, children),
       }
+      if (name === 'next/link') return ({ children, ...props }) => React.createElement('a', props, children)
+      if (name === './FallbackImage') return ({ fill, priority, ...props }) => React.createElement('img', props)
+      if (name === '@/components/GuideDayStayCard') return { __esModule: true, default: () => null }
       if (name.startsWith('@/components/')) return new Proxy({ __esModule: true, default: name.slice('@/components/'.length) }, { get: (target, key) => key in target ? target[key] : String(key) })
       if (name === '@/data/guides.json') return []
       if (name === '@/lib/guide-drafts') return { jiangnanGuideDraft: { slug: 'unused' } }
@@ -39,6 +42,7 @@ function loader() {
 }
 const load = loader()
 const { orderedGuideAttractions, orderedGuideDayRoute } = load('lib/guide-attractions.ts')
+const { selectGuideRouteNoteCards } = load('lib/content-relations.ts')
 const { normalizeGuidePayload } = load('lib/server/guides-store.ts')
 const Route = load('components/GuideDayRoute.tsx').default
 const spots = [
@@ -50,10 +54,11 @@ const routeItems = [
   { type: 'note', noteSlug: 'shanghai-ferry', displayName: '上海2元渡轮体验', latitude: 88, longitude: 99 },
   { type: 'spot', spotId: 2, displayOrder: 0 },
 ]
+const routeNotes = [{ routeItemSlug: 'shanghai-ferry', slug: 'shanghai-ferry', title: '上海2元渡轮体验', summary: '从渡口看两岸城市风景。', coverImage: 'https://example.com/ferry.webp' }]
 const day = { dayLabel: 'Day 1', title: 'Shanghai', routeItems }
 function normalize(days, extra = {}) { return normalizeGuidePayload({ slug: 'test', title: 'Test', days, ...extra }) }
 function hrefs(source) {
-  const html = renderToStaticMarkup(React.createElement(Route, { dayNumber: 1, source, spots }))
+  const html = renderToStaticMarkup(React.createElement(Route, { dayNumber: 1, source, spots, notes: routeNotes }))
   return [...html.matchAll(/href="([^"]+)"/g)].map(match => match[1])
 }
 function findElements(node, type, results = []) {
@@ -69,11 +74,11 @@ test('mixed route survives save/read, reorder and removal in exact array order f
   const first = normalize([day])
   const saved = normalizeGuidePayload(JSON.parse(JSON.stringify(first)))
   assert.deepEqual(orderedGuideDayRoute(saved.days[0]).map(item => item.type), ['spot', 'note', 'spot'])
-  assert.deepEqual(hrefs(saved.days[0]), ['/spot/bund-1', '/notes/shanghai-ferry', '/spot/lujiazui-2'])
+  assert.deepEqual(hrefs(saved.days[0]), ['/spot/bund-1', '/spot/lujiazui-2', '/notes/shanghai-ferry'])
   const reordered = normalize([{ ...day, routeItems: [routeItems[2], routeItems[1], routeItems[0]] }])
-  assert.deepEqual(hrefs(reordered.days[0]), ['/spot/lujiazui-2', '/notes/shanghai-ferry', '/spot/bund-1'])
+  assert.deepEqual(hrefs(reordered.days[0]), ['/spot/lujiazui-2', '/spot/bund-1', '/notes/shanghai-ferry'])
   const removed = normalize([{ ...day, routeItems: [routeItems[1], routeItems[0]] }])
-  assert.deepEqual(hrefs(removed.days[0]), ['/notes/shanghai-ferry', '/spot/bund-1'])
+  assert.deepEqual(hrefs(removed.days[0]), ['/spot/bund-1', '/notes/shanghai-ferry'])
   const segment = { id: 'shanghai', title: 'Shanghai', city: 'Shanghai', dayStart: 1, dayEnd: 1, dateStart: '2026-01-01', dateEnd: '2026-01-01', verifiedRoutes: [{ ...day, dayNumber: 1 }] }
   const segmented = normalize([], { itineraryMode: 'segment', itinerarySegments: [segment] })
   assert.deepEqual(segmented.itinerarySegments[0].verifiedRoutes[0].routeItems, saved.days[0].routeItems)
@@ -89,12 +94,83 @@ test('old canonical and legacy Spot-only Guides retain ordering and explicit del
   assert.deepEqual(orderedGuideAttractions({ routeItems: [], attractions: [{ spotId: 1, displayOrder: 0 }] }), [])
 })
 
-test('Note route renders a real /notes/ link including a Note-only day', () => {
+test('Note route renders a published preview card below the Spot-only route, including a Note-only day', () => {
   const source = normalize([{ ...day, routeItems: [routeItems[1]] }]).days[0]
-  const html = renderToStaticMarkup(React.createElement(Route, { dayNumber: 1, source, spots }))
+  const html = renderToStaticMarkup(React.createElement(Route, { dayNumber: 0, source, spots, notes: routeNotes }))
   assert.match(html, /href="\/notes\/shanghai-ferry"/)
   assert.match(html, /上海2元渡轮体验/)
+  assert.match(html, /从渡口看两岸城市风景/)
+  assert.match(html, /https:\/\/example.com\/ferry.webp/)
+  assert.match(html, /路线攻略 \/ Travel Note/)
+  assert.match(html, /查看完整攻略/)
   assert.doesNotMatch(html, /\/spot\//)
+  assert.doesNotMatch(html, /今日路线/)
+})
+
+test('Note preview has a clean text-only fallback when coverImage is absent', () => {
+  const source = normalize([{ ...day, routeItems: [routeItems[1]] }]).days[0]
+  const html = renderToStaticMarkup(React.createElement(Route, { dayNumber: 0, source, spots, notes: [{ ...routeNotes[0], coverImage: undefined }] }))
+  assert.match(html, /上海2元渡轮体验/)
+  assert.doesNotMatch(html, /<img/)
+})
+
+test('Guide route Note selection uses published public Notes and resolves existing aliases', () => {
+  const selected = selectGuideRouteNoteCards(['ferry-alias', 'draft-note'], [
+    { slug: 'shanghai-ferry', aliases: ['ferry-alias'], title: 'Ferry', summary: 'Summary', published: true },
+    { slug: 'draft-note', title: 'Draft', summary: 'Hidden', published: false },
+  ])
+  assert.deepEqual(selected, [{ routeItemSlug: 'ferry-alias', slug: 'shanghai-ferry', title: 'Ferry', summary: 'Summary' }])
+})
+
+test('Guide reader loads linked Notes through the cached public Note store', () => {
+  const source = fs.readFileSync(path.resolve('app/guide/[slug]/page.tsx'), 'utf8')
+  assert.match(source, /readPublicNotes\(\)/)
+  assert.match(source, /selectGuideRouteNoteCards\(noteSlugs,notes\)/)
+  assert.doesNotMatch(source, /createClient|from\(['"]notes['"]\)/)
+})
+
+test('Day 0 survives normalization and JSON round-trip while positive IDs still reject zero', () => {
+  const segment = {
+    id: 'arrival', title: 'Arrival', city: 'Shanghai', dayStart: 0, dayEnd: 0,
+    dateStart: '2026-01-01', dateEnd: '2026-01-01',
+    verifiedRoutes: [{ ...day, dayNumber: 0 }],
+    referenceRoutes: [{ title: 'Reference', dayNumber: 0 }],
+    accommodationStays: [{ dayStart: 0, dayEnd: 0, accommodationId: 7 }],
+  }
+  const daily = normalize([{ ...day, dayLabel: 'Day 0', stayRangeStart: 0, stayRangeEnd: 0 }])
+  const savedDaily = normalizeGuidePayload(JSON.parse(JSON.stringify(daily)))
+  assert.equal(savedDaily.days[0].stayRangeStart, 0)
+  assert.equal(savedDaily.days[0].stayRangeEnd, 0)
+  const normalized = normalize([], { itineraryMode: 'segment', itinerarySegments: [segment] })
+  const saved = normalizeGuidePayload(JSON.parse(JSON.stringify(normalized)))
+  assert.equal(saved.itinerarySegments[0].dayStart, 0)
+  assert.equal(saved.itinerarySegments[0].verifiedRoutes[0].dayNumber, 0)
+  assert.equal(saved.itinerarySegments[0].referenceRoutes[0].dayNumber, 0)
+  assert.equal(saved.itinerarySegments[0].accommodationStays[0].dayStart, 0)
+
+  const invalidIds = normalize([], { itineraryMode: 'segment', itinerarySegments: [{
+    ...segment,
+    verifiedRoutes: [{ ...day, dayNumber: 0, routeItems: undefined, attractions: [{ spotId: 0, displayOrder: 0 }] }],
+    accommodationStays: [{ dayStart: 0, dayEnd: 0, accommodationId: 0 }],
+  }] })
+  assert.deepEqual(invalidIds.itinerarySegments[0].verifiedRoutes[0].attractions, [])
+  assert.deepEqual(invalidIds.itinerarySegments[0].accommodationStays, [])
+  const adminRoute = fs.readFileSync(path.resolve('app/api/admin/guides/route.ts'), 'utf8')
+  assert.match(adminRoute, /route\.dayNumber \?\? null/)
+})
+
+test('Day 0 segment renders and Day 1+ segment behavior remains unchanged', () => {
+  const Segment = load('components/GuideSegmentItinerarySection.tsx').default
+  const segments = [0, 1].map(dayNumber => ({
+    id: `day-${dayNumber}`, title: `Segment ${dayNumber}`, city: dayNumber === 0 ? 'Arrival' : 'Shanghai',
+    dayStart: dayNumber, dayEnd: dayNumber, dateStart: `2026-01-0${dayNumber + 1}`, dateEnd: `2026-01-0${dayNumber + 1}`,
+    summary: `Summary ${dayNumber}`, verifiedRoutes: [{ dayNumber, title: `Route ${dayNumber}`, summary: `Route summary ${dayNumber}`, attractions: [] }],
+  }))
+  const html = renderToStaticMarkup(React.createElement(Segment, { guideSlug: 'test', segments, spotsBySegment: {}, staysByDay: {} }))
+  assert.match(html, />Day 0</)
+  assert.match(html, /id="day-0"/)
+  assert.match(html, />Day 1</)
+  assert.match(html, /id="day-1"/)
 })
 
 test('map ignores Notes, even with coordinate-like data; attraction references remain Spot-only', () => {

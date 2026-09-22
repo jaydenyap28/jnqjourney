@@ -369,7 +369,7 @@ function segmentDaysForEditor(guide: TravelGuide, locations: LocationOption[] = 
 
 function applyEditorDaysToSegments(guide: TravelGuide, days: TravelGuide['days'], locations: LocationOption[]) {
   if (guide.itineraryMode !== 'segment') return guide.itinerarySegments
-  const byDay = new Map(days.map((day, index) => [parseGuideDayNumber(day.dayLabel) || index + 1, day]))
+  const byDay = new Map(days.map((day, index) => [parseGuideDayNumber(day.dayLabel) ?? index + 1, day]))
   return (guide.itinerarySegments || []).map((segment) => {
     const startDay = byDay.get(segment.dayStart)
     const endDay = byDay.get(segment.dayEnd)
@@ -903,7 +903,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
 }
 
   function setDayStay(dayIndex: number, stayName: string) {
-    const dayNumber = parseGuideDayNumber(form.days[dayIndex]?.dayLabel) || dayIndex + 1
+    const dayNumber = parseGuideDayNumber(form.days[dayIndex]?.dayLabel) ?? dayIndex + 1
     updateDay(dayIndex, {
       stay: stayName,
       stayRangeStart: stayName ? dayNumber : undefined,
@@ -912,7 +912,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
   }
 
   function toggleContinuousStay(dayIndex: number, enabled: boolean) {
-    const dayNumber = parseGuideDayNumber(form.days[dayIndex]?.dayLabel) || dayIndex + 1
+    const dayNumber = parseGuideDayNumber(form.days[dayIndex]?.dayLabel) ?? dayIndex + 1
     if (!enabled) {
       updateDay(dayIndex, {
         stayRangeStart: dayNumber,
@@ -922,8 +922,8 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
     }
 
     updateDay(dayIndex, {
-      stayRangeStart: form.days[dayIndex]?.stayRangeStart || dayNumber,
-      stayRangeEnd: form.days[dayIndex]?.stayRangeEnd || dayNumber,
+      stayRangeStart: form.days[dayIndex]?.stayRangeStart ?? dayNumber,
+      stayRangeEnd: form.days[dayIndex]?.stayRangeEnd ?? dayNumber,
     })
   }
 
@@ -967,7 +967,7 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
           }))
           .filter((stop) => stop.name),
         days: form.itineraryMode === 'segment' ? [] : form.days.map((day, index) => {
-          const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
+          const dayNumber = parseGuideDayNumber(day.dayLabel) ?? index + 1
           return {
             ...day,
             dayLabel: String(day.dayLabel || `Day ${index + 1}`).trim(),
@@ -980,8 +980,8 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
             transport: String(day.transport || '').trim() || undefined,
             transportPrice: String(day.transportPrice || '').trim() || undefined,
             stay: String(day.stay || '').trim() || undefined,
-            stayRangeStart: day.stay ? Number(day.stayRangeStart || dayNumber) : undefined,
-            stayRangeEnd: day.stay ? Number(day.stayRangeEnd || day.stayRangeStart || dayNumber) : undefined,
+            stayRangeStart: day.stay ? Number(day.stayRangeStart ?? dayNumber) : undefined,
+            stayRangeEnd: day.stay ? Number(day.stayRangeEnd ?? day.stayRangeStart ?? dayNumber) : undefined,
           }
         }),
         itinerarySegments: applyEditorDaysToSegments(form, form.days, locations),
@@ -1623,11 +1623,11 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
 
                     const currentStayLocation =
                       accommodationLocations.find((location) => matchesLocationIdentity(location, String(day.stay || ''))) || null
-                    const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
+                    const dayNumber = parseGuideDayNumber(day.dayLabel) ?? index + 1
                     const dayRange = parseDayRange(day.dayLabel)
-                    const defaultStart = dayRange?.start || dayNumber
-                    const defaultEnd = dayRange?.end || defaultStart
-                    const stayEnd = Number(day.stayRangeEnd || day.stayRangeStart || defaultStart)
+                    const defaultStart = dayRange?.start ?? dayNumber
+                    const defaultEnd = dayRange?.end ?? defaultStart
+                    const stayEnd = Number(day.stayRangeEnd ?? day.stayRangeStart ?? defaultStart)
                     const isContinuous = Boolean(day.stay) && stayEnd > defaultStart
                     const maxStaySpan = Math.max(1, form.days.length - dayNumber + 1)
                     const currentStaySpan = Math.max(1, stayEnd - dayNumber + 1)

@@ -8,8 +8,9 @@ import type { PublicGuideTripCost } from '@/lib/guide-budget'
 import type { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 import type { Locale } from '@/lib/locale'
+import type { GuideRouteNoteCard } from '@/lib/content-relations'
 import { localizedPath } from '@/lib/locale'
-export interface GuidePageViewProps { guide:TravelGuide; publicData:{locations:PublicLocation[]};publicTripCost:PublicGuideTripCost;approvedPriceHighlights:Awaited<ReturnType<typeof readApprovedGuidePriceHighlights>>;relatedPackages:TravelPackage[];allGuides:TravelGuide[];locale?:Locale }
+export interface GuidePageViewProps { guide:TravelGuide; publicData:{locations:PublicLocation[]};publicTripCost:PublicGuideTripCost;approvedPriceHighlights:Awaited<ReturnType<typeof readApprovedGuidePriceHighlights>>;relatedPackages:TravelPackage[];allGuides:TravelGuide[];routeNotes?:GuideRouteNoteCard[];locale?:Locale }
 import EntityName from '@/components/EntityName'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import type { Metadata } from 'next'
@@ -246,7 +247,7 @@ function resolveMatchingRegionSpot(stopName: string, spots: LinkedSpot[]) {
   )
 }
 
-export default function GuidePageView({guide,publicData,publicTripCost,approvedPriceHighlights,relatedPackages,allGuides,locale='zh'}:GuidePageViewProps) {
+export default function GuidePageView({guide,publicData,publicTripCost,approvedPriceHighlights,relatedPackages,allGuides,routeNotes=[],locale='zh'}:GuidePageViewProps) {
   const isSegmentItinerary = guide.itineraryMode === 'segment' && Boolean(guide.itinerarySegments?.length)
 
   const hasPublicTripCost = publicTripCost.source !== 'hidden'
@@ -372,7 +373,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
 
 
   const datedDayPlans = guide.days.map((day, index) => {
-    const dayNumber = parseGuideDayNumber(day.dayLabel) || index + 1
+    const dayNumber = parseGuideDayNumber(day.dayLabel) ?? index + 1
     const staySource = resolveStaySource(guide.days, dayNumber)
     const stayRawName = String(staySource?.stay || day.stay || '').trim()
     const stayName = stayRawName.toLowerCase()
@@ -699,7 +700,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
         <GuidePriceHighlightsSection highlights={approvedPriceHighlights} />
 
         <div className={hasGuideBookingContent ? 'grid min-w-0 gap-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start' : ''}>
-        {guide.itineraryMode === 'unassigned' ? <GuideUnassignedVisits guide={guide} spots={allGuideSpots as GuideSegmentSpot[]} /> : isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} staysByDay={segmentStaysByDay} /> : <>
+        {guide.itineraryMode === 'unassigned' ? <GuideUnassignedVisits guide={guide} spots={allGuideSpots as GuideSegmentSpot[]} /> : isSegmentItinerary ? <GuideSegmentItinerarySection guideSlug={guide.slug} segments={guide.itinerarySegments || []} spotsBySegment={segmentSpotsBySegment} staysByDay={segmentStaysByDay} routeNotes={routeNotes} /> : <>
         <section aria-labelledby="itinerary-heading" className="min-w-0">
           <div className="border-b border-white/10 pb-5">
             <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-amber-200/68"><PublicCopy text={"Day by Day / 每日行程"}/></p>
@@ -727,7 +728,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
                     {videoId ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><Film className="h-3.5 w-3.5" /><PublicCopy text={"有影片"}/></span> : null}
                   </div>
 
-                  <GuideDayRoute dayNumber={day.dayNumber} source={day.routeSource} spots={allGuideSpots} />
+                  <GuideDayRoute dayNumber={day.dayNumber} source={day.routeSource} spots={allGuideSpots} notes={routeNotes} />
 
                   {shouldShowDaySummary(day.summary) ? (
                     <div className="mt-6 max-w-[800px] space-y-4 text-[15px] leading-[1.85] text-white/76 md:text-base">

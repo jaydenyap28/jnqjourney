@@ -6,6 +6,18 @@ export function toRelatedNoteCard({ slug, title, summary, coverImage }: Longform
   return { slug, title, summary, ...(coverImage ? { coverImage } : {}) }
 }
 
+export type GuideRouteNoteCard = RelatedNoteCard & { routeItemSlug: string }
+
+export function selectGuideRouteNoteCards(slugs: string[], notes: LongformNote[]): GuideRouteNoteCard[] {
+  const seen = new Set<string>()
+  return slugs.flatMap((routeItemSlug) => {
+    const note = notes.find((item) => item.published && (item.slug === routeItemSlug || item.aliases?.includes(routeItemSlug)))
+    if (!note || seen.has(routeItemSlug)) return []
+    seen.add(routeItemSlug)
+    return [{ ...toRelatedNoteCard(note), routeItemSlug }]
+  })
+}
+
 export function selectRelatedNotes(slugs: string[] | null | undefined, notes: LongformNote[], self?: string) {
   const seen = new Set<string>()
   return (slugs || []).flatMap(slug => {

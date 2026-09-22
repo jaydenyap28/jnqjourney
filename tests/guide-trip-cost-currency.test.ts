@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import test from 'node:test'
 
 import {
@@ -28,4 +29,15 @@ test('formats each supported reader currency consistently', () => {
   assert.equal(formatGuideDisplayAmount('USD', 1234.56), 'US$1,234.56')
   assert.equal(formatGuideDisplayAmount('JPY', 123456), '¥123,456')
   assert.equal(formatGuideDisplayAmount('SGD', 1234.56), 'S$1,234.56')
+})
+
+test('keeps the existing GuideTripCost implementation visible with a prominent five-currency selector', () => {
+  const component = fs.readFileSync(new URL('../components/GuideTripCost.tsx', import.meta.url), 'utf8')
+  const pageView = fs.readFileSync(new URL('../components/GuidePageView.tsx', import.meta.url), 'utf8')
+  assert.match(component, /<legend[^>]*>参考币种<\/legend>/)
+  assert.match(component, /\['MYR', 'CNY', 'USD', 'JPY', 'SGD'\]/)
+  assert.match(component, /aria-pressed=\{displayCurrency === item\}/)
+  assert.match(component, /originalAmount\(tripCost\.totalCents\)/)
+  assert.match(component, /≈ \{convertedAmount\(tripCost\.totalCents\)\}/)
+  assert.match(pageView, /<GuideTripCost tripCost=\{publicTripCost\} \/>/)
 })

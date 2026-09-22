@@ -20,7 +20,7 @@ import KlookWidgetEmbed from '@/components/KlookWidgetEmbed'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
-import { readPublicGuideBySlug, readPublicGuides } from '@/lib/server/public-content-store'
+import { readPublicGuideBySlug, readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { readPublicGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
@@ -37,6 +37,7 @@ import { formatShortText } from '@/lib/short-text'
 import { resolvePublicImage } from '@/lib/public-media'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveGuidePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
+import { selectGuideRouteNoteCards } from '@/lib/content-relations'
 
 
 import GuidePageView from '@/components/GuidePageView'
@@ -83,6 +84,10 @@ export default async function GuideDetailPage({params}:PageProps) {
  const guide=storedGuide?resolveGuidePublicMedia(storedGuide,publicData.locations):null;
  if(!guide) notFound();
  if(params.slug!==guide.slug) redirect(`/guide/${guide.slug}`);
- const [publicTripCost,approvedPriceHighlights,packages,guides]=await Promise.all([readPublicGuideTripCost(guide),readApprovedGuidePriceHighlights(guide.slug),readPublishedPackages(),readPublicGuides()]);
- return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuidePublicMedia(g,publicData.locations))}/>
+ const [publicTripCost,approvedPriceHighlights,packages,guides,notes]=await Promise.all([readPublicGuideTripCost(guide),readApprovedGuidePriceHighlights(guide.slug),readPublishedPackages(),readPublicGuides(),readPublicNotes()]);
+ const noteSlugs = [
+   ...guide.days.flatMap(day => day.routeItems || []),
+   ...(guide.itinerarySegments || []).flatMap(segment => [...segment.verifiedRoutes, ...(segment.referenceRoutes || [])].flatMap(route => route.routeItems || [])),
+ ].flatMap(item => item.type === 'note' ? [item.noteSlug] : [])
+ return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuidePublicMedia(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
 }

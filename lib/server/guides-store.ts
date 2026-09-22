@@ -43,6 +43,11 @@ function normalizePositiveNumber(value: unknown) {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined
 }
 
+function normalizeDayNumber(value: unknown) {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : undefined
+}
+
 function normalizeNumberArray(value: unknown) {
   if (!Array.isArray(value)) return []
   return value
@@ -156,8 +161,8 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
             transportPrice: String(item?.transportPrice || '').trim() || undefined,
             stay: String(item?.stay || '').trim() || undefined,
             stayNote: String(item?.stayNote || '').trim() || undefined,
-            stayRangeStart: normalizePositiveNumber(item?.stayRangeStart),
-            stayRangeEnd: normalizePositiveNumber(item?.stayRangeEnd),
+            stayRangeStart: normalizeDayNumber(item?.stayRangeStart),
+            stayRangeEnd: normalizeDayNumber(item?.stayRangeEnd),
             gallery: Array.isArray(item?.gallery)
               ? item.gallery
                   .map((image: any) => ({
@@ -178,30 +183,30 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
       ? value.itinerarySegments
           .map((item: any) => ({
             id: String(item?.id || '').trim(),
-            dayStart: normalizePositiveNumber(item?.dayStart),
-            dayEnd: normalizePositiveNumber(item?.dayEnd),
+            dayStart: normalizeDayNumber(item?.dayStart),
+            dayEnd: normalizeDayNumber(item?.dayEnd),
             dateStart: String(item?.dateStart || '').trim(),
             dateEnd: String(item?.dateEnd || '').trim(),
             city: String(item?.city || '').trim(),
             title: String(item?.title || '').trim(),
             summary: String(item?.summary || '').trim(),
             verifiedRoutes: Array.isArray(item?.verifiedRoutes)
-              ? item.verifiedRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), routeItems: normalizeGuideDayRoute(route?.routeItems), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.verifiedRoutes.map((route: any) => ({ dayNumber: normalizeDayNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), routeItems: normalizeGuideDayRoute(route?.routeItems), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             referenceRoutes: Array.isArray(item?.referenceRoutes)
-              ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizePositiveNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), routeItems: normalizeGuideDayRoute(route?.routeItems), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
+              ? item.referenceRoutes.map((route: any) => ({ dayNumber: normalizeDayNumber(route?.dayNumber), title: String(route?.title || '').trim(), summary: String(route?.summary || '').trim() || undefined, attractions: normalizeGuideAttractions(route?.attractions), routeItems: normalizeGuideDayRoute(route?.routeItems), linkedSpots: Array.isArray(route?.attractions) ? [] : normalizeStringArray(route?.linkedSpots), status: ['visited', 'reference', 'pending'].includes(String(route?.status)) ? route.status : undefined })).filter((route: any) => route.title)
               : [],
             accommodation: String(item?.accommodation || '').trim() || undefined,
             accommodationSpotName: String(item?.accommodationSpotName || '').trim() || undefined,
             accommodationStays: Array.isArray(item?.accommodationStays)
               ? item.accommodationStays
                   .map((stay: any) => ({
-                    dayStart: normalizePositiveNumber(stay?.dayStart),
-                    dayEnd: normalizePositiveNumber(stay?.dayEnd),
+                    dayStart: normalizeDayNumber(stay?.dayStart),
+                    dayEnd: normalizeDayNumber(stay?.dayEnd),
                     accommodationId: normalizePositiveNumber(stay?.accommodationId),
                     note: String(stay?.note || '').trim() || undefined,
                   }))
-                  .filter((stay: any) => stay.dayStart && stay.dayEnd && stay.dayEnd >= stay.dayStart && stay.accommodationId)
+                  .filter((stay: any) => stay.dayStart !== undefined && stay.dayEnd !== undefined && stay.dayEnd >= stay.dayStart && stay.accommodationId)
               : undefined,
             accommodationNote: String(item?.accommodationNote || '').trim() || undefined,
             transport: String(item?.transport || '').trim() || undefined,
@@ -213,7 +218,7 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
             imageMatches: Array.isArray(item?.imageMatches) ? item.imageMatches.map((image: any) => ({ level: ['attraction', 'route', 'city'].includes(String(image?.level)) ? image.level : 'city', label: String(image?.label || '').trim(), note: String(image?.note || '').trim() || undefined })).filter((image: any) => image.label) : [],
             globalDayMappingStatus: ['confirmed', 'pending'].includes(String(item?.globalDayMappingStatus)) ? item.globalDayMappingStatus : undefined,
           }))
-          .filter((item: any) => item.id && item.dayStart && item.dayEnd && item.dayEnd >= item.dayStart && item.dateStart && item.dateEnd && item.city && item.title)
+          .filter((item: any) => item.id && item.dayStart !== undefined && item.dayEnd !== undefined && item.dayEnd >= item.dayStart && item.dateStart && item.dateEnd && item.city && item.title)
       : [],
     bestFor: normalizeStringArray(value?.bestFor),
     notes: normalizeStringArray(value?.notes),
