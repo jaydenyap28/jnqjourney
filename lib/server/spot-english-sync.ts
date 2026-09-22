@@ -279,7 +279,13 @@ export async function syncSpotEnglishTranslations(ids: number[]): Promise<SpotEn
           review: { source: item.source.review, text: item.output.review },
           address: { source: item.source.address, text: item.output.address },
         }
-        next = editSpotTranslation(next, item.row, item.canonicalPath, edits, 'complete', version)
+        const normalizedSpot = {
+          ...item.row,
+          description: item.source.description,
+          review: item.source.review,
+          address: item.source.address,
+        }
+        next = editSpotTranslation(next, normalizedSpot, item.canonicalPath, edits, 'complete', version)
         const record = localizationRecord(next, 'spot', item.row.id)
         if (record) {
           record.source = {
