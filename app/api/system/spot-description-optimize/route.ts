@@ -40,6 +40,14 @@ async function runOne() {
 
   try {
     const result = await optimizeSpotDescription(id)
+    if (
+      result.skipped &&
+      result.reason !== 'Spot description already uses the JnQ structure.' &&
+      result.reason !== 'Spot not found or inactive.'
+    ) {
+      throw new Error(result.reason || 'Spot optimization did not produce a complete JnQ rewrite.')
+    }
+
     const { error: completeError } = await supabase.rpc('complete_spot_description_optimization', { p_spot_id: id })
     if (completeError) throw new Error(completeError.message || 'Unable to mark Spot optimization complete.')
 
