@@ -94,9 +94,11 @@ Rules:
 - Mark safe=false if ANY factual or practical claim is not explicitly supported by source.
 - Unsupported generic advice also counts as unsafe when it asserts place-specific behavior or conditions. Examples: quieter in the morning, queues, parking availability, dress rules, prayer etiquette, best light, recommended dishes, signature items, local popularity, famous/oldest/history, facilities, atmosphere, views, or crowd patterns unless source supports them.
 - Rephrasing is allowed only when it preserves the exact factual meaning of source.
-- If unsafe, return a corrected_description that removes every unsupported claim while preserving as much of the useful JnQ Markdown structure as the evidence allows.
+- If unsafe, return a corrected_description that removes every unsupported claim while preserving the full JnQ Markdown structure already present in candidate_description.
+- NEVER remove any H2 section heading from candidate_description. Every required section must remain even when evidence is sparse.
+- When a required section has no place-specific evidence, keep the heading and write one concise transparent sentence such as "现有资料没有记录特定季节或最佳时段，可按当天路线顺路安排" or the category-appropriate equivalent. This is preferable to inventing a fact or deleting the section.
 - Do not collapse all supported facts into "## 介绍" when they naturally belong in a category section. For example, verified food offerings belong under "## 🍽️ 吃什么", verified stay characteristics under the accommodation section, and verified attraction features under highlights.
-- Omit a section only when there is genuinely no source-supported content for it. It is acceptable for the remaining sections to be short.
+- It is acceptable for a section to be very short when the source is sparse.
 - Do not add new facts while correcting.
 - If safe, corrected_description must equal candidate_description exactly.
 - Output Simplified Chinese only inside corrected_description.`
