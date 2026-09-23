@@ -46,7 +46,27 @@ function slugify(value: unknown, fallback: string, id: unknown) {
 }
 
 function summarize(value: unknown) {
-  return String(value || '').replace(/\s+/g, ' ').trim().slice(0, 180) || null
+  const lines = String(value || '')
+    .replace(/\r\n?/g, '\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    // Markdown headings are useful on the Spot page, but should never leak
+    // into compact homepage / map-card summaries.
+    .filter((line) => !/^#{1,6}\s+/.test(line))
+    .map((line) =>
+      line
+        .replace(/^[-*+]\s+/, '')
+        .replace(/^>\s?/, '')
+        .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
+        .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+        .replace(/[*_~`]+/g, '')
+        .trim()
+    )
+    .filter(Boolean)
+
+  const summary = lines.join(' ').replace(/\s+/g, ' ').trim()
+  return summary.slice(0, 180) || null
 }
 
 function thumbnail(row: any) {
