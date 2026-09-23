@@ -2,7 +2,7 @@ import 'server-only'
 
 import { createClient } from '@supabase/supabase-js'
 
-import { generateGeminiJson } from '@/lib/server/gemini-json'
+import { generateGeminiGroundedText } from '@/lib/server/gemini-grounded-text'
 const REQUIRED_HEADINGS = [
   '## 介绍',
   '## ⭐ 必看亮点',
@@ -12,18 +12,9 @@ const REQUIRED_HEADINGS = [
   '## 💡 JnQ 小提醒',
 ] as const
 
-const schema = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['description'],
-  properties: {
-    description: { type: 'string' },
-  },
-} as const
-
 const instructions = `You are editing Chinese destination content for JnQ Journey.
 
-Rewrite the supplied Spot into polished Simplified Chinese Markdown using EXACTLY these six sections and this order:
+Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown using EXACTLY these six sections and this order:
 ## 介绍
 ## ⭐ 必看亮点
 ## 🍂 什么时候最好看
@@ -36,8 +27,11 @@ Editorial rules:
 - The opening should quickly answer: what is this place, what is distinctive about it, and why would a traveller include it. Avoid generic filler such as merely saying it is "convenient", "worth stopping by", or "suitable for photos" unless the source supports a concrete reason.
 - Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
 - Preserve useful factual details already present in the source. Do not delete a meaningful practical detail just to make the writing shorter.
+- Every place-specific factual claim must be supported either by the supplied database fields or by information you verified through Google Search in this request.
 - Do NOT invent history, architecture, attractions, dishes, prices, opening hours, transport lines, distances, rankings, awards, views, facilities, or personal experiences.
-- When the source is sparse, stay conservative. It is better to write practical category-level advice than to fabricate place-specific claims.
+- When the supplied source is sparse, actively research the place with Google Search. If the identity is ambiguous or trustworthy information remains limited, write a shorter cautious description instead of filling gaps with guesses.
+- Never present a common local custom as something this specific business/place definitely offers unless you verified it for this place.
+- For food businesses, do not invent signature dishes, cooking methods, heritage status, queue situation, air-conditioning, parking, or opening patterns. Mention only details verified for that exact business.
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices or opening hours in the main description. Those are maintained in separate structured fields.
@@ -62,14 +56,6 @@ function hasStandardStructure(value: string) {
   return REQUIRED_HEADINGS.every((heading) => value.includes(heading))
 }
 
-function validateDescription(value: unknown) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('AI returned an invalid Spot description.')
-  const description = clean((value as { description?: unknown }).description)
-  if (!description || description.length > 12000) throw new Error('AI returned an invalid Spot description.')
-  if (!hasStandardStructure(description)) throw new Error('AI did not return the required JnQ Spot structure.')
-  return description
-}
-
 export async function optimizeSpotDescription(spotId: number) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -78,7 +64,7 @@ export async function optimizeSpotDescription(spotId: number) {
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const { data: row, error } = await supabase
     .from('locations')
-    .select('id,name,name_cn,category,address,description,review,experience_zh,tags,visit_date,region_id,regions:region_id(id,name,name_cn,country)')
+    .select('id,name,name_cn,category,address,description,review,experience_zh,tags,visit_date,opening_hours,price_info,region_id,regions:region_id(id,name,name_cn,country)')
     .eq('id', spotId)
     .eq('status', 'active')
     .maybeSingle()
@@ -104,20 +90,22 @@ export async function optimizeSpotDescription(spotId: number) {
       country: clean(region?.country),
     },
     visit_date: clean(row.visit_date),
+    opening_hours_for_context_only: row.opening_hours || null,
+    price_info_for_context_only: row.price_info || null,
     tags: Array.isArray(row.tags) ? row.tags : [],
     existing_description: existingDescription,
     existing_review: clean(row.review),
     existing_experience_for_context_only: clean(row.experience_zh),
   }
 
-  const generated = await generateGeminiJson({
+  const generated = await generateGeminiGroundedText({
     instructions,
     input: JSON.stringify(source),
-    schema: schema as unknown as Record<string, unknown>,
-    model: process.env.GEMINI_CONTENT_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash',
   })
 
-  const description = validateDescription(generated)
+  const description = clean(generated.text)
+  if (!description || description.length > 12000) throw new Error('Gemini returned an invalid Spot description.')
+  if (!hasStandardStructure(description)) throw new Error('Gemini did not return the required JnQ Spot structure.')
 
   const { error: updateError } = await supabase
     .from('locations')
