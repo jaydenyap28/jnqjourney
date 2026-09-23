@@ -28,6 +28,7 @@ import { resolveGuideMedia } from '@/lib/guide-media'
 import type { PublicLocation as Location, PublicRegion as Region } from '@/lib/public-data'
 import { fetchPublicData } from '@/lib/client/public-data'
 import { compareLocationsByVisitDate, homepageShowcase, type RegionHighlight } from '@/lib/homepage-order'
+import { publicSummaryText } from '@/lib/public-summary'
 
 interface NoteData {
   slug: string
@@ -240,7 +241,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
         </div>
 
         <p className="line-clamp-2 text-[13px] leading-5 text-gray-300 md:line-clamp-3 md:text-sm md:leading-6">
-          {location.shortSummary || 'Open this spot page for photos, maps, videos, and travel notes.'}
+          {publicSummaryText(location.shortSummary, 180) || 'Open this spot page for photos, maps, videos, and travel notes.'}
         </p>
 
         <div className="flex justify-end">
@@ -291,7 +292,7 @@ function RegionCard({ region, onImageError }: { region: RegionHighlight; onImage
         </div>
 
         <p className="line-clamp-3 text-sm leading-6 text-gray-300">
-          {region.sampleText || `Spot ideas, food stops, stays, and route notes around ${region.name}.`}
+          {publicSummaryText(region.sampleText, 180) || `Spot ideas, food stops, stays, and route notes around ${region.name}.`}
         </p>
       </div>
     </Link>
