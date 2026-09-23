@@ -16,6 +16,7 @@ import {
 const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
 
 const sourceKeys = [
+  'title',
   'description',
   'review',
   'address',
@@ -25,6 +26,7 @@ const sourceKeys = [
 ] as const
 
 const outputKeys = [
+  'title',
   'description',
   'review',
   'address',
@@ -63,6 +65,7 @@ const translationInstructions = `Translate the supplied Chinese JnQ Journey Spot
 
 Rules:
 - Preserve factual meaning exactly. Do not invent facts, experiences, prices, opening hours, history, claims, recommendations, or promotional exaggeration.
+- title: if the source name is already a Latin-script proper name, copy it exactly. If it is Chinese, provide a concise accurate English or established romanized public-facing name. Do not invent a brand name.
 - description: preserve Markdown structure exactly where practical, including H2-H4 headings, bullets, links, quotes, emojis, paragraph order, and line breaks.
 - review: preserve Markdown structure and first-person personal-experience tone.
 - address: keep concise and natural; do not invent missing address details.
@@ -79,6 +82,7 @@ function text(value: unknown) {
 
 function sourceBundle(row: any): TranslationSource {
   return {
+    title: text(row.name),
     description: text(row.description),
     review: text(row.review),
     address: text(row.address),
@@ -94,6 +98,12 @@ function sourceHash(source: TranslationSource) {
 
 function isLocalizationCurrent(record: ReturnType<typeof localizationRecord>, source: TranslationSource) {
   if (!record) return false
+  const titleField = record.fields.title
+  if (source.title) {
+    if (!titleField?.text?.trim() || titleField.source !== source.title) return false
+  } else if (titleField?.text?.trim()) {
+    return false
+  }
   for (const key of spotTranslationFields) {
     const sourceText = source[key]
     const field = record.fields[key]
@@ -116,6 +126,7 @@ function validateTranslationOutput(value: unknown, source: TranslationSource): T
   }
 
   const sourceForOutput: Record<OutputKey, string> = {
+    title: source.title,
     description: source.description,
     review: source.review,
     address: source.address,
@@ -142,6 +153,7 @@ async function generateTranslation(source: TranslationSource): Promise<Translati
   const empty = Object.values(source).every((value) => !value)
   if (empty) {
     return {
+      title: '',
       description: '',
       review: '',
       address: '',
@@ -288,6 +300,11 @@ export async function syncSpotEnglishTranslations(ids: number[]): Promise<SpotEn
         next = editSpotTranslation(next, normalizedSpot, item.canonicalPath, edits, 'complete', version)
         const record = localizationRecord(next, 'spot', item.row.id)
         if (record) {
+          if (item.source.title && item.output.title) {
+            record.fields.title = { source: item.source.title, text: item.output.title }
+          } else {
+            delete record.fields.title
+          }
           record.source = {
             ...record.source,
             capturedAt: new Date().toISOString(),
