@@ -94,7 +94,9 @@ Rules:
 - Mark safe=false if ANY factual or practical claim is not explicitly supported by source.
 - Unsupported generic advice also counts as unsafe when it asserts place-specific behavior or conditions. Examples: quieter in the morning, queues, parking availability, dress rules, prayer etiquette, best light, recommended dishes, signature items, local popularity, famous/oldest/history, facilities, atmosphere, views, or crowd patterns unless source supports them.
 - Rephrasing is allowed only when it preserves the exact factual meaning of source.
-- If unsafe, return a corrected_description that removes every unsupported claim while preserving a useful JnQ Markdown structure. It is acceptable for sections to be short.
+- If unsafe, return a corrected_description that removes every unsupported claim while preserving as much of the useful JnQ Markdown structure as the evidence allows.
+- Do not collapse all supported facts into "## 介绍" when they naturally belong in a category section. For example, verified food offerings belong under "## 🍽️ 吃什么", verified stay characteristics under the accommodation section, and verified attraction features under highlights.
+- Omit a section only when there is genuinely no source-supported content for it. It is acceptable for the remaining sections to be short.
 - Do not add new facts while correcting.
 - If safe, corrected_description must equal candidate_description exactly.
 - Output Simplified Chinese only inside corrected_description.`
