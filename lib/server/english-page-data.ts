@@ -77,12 +77,29 @@ export async function readEnglishCollections(freshLocalization = false) {
     readBundledJson<Record<string,string>>('data/location-slugs.json'),
   ])
   const snapshotSlugs=Object.fromEntries(locationData.locations.map(location=>[location.id,location.slug]))
-  const locations=locationData.locations.map(location=>slugMap[String(location.id)]?{...location,slug:`${slugMap[String(location.id)]}-${location.id}`}:location)
+  const locations=locationData.locations.map(location=>{
+    const slugged = slugMap[String(location.id)] ? {...location,slug:`${slugMap[String(location.id)]}-${location.id}`} : location
+    const spotRecord = localizationRecord(localization, 'spot', location.id)
+    const translatedTitle = String(spotRecord?.fields?.title?.text || '').trim()
+    return translatedTitle ? { ...slugged, name: translatedTitle } : slugged
+  })
   return { locations, snapshotSlugs, regions: resolvePublicRegionMedia(regionData.regions,locations), guides: guideData.guides.map(guide=>resolveGuidePublicMedia(guide,locations)), localization }
 }
-function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot) {
+const ENGLISH_GUIDE_COVER_SPOT_IDS: Record<string, number> = {
+  'malaysia-langkawi-5d4n': 810,
+}
+
+function withEnglishGuideMedia(guide: TravelGuide, locations: PublicLocation[]) {
+  const coverSpotId = ENGLISH_GUIDE_COVER_SPOT_IDS[guide.slug]
+  if (!coverSpotId) return guide
+  const coverSpot = locations.find((location) => location.id === coverSpotId)
+  return coverSpot?.thumbnail ? { ...guide, coverImage: coverSpot.thumbnail } : guide
+}
+
+function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot, locations: PublicLocation[]) {
   const result = applyLocalization(guide, localizationRecord(snapshot,'guide',guide.slug))
-  const {slug,title,duration,tagline,coverImage}=result.value
+  const localized = withEnglishGuideMedia(result.value, locations)
+  const {slug,title,duration,tagline,coverImage}=localized
   return {slug,title,duration,tagline,coverImage,translationStatus:result.status}
 }
 
@@ -91,9 +108,9 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
   const collection = await readEnglishCollections(freshLocalization)
   const { locations, regions, guides, localization } = collection
   const path = `/${parts.join('/')}`
-  const data: EnglishPageData = {kind:'home',path,status:'partial', title:'See the world together', description:'Travel maps, places, routes and stories, collected along the way by Jayden & Qing.', locations, regions, guides:guides.map(g=>localizedGuide(g,localization))}
+  const data: EnglishPageData = {kind:'home',path,status:'partial', title:'See the world together', description:'Travel maps, places, routes and stories, collected along the way by Jayden & Qing.', locations, regions, guides:guides.map(g=>localizedGuide(g,localization,locations))}
   if (!parts.length || ['region','guide','spot'].includes(parts[0])) data.packages=await readPublishedPackagesUncached()
-  if (!parts.length || ['guide','region'].includes(parts[0])) data.fullGuides=guides.map(g=>applyLocalization(g,localizationRecord(localization,'guide',g.slug)).value)
+  if (!parts.length || ['guide','region'].includes(parts[0])) data.fullGuides=guides.map(g=>withEnglishGuideMedia(applyLocalization(g,localizationRecord(localization,'guide',g.slug)).value, locations))
   if (!parts.length) {
     data.packages=data.packages!.map(item=>localizeHomepagePackage(item,localization))
     data.fullGuides=data.fullGuides!.slice(0,6)
@@ -217,7 +234,8 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     if (!source) return null
     if (source.slug!==slug) return {redirect:`/en/guide/${source.slug}`}
     const result=applyLocalization(source,localizationRecord(localization,'guide',source.slug))
-    data.kind='guide'; data.guide=result.value; data.status=result.status; data.title=result.value.title; data.description=result.value.summary || result.value.tagline
+    const localizedGuideValue = withEnglishGuideMedia(result.value, locations)
+    data.kind='guide'; data.guide=localizedGuideValue; data.status=result.status; data.title=localizedGuideValue.title; data.description=localizedGuideValue.summary || localizedGuideValue.tagline
     data.priceHighlights=(priceHighlights as GuidePriceHighlight[]).filter(item=>item.guideSlug===source.slug).sort((a,b)=>a.displayPriority-b.displayPriority).map(toPublicGuidePriceHighlight).filter((item):item is NonNullable<typeof item>=>Boolean(item))
     const refs = [...(source.attractions||[]),...source.days.flatMap(d=>d.attractions||[]),...(source.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))]
     const ids=new Set([...refs.map(r=>r.spotId),...(source.accommodationStays||[]).map(s=>s.accommodationId),...(source.itinerarySegments||[]).flatMap(s=>(s.accommodationStays||[]).map(a=>a.accommodationId))])
