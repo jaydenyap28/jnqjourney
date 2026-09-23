@@ -2,9 +2,7 @@ import 'server-only'
 
 import { createClient } from '@supabase/supabase-js'
 
-import { extractResponsesApiJson } from '@/lib/spot-localization-generation'
-
-const CONTENT_MODEL = process.env.OPENAI_CONTENT_MODEL || process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 const REQUIRED_HEADINGS = [
   '## 介绍',
   '## ⭐ 必看亮点',
@@ -76,7 +74,6 @@ export async function optimizeSpotDescription(spotId: number) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) throw new Error('Missing Supabase configuration for Spot optimization.')
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured for Spot optimization.')
 
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const { data: row, error } = await supabase
@@ -113,34 +110,13 @@ export async function optimizeSpotDescription(spotId: number) {
     existing_experience_for_context_only: clean(row.experience_zh),
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: CONTENT_MODEL,
-      instructions,
-      input: JSON.stringify(source),
-      tools: [],
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'jnq_spot_description',
-          strict: true,
-          schema,
-        },
-      },
-    }),
+  const generated = await generateGeminiJson({
+    instructions,
+    input: JSON.stringify(source),
+    schema: schema as unknown as Record<string, unknown>,
   })
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '')
-    throw new Error(`OpenAI Spot optimization failed (${response.status})${detail ? `: ${detail.slice(0, 240)}` : ''}`)
-  }
-
-  const description = validateDescription(extractResponsesApiJson(await response.json()))
+  const description = validateDescription(generated)
 
   const { error: updateError } = await supabase
     .from('locations')
