@@ -13,6 +13,7 @@ import {
 import { spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
 import { generateGeminiJson } from '@/lib/server/gemini-json'
 const NOTE_TOTAL_LIMIT = 120000
+const HAS_HAN = /\p{Script=Han}/u
 
 interface TranslationSegment {
   path: string
@@ -89,7 +90,11 @@ function validateOutput(value: unknown, sourceEntries: TranslationSegment[]): Re
     if (source.text.trim() && !text.trim()) {
       throw new Error(`AI returned an empty translation for ${source.path}.`)
     }
-    translated[source.path] = text.trim()
+    const cleanText = text.trim()
+    if (HAS_HAN.test(source.text) && HAS_HAN.test(cleanText)) {
+      throw new Error(`AI left Chinese text in ${source.path}.`)
+    }
+    translated[source.path] = cleanText
   })
   return translated
 }
