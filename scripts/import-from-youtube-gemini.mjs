@@ -256,8 +256,8 @@ async function main() {
   if (!supabaseUrl) throw new Error('缺少 NEXT_PUBLIC_SUPABASE_URL')
   if (!serviceRoleKey) throw new Error('缺少 SUPABASE_SERVICE_ROLE_KEY')
 
-  const preferredModel = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
-  const fallbackModels = [preferredModel, 'gemini-2.0-flash-lite', 'gemini-1.5-flash-latest']
+  const preferredModel = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite'
+  const fallbackModels = [preferredModel, 'gemini-3.5-flash']
 
   console.log(`\n[1/5] 获取 YouTube 视频信息: ${videoId}`)
   const snippet = await fetchYoutubeSnippet(videoId, youtubeApiKey)
