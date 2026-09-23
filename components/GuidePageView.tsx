@@ -165,10 +165,15 @@ function routeStartDay(stopLabel?: string | null, fallback = 1) {
   return match ? Number(match[0]) : fallback
 }
 
-function spotTypeLabel(category?: string | null) {
-  if (category === 'food') return '\u7f8e\u98df'
-  if (category === 'accommodation') return '\u4f4f\u5bbf'
-  return '\u666f\u70b9'
+function spotTypeLabel(category: string | null | undefined, locale: Locale) {
+  if (locale === 'en') {
+    if (category === 'food') return 'food'
+    if (category === 'accommodation') return 'stay'
+    return 'attraction'
+  }
+  if (category === 'food') return '美食'
+  if (category === 'accommodation') return '住宿'
+  return '景点'
 }
 
 function getPrimaryRegionId(spots: LinkedSpot[]) {
@@ -400,7 +405,9 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
       date: persistedDate,
       formattedDate,
       dayNumber,
-      title: day.title || `${orderedSpots[0]?.regions?.name_cn || orderedSpots[0]?.regions?.name || '旅行日'} 行程`,
+      title: day.title || (locale === 'en'
+        ? `${orderedSpots[0]?.regions?.name || 'Travel'} itinerary`
+        : `${orderedSpots[0]?.regions?.name_cn || orderedSpots[0]?.regions?.name || '旅行日'} 行程`),
       summary: day.summary || '',
       videoUrl: day.videoUrl,
       transport: day.transport,
@@ -710,7 +717,10 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
           <div className="divide-y divide-white/10">
             {datedDayPlans.map((day) => {
               const videoId = day.videoUrl ? getYouTubeID(day.videoUrl) : null
-              const regionName = day.displaySpots.find((spot) => spot.regions)?.regions?.name_cn || day.displaySpots.find((spot) => spot.regions)?.regions?.name
+              const dayRegion = day.displaySpots.find((spot) => spot.regions)?.regions
+              const regionName = locale === 'en'
+                ? dayRegion?.name || dayRegion?.name_cn
+                : dayRegion?.name_cn || dayRegion?.name
               const isContinuedStay = Boolean(day.stay && day.dayNumber > day.stayStartDay)
 
               return (
@@ -724,11 +734,11 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
                   <div className="mt-5 flex flex-wrap gap-2 text-xs text-white/68">
                     {day.displaySpots.length ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><MapPin className="h-3.5 w-3.5" />{day.displaySpots.length}<PublicCopy text={" 个地点"}/></span> : null}
                     {regionName ? <span className="border border-white/10 bg-white/[0.035] px-3 py-1.5">{regionName}</span> : null}
-                    {day.stay ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><BedDouble className="h-3.5 w-3.5" />{isContinuedStay ? '继续入住' : '有住宿'}</span> : null}
+                    {day.stay ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><BedDouble className="h-3.5 w-3.5" />{locale === 'en' ? (isContinuedStay ? 'Same stay' : 'Overnight stay') : (isContinuedStay ? '继续入住' : '有住宿')}</span> : null}
                     {videoId ? <span className="inline-flex items-center gap-1.5 border border-white/10 bg-white/[0.035] px-3 py-1.5"><Film className="h-3.5 w-3.5" /><PublicCopy text={"有影片"}/></span> : null}
                   </div>
 
-                  <GuideDayRoute dayNumber={day.dayNumber} source={day.routeSource} spots={allGuideSpots} notes={routeNotes} />
+                  <GuideDayRoute dayNumber={day.dayNumber} source={day.routeSource} spots={allGuideSpots} notes={routeNotes} locale={locale} />
 
                   {shouldShowDaySummary(day.summary) ? (
                     <div className="mt-6 max-w-[800px] space-y-4 text-[15px] leading-[1.85] text-white/76 md:text-base">
@@ -772,7 +782,7 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
                               <div className="relative aspect-[4/3] overflow-hidden bg-black/25">
                                 <FallbackImage
                                   src={getSpotCover(spot)}
-                                  alt={`${guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)} ${spot.regions?.name_cn || spot.regions?.name || ''} ${spot.category === 'food' ? '美食或环境照片' : '旅行照片'}`.trim()}
+                                  alt={`${guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot, '', locale)} ${locale === 'en' ? (spot.regions?.name || spot.regions?.name_cn || '') : (spot.regions?.name_cn || spot.regions?.name || '')} ${locale === 'en' ? (spot.category === 'food' ? 'food or interior photo' : 'travel photo') : (spot.category === 'food' ? '美食或环境照片' : '旅行照片')}`.trim()}
                                   fill
                                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
                                   className="object-cover transition duration-500 group-hover:scale-[1.025]"
@@ -780,12 +790,12 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
                                 <div className="absolute left-3 top-3 flex items-center gap-2">
                                   {orderIndex >= 0 ? <span className="flex h-7 w-7 items-center justify-center bg-amber-300 text-xs font-bold text-slate-950">{orderIndex + 1}</span> : null}
-                                  <span className="bg-black/62 px-2.5 py-1 text-[10px] text-white/88 backdrop-blur">{spotTypeLabel(spot.category)}</span>
+                                  <span className="bg-black/62 px-2.5 py-1 text-[10px] text-white/88 backdrop-blur">{spotTypeLabel(spot.category, locale)}</span>
                                 </div>
                               </div>
                               <div className="p-4">
                                 <p className="text-base font-medium leading-6 text-white"><EntityName entity={{ ...spot, displayName: spot.attractionDisplayName }} /></p>
-                                <p className="mt-1 text-xs text-white/50">{spot.regions?.name_cn || spot.regions?.name || '地点'}</p>
+                                <p className="mt-1 text-xs text-white/50">{locale === 'en' ? (spot.regions?.name || spot.regions?.name_cn || 'Place') : (spot.regions?.name_cn || spot.regions?.name || '地点')}</p>
                                 <GuideSpotPriceHighlights highlights={spotPriceHighlights} />
                               </div>
                             </Link>
