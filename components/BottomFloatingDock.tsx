@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import FallbackImage from '@/components/FallbackImage'
 import type { PublicLocation } from '@/lib/public-data'
+import { publicSummaryText } from '@/lib/public-summary'
 
 interface BottomFloatingDockProps {
   locations: PublicLocation[]
@@ -202,7 +203,7 @@ export default function BottomFloatingDock({
                             <EntityName entity={location} />
                           </h4>
                           <p className="mt-0.5 line-clamp-1 text-[9px] text-white/70 md:mt-1 md:text-xs">
-                            {location.shortSummary || getCategoryLabel(location.category)}
+                            {publicSummaryText(location.shortSummary, 110) || getCategoryLabel(location.category)}
                           </p>
                           <div className="mt-1.5 flex items-center justify-end md:mt-3 md:justify-between">
                             <span className="hidden text-[11px] text-white/60 md:block">Tap card to open the full spot page</span>
