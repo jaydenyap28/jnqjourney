@@ -1,4 +1,5 @@
 import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeGuidePayload, readGuideBySlug, readGuides, saveGuides } from '@/lib/server/guides-store'
@@ -67,12 +68,34 @@ export async function POST(request: Request) {
     }
     let tripCostSnapshotUpdated = true
     let tripCostSnapshotWarning: string | null = null
+    let englishSyncQueued = true
+    let englishSyncWarning: string | null = null
     try {
       await publishManualGuideTripCost(savedGuide)
     } catch (error: any) {
       tripCostSnapshotUpdated = false
       tripCostSnapshotWarning = error?.message || 'Guide saved, but the public Trip Cost snapshot was not updated.'
     }
+
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      if (!supabaseUrl || !serviceRoleKey) throw new Error('Missing Supabase configuration for Guide English queue.')
+      const syncDb = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } })
+      const { error: queueError } = await syncDb.from('guide_english_sync_queue').upsert({
+        guide_slug: savedGuide.slug,
+        queued_at: new Date().toISOString(),
+        processing_started_at: null,
+        completed_at: null,
+        attempts: 0,
+        last_error: null,
+      })
+      if (queueError) throw queueError
+    } catch (error: any) {
+      englishSyncQueued = false
+      englishSyncWarning = error?.message || 'Guide saved, but automatic English sync could not be queued.'
+    }
+
     for (const alias of savedGuide.aliases || []) {
       revalidateTag(`guide:${alias}`)
       revalidatePath(`/guide/${alias}`)
@@ -89,7 +112,14 @@ export async function POST(request: Request) {
     revalidatePath('/admin/guides')
     revalidatePath(`/admin/guides/${payload.slug}`)
     if (previousSlug && previousSlug !== payload.slug) revalidatePath(`/guide/${previousSlug}`)
-    return NextResponse.json({ guide: savedGuide, savedAt: new Date().toISOString(), tripCostSnapshotUpdated, tripCostSnapshotWarning }, { headers: ADMIN_HEADERS })
+    return NextResponse.json({
+      guide: savedGuide,
+      savedAt: new Date().toISOString(),
+      tripCostSnapshotUpdated,
+      tripCostSnapshotWarning,
+      englishSyncQueued,
+      englishSyncWarning,
+    }, { headers: ADMIN_HEADERS })
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || '保存攻略失败。' }, { status: 500, headers: ADMIN_HEADERS })
   }
