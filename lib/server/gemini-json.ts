@@ -1,5 +1,3 @@
-import 'server-only'
-
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash-lite'
 
 function toGeminiResponseSchema(value: unknown): unknown {
