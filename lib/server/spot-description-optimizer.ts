@@ -220,15 +220,23 @@ export async function optimizeSpotDescription(spotId: number) {
   let description = firstCheck.safe ? candidate : firstCheck.corrected
 
   if (!description.includes('## 介绍')) {
-    throw new Error('Gemini verifier removed the Spot introduction.')
+    return {
+      skipped: true,
+      id: spotId,
+      name: clean(row.name),
+      reason: 'Source is too sparse for a safe structured rewrite.',
+    }
   }
 
   if (!firstCheck.safe) {
     const secondCheck = await verifyDescription(source, description)
     if (!secondCheck.safe) {
-      throw new Error(
-        `Gemini factual verification failed: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`
-      )
+      return {
+        skipped: true,
+        id: spotId,
+        name: clean(row.name),
+        reason: `Source is too sparse for a safe rewrite: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`,
+      }
     }
     description = secondCheck.corrected
   }
