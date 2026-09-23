@@ -14,6 +14,7 @@ import {
 } from '@/lib/server/localization-publisher.mjs'
 
 const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
+const HAS_HAN = /\p{Script=Han}/u
 
 const sourceKeys = [
   'title',
@@ -99,10 +100,8 @@ function sourceHash(source: TranslationSource) {
 function isLocalizationCurrent(record: ReturnType<typeof localizationRecord>, source: TranslationSource) {
   if (!record) return false
   const titleField = record.fields.title
-  if (source.title) {
-    if (!titleField?.text?.trim() || titleField.source !== source.title) return false
-  } else if (titleField?.text?.trim()) {
-    return false
+  if (HAS_HAN.test(source.title)) {
+    if (!titleField?.text?.trim() || titleField.source !== source.title || HAS_HAN.test(titleField.text)) return false
   }
   for (const key of spotTranslationFields) {
     const sourceText = source[key]
@@ -300,7 +299,7 @@ export async function syncSpotEnglishTranslations(ids: number[]): Promise<SpotEn
         next = editSpotTranslation(next, normalizedSpot, item.canonicalPath, edits, 'complete', version)
         const record = localizationRecord(next, 'spot', item.row.id)
         if (record) {
-          if (item.source.title && item.output.title) {
+          if (HAS_HAN.test(item.source.title) && item.output.title) {
             record.fields.title = { source: item.source.title, text: item.output.title }
           } else {
             delete record.fields.title
