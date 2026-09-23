@@ -18,6 +18,7 @@ import {
 import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
+import { publicSummaryText } from '@/lib/public-summary'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date'
@@ -46,27 +47,7 @@ function slugify(value: unknown, fallback: string, id: unknown) {
 }
 
 function summarize(value: unknown) {
-  const lines = String(value || '')
-    .replace(/\r\n?/g, '\n')
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    // Markdown headings are useful on the Spot page, but should never leak
-    // into compact homepage / map-card summaries.
-    .filter((line) => !/^#{1,6}\s+/.test(line))
-    .map((line) =>
-      line
-        .replace(/^[-*+]\s+/, '')
-        .replace(/^>\s?/, '')
-        .replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
-        .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
-        .replace(/[*_~`]+/g, '')
-        .trim()
-    )
-    .filter(Boolean)
-
-  const summary = lines.join(' ').replace(/\s+/g, ' ').trim()
-  return summary.slice(0, 180) || null
+  return publicSummaryText(value, 180) || null
 }
 
 function thumbnail(row: any) {
