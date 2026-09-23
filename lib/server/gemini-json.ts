@@ -2,6 +2,21 @@ import 'server-only'
 
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash-lite'
 
+function toGeminiResponseSchema(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(toGeminiResponseSchema)
+  if (!value || typeof value !== 'object') return value
+
+  const source = value as Record<string, unknown>
+  const result: Record<string, unknown> = {}
+  for (const [key, child] of Object.entries(source)) {
+    // Gemini responseSchema supports an OpenAPI-like subset and rejects
+    // JSON Schema keywords such as additionalProperties.
+    if (key === 'additionalProperties' || key === '$schema') continue
+    result[key] = toGeminiResponseSchema(child)
+  }
+  return result
+}
+
 export async function generateGeminiJson<T = unknown>({
   instructions,
   input,
@@ -39,7 +54,7 @@ export async function generateGeminiJson<T = unknown>({
         generationConfig: {
           temperature,
           responseMimeType: 'application/json',
-          responseSchema: schema,
+          responseSchema: toGeminiResponseSchema(schema),
         },
       }),
     }
