@@ -114,6 +114,7 @@ export async function optimizeSpotDescription(spotId: number) {
     instructions,
     input: JSON.stringify(source),
     schema: schema as unknown as Record<string, unknown>,
+    model: process.env.GEMINI_CONTENT_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash',
   })
 
   const description = validateDescription(generated)
