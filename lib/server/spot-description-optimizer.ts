@@ -34,7 +34,9 @@ Rewrite the supplied Spot into polished Simplified Chinese Markdown using EXACTL
 ## 💡 JnQ 小提醒
 
 Editorial rules:
-- The result must feel like a useful travel guide, not an encyclopedia and not social-media hype.
+- The result must feel like a useful travel guide written for a traveller deciding whether and how to visit, not an encyclopedia, database note, internal reconciliation note, or social-media hype.
+- The opening should quickly answer: what is this place, what is distinctive about it, and why would a traveller include it. Avoid generic filler such as merely saying it is "convenient", "worth stopping by", or "suitable for photos" unless the source supports a concrete reason.
+- Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
 - Preserve useful factual details already present in the source. Do not delete a meaningful practical detail just to make the writing shorter.
 - Do NOT invent history, architecture, attractions, dishes, prices, opening hours, transport lines, distances, rankings, awards, views, facilities, or personal experiences.
 - When the source is sparse, stay conservative. It is better to write practical category-level advice than to fabricate place-specific claims.
@@ -47,7 +49,7 @@ Editorial rules:
 - Same-section narrative should stay in compact paragraphs rather than being broken into many tiny lines.
 - In 必看亮点, use "-" bullets with a blank line between major bullets; each bullet may have a short explanatory paragraph.
 - In JnQ 小提醒, use compact consecutive "-" bullets.
-- For restaurants/cafes, interpret "什么时候最好看" as the best time to visit/eat rather than literally visual scenery.
+- For restaurants/cafes, make the content food-led: explain the dining style, concrete signature dishes only when supported by source data, atmosphere when supported, who it suits, and how to fit it into the day's route. Interpret "什么时候最好看" as the best meal/visit timing. Do not pad restaurant pages with generic sightseeing language.
 - For accommodation, interpret it as the most suitable stay/use timing.
 - For transport locations, interpret it as the most useful time to use or visit.
 - Do not mention that you are an AI.
