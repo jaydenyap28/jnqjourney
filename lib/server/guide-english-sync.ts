@@ -115,7 +115,7 @@ function pendingSegments(
   return { allSource, translatable, pending, current }
 }
 
-function validateOutput(value: unknown, input: Segment[], allowHan = false) {
+function validateOutput(value: unknown, input: Segment[]) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error('AI returned an invalid Guide translation.')
   }
@@ -139,7 +139,7 @@ function validateOutput(value: unknown, input: Segment[], allowHan = false) {
 
     const translated = text.trim()
     if (!translated) throw new Error(`AI returned an empty translation for ${expected.path}.`)
-    if (!allowHan && HAS_HAN.test(translated)) throw new Error(`AI left Chinese text in ${expected.path}.`)
+    if (HAS_HAN.test(translated)) throw new Error(`AI left Chinese text in ${expected.path}.`)
     output[expected.path] = translated
   })
 
@@ -159,26 +159,7 @@ async function generateTranslations(input: Segment[]) {
     schema: schema as unknown as Record<string, unknown>,
   })
 
-  const firstPass = validateOutput(generated, input, true)
-  const retryInput = input.filter((segment) => HAS_HAN.test(firstPass[segment.path] || ''))
-  if (!retryInput.length) return firstPass
-
-  const retryInstructions = `${instructions}
-Additional retry rule:
-- The previous translation left Chinese Han characters in these segments.
-- Rewrite every supplied segment fully in English.
-- For Chinese proper nouns without a clear English name, use readable Hanyu Pinyin or another natural romanization.
-- Do not leave any Han characters, even inside business names, hotel names, attraction names, dish names, or parenthetical notes.`
-
-  const retried = await generateGeminiJson({
-    instructions: retryInstructions,
-    input: JSON.stringify({ segments: retryInput }),
-    schema: schema as unknown as Record<string, unknown>,
-    temperature: 0,
-  })
-
-  const retryOutput = validateOutput(retried, retryInput)
-  return { ...firstPass, ...retryOutput }
+  return validateOutput(generated, input)
 }
 
 export async function syncGuideEnglish(slug: string): Promise<GuideEnglishSyncResult> {
