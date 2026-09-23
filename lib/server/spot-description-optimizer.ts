@@ -220,25 +220,21 @@ export async function optimizeSpotDescription(spotId: number) {
   let description = firstCheck.safe ? candidate : firstCheck.corrected
 
   if (!description.includes('## 介绍')) {
-    return {
-      skipped: true,
-      id: spotId,
-      name: clean(row.name),
-      reason: 'Source is too sparse for a safe structured rewrite.',
-    }
+    throw new Error('Source is too sparse for a safe structured rewrite.')
   }
 
   if (!firstCheck.safe) {
     const secondCheck = await verifyDescription(source, description)
     if (!secondCheck.safe) {
-      return {
-        skipped: true,
-        id: spotId,
-        name: clean(row.name),
-        reason: `Source is too sparse for a safe rewrite: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`,
-      }
+      throw new Error(
+        `Source is too sparse for a safe rewrite: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`
+      )
     }
     description = secondCheck.corrected
+  }
+
+  if (!hasStandardStructure(description)) {
+    throw new Error('Verified Spot rewrite lost the required JnQ structure.')
   }
 
   const { error: updateError } = await supabase
