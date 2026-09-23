@@ -9,7 +9,8 @@ import {
   type LocalizationRecord,
   type LocalizationSnapshot,
 } from '@/lib/localization'
-import { extractResponsesApiJson, spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 import { readGuideBySlug } from '@/lib/server/guides-store'
 import {
   createLocalizationIO,
@@ -17,7 +18,6 @@ import {
   saveAndPublishLocalization,
 } from '@/lib/server/localization-publisher.mjs'
 
-const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
 const MAX_TOTAL_SOURCE_CHARS = 120000
 const HAS_HAN = /\p{Script=Han}/u
 
@@ -148,41 +148,18 @@ function validateOutput(value: unknown, input: Segment[]) {
 
 async function generateTranslations(input: Segment[]) {
   if (!input.length) return {} as Record<string, string>
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured for Guide English sync.')
-
   const totalChars = input.reduce((sum, item) => sum + item.text.length, 0)
   if (totalChars > MAX_TOTAL_SOURCE_CHARS || input.some((item) => item.text.length > spotTranslationFieldLimit)) {
     throw new Error('Guide English source exceeds the current automatic translation limit.')
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: TRANSLATION_MODEL,
-      instructions,
-      input: JSON.stringify({ segments: input }),
-      tools: [],
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'jnq_guide_english_translation',
-          strict: true,
-          schema,
-        },
-      },
-    }),
+  const generated = await generateGeminiJson({
+    instructions,
+    input: JSON.stringify({ segments: input }),
+    schema: schema as unknown as Record<string, unknown>,
   })
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '')
-    throw new Error(`OpenAI Guide translation failed (${response.status})${detail ? `: ${detail.slice(0, 240)}` : ''}`)
-  }
-
-  return validateOutput(extractResponsesApiJson(await response.json()), input)
+  return validateOutput(generated, input)
 }
 
 export async function syncGuideEnglish(slug: string): Promise<GuideEnglishSyncResult> {
@@ -196,7 +173,7 @@ export async function syncGuideEnglish(slug: string): Promise<GuideEnglishSyncRe
 
   const generated = await generateTranslations(pending)
 
-  // Localization can change while OpenAI is translating Spots in parallel.
+  // Localization can change while Gemini is translating Spots in parallel.
   // Merge onto the newest snapshot instead of publishing against a stale revision.
   const latest = await readAuthoritativeLocalization(io)
   const version = `guide-auto-${randomUUID()}`
