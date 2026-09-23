@@ -3,31 +3,6 @@ import 'server-only'
 import { createClient } from '@supabase/supabase-js'
 
 import { generateGeminiGroundedText } from '@/lib/server/gemini-grounded-text'
-const REQUIRED_HEADINGS_BY_CATEGORY: Record<string, readonly string[]> = {
-  attraction: [
-    '## 介绍',
-    '## ⭐ 必看亮点',
-    '## 🍂 什么时候最好看',
-    '## ❤️ 建议怎么玩',
-    '## 👣 怎么去',
-    '## 💡 JnQ 小提醒',
-  ],
-  food: [
-    '## 介绍',
-    '## 🍽️ 吃什么',
-    '## ❤️ 建议怎么吃',
-    '## 👣 怎么去',
-    '## 💡 JnQ 小提醒',
-  ],
-  accommodation: [
-    '## 介绍',
-    '## ⭐ 住宿亮点',
-    '## 🛏️ 适合怎么住',
-    '## 👣 怎么去',
-    '## 💡 JnQ 小提醒',
-  ],
-}
-
 const instructions = `You are editing Chinese destination content for JnQ Journey.
 
 Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown.
@@ -94,9 +69,25 @@ function clean(value: unknown) {
 }
 
 function hasStandardStructure(value: string) {
-  return Object.values(REQUIRED_HEADINGS_BY_CATEGORY).some((required) =>
-    required.every((heading) => value.includes(heading))
-  )
+  const base =
+    value.includes('## 介绍') &&
+    value.includes('## 👣 怎么去') &&
+    value.includes('## 💡 JnQ 小提醒')
+
+  const attraction =
+    value.includes('## ⭐ 必看亮点') &&
+    value.includes('## 🍂 什么时候最好看') &&
+    value.includes('## ❤️ 建议怎么玩')
+
+  const food =
+    value.includes('## 🍽️ 吃什么') &&
+    value.includes('## ❤️ 建议怎么吃')
+
+  const accommodation =
+    value.includes('## ⭐ 住宿亮点') &&
+    value.includes('## 🛏️ 适合怎么住')
+
+  return base && (attraction || food || accommodation)
 }
 
 export async function optimizeSpotDescription(spotId: number) {
