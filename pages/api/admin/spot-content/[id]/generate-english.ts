@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 import { spotContentChineseSource } from '@/lib/spot-content'
-import { assertCurrentSpotContentGenerationSource, extractResponsesApiJson, parseSpotContentEnglishGeneration, spotContentEnglishGenerationSchema, spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { assertCurrentSpotContentGenerationSource, parseSpotContentEnglishGeneration, spotContentEnglishGenerationSchema, spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 
 export const config = { api: { bodyParser: { sizeLimit: '128kb' } } }
 
@@ -14,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const auth = await requireAdminRequest(new Request('http://localhost/api/admin/spot-content/generate-english', { headers: { authorization: req.headers.authorization || '' } }))
   if (!auth.ok) return res.status(auth.response.status).json(await auth.response.json())
   if (req.method !== 'POST') return res.status(405).end()
-  if (!process.env.OPENAI_API_KEY) return res.status(503).json({ error: '未配置 OPENAI_API_KEY，管理员无法生成英文草稿。' })
+  if (!process.env.GEMINI_API_KEY) return res.status(503).json({ error: '未配置 GEMINI_API_KEY，管理员无法生成英文草稿。' })
 
   const id = Number(req.query.id)
   if (!Number.isSafeInteger(id) || id <= 0) return res.status(400).json({ error: 'Invalid Spot ID' })
@@ -27,19 +28,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (Object.values(source).some((text) => text.length > spotTranslationFieldLimit)) return res.status(400).json({ error: 'Spot source exceeds the 30k field limit.' })
     assertCurrentSpotContentGenerationSource(req.body, source)
 
-    const openaiResponse = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna',
+    const generated = parseSpotContentEnglishGeneration(
+      await generateGeminiJson({
         instructions: translationInstructions,
         input: JSON.stringify(source),
-        tools: [],
-        text: { format: { type: 'json_schema', name: 'spot_content_english_translation', strict: true, schema: spotContentEnglishGenerationSchema } },
+        schema: spotContentEnglishGenerationSchema as unknown as Record<string, unknown>,
       }),
-    })
-    if (!openaiResponse.ok) return res.status(502).json({ error: 'OpenAI 英文草稿生成失败，请稍后重试。' })
-    const generated = parseSpotContentEnglishGeneration(extractResponsesApiJson(await openaiResponse.json()), source)
+      source
+    )
     const { data: latestRow, error: latestError } = await db.from('locations').select('experience_zh,seo_title_zh,seo_description_zh').eq('id', id).single()
     if (latestError || !latestRow) return res.status(409).json({ error: '中文内容已变更，请重新载入后再生成。' })
     assertCurrentSpotContentGenerationSource(req.body, spotContentChineseSource(latestRow))
