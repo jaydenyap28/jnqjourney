@@ -69,6 +69,59 @@ function clean(value: unknown) {
   return String(value || '').trim()
 }
 
+
+const verificationSchema = {
+  type: 'object',
+  properties: {
+    safe: { type: 'boolean' },
+    unsupported_claims: {
+      type: 'array',
+      items: { type: 'string' },
+    },
+    corrected_description: { type: 'string' },
+  },
+  required: ['safe', 'unsupported_claims', 'corrected_description'],
+} as const
+
+const verificationInstructions = `You are a strict factual editor for JnQ Journey.
+
+You will receive:
+1) source: the ONLY allowed evidence for this Spot
+2) candidate_description: a generated public-facing Chinese description
+
+Rules:
+- Treat only the supplied source as truth. Do not use memory, outside knowledge, common customs, or assumptions.
+- Mark safe=false if ANY factual or practical claim is not explicitly supported by source.
+- Unsupported generic advice also counts as unsafe when it asserts place-specific behavior or conditions. Examples: quieter in the morning, queues, parking availability, dress rules, prayer etiquette, best light, recommended dishes, signature items, local popularity, famous/oldest/history, facilities, atmosphere, views, or crowd patterns unless source supports them.
+- Rephrasing is allowed only when it preserves the exact factual meaning of source.
+- If unsafe, return a corrected_description that removes every unsupported claim while preserving a useful JnQ Markdown structure. It is acceptable for sections to be short.
+- Do not add new facts while correcting.
+- If safe, corrected_description must equal candidate_description exactly.
+- Output Simplified Chinese only inside corrected_description.`
+
+async function verifyDescription(source: unknown, candidate: string) {
+  const result = await generateGeminiJson<{
+    safe?: unknown
+    unsupported_claims?: unknown
+    corrected_description?: unknown
+  }>({
+    instructions: verificationInstructions,
+    input: JSON.stringify({ source, candidate_description: candidate }),
+    schema: verificationSchema as unknown as Record<string, unknown>,
+    temperature: 0,
+    model: process.env.GEMINI_VERIFIER_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+  })
+
+  const safe = result.safe === true
+  const unsupported = Array.isArray(result.unsupported_claims)
+    ? result.unsupported_claims.map((item) => clean(item)).filter(Boolean)
+    : []
+  const corrected = clean(result.corrected_description)
+
+  if (!corrected) throw new Error('Gemini verifier returned an empty Spot description.')
+  return { safe, unsupported, corrected }
+}
+
 function hasStandardStructure(value: string) {
   const base =
     value.includes('## 介绍') &&
@@ -157,9 +210,26 @@ export async function optimizeSpotDescription(spotId: number) {
     model: process.env.GEMINI_CONTENT_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash',
   })
 
-  const description = clean(generated.description)
-  if (!description || description.length > maxOutputChars + 120) throw new Error('Gemini returned an invalid Spot description.')
-  if (!hasStandardStructure(description)) throw new Error('Gemini did not return a recognized JnQ Spot structure.')
+  const candidate = clean(generated.description)
+  if (!candidate || candidate.length > maxOutputChars + 120) throw new Error('Gemini returned an invalid Spot description.')
+  if (!hasStandardStructure(candidate)) throw new Error('Gemini did not return a recognized JnQ Spot structure.')
+
+  const firstCheck = await verifyDescription(source, candidate)
+  let description = firstCheck.safe ? candidate : firstCheck.corrected
+
+  if (!hasStandardStructure(description)) {
+    throw new Error('Gemini verifier removed the required JnQ Spot structure.')
+  }
+
+  if (!firstCheck.safe) {
+    const secondCheck = await verifyDescription(source, description)
+    if (!secondCheck.safe) {
+      throw new Error(
+        `Gemini factual verification failed: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`
+      )
+    }
+    description = secondCheck.corrected
+  }
 
   const { error: updateError } = await supabase
     .from('locations')
