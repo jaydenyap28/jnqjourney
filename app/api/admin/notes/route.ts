@@ -1,4 +1,5 @@
 ﻿import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { normalizeNotePayload, readAuthoritativeNotes, mutateAuthoritativeNotes } from '@/lib/server/notes-store'
@@ -70,6 +71,24 @@ export async function POST(request: Request) {
       mergeNoteSave(notes, payload, previousSlug, rawPayload.expectedUpdatedAt)
     )
     const savedNote = savedNotes.find((item) => item.slug === payload.slug) || payload
+
+    if (savedNote.published) {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      if (supabaseUrl && serviceRoleKey) {
+        const queueDb = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } })
+        const { error: queueError } = await queueDb.from('note_english_sync_queue').upsert({
+          note_slug: savedNote.slug,
+          queued_at: new Date().toISOString(),
+          processing_started_at: null,
+          completed_at: null,
+          attempts: 0,
+          last_error: null,
+        })
+        if (queueError) console.warn('[notes] Unable to queue automatic English sync:', queueError.message)
+      }
+    }
+
     let english = null
     let englishWarning = ''
     if (rawPayload?.syncEnglish === true && savedNote.published) {
