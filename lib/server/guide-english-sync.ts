@@ -153,11 +153,25 @@ async function generateTranslations(input: Segment[]) {
     throw new Error('Guide English source exceeds the current automatic translation limit.')
   }
 
-  const generated = await generateGeminiJson({
+  let generated = await generateGeminiJson({
     instructions,
     input: JSON.stringify({ segments: input }),
     schema: schema as unknown as Record<string, unknown>,
   })
+
+  if (HAS_HAN.test(JSON.stringify(generated))) {
+    generated = await generateGeminiJson({
+      instructions: `${instructions}
+CRITICAL RETRY:
+- The previous attempt left Chinese Han characters in the output.
+- Return every supplied segment fully in English.
+- Chinese place, business, hotel, attraction and dish names must be translated or romanized into Latin script.
+- Do not leave any Han characters anywhere in the translated text.`,
+      input: JSON.stringify({ segments: input }),
+      schema: schema as unknown as Record<string, unknown>,
+      temperature: 0,
+    })
+  }
 
   return validateOutput(generated, input)
 }
