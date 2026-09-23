@@ -32,7 +32,7 @@ const instructions = `You are editing Chinese destination content for JnQ Journe
 
 Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown.
 
-Choose the structure by category:
+Choose the structure by what the place actually is after checking the supplied data and grounded search. The database category is only a hint and can occasionally be wrong:
 
 For attraction:
 ## 介绍
@@ -93,9 +93,10 @@ function clean(value: unknown) {
   return String(value || '').trim()
 }
 
-function hasStandardStructure(value: string, category: string) {
-  const required = REQUIRED_HEADINGS_BY_CATEGORY[category] || REQUIRED_HEADINGS_BY_CATEGORY.attraction
-  return required.every((heading) => value.includes(heading))
+function hasStandardStructure(value: string) {
+  return Object.values(REQUIRED_HEADINGS_BY_CATEGORY).some((required) =>
+    required.every((heading) => value.includes(heading))
+  )
 }
 
 export async function optimizeSpotDescription(spotId: number) {
@@ -116,7 +117,7 @@ export async function optimizeSpotDescription(spotId: number) {
 
   const existingDescription = clean(row.description)
   const category = clean(row.category) || 'attraction'
-  if (hasStandardStructure(existingDescription, category)) {
+  if (hasStandardStructure(existingDescription)) {
     return { skipped: true, reason: 'Spot description already uses the JnQ structure.' }
   }
 
@@ -148,7 +149,7 @@ export async function optimizeSpotDescription(spotId: number) {
 
   const description = clean(generated.text)
   if (!description || description.length > 12000) throw new Error('Gemini returned an invalid Spot description.')
-  if (!hasStandardStructure(description, category)) throw new Error('Gemini did not return the required JnQ Spot structure.')
+  if (!hasStandardStructure(description)) throw new Error('Gemini did not return a recognized JnQ Spot structure.')
 
   const { error: updateError } = await supabase
     .from('locations')
