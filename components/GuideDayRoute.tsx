@@ -7,18 +7,19 @@ import { resolveGuideAttraction, type GuideSegmentSpot } from '../lib/guide-segm
 import { guideAttractionDisplayName } from '../lib/guide-attraction-display'
 import { buildLocationPath } from '../lib/location-routing'
 
-export default function GuideDayRoute({ dayNumber, source, spots, notes = [] }: {
+export default function GuideDayRoute({ dayNumber, source, spots, notes = [], locale = 'zh' }: {
   dayNumber: number
   source: AttractionSource
   spots: GuideSegmentSpot[]
   notes?: GuideRouteNoteCard[]
+  locale?: 'zh' | 'en'
 }) {
   const routeItems = orderedGuideDayRoute(source)
   const links = routeItems.flatMap((item) => {
     if (item.type === 'note') return []
     const spot = resolveGuideAttraction(item, spots)
     if (!spot || spot.category === 'accommodation') return []
-    return [{ href: buildLocationPath(spot.name, spot.id), label: guideAttractionDisplayName(item, spot) }]
+    return [{ href: buildLocationPath(spot.name, spot.id), label: guideAttractionDisplayName(item, spot, '', locale) }]
   })
   const seenNotes = new Set<string>()
   const noteCards = routeItems.flatMap((item) => {
@@ -31,7 +32,7 @@ export default function GuideDayRoute({ dayNumber, source, spots, notes = [] }: 
   const showSpotRoute = Boolean(links.length && (links.length > 1 || source.routeItems))
   if (!showSpotRoute && !noteCards.length) return null
   return <>
-    {showSpotRoute ? <nav aria-label={`Day ${dayNumber} 今日路线`} className="mt-6 border-y border-white/10 py-4">
+    {showSpotRoute ? <nav aria-label={locale === 'en' ? `Day ${dayNumber} route` : `Day ${dayNumber} 今日路线`} className="mt-6 border-y border-white/10 py-4">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/45">
         <Navigation className="h-3.5 w-3.5" /><PublicCopy text="今日路线" />
       </div>
