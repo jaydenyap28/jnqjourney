@@ -5,7 +5,8 @@ import { createClient } from '@supabase/supabase-js'
 
 import { localizationRecord, type LocalizationSnapshot } from '@/lib/localization'
 import { spotTranslationFields, spotTranslationSource, editSpotTranslation } from '@/lib/spot-localization-authoring'
-import { extractResponsesApiJson, spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import {
   createLocalizationIO,
@@ -13,7 +14,6 @@ import {
   saveAndPublishLocalization,
 } from '@/lib/server/localization-publisher.mjs'
 
-const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
 const HAS_HAN = /\p{Script=Han}/u
 
 const sourceKeys = [
@@ -162,42 +162,17 @@ async function generateTranslation(source: TranslationSource): Promise<Translati
     }
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    throw new Error('OPENAI_API_KEY is not configured for automatic English translation.')
-  }
-
   if (Object.values(source).some((value) => value.length > spotTranslationFieldLimit)) {
     throw new Error('Spot source exceeds the 30k field limit.')
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: TRANSLATION_MODEL,
-      instructions: translationInstructions,
-      input: JSON.stringify(source),
-      tools: [],
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'spot_complete_english_translation',
-          strict: true,
-          schema: translationSchema,
-        },
-      },
-    }),
+  const generated = await generateGeminiJson({
+    instructions: translationInstructions,
+    input: JSON.stringify(source),
+    schema: translationSchema as unknown as Record<string, unknown>,
   })
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '')
-    throw new Error(`OpenAI English translation failed (${response.status})${detail ? `: ${detail.slice(0, 240)}` : ''}`)
-  }
-
-  return validateTranslationOutput(extractResponsesApiJson(await response.json()), source)
+  return validateTranslationOutput(generated, source)
 }
 
 export async function syncSpotEnglishTranslations(ids: number[]): Promise<SpotEnglishSyncResult> {
