@@ -34,7 +34,10 @@ Editorial rules:
 - For food businesses, do not invent signature dishes, cooking methods, heritage status, queue situation, air-conditioning, parking, or opening patterns. Mention only details verified for that exact business.
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
-- Do not include ticket prices or opening hours in the main description. Those are maintained in separate structured fields.
+- Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
+- In the "什么时候最好看" section, describe the most suitable part of the day, meal occasion, season, light, or route timing in general terms without quoting exact business hours.
+- Never add generic advice based only on the category or local custom. For example, do not say to bring cash, expect queues, expect street parking, expect no air-conditioning, or expect shared tables unless that exact place was verified for that exact detail.
+- Avoid hype such as "必访", "不容错过", "绝佳", "最纯正", or unsupported superlatives. Explain concrete reasons instead.
 - Avoid research-process language such as "官方资料显示", "根据资料", "网上资料", "据称".
 - Avoid excessive emoji, exclamation marks, marketing language, and exaggerated superlatives.
 - Use natural Malaysian/Singaporean Chinese travel-writing style, but in Simplified Chinese.
