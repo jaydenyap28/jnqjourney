@@ -10,9 +10,8 @@ import {
   readAuthoritativeLocalization,
   saveAndPublishLocalization,
 } from '@/lib/server/localization-publisher.mjs'
-import { extractResponsesApiJson, spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
-
-const TRANSLATION_MODEL = process.env.OPENAI_TRANSLATION_MODEL || 'gpt-5.6-luna'
+import { spotTranslationFieldLimit } from '@/lib/spot-localization-generation'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 const NOTE_TOTAL_LIMIT = 120000
 
 interface TranslationSegment {
@@ -96,42 +95,19 @@ function validateOutput(value: unknown, sourceEntries: TranslationSegment[]): Re
 }
 
 async function generate(source: Record<string, string>): Promise<Record<string, string>> {
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured for Note English translation.')
-
   const sourceEntries = Object.entries(source).map(([path, text]) => ({ path, text }))
   const totalLength = sourceEntries.reduce((sum, item) => sum + item.text.length, 0)
   if (totalLength > NOTE_TOTAL_LIMIT || sourceEntries.some((item) => item.text.length > spotTranslationFieldLimit)) {
     throw new Error('Longform Note exceeds the current English translation size limit.')
   }
 
-  const response = await fetch('https://api.openai.com/v1/responses', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: TRANSLATION_MODEL,
-      instructions,
-      input: JSON.stringify({ segments: sourceEntries }),
-      tools: [],
-      text: {
-        format: {
-          type: 'json_schema',
-          name: 'longform_note_english_translation',
-          strict: true,
-          schema: translationSchema,
-        },
-      },
-    }),
+  const generated = await generateGeminiJson({
+    instructions,
+    input: JSON.stringify({ segments: sourceEntries }),
+    schema: translationSchema as unknown as Record<string, unknown>,
   })
 
-  if (!response.ok) {
-    const detail = await response.text().catch(() => '')
-    throw new Error(`OpenAI Note translation failed (${response.status})${detail ? `: ${detail.slice(0, 220)}` : ''}`)
-  }
-
-  return validateOutput(extractResponsesApiJson(await response.json()), sourceEntries)
+  return validateOutput(generated, sourceEntries)
 }
 
 export async function syncNoteCardEnglish(notes: LongformNote[]): Promise<NoteCardEnglishSyncResult> {
