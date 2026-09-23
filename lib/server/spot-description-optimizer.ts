@@ -3,24 +3,62 @@ import 'server-only'
 import { createClient } from '@supabase/supabase-js'
 
 import { generateGeminiGroundedText } from '@/lib/server/gemini-grounded-text'
-const REQUIRED_HEADINGS = [
-  '## 介绍',
-  '## ⭐ 必看亮点',
-  '## 🍂 什么时候最好看',
-  '## ❤️ 建议怎么玩',
-  '## 👣 怎么去',
-  '## 💡 JnQ 小提醒',
-] as const
+const REQUIRED_HEADINGS_BY_CATEGORY: Record<string, readonly string[]> = {
+  attraction: [
+    '## 介绍',
+    '## ⭐ 必看亮点',
+    '## 🍂 什么时候最好看',
+    '## ❤️ 建议怎么玩',
+    '## 👣 怎么去',
+    '## 💡 JnQ 小提醒',
+  ],
+  food: [
+    '## 介绍',
+    '## 🍽️ 吃什么',
+    '## ❤️ 建议怎么吃',
+    '## 👣 怎么去',
+    '## 💡 JnQ 小提醒',
+  ],
+  accommodation: [
+    '## 介绍',
+    '## ⭐ 住宿亮点',
+    '## 🛏️ 适合怎么住',
+    '## 👣 怎么去',
+    '## 💡 JnQ 小提醒',
+  ],
+}
 
 const instructions = `You are editing Chinese destination content for JnQ Journey.
 
-Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown using EXACTLY these six sections and this order:
+Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown.
+
+Choose the structure by category:
+
+For attraction:
 ## 介绍
 ## ⭐ 必看亮点
 ## 🍂 什么时候最好看
 ## ❤️ 建议怎么玩
 ## 👣 怎么去
 ## 💡 JnQ 小提醒
+
+For food:
+## 介绍
+## 🍽️ 吃什么
+## ❤️ 建议怎么吃
+## 👣 怎么去
+## 💡 JnQ 小提醒
+
+For accommodation:
+## 介绍
+## ⭐ 住宿亮点
+## 🛏️ 适合怎么住
+## 👣 怎么去
+## 💡 JnQ 小提醒
+
+A food place that genuinely includes a separate attraction/experience area may add one optional section:
+## ⭐ 值得看什么
+Place it before "## 🍽️ 吃什么".
 
 Editorial rules:
 - The result must feel like a useful travel guide written for a traveller deciding whether and how to visit, not an encyclopedia, database note, internal reconciliation note, or social-media hype.
@@ -35,7 +73,7 @@ Editorial rules:
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
-- In the "什么时候最好看" section, describe the most suitable part of the day, meal occasion, season, light, or route timing in general terms without quoting exact business hours.
+- For attractions, in "什么时候最好看", describe season/light/route timing in general terms without quoting exact operating hours. Food and accommodation pages do not use this section.
 - Never add generic advice based only on the category or local custom. For example, do not say to bring cash, expect queues, expect street parking, expect no air-conditioning, or expect shared tables unless that exact place was verified for that exact detail.
 - Avoid hype such as "必访", "不容错过", "绝佳", "最纯正", or unsupported superlatives. Explain concrete reasons instead.
 - Avoid research-process language such as "官方资料显示", "根据资料", "网上资料", "据称".
@@ -44,8 +82,8 @@ Editorial rules:
 - Same-section narrative should stay in compact paragraphs rather than being broken into many tiny lines.
 - In 必看亮点, use "-" bullets with a blank line between major bullets; each bullet may have a short explanatory paragraph.
 - In JnQ 小提醒, use compact consecutive "-" bullets.
-- For restaurants/cafes, make the content food-led: explain the dining style, concrete signature dishes only when supported by source data, atmosphere when supported, who it suits, and how to fit it into the day's route. Interpret "什么时候最好看" as the best meal/visit timing. Do not pad restaurant pages with generic sightseeing language.
-- For accommodation, interpret it as the most suitable stay/use timing.
+- For restaurants/cafes, make the content food-led: explain the dining style, concrete signature dishes only when supported by source data or grounded search, atmosphere when supported, who it suits, and how to fit it into the day's route. Do not pad restaurant pages with generic sightseeing language.
+- For accommodation, focus on room/stay character, practical strengths, location/use case, and who it suits. Do not turn it into a sightseeing article.
 - For transport locations, interpret it as the most useful time to use or visit.
 - Do not mention that you are an AI.
 - Target roughly 600-1200 Chinese characters when the source supports it; use less for simple places rather than padding with invented detail.
@@ -55,8 +93,9 @@ function clean(value: unknown) {
   return String(value || '').trim()
 }
 
-function hasStandardStructure(value: string) {
-  return REQUIRED_HEADINGS.every((heading) => value.includes(heading))
+function hasStandardStructure(value: string, category: string) {
+  const required = REQUIRED_HEADINGS_BY_CATEGORY[category] || REQUIRED_HEADINGS_BY_CATEGORY.attraction
+  return required.every((heading) => value.includes(heading))
 }
 
 export async function optimizeSpotDescription(spotId: number) {
@@ -76,7 +115,8 @@ export async function optimizeSpotDescription(spotId: number) {
   if (!row) return { skipped: true, reason: 'Spot not found or inactive.' }
 
   const existingDescription = clean(row.description)
-  if (hasStandardStructure(existingDescription)) {
+  const category = clean(row.category) || 'attraction'
+  if (hasStandardStructure(existingDescription, category)) {
     return { skipped: true, reason: 'Spot description already uses the JnQ structure.' }
   }
 
@@ -85,7 +125,7 @@ export async function optimizeSpotDescription(spotId: number) {
     id: Number(row.id),
     name: clean(row.name),
     name_cn: clean(row.name_cn),
-    category: clean(row.category),
+    category,
     address: clean(row.address),
     region: {
       name: clean(region?.name),
@@ -108,7 +148,7 @@ export async function optimizeSpotDescription(spotId: number) {
 
   const description = clean(generated.text)
   if (!description || description.length > 12000) throw new Error('Gemini returned an invalid Spot description.')
-  if (!hasStandardStructure(description)) throw new Error('Gemini did not return the required JnQ Spot structure.')
+  if (!hasStandardStructure(description, category)) throw new Error('Gemini did not return the required JnQ Spot structure.')
 
   const { error: updateError } = await supabase
     .from('locations')
