@@ -2,12 +2,12 @@ import 'server-only'
 
 import { createClient } from '@supabase/supabase-js'
 
-import { generateGeminiGroundedText } from '@/lib/server/gemini-grounded-text'
+import { generateGeminiJson } from '@/lib/server/gemini-json'
 const instructions = `You are editing Chinese destination content for JnQ Journey.
 
-Use Google Search grounding to research and then rewrite the supplied Spot into polished Simplified Chinese Markdown.
+Rewrite the supplied Spot into polished Simplified Chinese Markdown using ONLY the supplied source fields. Do not use outside knowledge, model memory, assumptions, or generic facts about similar places.
 
-Choose the structure by what the place actually is after checking the supplied data and grounded search. The database category is only a hint and can occasionally be wrong:
+Choose the structure by the supplied place information. The database category is a hint and can occasionally be wrong:
 
 For attraction:
 ## 介绍
@@ -40,11 +40,12 @@ Editorial rules:
 - The opening should quickly answer: what is this place, what is distinctive about it, and why would a traveller include it. Avoid generic filler such as merely saying it is "convenient", "worth stopping by", or "suitable for photos" unless the source supports a concrete reason.
 - Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
 - Preserve useful factual details already present in the source. Do not delete a meaningful practical detail just to make the writing shorter.
-- Every place-specific factual claim must be supported either by the supplied database fields or by information you verified through Google Search in this request.
-- Do NOT invent history, architecture, attractions, dishes, prices, opening hours, transport lines, distances, rankings, awards, views, facilities, or personal experiences.
-- When the supplied source is sparse, actively research the place with Google Search. If the identity is ambiguous or trustworthy information remains limited, write a shorter cautious description instead of filling gaps with guesses.
+- Every place-specific factual claim must be directly supported by the supplied fields. If a detail is not explicitly present in the supplied fields, treat it as unknown and omit it.
+- Do NOT invent history, architecture, attractions, dishes, cooking methods, prices, opening hours, transport lines, distances, rankings, awards, views, facilities, payment methods, queue patterns, parking, or personal experiences.
+- Do not use general world knowledge about the place, city, cuisine, brand, or business as a substitute for source evidence.
+- When the source is sparse, write a shorter useful description instead of filling gaps with guesses. It is acceptable for a simple Spot to stay concise.
 - Never present a common local custom as something this specific business/place definitely offers unless you verified it for this place.
-- For food businesses, do not invent signature dishes, cooking methods, heritage status, queue situation, air-conditioning, parking, or opening patterns. Mention only details verified for that exact business.
+- For food businesses, mention a dish, drink, cooking method, heritage claim, atmosphere detail, or facility only when it appears in the supplied source fields.
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
@@ -133,13 +134,31 @@ export async function optimizeSpotDescription(spotId: number) {
     existing_experience_for_context_only: clean(row.experience_zh),
   }
 
-  const generated = await generateGeminiGroundedText({
-    instructions,
+  const evidenceChars =
+    existingDescription.length +
+    clean(row.review).length +
+    clean(row.experience_zh).length +
+    clean(row.address).length +
+    JSON.stringify(Array.isArray(row.tags) ? row.tags : []).length
+
+  const maxOutputChars = evidenceChars < 150 ? 600 : evidenceChars < 400 ? 900 : 1300
+
+  const generated = await generateGeminiJson<{ description?: unknown }>({
+    instructions: `${instructions}\n- Keep the finished description at or below ${maxOutputChars} Chinese characters. Do not pad the text to reach a target length.`,
     input: JSON.stringify(source),
+    schema: {
+      type: 'object',
+      properties: {
+        description: { type: 'string' },
+      },
+      required: ['description'],
+    },
+    temperature: 0.1,
+    model: process.env.GEMINI_CONTENT_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash',
   })
 
-  const description = clean(generated.text)
-  if (!description || description.length > 12000) throw new Error('Gemini returned an invalid Spot description.')
+  const description = clean(generated.description)
+  if (!description || description.length > maxOutputChars + 120) throw new Error('Gemini returned an invalid Spot description.')
   if (!hasStandardStructure(description)) throw new Error('Gemini did not return a recognized JnQ Spot structure.')
 
   const { error: updateError } = await supabase
