@@ -4,7 +4,8 @@ import { resolveEntityDisplayName } from './entity-display-name.ts'
 export function guideAttractionDisplayName(
   attraction: { displayName?: string | null } | null | undefined,
   spot: { name?: string | null; name_cn?: string | null },
-  fallback = ''
+  fallback = '',
+  locale: 'zh' | 'en' = 'zh'
 ) {
-  return resolveEntityDisplayName({ ...spot, displayName: attraction?.displayName }).primary || fallback
+  return resolveEntityDisplayName({ ...spot, displayName: attraction?.displayName }, locale).primary || fallback
 }
