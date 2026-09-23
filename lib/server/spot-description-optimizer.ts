@@ -217,8 +217,8 @@ export async function optimizeSpotDescription(spotId: number) {
   const firstCheck = await verifyDescription(source, candidate)
   let description = firstCheck.safe ? candidate : firstCheck.corrected
 
-  if (!hasStandardStructure(description)) {
-    throw new Error('Gemini verifier removed the required JnQ Spot structure.')
+  if (!description.includes('## 介绍')) {
+    throw new Error('Gemini verifier removed the Spot introduction.')
   }
 
   if (!firstCheck.safe) {
