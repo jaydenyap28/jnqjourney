@@ -4,6 +4,16 @@ import type { PublicLocation } from '../public-data.ts'
 import { isR2PublicImage, resolvePublicImage } from '../public-media.ts'
 import { publicSpotFromLocationSummary, type PublicSpotRecord } from '../public-spot.ts'
 
+const KNOWN_MISSING_NOTE_MEDIA_TOKENS = new Set([
+  '91ae4731-7e0d-4265-9ab6-8ec2feb7a6f8',
+  'eb47829d-ccd1-44d7-8146-f1d2afd24d6f',
+])
+
+function isKnownMissingNoteMedia(value?: string | null) {
+  const url = String(value || '')
+  return Array.from(KNOWN_MISSING_NOTE_MEDIA_TOKENS).some((token) => url.includes(token))
+}
+
 const GUIDE_SPECIFIC_R2_COVERS: Record<string, string> = {
   'china-jiangnan-autumn-15d14n': 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f7830-b1be-4c33-9dc7-da04f8757a2b-img_5709.webp',
 }
@@ -147,8 +157,8 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
   ]
   const relatedSpots = relatedIds.length ? selectPublicSpotCards(locations, { ids: relatedIds }) : []
   const blockImages = (note.blocks || []).flatMap((block) => [
-    block.imageUrl,
-    ...(block.images || []).map((image) => image.src),
+    isKnownMissingNoteMedia(block.imageUrl) ? undefined : block.imageUrl,
+    ...(block.images || []).map((image) => isKnownMissingNoteMedia(image.src) ? undefined : image.src),
   ])
   const coverImage = resolvePublicImage({
     cover: isR2PublicImage(note.coverImage) ? note.coverImage : '',
@@ -157,7 +167,13 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     legacy: [note.coverImage, ...blockImages],
   })
   const spotById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
-  const blocks = (note.blocks || []).map((block) => {
+  const blocks = (note.blocks || [])
+    .filter((block) => !(block.type === 'image' && isKnownMissingNoteMedia(block.imageUrl)))
+    .map((block) => {
+    if ((block.type === 'spotImages' || block.type === 'gallery') && block.images?.length) {
+      const availableImages = block.images.filter((image) => !isKnownMissingNoteMedia(image.src))
+      if (availableImages.length !== block.images.length) block = { ...block, images: availableImages }
+    }
     const spot = block.spotId ? spotById.get(block.spotId) : null
     if (!spot?.image_url || !isR2PublicImage(spot.image_url)) return block
     if ((block.type === 'spotImages' || block.type === 'gallery') && block.images?.length) {
@@ -171,6 +187,6 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     }
     return block
   })
-  if (coverImage === note.coverImage && blocks.every((block, index) => block === note.blocks[index])) return note
+  if (coverImage === note.coverImage && blocks.length === (note.blocks || []).length && blocks.every((block, index) => block === note.blocks[index])) return note
   return { ...note, coverImage: coverImage || undefined, blocks }
 }
