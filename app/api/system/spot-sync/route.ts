@@ -5,9 +5,10 @@ import { publishSpotBatch } from '@/lib/server/spot-publication'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const maxDuration = 240
 
 const HEADERS = { 'Cache-Control': 'private, no-store' }
+const SYSTEM_JOB_NAME = 'jnq_spot_publication_sync_cron'
 
 function adminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -22,6 +23,22 @@ async function remainingCount(supabase: ReturnType<typeof adminClient>) {
     .select('spot_id', { count: 'exact', head: true })
     .is('synced_source_updated_at', null)
   return Number(count || 0)
+}
+
+async function isAuthorizedSystemJob(request: Request) {
+  const authorization = String(request.headers.get('authorization') || '').trim()
+  if (!authorization.startsWith('Bearer ')) return false
+
+  const token = authorization.slice('Bearer '.length).trim()
+  if (!token) return false
+
+  const supabase = adminClient()
+  const { data, error } = await supabase.rpc('verify_system_job_secret', {
+    p_job_name: SYSTEM_JOB_NAME,
+    p_token: token,
+  })
+
+  return !error && data === true
 }
 
 async function runOne() {
@@ -66,8 +83,15 @@ async function runOne() {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    if (!(await isAuthorizedSystemJob(request))) {
+      return NextResponse.json(
+        { ok: false, processed: false, error: 'Unauthorized system job request.' },
+        { status: 401, headers: HEADERS }
+      )
+    }
+
     const result = await runOne()
     return NextResponse.json(result, { status: result.ok ? 200 : 503, headers: HEADERS })
   } catch (error) {
@@ -78,6 +102,6 @@ export async function GET() {
   }
 }
 
-export async function POST() {
-  return GET()
+export async function POST(request: Request) {
+  return GET(request)
 }
