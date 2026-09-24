@@ -118,7 +118,7 @@ async function verifyDescription(source: unknown, candidate: string) {
     input: JSON.stringify({ source, candidate_description: candidate }),
     schema: verificationSchema as unknown as Record<string, unknown>,
     temperature: 0,
-    model: process.env.GEMINI_VERIFIER_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite',
+    model: process.env.GEMINI_VERIFIER_MODEL || 'gemini-3.5-flash-lite',
   })
 
   const safe = result.safe === true
@@ -225,7 +225,7 @@ export async function optimizeSpotDescription(spotId: number) {
       required: ['description'],
     },
     temperature: 0.1,
-    model: process.env.GEMINI_CONTENT_MODEL || process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+    model: process.env.GEMINI_CONTENT_MODEL || 'gemini-3.5-flash',
   })
 
   const candidate = clean(generated.description)

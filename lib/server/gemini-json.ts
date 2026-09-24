@@ -1,5 +1,5 @@
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash-lite'
-const FREE_TIER_FALLBACK_MODELS = ['gemini-3.1-flash-lite', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'] as const
+const FREE_TIER_FALLBACK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.1-flash-lite'] as const
 
 function toGeminiResponseSchema(schema: Record<string, unknown>): Record<string, unknown> {
   return JSON.parse(
