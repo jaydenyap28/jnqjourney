@@ -7,7 +7,6 @@ import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-s
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
-import { englishPageData } from '@/lib/server/english-page-data'
 
 export const revalidate = 3600
 
@@ -81,11 +80,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const localization=await readLocalizationSnapshot('en')
   const englishRoutes:MetadataRoute.Sitemap=[]
   for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
-    const page=await englishPageData(record.canonicalPath.split('/').filter(Boolean))
-    if(!page || !('data' in page) || page.data.status!=='complete') {
-      console.info('[i18n sitemap] omitted incomplete page',record.canonicalPath,page && 'data' in page ? page.data.status : 'unavailable')
-      continue
-    }
+    // The published localization snapshot is the sitemap source of truth.
+    // Re-running englishPageData() for every record during next build repeats
+    // large snapshot reads hundreds of times and can exceed Next's 60s static
+    // generation timeout. Each English page still performs its own freshness
+    // check and emits noindex when a formerly complete translation is stale.
     const languages={zh:absoluteUrl(record.canonicalPath),en:absoluteUrl(`/en${record.canonicalPath}`),'x-default':absoluteUrl(record.canonicalPath)}
     const existing=chineseRoutes.find(r=>r.url===languages.zh)
     if(existing) existing.alternates={languages}
