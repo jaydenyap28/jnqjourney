@@ -52,7 +52,7 @@ Editorial rules:
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
-- Use "什么时候去最好" for every category. For attractions, interpret it as season/light/route timing; for food, interpret it as the most suitable meal/visit timing; for accommodation, interpret it as arrival/stay timing. Do not quote exact operating hours in the prose. If the source does not support a specific best time, keep the section concise and say there is no special timing requirement beyond planning around the structured hours shown on the page.
+- Use "什么时候去最好" for every category. For attractions, interpret it as season/light/route timing; for food, interpret it as the most suitable meal/visit timing; for accommodation, interpret it as arrival/stay timing. Do not quote exact operating hours in the prose. If the source does not support a specific best time, do NOT claim that there is no timing restriction or infer daytime/nighttime, crowds, light, weather, or operating patterns. Use only a neutral non-factual planning line such as "可按当天路线灵活安排。".
 - Never add generic advice based only on the category or local custom. For example, do not say to bring cash, expect queues, expect street parking, expect no air-conditioning, or expect shared tables unless that exact place was verified for that exact detail.
 - Avoid hype such as "必访", "不容错过", "绝佳", "最纯正", or unsupported superlatives. Explain concrete reasons instead.
 - Avoid research-process language such as "官方资料显示", "根据资料", "网上资料", "据称".
@@ -99,7 +99,9 @@ Rules:
 - Rephrasing is allowed only when it preserves the exact factual meaning of source.
 - If unsafe, return a corrected_description that removes every unsupported claim while preserving the full JnQ Markdown structure already present in candidate_description.
 - NEVER remove any H2 section heading from candidate_description. Every required section must remain even when evidence is sparse.
-- When a required section has no place-specific evidence, keep the heading and write one concise transparent sentence such as "现有资料没有记录特定季节或最佳时段，可按当天路线顺路安排" or the category-appropriate equivalent. This is preferable to inventing a fact or deleting the section.
+- When a required section has no place-specific evidence, keep the heading but use only a neutral planning sentence that makes NO factual claim about the place. Allowed examples include "可按当天路线灵活安排。" and "可根据自己的行程节奏安排停留。". These sentences are editorial planning suggestions, not place-specific factual claims, and must NOT be marked unsafe.
+- For "怎么去", if the source contains an address, a safe fallback is "可按页面地址与地图导航前往。". If no transport evidence exists, do not invent a route, station, walking time, parking condition, or transport mode.
+- Never expand a neutral fallback into unsupported details such as "白天前来", "可以进入", "现场参拜", "避开人潮", "光线更好", "方便停车", or similar claims unless the source explicitly supports them.
 - Do not collapse all supported facts into "## 介绍" when they naturally belong in a category section. For example, verified food offerings belong under "## 🍽️ 吃什么", verified stay characteristics under the accommodation section, and verified attraction features under highlights.
 - It is acceptable for a section to be very short when the source is sparse.
 - Do not add new facts while correcting.
