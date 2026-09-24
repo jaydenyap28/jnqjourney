@@ -3,7 +3,7 @@ import 'server-only'
 import { createClient } from '@supabase/supabase-js'
 
 import { generateGeminiJson } from '@/lib/server/gemini-json'
-// Every public Spot category uses the same timing heading so incomplete legacy structures are reprocessed.
+// All public Spot categories use one shared timing heading; this also lets legacy structures re-enter optimization.
 const instructions = `You are editing Chinese destination content for JnQ Journey.
 
 Rewrite the supplied Spot into polished Simplified Chinese Markdown using ONLY the supplied source fields. Do not use outside knowledge, model memory, assumptions, or generic facts about similar places.
