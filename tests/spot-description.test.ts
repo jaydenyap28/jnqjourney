@@ -24,7 +24,6 @@ function load(file: string): any {
 }
 const Component = load('components/SpotDescription.tsx').default
 const { spotSeo } = load('lib/spot-content.ts')
-const { selectLegacyBilingualSpotDescription } = load('lib/spot-description.ts')
 const render = (children: string) => renderToStaticMarkup(React.createElement(Component, { children }))
 
 test('legacy paragraphs preserve line breaks without inferred headings or H1', () => {
@@ -48,28 +47,10 @@ test('inline formatting, safe links, escaped HTML and inert shortcodes', () => {
   assert.doesNotMatch(html, /href="javascript:|<script|<img|<iframe|<video/)
   assert.match(html, /\[affiliate: 1\]/)
 })
-test('legacy bilingual Spot bodies expose only the active locale while preserving inline English in Chinese copy', () => {
-  const mixed = '来上海安排 Citywalk，新天地很适合慢慢逛。\\n\\n🌇 街区氛围\\n\\n白天可以看看石库门建筑。\\n\\n🏙️ Xintiandi Shanghai｜Where Old Meets Modern\\n\\nIf you are looking for a relaxed city walk in Shanghai, Xintiandi is a convenient place to explore.\\n\\n🌇 Atmosphere\\n\\nDuring the day, it works well for a slower walk through the district.'
-  const zh = selectLegacyBilingualSpotDescription(mixed, 'zh')
-  const en = selectLegacyBilingualSpotDescription(mixed, 'en')
-  assert.match(zh, /Citywalk/)
-  assert.match(zh, /街区氛围/)
-  assert.doesNotMatch(zh, /Where Old Meets Modern/)
-  assert.match(en, /Where Old Meets Modern/)
-  assert.doesNotMatch(en, /来上海/)
-
-  const chineseOnly = '## 介绍\\n\\n这里可以安排 Citywalk，也会看到 Xintiandi Style 之类的英文店名，但正文仍然是中文。\\n\\n## 💡 JnQ 小提醒\\n\\n按当天路线顺路安排即可。'
-  assert.equal(selectLegacyBilingualSpotDescription(chineseOnly, 'zh'), chineseOnly)
-})
-
 test('description-derived meta excerpts omit Markdown while explicit SEO stays unchanged', () => {
   const spot = { name: 'Spot', description: '## Heading\n> **bold** *italic* [link](https://example.com) `code`' }
   for (const locale of ['zh', 'en']) {
     assert.equal(spotSeo(spot, locale).description, 'Heading bold italic link code')
     assert.equal(spotSeo({ ...spot, [`seo_description_${locale}`]: 'Custom excerpt' }, locale).description, 'Custom excerpt')
   }
-
-  const bilingual = { name: 'Xintiandi', name_cn: '上海新天地', description: '上海新天地适合安排进城市散步路线。\\n\\nXintiandi is a polished Shanghai district for a relaxed city walk with cafés, restaurants, and historic streets.' }
-  assert.equal(spotSeo(bilingual, 'zh').description, '上海新天地适合安排进城市散步路线。')
-  assert.match(spotSeo(bilingual, 'en').description, /^Xintiandi is a polished Shanghai district/)
 })

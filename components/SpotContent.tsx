@@ -215,6 +215,30 @@ function XHSIcon({ className }: { className?: string }) {
   )
 }
 
+function selectVisibleLegacyDescription(value: string, locale: 'zh' | 'en') {
+  const normalized = String(value || '').replace(/\r\n?/g, '\n').trim()
+  if (!normalized || !/[\u3400-\u9fff]/u.test(normalized)) return normalized
+
+  const blocks = normalized.split(/\n{2,}/)
+  let sawChinese = false
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index].trim()
+    if (!block) continue
+    if (/[\u3400-\u9fff]/u.test(block)) {
+      sawChinese = true
+      continue
+    }
+    if (!sawChinese) continue
+    const english = blocks.slice(index).join('\n\n').trim()
+    const englishWords = english.match(/[A-Za-z][A-Za-z'’.-]{2,}/g)?.length || 0
+    if (english.length >= 80 && englishWords >= 12 && !/[\u3400-\u9fff]/u.test(english)) {
+      const chinese = blocks.slice(0, index).join('\n\n').trim()
+      return locale === 'en' ? english : chinese
+    }
+  }
+  return normalized
+}
+
 function SocialLink({ href, icon, label, color }: { href: string; icon: React.ReactNode; label: string; color: string }) {
   return (
     <a
@@ -263,7 +287,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
         {location.distanceKm !== undefined ? (
           <p className="text-xs text-amber-200">About {location.distanceKm.toFixed(1)} km</p>
         ) : null}
-        <p className="line-clamp-2 text-sm text-gray-300">{getSpotDescription(location, locale) || 'Open this spot for photos, maps, and more details.'}</p>
+        <p className="line-clamp-2 text-sm text-gray-300">{selectVisibleLegacyDescription(getSpotDescription(location), locale) || 'Open this spot for photos, maps, and more details.'}</p>
       </div>
     </Link>
   )
@@ -305,7 +329,7 @@ export default function SpotContent({
   const facebookVideoUrl = location.facebook_video_url || ''
   const shouldShowYoutube = Boolean(videoId && !youtubeEmbedFailed)
   const facebookPreviewImage = String(location.image_url || validImages[0] || '').trim()
-  const spotDescription = useMemo(() => getSpotDescription(location, locale), [location, locale])
+  const spotDescription = useMemo(() => selectVisibleLegacyDescription(getSpotDescription(location), locale), [location, locale])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
   const formattedMealBudget = useMemo(() => {
