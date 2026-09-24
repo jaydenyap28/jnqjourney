@@ -1,5 +1,55 @@
 export type SpotDescriptionBlock = { type: 'p' | 'h2' | 'h3' | 'h4' | 'blockquote'; content: string }
 
+function countLatinWords(value: string) {
+  return value.match(/[A-Za-z][A-Za-z'’.-]{2,}/g)?.length || 0
+}
+
+function countHanCharacters(value: string) {
+  return value.match(/[\u3400-\u9fff]/gu)?.length || 0
+}
+
+/**
+ * Older Spot rows sometimes stored the Chinese body followed by a full English
+ * translation in the same description field. Keep the source intact, but split
+ * that legacy shape at render/SEO time so each locale only exposes one language.
+ *
+ * The detector is deliberately conservative: it only splits when a sizeable,
+ * all-English suffix follows an earlier Chinese block. Inline English names,
+ * brands, addresses and short phrases inside Chinese copy are preserved.
+ */
+export function selectLegacyBilingualSpotDescription(value: string, locale: 'zh' | 'en' = 'zh') {
+  const normalized = String(value || '').replace(/\r\n?/g, '\n').trim()
+  if (!normalized || !/[\u3400-\u9fff]/u.test(normalized) || countLatinWords(normalized) < 12) return normalized
+
+  const blocks = normalized.split(/\n{2,}/)
+  let sawChinese = false
+
+  for (let index = 0; index < blocks.length; index += 1) {
+    const block = blocks[index].trim()
+    if (!block) continue
+
+    if (/[\u3400-\u9fff]/u.test(block)) {
+      sawChinese = true
+      continue
+    }
+
+    if (!sawChinese || countLatinWords(block) < 4) continue
+
+    const chinese = blocks.slice(0, index).join('\n\n').trim()
+    const english = blocks.slice(index).join('\n\n').trim()
+    if (!chinese || !/[\u3400-\u9fff]/u.test(chinese)) continue
+
+    const looksLikeFullEnglishTranslation =
+      english.length >= 80 &&
+      countLatinWords(english) >= 12 &&
+      countHanCharacters(english) === 0
+
+    if (looksLikeFullEnglishTranslation) return locale === 'en' ? english : chinese
+  }
+
+  return normalized
+}
+
 // Deliberately excludes Note embeds, shortcodes, inferred headings, and H1.
 export function parseSpotDescription(value: string): SpotDescriptionBlock[] {
   const blocks: SpotDescriptionBlock[] = []

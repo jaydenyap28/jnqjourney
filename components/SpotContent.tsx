@@ -230,6 +230,7 @@ function SocialLink({ href, icon, label, color }: { href: string; icon: React.Re
 }
 
 function RelatedLocationCard({ location }: { location: RelatedLocation }) {
+  const locale = usePublicLocale()
   const coverImage = location.image_url || location.images?.[0] || '/placeholder-image.jpg'
   const title = getDisplayTitle(location.name, location.name_cn)
 
@@ -262,7 +263,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
         {location.distanceKm !== undefined ? (
           <p className="text-xs text-amber-200">About {location.distanceKm.toFixed(1)} km</p>
         ) : null}
-        <p className="line-clamp-2 text-sm text-gray-300">{getSpotDescription(location) || 'Open this spot for photos, maps, and more details.'}</p>
+        <p className="line-clamp-2 text-sm text-gray-300">{getSpotDescription(location, locale) || 'Open this spot for photos, maps, and more details.'}</p>
       </div>
     </Link>
   )
@@ -304,7 +305,7 @@ export default function SpotContent({
   const facebookVideoUrl = location.facebook_video_url || ''
   const shouldShowYoutube = Boolean(videoId && !youtubeEmbedFailed)
   const facebookPreviewImage = String(location.image_url || validImages[0] || '').trim()
-  const spotDescription = useMemo(() => getSpotDescription(location), [location])
+  const spotDescription = useMemo(() => getSpotDescription(location, locale), [location, locale])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
   const formattedMealBudget = useMemo(() => {

@@ -1,4 +1,5 @@
 import { resolveEntityDisplayName } from './entity-display-name.ts'
+import { selectLegacyBilingualSpotDescription } from './spot-description.ts'
 import type { TravelGuide } from '@/lib/guides'
 
 function containsCjk(value?: string | null) {
@@ -61,14 +62,15 @@ export function getSpotDescription(location: {
   description?: string | null
   review?: string | null
   opening_hours?: string | null
-}) {
+}, locale: 'zh' | 'en' = 'zh') {
   const candidates = [location.description, location.review]
     .map((item) => String(item || '').trim())
     .filter(Boolean)
 
   for (const candidate of candidates) {
-    if (!looksLikeOpeningHoursText(candidate, location.opening_hours)) {
-      return candidate
+    const localizedCandidate = selectLegacyBilingualSpotDescription(candidate, locale)
+    if (!looksLikeOpeningHoursText(localizedCandidate, location.opening_hours)) {
+      return localizedCandidate
     }
   }
 
