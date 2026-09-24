@@ -5,7 +5,7 @@ import { optimizeSpotDescription } from '@/lib/server/spot-description-optimizer
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const maxDuration = 240
 
 const HEADERS = { 'Cache-Control': 'private, no-store' }
 const SYSTEM_JOB_NAME = 'jnq_spot_description_optimizer_cron'
