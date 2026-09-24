@@ -131,6 +131,13 @@ async function verifyDescription(source: unknown, candidate: string) {
   return { safe, unsupported, corrected }
 }
 
+function fillEmptyTipsSection(value: string) {
+  return value.replace(
+    /(## 💡 JnQ 小提醒)\s*$/u,
+    '$1\n\n- 出发前可再确认地址与开放时间是否有临时调整。'
+  )
+}
+
 function hasStandardStructure(value: string) {
   const base =
     value.includes('## 介绍') &&
@@ -241,6 +248,8 @@ export async function optimizeSpotDescription(spotId: number) {
     }
     description = secondCheck.corrected
   }
+
+  description = fillEmptyTipsSection(description)
 
   if (!hasStandardStructure(description)) {
     throw new Error('Verified Spot rewrite lost the required JnQ structure.')
