@@ -4,14 +4,21 @@ import type { PublicLocation } from '../public-data.ts'
 import { isR2PublicImage, resolvePublicImage } from '../public-media.ts'
 import { publicSpotFromLocationSummary, type PublicSpotRecord } from '../public-spot.ts'
 
-const KNOWN_MISSING_NOTE_MEDIA_TOKENS = new Set([
-  '91ae4731-7e0d-4265-9ab6-8ec2feb7a6f8',
-  'eb47829d-ccd1-44d7-8146-f1d2afd24d6f',
-])
+const NOTE_MEDIA_REPLACEMENTS: Array<{ token: string; replacement: string }> = [
+  {
+    token: '91ae4731-7e0d-4265-9ab6-8ec2feb7a6f8',
+    replacement: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/433-4-7-12-watermarked-45cea370-3e23-4fb6-980c-d0fbb4ccaf06.png',
+  },
+  {
+    token: 'eb47829d-ccd1-44d7-8146-f1d2afd24d6f',
+    replacement: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/433-4-7-13-watermarked-a6e13716-5bd6-451d-b60c-541efe393a16.png',
+  },
+]
 
-function isKnownMissingNoteMedia(value?: string | null) {
+function replaceKnownMissingNoteMedia(value?: string | null) {
   const url = String(value || '')
-  return Array.from(KNOWN_MISSING_NOTE_MEDIA_TOKENS).some((token) => url.includes(token))
+  const match = NOTE_MEDIA_REPLACEMENTS.find((item) => url.includes(item.token))
+  return match?.replacement || url
 }
 
 const GUIDE_SPECIFIC_R2_COVERS: Record<string, string> = {
@@ -157,8 +164,8 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
   ]
   const relatedSpots = relatedIds.length ? selectPublicSpotCards(locations, { ids: relatedIds }) : []
   const blockImages = (note.blocks || []).flatMap((block) => [
-    isKnownMissingNoteMedia(block.imageUrl) ? undefined : block.imageUrl,
-    ...(block.images || []).map((image) => isKnownMissingNoteMedia(image.src) ? undefined : image.src),
+    block.imageUrl ? replaceKnownMissingNoteMedia(block.imageUrl) : undefined,
+    ...(block.images || []).map((image) => replaceKnownMissingNoteMedia(image.src)),
   ])
   const coverImage = resolvePublicImage({
     cover: isR2PublicImage(note.coverImage) ? note.coverImage : '',
@@ -167,12 +174,17 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     legacy: [note.coverImage, ...blockImages],
   })
   const spotById = new Map(relatedSpots.map((spot) => [spot.id, spot]))
-  const blocks = (note.blocks || [])
-    .filter((block) => !(block.type === 'image' && isKnownMissingNoteMedia(block.imageUrl)))
-    .map((block) => {
+  const blocks = (note.blocks || []).map((block) => {
+    if (block.type === 'image' && block.imageUrl) {
+      const replacement = replaceKnownMissingNoteMedia(block.imageUrl)
+      if (replacement !== block.imageUrl) block = { ...block, imageUrl: replacement }
+    }
     if ((block.type === 'spotImages' || block.type === 'gallery') && block.images?.length) {
-      const availableImages = block.images.filter((image) => !isKnownMissingNoteMedia(image.src))
-      if (availableImages.length !== block.images.length) block = { ...block, images: availableImages }
+      const repairedImages = block.images.map((image) => {
+        const replacement = replaceKnownMissingNoteMedia(image.src)
+        return replacement === image.src ? image : { ...image, src: replacement }
+      })
+      if (repairedImages.some((image, index) => image !== block.images?.[index])) block = { ...block, images: repairedImages }
     }
     const spot = block.spotId ? spotById.get(block.spotId) : null
     if (!spot?.image_url || !isR2PublicImage(spot.image_url)) return block
@@ -187,6 +199,6 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     }
     return block
   })
-  if (coverImage === note.coverImage && blocks.length === (note.blocks || []).length && blocks.every((block, index) => block === note.blocks[index])) return note
+  if (coverImage === note.coverImage && blocks.every((block, index) => block === note.blocks[index])) return note
   return { ...note, coverImage: coverImage || undefined, blocks }
 }
