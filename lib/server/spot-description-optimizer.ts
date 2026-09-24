@@ -20,6 +20,7 @@ For attraction:
 For food:
 ## 介绍
 ## 🍽️ 吃什么
+## 🕒 什么时候去最好
 ## ❤️ 建议怎么吃
 ## 👣 怎么去
 ## 💡 JnQ 小提醒
@@ -27,6 +28,7 @@ For food:
 For accommodation:
 ## 介绍
 ## ⭐ 住宿亮点
+## 🕒 什么时候去最好
 ## 🛏️ 适合怎么住
 ## 👣 怎么去
 ## 💡 JnQ 小提醒
@@ -49,7 +51,7 @@ Editorial rules:
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
-- For attractions, in "什么时候最好看", describe season/light/route timing in general terms without quoting exact operating hours. Food and accommodation pages do not use this section.
+- Use "什么时候去最好" for every category. For attractions, interpret it as season/light/route timing; for food, interpret it as the most suitable meal/visit timing; for accommodation, interpret it as arrival/stay timing. Do not quote exact operating hours in the prose. If the source does not support a specific best time, keep the section concise and say there is no special timing requirement beyond planning around the structured hours shown on the page.
 - Never add generic advice based only on the category or local custom. For example, do not say to bring cash, expect queues, expect street parking, expect no air-conditioning, or expect shared tables unless that exact place was verified for that exact detail.
 - Avoid hype such as "必访", "不容错过", "绝佳", "最纯正", or unsupported superlatives. Explain concrete reasons instead.
 - Avoid research-process language such as "官方资料显示", "根据资料", "网上资料", "据称".
@@ -139,10 +141,12 @@ function hasStandardStructure(value: string) {
 
   const food =
     value.includes('## 🍽️ 吃什么') &&
+    value.includes('## 🕒 什么时候去最好') &&
     value.includes('## ❤️ 建议怎么吃')
 
   const accommodation =
     value.includes('## ⭐ 住宿亮点') &&
+    value.includes('## 🕒 什么时候去最好') &&
     value.includes('## 🛏️ 适合怎么住')
 
   return base && (attraction || food || accommodation)
