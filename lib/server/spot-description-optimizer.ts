@@ -12,7 +12,7 @@ Choose the structure by the supplied place information. The database category is
 For attraction:
 ## 介绍
 ## ⭐ 必看亮点
-## 🍂 什么时候最好看
+## 🕒 什么时候去最好
 ## ❤️ 建议怎么玩
 ## 👣 怎么去
 ## 💡 JnQ 小提醒
@@ -134,7 +134,7 @@ function hasStandardStructure(value: string) {
 
   const attraction =
     value.includes('## ⭐ 必看亮点') &&
-    value.includes('## 🍂 什么时候最好看') &&
+    value.includes('## 🕒 什么时候去最好') &&
     value.includes('## ❤️ 建议怎么玩')
 
   const food =
