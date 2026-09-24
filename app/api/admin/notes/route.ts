@@ -100,14 +100,13 @@ export async function POST(request: Request) {
         console.warn('[notes] English card sync failed after save:', englishWarning)
       }
     }
-    let cleanup = null
-    let cleanupWarning = ''
-    try {
-      cleanup = await cleanupUnusedNoteImages(savedNotes, [payload.slug, previousSlug].filter(Boolean))
-    } catch (error: any) {
-      cleanupWarning = error?.message || 'Unused Note image cleanup failed.'
-      console.warn('[notes] R2 cleanup failed after save:', cleanupWarning)
-    }
+    // Do not delete Note media automatically on save/autosave.
+    // A newly uploaded image can be present in R2 a moment before the editor state
+    // containing its Markdown reference reaches the server. Automatic cleanup here
+    // could therefore race the autosave and delete a valid just-uploaded image.
+    // Unused media cleanup remains available through the explicit admin action.
+    const cleanup = null
+    const cleanupWarning = ''
     revalidateTag('notes')
     revalidateTag(`note:${payload.slug}`)
     revalidatePath('/')
