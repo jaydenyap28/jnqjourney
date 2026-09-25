@@ -79,3 +79,8 @@ revoke all on function public.fail_spot_publication_sync(bigint,text) from publi
 grant execute on function public.claim_next_spot_publication_sync() to service_role;
 grant execute on function public.complete_spot_publication_sync(bigint) to service_role;
 grant execute on function public.fail_spot_publication_sync(bigint,text) to service_role;
+
+
+alter table public.spot_description_optimization_queue
+  add column if not exists source_snapshot jsonb,
+  add column if not exists legacy_archive_summary text;

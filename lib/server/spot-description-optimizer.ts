@@ -47,6 +47,8 @@ Editorial rules:
 - Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
 - Preserve ALL useful factual details already present in the source. Restructure and polish them; do not summarize them away.
 - Treat numbers and operational details as high-priority facts to preserve: times, seasons, dates, prices, distances, durations, quantities, free/paid status, exact route guidance, named viewpoints, dishes, facilities, and concrete first-hand logistics.
+- legacy_archive_summary, when present, is an archived pre-optimizer public summary. Use it as recovery evidence for useful facts that may have disappeared from the current description.
+- If legacy_archive_summary conflicts with current structured fields such as address, opening_hours_for_context_only or price_info_for_context_only, prefer the current structured field and omit the conflicting archived claim.
 - If the existing description contains a useful fact such as "夏季约19:00亮灯、秋冬约18:00", that fact must survive in the rewrite unless another supplied source field directly contradicts it.
 - Do not delete a meaningful practical detail just to make the writing shorter.
 - Every place-specific factual claim must be directly supported by the supplied fields. If a detail is not explicitly present in the supplied fields, treat it as unknown and omit it.
@@ -165,8 +167,17 @@ function fillEmptyTipsSection(value: string) {
   return value
 }
 
+const lowValueFillerPatterns = [
+  '可按当天路线灵活安排',
+  '可根据自己的行程节奏安排停留',
+  '可按页面地址与地图导航前往',
+  '可结合页面照片与自己的兴趣判断是否安排停留',
+  '可结合页面照片与自己的住宿需求判断是否适合',
+  '可结合页面照片与自己的用餐偏好决定',
+]
+
 function hasStandardStructure(value: string) {
-  return value.includes('## 介绍')
+  return value.includes('## 介绍') && !lowValueFillerPatterns.some((pattern) => value.includes(pattern))
 }
 
 export async function optimizeSpotDescription(spotId: number) {
@@ -187,6 +198,13 @@ export async function optimizeSpotDescription(spotId: number) {
 
   const existingDescription = clean(row.description)
   const category = clean(row.category) || 'attraction'
+  const { data: queueState } = await supabase
+    .from('spot_description_optimization_queue')
+    .select('legacy_archive_summary')
+    .eq('spot_id', spotId)
+    .maybeSingle()
+  const legacyArchiveSummary = clean(queueState?.legacy_archive_summary)
+
   if (hasStandardStructure(existingDescription)) {
     return { skipped: true, reason: 'Spot description already uses the JnQ structure.' }
   }
@@ -208,12 +226,19 @@ export async function optimizeSpotDescription(spotId: number) {
     price_info_for_context_only: row.price_info || null,
     tags: Array.isArray(row.tags) ? row.tags : [],
     existing_description: existingDescription,
+    legacy_archive_summary: legacyArchiveSummary,
     existing_review: clean(row.review),
     existing_experience_for_context_only: clean(row.experience_zh),
   }
 
+  await supabase
+    .from('spot_description_optimization_queue')
+    .update({ source_snapshot: source })
+    .eq('spot_id', spotId)
+
   const evidenceChars =
     existingDescription.length +
+    legacyArchiveSummary.length +
     clean(row.review).length +
     clean(row.experience_zh).length +
     clean(row.address).length +
