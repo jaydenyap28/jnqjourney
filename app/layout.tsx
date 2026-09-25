@@ -39,6 +39,7 @@ import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '
 
 const siteUrl = getSiteUrl()
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
+const googleAdSensePublisherId = 'ca-pub-3371680133104731'
 
 const defaultTitle = 'JnQ Journey | Jayden & Qing'
 const defaultDesc = buildMetaDescription('JnQ Journey by Jayden & Qing. Explore spots, food, stays, maps, and full travel guides built for both Chinese and English-speaking travelers.')
@@ -87,6 +88,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh" translate="yes" suppressHydrationWarning>
+      <head>
+        <meta name="google-adsense-account" content={googleAdSensePublisherId} />
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${googleAdSensePublisherId}`}
+          crossOrigin="anonymous"
+        />
+      </head>
       <body
         className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
