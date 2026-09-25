@@ -13,4 +13,4 @@ export const SOCIAL_LINKS = [
   { label: '小红书', href: 'https://www.xiaohongshu.com/user/profile/60ab1c5d000000000101def8' },
 ] as const
 
-export const POLICY_UPDATED_AT = '2026年7月24日'
+export const POLICY_UPDATED_AT = '2026年9月25日'

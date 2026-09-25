@@ -28,6 +28,7 @@ const policyLinks = [
   { label: '隐私政策', href: '/privacy' },
   { label: '内容与编辑原则', href: '/editorial-policy' },
   { label: '联盟链接说明', href: '/affiliate-disclosure' },
+  { label: '免责声明', href: '/disclaimer' },
   { label: '版权说明', href: '/copyright' },
 ]
 
@@ -106,6 +107,7 @@ export default function SiteFooter() {
             <div className="flex flex-wrap gap-x-5 gap-y-2">
               <TrackedLink href="/privacy" eventName="policy_link_click" linkLabel="隐私政策" className="transition hover:text-white"><PublicCopy text={"隐私政策"}/></TrackedLink>
               <TrackedLink href="/affiliate-disclosure" eventName="policy_link_click" linkLabel="联盟链接说明" className="transition hover:text-white"><PublicCopy text={"联盟说明"}/></TrackedLink>
+              <TrackedLink href="/disclaimer" eventName="policy_link_click" linkLabel="免责声明" className="transition hover:text-white"><PublicCopy text={"免责声明"}/></TrackedLink>
               <TrackedLink href="/copyright" eventName="policy_link_click" linkLabel="版权说明" className="transition hover:text-white"><PublicCopy text={"版权说明"}/></TrackedLink>
             </div>
           </div>
