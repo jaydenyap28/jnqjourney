@@ -10,39 +10,45 @@ Rewrite the supplied Spot into polished Simplified Chinese Markdown using ONLY t
 
 Choose the structure by the supplied place information. The database category is a hint and can occasionally be wrong:
 
-For attraction:
-## 介绍
-## ⭐ 必看亮点
-## 🕒 什么时候去最好
-## ❤️ 建议怎么玩
-## 👣 怎么去
-## 💡 JnQ 小提醒
+Use an editorial structure with NO emoji in headings.
 
-For food:
+The only required section is:
 ## 介绍
-## 🍽️ 吃什么
-## 🕒 什么时候去最好
-## ❤️ 建议怎么吃
-## 👣 怎么去
-## 💡 JnQ 小提醒
 
-For accommodation:
-## 介绍
-## ⭐ 住宿亮点
-## 🕒 什么时候去最好
-## 🛏️ 适合怎么住
-## 👣 怎么去
-## 💡 JnQ 小提醒
+Add the following sections only when the supplied source contains useful, place-specific evidence for them. Omit a section entirely rather than filling it with generic planning language.
 
-A food place that genuinely includes a separate attraction/experience area may add one optional section:
-## ⭐ 值得看什么
-Place it before "## 🍽️ 吃什么".
+For attraction, optional sections:
+## 看点
+## 什么时候去
+## 怎么安排
+## 交通与到达
+## JnQ 提醒
+
+For food, optional sections:
+## 值得看什么
+## 吃什么
+## 什么时候去
+## 用餐建议
+## 交通与到达
+## JnQ 提醒
+
+For accommodation, optional sections:
+## 住宿亮点
+## 什么时候去
+## 住宿建议
+## 交通与到达
+## JnQ 提醒
+
+Do not create a section unless it adds information a traveller can actually use.
 
 Editorial rules:
 - The result must feel like a useful travel guide written for a traveller deciding whether and how to visit, not an encyclopedia, database note, internal reconciliation note, or social-media hype.
 - The opening should quickly answer: what is this place, what is distinctive about it, and why would a traveller include it. Avoid generic filler such as merely saying it is "convenient", "worth stopping by", or "suitable for photos" unless the source supports a concrete reason.
 - Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
-- Preserve useful factual details already present in the source. Do not delete a meaningful practical detail just to make the writing shorter.
+- Preserve ALL useful factual details already present in the source. Restructure and polish them; do not summarize them away.
+- Treat numbers and operational details as high-priority facts to preserve: times, seasons, dates, prices, distances, durations, quantities, free/paid status, exact route guidance, named viewpoints, dishes, facilities, and concrete first-hand logistics.
+- If the existing description contains a useful fact such as "夏季约19:00亮灯、秋冬约18:00", that fact must survive in the rewrite unless another supplied source field directly contradicts it.
+- Do not delete a meaningful practical detail just to make the writing shorter.
 - Every place-specific factual claim must be directly supported by the supplied fields. If a detail is not explicitly present in the supplied fields, treat it as unknown and omit it.
 - Do NOT invent history, architecture, attractions, dishes, cooking methods, prices, opening hours, transport lines, distances, rankings, awards, views, facilities, payment methods, queue patterns, parking, or personal experiences.
 - Do not use general world knowledge about the place, city, cuisine, brand, or business as a substitute for source evidence.
@@ -52,15 +58,15 @@ Editorial rules:
 - Do not turn subjective user experience into objective fact.
 - Personal first-hand experience belongs in a separate JnQ Experience field, so this description should stay primarily objective.
 - Do not include ticket prices, admission fees, menu prices, exact opening hours, or operating schedules in the main description, even when Google Search finds them. Those belong in separate structured Column Info fields.
-- Use "什么时候去最好" for every category. For attractions, interpret it as season/light/route timing; for food, interpret it as the most suitable meal/visit timing; for accommodation, interpret it as arrival/stay timing. Do not quote exact operating hours in the prose. If the source does not support a specific best time, do NOT claim that there is no timing restriction or infer daytime/nighttime, crowds, light, weather, or operating patterns. Use only a neutral non-factual planning line such as "可按当天路线灵活安排。".
+- Use "什么时候去" only when the source supports genuinely useful timing guidance. For attractions, this may be season/light/route timing; for food, meal/visit timing; for accommodation, arrival/stay timing. Do not quote ordinary opening hours in the prose, but DO preserve useful timing facts that affect the experience, such as seasonal lighting times, sunset timing, show times, ferry cutoffs, or the user's recorded best arrival time. If the source does not support specific timing guidance, omit the section entirely.
 - Never add generic advice based only on the category or local custom. For example, do not say to bring cash, expect queues, expect street parking, expect no air-conditioning, or expect shared tables unless that exact place was verified for that exact detail.
 - Avoid hype such as "必访", "不容错过", "绝佳", "最纯正", or unsupported superlatives. Explain concrete reasons instead.
 - Avoid research-process language such as "官方资料显示", "根据资料", "网上资料", "据称".
 - Avoid excessive emoji, exclamation marks, marketing language, and exaggerated superlatives.
 - Use natural Malaysian/Singaporean Chinese travel-writing style, but in Simplified Chinese.
 - Same-section narrative should stay in compact paragraphs rather than being broken into many tiny lines.
-- In 必看亮点, use "-" bullets with a blank line between major bullets; each bullet may have a short explanatory paragraph.
-- In JnQ 小提醒, use compact consecutive "-" bullets.
+- In 看点 / 住宿亮点 / 值得看什么, use "-" bullets only when there are at least two concrete supported points; otherwise use one compact paragraph.
+- In JnQ 提醒, use compact consecutive "-" bullets, and omit the section when there is no useful place-specific reminder.
 - For restaurants/cafes, make the content food-led: explain the dining style, concrete signature dishes only when supported by source data or grounded search, atmosphere when supported, who it suits, and how to fit it into the day's route. Do not pad restaurant pages with generic sightseeing language.
 - For accommodation, focus on room/stay character, practical strengths, location/use case, and who it suits. Do not turn it into a sightseeing article.
 - For transport locations, interpret it as the most useful time to use or visit.
@@ -98,9 +104,12 @@ Rules:
 - Unsupported generic advice also counts as unsafe when it asserts place-specific behavior or conditions. Examples: quieter in the morning, queues, parking availability, dress rules, prayer etiquette, best light, recommended dishes, signature items, local popularity, famous/oldest/history, facilities, atmosphere, views, or crowd patterns unless source supports them.
 - Rephrasing is allowed only when it preserves the exact factual meaning of source.
 - If unsafe, return a corrected_description that removes every unsupported claim while preserving the full JnQ Markdown structure already present in candidate_description.
-- NEVER remove any H2 section heading from candidate_description. Every required section must remain even when evidence is sparse.
-- When a required section has no place-specific evidence, keep the heading but use only a neutral planning sentence that makes NO factual claim about the place. Allowed examples include "可按当天路线灵活安排。" and "可根据自己的行程节奏安排停留。". These sentences are editorial planning suggestions, not place-specific factual claims, and must NOT be marked unsafe.
-- For "怎么去", if the source contains an address, a safe fallback is "可按页面地址与地图导航前往。". If no transport evidence exists, do not invent a route, station, walking time, parking condition, or transport mode.
+- "## 介绍" must remain. Every other H2 section is optional.
+- If a non-introduction section has no useful place-specific evidence, remove that entire section instead of filling it with neutral or generic planning text.
+- Generic filler such as "可按当天路线灵活安排。", "可根据自己的行程节奏安排停留。" or "可按页面地址与地图导航前往。" should not appear in the final public description.
+- Mark safe=false when the candidate omits useful supported facts from the source, even if every sentence it kept is factually safe. Add each omission to unsupported_claims prefixed with "MISSING:" and restore those facts in corrected_description.
+- Pay special attention to omitted numbers, times, seasons, prices, distances, durations, free/paid status, route details and named viewpoints.
+- For "交通与到达", include the section only when the source contains useful transport/location guidance beyond merely repeating the address. Do not invent a route, station, walking time, parking condition, or transport mode.
 - Never expand a neutral fallback into unsupported details such as "白天前来", "可以进入", "现场参拜", "避开人潮", "光线更好", "方便停车", or similar claims unless the source explicitly supports them.
 - Do not collapse all supported facts into "## 介绍" when they naturally belong in a category section. For example, verified food offerings belong under "## 🍽️ 吃什么", verified stay characteristics under the accommodation section, and verified attraction features under highlights.
 - It is acceptable for a section to be very short when the source is sparse.
@@ -142,118 +151,22 @@ function buildEvidenceSafeFallback(source: {
   const regionName = clean(source.region?.name_cn) || clean(source.region?.name)
   const address = clean(source.address)
   const intro = address
-    ? `${displayName}位于 ${address}。`
+    ? `${displayName}位于${address}。`
     : regionName
       ? `${displayName}位于${regionName}。`
       : `${displayName}。`
-  const howTo = address ? '可按页面地址与地图导航前往。' : '可根据页面地图位置规划前往路线。'
-
-  if (source.category === 'food') {
-    return `## 介绍
-
-${intro}
-
-## 🍽️ 吃什么
-
-可结合页面照片与自己的用餐偏好决定。
-
-## 🕒 什么时候去最好
-
-可按当天路线与用餐安排灵活决定。
-
-## ❤️ 建议怎么吃
-
-可根据同行人数与当天行程节奏安排。
-
-## 👣 怎么去
-
-${howTo}
-
-## 💡 JnQ 小提醒
-
-- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
-  }
-
-  if (source.category === 'accommodation') {
-    return `## 介绍
-
-${intro}
-
-## ⭐ 住宿亮点
-
-可结合页面照片与自己的住宿需求判断是否适合。
-
-## 🕒 什么时候去最好
-
-可按当天路线与入住计划灵活安排。
-
-## 🛏️ 适合怎么住
-
-可根据自己的住宿需求与行程节奏安排。
-
-## 👣 怎么去
-
-${howTo}
-
-## 💡 JnQ 小提醒
-
-- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
-  }
 
   return `## 介绍
 
-${intro}
-
-## ⭐ 必看亮点
-
-可结合页面照片与自己的兴趣判断是否安排停留。
-
-## 🕒 什么时候去最好
-
-可按当天路线灵活安排。
-
-## ❤️ 建议怎么玩
-
-可根据自己的行程节奏安排停留。
-
-## 👣 怎么去
-
-${howTo}
-
-## 💡 JnQ 小提醒
-
-- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
+${intro}`
 }
 
 function fillEmptyTipsSection(value: string) {
-  return value.replace(
-    /(## 💡 JnQ 小提醒)\s*$/u,
-    '$1\n\n- 出发前可再确认地址与开放时间是否有临时调整。'
-  )
+  return value
 }
 
 function hasStandardStructure(value: string) {
-  const base =
-    value.includes('## 介绍') &&
-    value.includes('## 👣 怎么去') &&
-    value.includes('## 💡 JnQ 小提醒')
-
-  const attraction =
-    value.includes('## ⭐ 必看亮点') &&
-    value.includes('## 🕒 什么时候去最好') &&
-    value.includes('## ❤️ 建议怎么玩')
-
-  const food =
-    value.includes('## 🍽️ 吃什么') &&
-    value.includes('## 🕒 什么时候去最好') &&
-    value.includes('## ❤️ 建议怎么吃')
-
-  const accommodation =
-    value.includes('## ⭐ 住宿亮点') &&
-    value.includes('## 🕒 什么时候去最好') &&
-    value.includes('## 🛏️ 适合怎么住')
-
-  return base && (attraction || food || accommodation)
+  return value.includes('## 介绍')
 }
 
 export async function optimizeSpotDescription(spotId: number) {
