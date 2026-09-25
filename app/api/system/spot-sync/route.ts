@@ -44,16 +44,22 @@ async function isAuthorizedSystemJob(request: Request) {
 
 async function runBatch(skipEnglish = false) {
   const supabase = adminClient()
-  const ids: number[] = []
+  const claims: Array<{ id: number; sourceUpdatedAt: string }> = []
+  const batchSize = skipEnglish ? 20 : PUBLICATION_BATCH_SIZE
 
-  for (let index = 0; index < PUBLICATION_BATCH_SIZE; index += 1) {
+  for (let index = 0; index < batchSize; index += 1) {
     const { data: claimRows, error: claimError } = await supabase.rpc('claim_next_spot_publication_sync')
     if (claimError) throw new Error(claimError.message || 'Unable to claim pending Spot publication.')
 
     const claim = Array.isArray(claimRows) ? claimRows[0] : null
-    if (!claim?.spot_id) break
-    ids.push(Number(claim.spot_id))
+    if (!claim?.spot_id || !claim?.source_updated_at) break
+    claims.push({
+      id: Number(claim.spot_id),
+      sourceUpdatedAt: String(claim.source_updated_at),
+    })
   }
+
+  const ids = claims.map((claim) => claim.id)
 
   if (!ids.length) {
     return {
@@ -68,9 +74,11 @@ async function runBatch(skipEnglish = false) {
     const publication = await publishSpotBatch(ids, 'supabase-auto-spot-sync', { syncEnglish: !skipEnglish })
     const skipped = new Set(publication.skipped.map(Number))
     const completed: number[] = []
+    const deferred: number[] = []
     const failed: Array<{ id: number; error: string }> = []
 
-    for (const id of ids) {
+    for (const claim of claims) {
+      const id = claim.id
       if (skipped.has(id)) {
         const message = 'Spot was skipped during publication.'
         try {
@@ -80,13 +88,21 @@ async function runBatch(skipEnglish = false) {
         continue
       }
 
-      const { error: completeError } = await supabase.rpc('complete_spot_publication_sync', { p_spot_id: id })
+      const { data: sourceStillCurrent, error: completeError } = await supabase.rpc('complete_spot_publication_sync', {
+        p_spot_id: id,
+        p_source_updated_at: claim.sourceUpdatedAt,
+      })
       if (completeError) {
         const message = completeError.message || 'Unable to mark Spot publication complete.'
         try {
           await supabase.rpc('fail_spot_publication_sync', { p_spot_id: id, p_error: message })
         } catch {}
         failed.push({ id, error: message })
+        continue
+      }
+
+      if (sourceStillCurrent !== true) {
+        deferred.push(id)
         continue
       }
 
@@ -98,6 +114,7 @@ async function runBatch(skipEnglish = false) {
       processed: true,
       ids,
       completed,
+      deferred,
       failed,
       publication,
       remaining: await remainingCount(supabase),
