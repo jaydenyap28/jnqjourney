@@ -42,7 +42,7 @@ async function isAuthorizedSystemJob(request: Request) {
   return !error && data === true
 }
 
-async function runBatch() {
+async function runBatch(skipEnglish = false) {
   const supabase = adminClient()
   const ids: number[] = []
 
@@ -65,7 +65,7 @@ async function runBatch() {
   }
 
   try {
-    const publication = await publishSpotBatch(ids, 'supabase-auto-spot-sync')
+    const publication = await publishSpotBatch(ids, 'supabase-auto-spot-sync', { syncEnglish: !skipEnglish })
     const skipped = new Set(publication.skipped.map(Number))
     const completed: number[] = []
     const failed: Array<{ id: number; error: string }> = []
@@ -131,7 +131,8 @@ export async function GET(request: Request) {
       )
     }
 
-    const result = await runBatch()
+    const skipEnglish = new URL(request.url).searchParams.get('skipEnglish') === '1'
+    const result = await runBatch(skipEnglish)
     return NextResponse.json(result, { status: result.ok ? 200 : 503, headers: HEADERS })
   } catch (error) {
     return NextResponse.json(

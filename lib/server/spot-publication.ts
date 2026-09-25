@@ -20,14 +20,30 @@ export interface PublishSpotBatchResult {
   indexUrl: string
 }
 
-export async function publishSpotBatch(ids: number[], sourceType = 'supabase-auto-spot-sync'): Promise<PublishSpotBatchResult> {
+export async function publishSpotBatch(
+  ids: number[],
+  sourceType = 'supabase-auto-spot-sync',
+  options: { syncEnglish?: boolean } = {}
+): Promise<PublishSpotBatchResult> {
   const uniqueIds = Array.from(new Set(ids)).filter((id) => Number.isInteger(id) && id > 0)
   if (!uniqueIds.length) throw new Error('No valid Spot IDs to publish.')
 
   const generatedAt = new Date().toISOString()
   const source = { type: sourceType, generatedAt }
 
-  const english = await syncSpotEnglishTranslations(uniqueIds)
+  const english = options.syncEnglish === false
+    ? {
+        translated: 0,
+        skipped: uniqueIds.length,
+        items: uniqueIds.map((id) => ({
+          id,
+          name: `#${id}`,
+          translated: false,
+          skipped: true,
+          reason: 'English sync deferred',
+        })),
+      }
+    : await syncSpotEnglishTranslations(uniqueIds)
   const [{ data }, spots] = await Promise.all([
     resolvePublicSnapshotBundleUncached(),
     readAuthoritativePublicSpotsByIds(uniqueIds),
