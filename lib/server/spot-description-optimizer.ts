@@ -131,6 +131,100 @@ async function verifyDescription(source: unknown, candidate: string) {
   return { safe, unsupported, corrected }
 }
 
+function buildEvidenceSafeFallback(source: {
+  name: string
+  name_cn: string
+  category: string
+  address: string
+  region: { name: string; name_cn: string; country: string }
+}) {
+  const displayName = clean(source.name_cn) || clean(source.name) || '这个地点'
+  const regionName = clean(source.region?.name_cn) || clean(source.region?.name)
+  const address = clean(source.address)
+  const intro = address
+    ? `${displayName}位于 ${address}。`
+    : regionName
+      ? `${displayName}位于${regionName}。`
+      : `${displayName}。`
+  const howTo = address ? '可按页面地址与地图导航前往。' : '可根据页面地图位置规划前往路线。'
+
+  if (source.category === 'food') {
+    return `## 介绍
+
+${intro}
+
+## 🍽️ 吃什么
+
+可结合页面照片与自己的用餐偏好决定。
+
+## 🕒 什么时候去最好
+
+可按当天路线与用餐安排灵活决定。
+
+## ❤️ 建议怎么吃
+
+可根据同行人数与当天行程节奏安排。
+
+## 👣 怎么去
+
+${howTo}
+
+## 💡 JnQ 小提醒
+
+- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
+  }
+
+  if (source.category === 'accommodation') {
+    return `## 介绍
+
+${intro}
+
+## ⭐ 住宿亮点
+
+可结合页面照片与自己的住宿需求判断是否适合。
+
+## 🕒 什么时候去最好
+
+可按当天路线与入住计划灵活安排。
+
+## 🛏️ 适合怎么住
+
+可根据自己的住宿需求与行程节奏安排。
+
+## 👣 怎么去
+
+${howTo}
+
+## 💡 JnQ 小提醒
+
+- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
+  }
+
+  return `## 介绍
+
+${intro}
+
+## ⭐ 必看亮点
+
+可结合页面照片与自己的兴趣判断是否安排停留。
+
+## 🕒 什么时候去最好
+
+可按当天路线灵活安排。
+
+## ❤️ 建议怎么玩
+
+可根据自己的行程节奏安排停留。
+
+## 👣 怎么去
+
+${howTo}
+
+## 💡 JnQ 小提醒
+
+- 行程安排可保留弹性，出发前再确认页面中的地址与开放资讯。`
+}
+
 function fillEmptyTipsSection(value: string) {
   return value.replace(
     /(## 💡 JnQ 小提醒)\s*$/u,
@@ -229,8 +323,23 @@ export async function optimizeSpotDescription(spotId: number) {
   })
 
   const candidate = clean(generated.description)
-  if (!candidate || candidate.length > maxOutputChars + 120) throw new Error('Gemini returned an invalid Spot description.')
-  if (!hasStandardStructure(candidate)) throw new Error('Gemini did not return a recognized JnQ Spot structure.')
+  if (!candidate || candidate.length > maxOutputChars + 120 || !hasStandardStructure(candidate)) {
+    const description = buildEvidenceSafeFallback(source)
+    const { error: updateError } = await supabase
+      .from('locations')
+      .update({ description })
+      .eq('id', spotId)
+
+    if (updateError) throw new Error(updateError.message || 'Unable to save optimized Spot description.')
+
+    return {
+      skipped: false,
+      id: spotId,
+      name: clean(row.name),
+      chars: description.length,
+      fallback: true,
+    }
+  }
 
   const firstCheck = await verifyDescription(source, candidate)
   let description = firstCheck.safe ? candidate : firstCheck.corrected
@@ -241,12 +350,7 @@ export async function optimizeSpotDescription(spotId: number) {
 
   if (!firstCheck.safe) {
     const secondCheck = await verifyDescription(source, description)
-    if (!secondCheck.safe) {
-      throw new Error(
-        `Source is too sparse for a safe rewrite: ${secondCheck.unsupported.slice(0, 3).join(' | ') || 'unsupported claims remain'}`
-      )
-    }
-    description = secondCheck.corrected
+    description = secondCheck.safe ? secondCheck.corrected : buildEvidenceSafeFallback(source)
   }
 
   description = fillEmptyTipsSection(description)
