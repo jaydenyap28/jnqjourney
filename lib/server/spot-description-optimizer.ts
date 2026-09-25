@@ -44,7 +44,7 @@ Do not create a section unless it adds information a traveller can actually use.
 Editorial rules:
 - The result must feel like a useful travel guide written for a traveller deciding whether and how to visit, not an encyclopedia, database note, internal reconciliation note, or social-media hype.
 - The opening should quickly answer: what is this place, what is distinctive about it, and why would a traveller include it. Avoid generic filler such as merely saying it is "convenient", "worth stopping by", or "suitable for photos" unless the source supports a concrete reason.
-- Never expose internal data-cleaning language to readers. Do not write phrases such as "这次旅程实际到访的同一地点", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar database/reconciliation wording. Convert useful context into natural visitor-facing prose or omit it.
+- Never expose internal data-cleaning, sourcing, recovery, or provenance language to readers. Do not write phrases such as "旧行程记录", "现有记录", "现有资料", "资料中记录", "住宿记录显示", "同次行程记录", "本次记录", "根据记录", "在本篇记录中", "统一记录为", "不另列为", "资料尚未确认", or similar wording. Preserve the underlying fact, but rewrite it directly as natural visitor-facing prose. If there is no useful fact underneath, omit the sentence or section entirely.
 - Preserve ALL useful factual details already present in the source. Restructure and polish them; do not summarize them away.
 - Treat numbers and operational details as high-priority facts to preserve: times, seasons, dates, prices, distances, durations, quantities, free/paid status, exact route guidance, named viewpoints, dishes, facilities, and concrete first-hand logistics.
 - legacy_archive_summary, when present, is an archived pre-optimizer public summary. Use it as recovery evidence for useful facts that may have disappeared from the current description.
@@ -109,6 +109,7 @@ Rules:
 - "## 介绍" must remain. Every other H2 section is optional.
 - If a non-introduction section has no useful place-specific evidence, remove that entire section instead of filling it with neutral or generic planning text.
 - Generic filler such as "可按当天路线灵活安排。", "可根据自己的行程节奏安排停留。" or "可按页面地址与地图导航前往。" should not appear in the final public description.
+- Public copy must not mention its evidence source or recovery process. Phrases such as "旧行程记录", "现有记录", "现有资料", "资料中记录", "住宿记录显示", "同次行程记录", "本次记录" or "根据记录" are editorial leakage. Mark safe=false and rewrite the same supported fact directly for travellers.
 - Mark safe=false when the candidate omits useful supported facts from the source, even if every sentence it kept is factually safe. Add each omission to unsupported_claims prefixed with "MISSING:" and restore those facts in corrected_description.
 - Pay special attention to omitted numbers, times, seasons, prices, distances, durations, free/paid status, route details and named viewpoints.
 - For "交通与到达", include the section only when the source contains useful transport/location guidance beyond merely repeating the address. Do not invent a route, station, walking time, parking condition, or transport mode.
@@ -167,17 +168,25 @@ function fillEmptyTipsSection(value: string) {
   return value
 }
 
-const lowValueFillerPatterns = [
+const disallowedPublicPatterns = [
   '可按当天路线灵活安排',
   '可根据自己的行程节奏安排停留',
   '可按页面地址与地图导航前往',
   '可结合页面照片与自己的兴趣判断是否安排停留',
   '可结合页面照片与自己的住宿需求判断是否适合',
   '可结合页面照片与自己的用餐偏好决定',
+  '旧行程记录',
+  '现有记录',
+  '现有资料',
+  '资料中记录',
+  '住宿记录显示',
+  '同次行程记录',
+  '本次记录',
+  '根据记录',
 ]
 
 function hasStandardStructure(value: string) {
-  return value.includes('## 介绍') && !lowValueFillerPatterns.some((pattern) => value.includes(pattern))
+  return value.includes('## 介绍') && !disallowedPublicPatterns.some((pattern) => value.includes(pattern))
 }
 
 export async function optimizeSpotDescription(spotId: number) {
