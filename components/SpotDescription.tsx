@@ -56,6 +56,33 @@ function isLowValueBlock(block: SpotDescriptionBlock) {
   return lines.length > 0 && lines.every((line) => lowValueLines.has(line))
 }
 
+function normalizeComparable(value: string) {
+  return value
+    .replace(/\*\*/g, '')
+    .replace(/\`/g, '')
+    .replace(/^[-*]\s+/gm, '')
+    .replace(/[\s，,。.!！?？；;：:]/g, '')
+    .trim()
+    .toLowerCase()
+}
+
+function isRedundantTransportSection(section: Section, address?: string | null) {
+  if (!address?.trim()) return false
+  if (!section.heading || !['怎么去', '交通与到达'].includes(section.heading)) return false
+  if (section.blocks.some((block) => block.type === 'h3' || block.type === 'h4')) return false
+
+  const content = section.blocks
+    .map((block) => block.content)
+    .join('\n')
+    .replace(/可按(?:页面)?地址与地图导航前往[。.]?/g, '')
+    .replace(/可按(?:页面)?地图(?:定位|导航)?前往[。.]?/g, '')
+    .replace(/^(?:地址|地点)?位于[：:]?\s*/u, '')
+    .replace(/^地址[：:]\s*/u, '')
+    .trim()
+
+  return normalizeComparable(content) === normalizeComparable(address)
+}
+
 type Section = {
   heading: string | null
   blocks: SpotDescriptionBlock[]
@@ -125,13 +152,14 @@ function ContentBlock({ block }: { block: SpotDescriptionBlock }) {
   )
 }
 
-export default function SpotDescription({ children }: { children: string }) {
+export default function SpotDescription({ children, address }: { children: string; address?: string | null }) {
   const sections = groupSections(parseSpotDescription(children))
     .map((section) => ({
       ...section,
       blocks: section.blocks.filter((block) => !isLowValueBlock(block)),
     }))
     .filter((section) => section.blocks.length > 0)
+    .filter((section) => !isRedundantTransportSection(section, address))
 
   return (
     <div className="[overflow-wrap:anywhere]">

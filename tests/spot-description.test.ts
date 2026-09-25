@@ -24,7 +24,7 @@ function load(file: string): any {
 }
 const Component = load('components/SpotDescription.tsx').default
 const { spotSeo } = load('lib/spot-content.ts')
-const render = (children: string) => renderToStaticMarkup(React.createElement(Component, { children }))
+const render = (children: string, address?: string) => renderToStaticMarkup(React.createElement(Component, { children, address }))
 
 test('legacy paragraphs preserve line breaks without inferred headings or H1', () => {
   const html = render('普通标题\n旧介绍 English.\n\n第二段\n# Literal H1')
@@ -53,4 +53,25 @@ test('description-derived meta excerpts omit Markdown while explicit SEO stays u
     assert.equal(spotSeo(spot, locale).description, 'Heading bold italic link code')
     assert.equal(spotSeo({ ...spot, [`seo_description_${locale}`]: 'Custom excerpt' }, locale).description, 'Custom excerpt')
   }
+})
+
+
+test('address-only transport section is hidden when the address already appears elsewhere on the Spot page', () => {
+  const html = render(
+    '## 介绍\n新天地是一处街区。\n\n## 👣 怎么去\n地址位于马当路245号新天地时尚。可按页面地址与地图导航前往。',
+    '马当路245号新天地时尚'
+  )
+  assert.match(html, /介绍/)
+  assert.doesNotMatch(html, /交通与到达/)
+  assert.doesNotMatch(html, /Getting there/)
+})
+
+test('transport section remains when it adds useful arrival guidance beyond the address', () => {
+  const html = render(
+    '## 介绍\n某景点。\n\n## 交通与到达\n从地铁站2号出口步行约5分钟，带大件行李时建议打车。',
+    '某路88号'
+  )
+  assert.match(html, /交通与到达/)
+  assert.match(html, /步行约5分钟/)
+  assert.match(html, /建议打车/)
 })
