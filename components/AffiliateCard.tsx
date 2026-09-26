@@ -424,9 +424,9 @@ export default function AffiliateCard({
 
           if (compact) {
             return (
-              <div key={link.id} className="group overflow-hidden rounded-[22px] border border-white/10 bg-black/35">
-                <div className="grid grid-cols-[88px_minmax(0,1fr)] gap-0">
-                  <div className="relative min-h-[88px] overflow-hidden">
+              <div key={link.id} className="group border-t border-white/10 py-4 first:border-t-0 first:pt-0 last:pb-0">
+                <div className="flex gap-3">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[16px] border border-white/10 bg-white/[0.04]">
                     {previewImage ? (
                       <div
                         className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"
@@ -435,35 +435,28 @@ export default function AffiliateCard({
                     ) : (
                       <div className={`absolute inset-0 bg-gradient-to-br ${accentClassName}`} />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-black/35 text-amber-200 backdrop-blur-md">
-                        {link.link_type === 'transport' ? <Train className="h-4 w-4" /> : icon}
-                      </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-transparent" />
+                    <div className="absolute bottom-2 left-2 flex h-7 w-7 items-center justify-center rounded-full border border-white/10 bg-black/45 text-amber-100 backdrop-blur">
+                      {link.link_type === 'transport' ? <Train className="h-3.5 w-3.5" /> : icon}
                     </div>
                   </div>
 
-                  <div className="flex min-w-0 flex-col justify-between p-3">
-                    <div>
-                      <div className="mb-2 flex flex-wrap items-center gap-2">
-                        <Badge className="border border-white/10 bg-white/10 px-2 py-0 text-[10px] text-white">{providerName}</Badge>
-                        <Badge className="border border-white/10 bg-black/30 px-2 py-0 text-[10px] text-white/80">{linkTypeName}</Badge>
-                      </div>
-                      <h4 className="line-clamp-2 text-sm font-semibold leading-5 text-white">{previewTitle}</h4>
-                      {link.description ? <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-white/62">{link.description}</p> : null}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-white/42">
+                      <span className="text-amber-100/80">{providerName}</span>
+                      <span aria-hidden="true">·</span>
+                      <span>{linkTypeName}</span>
                     </div>
-
-                    <div className="mt-3 flex items-center justify-between gap-3">
-                      <p className="line-clamp-1 text-[11px] text-white/42">{hostname}</p>
-                      <Button
-                        size="sm"
-                        onClick={() => handleClick(link)}
-                        className="h-8 shrink-0 rounded-full bg-white px-3 text-xs text-black hover:bg-amber-50"
-                      >
-                        {resolvedActionLabel}
-                        <ExternalLink className="ml-1 h-3 w-3" />
-                      </Button>
-                    </div>
+                    <h4 className="mt-1.5 line-clamp-2 text-sm font-semibold leading-5 text-white/92">{previewTitle}</h4>
+                    {link.description ? <p className="mt-1 line-clamp-1 text-[11px] leading-5 text-white/48">{link.description}</p> : null}
+                    <button
+                      type="button"
+                      onClick={() => handleClick(link)}
+                      className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-amber-100/85 transition hover:text-amber-50"
+                    >
+                      {resolvedActionLabel}
+                      <ExternalLink className="h-3 w-3" />
+                    </button>
                   </div>
                 </div>
               </div>

@@ -239,15 +239,15 @@ function selectVisibleLegacyDescription(value: string, locale: 'zh' | 'en') {
   return normalized
 }
 
-function SocialLink({ href, icon, label, color }: { href: string; icon: React.ReactNode; label: string; color: string }) {
+function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium text-white transition-transform hover:scale-105 ${color}`}
+      className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-xs font-medium text-white/68 transition hover:border-amber-200/25 hover:bg-white/[0.07] hover:text-white"
     >
-      {icon}
+      <span className="text-white/45 transition group-hover:text-amber-100/90">{icon}</span>
       <span>{label}</span>
     </a>
   )
@@ -406,11 +406,11 @@ export default function SpotContent({
   const openingHoursDisplay = useMemo(() => formatOpeningHoursDisplay(location.opening_hours), [location.opening_hours])
 
   const socialLinks = [
-    { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube', color: 'bg-red-600' },
-    { href: 'https://www.facebook.com/jnqjourney', icon: <Facebook className="h-3 w-3" />, label: 'Facebook', color: 'bg-blue-600' },
-    { href: 'https://www.instagram.com/jnqjourney', icon: <Instagram className="h-3 w-3" />, label: 'Instagram', color: 'bg-pink-600' },
-    { href: 'https://www.tiktok.com/@jnqjourney', icon: <TikTokIcon className="h-3 w-3" />, label: 'TikTok', color: 'border border-white/20 bg-black' },
-    { href: 'https://www.xiaohongshu.com/user/profile/60ab1c5d000000000101def8', icon: <XHSIcon className="h-3 w-3" />, label: 'Xiaohongshu', color: 'bg-red-500' },
+    { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube' },
+    { href: 'https://www.facebook.com/jnqjourney', icon: <Facebook className="h-3 w-3" />, label: 'Facebook' },
+    { href: 'https://www.instagram.com/jnqjourney', icon: <Instagram className="h-3 w-3" />, label: 'Instagram' },
+    { href: 'https://www.tiktok.com/@jnqjourney', icon: <TikTokIcon className="h-3 w-3" />, label: 'TikTok' },
+    { href: 'https://www.xiaohongshu.com/user/profile/60ab1c5d000000000101def8', icon: <XHSIcon className="h-3 w-3" />, label: 'Xiaohongshu' },
   ]
 
   useEffect(() => {
@@ -445,14 +445,18 @@ export default function SpotContent({
   const isChinaLocation = String(location.regions?.country || '').trim().toLowerCase() === 'china'
   const mapQuery = encodeURIComponent([location.name, location.name_cn, location.address].filter(Boolean).join(' '))
   const affiliateTitle =
-    location.category === 'accommodation'
-      ? 'Stay Booking'
-      : location.category === 'food'
-        ? 'Nearby Booking'
-        : 'Recommended Booking'
-  const affiliateDescription = hasPriceSnapshot
-    ? ''
-    : 'Prices change over time, so open the booking page to check the latest rate.'
+    locale === 'en'
+      ? location.category === 'accommodation'
+        ? 'Stay Booking'
+        : location.category === 'food'
+          ? 'Nearby Booking'
+          : 'Booking Picks'
+      : location.category === 'accommodation'
+        ? '住宿预订'
+        : location.category === 'food'
+          ? '附近预订'
+          : '预订参考'
+  const affiliateDescription = ''
 
   const handleNavigateGoogle = () => {
     window.open(`https://www.google.com/maps/search/?api=1&query=${mapQuery || `${location.latitude},${location.longitude}`}`, '_blank')
@@ -466,7 +470,7 @@ export default function SpotContent({
     const title = encodeURIComponent(location.name_cn || location.name)
     const content = encodeURIComponent(location.address || location.name_cn || location.name)
     window.open(
-      `https://api.map.baidu.com/marker?location=${location.latitude},${location.longitude}&title=${title}&content=${content}&output=html&src=jnqjourney`,
+      `https://api.map.baidu.com/marker?location=${location.latitude},${location.longitude}&title=${title}&content=${content}&coord_type=wgs84&output=html&src=webapp.jnqjourney.web`,
       '_blank'
     )
   }
@@ -728,16 +732,30 @@ export default function SpotContent({
             <div className="flex-1 space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h4 className="text-sm font-bold uppercase tracking-wider text-sky-100"><PublicCopy text="地址" /></h4>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white hover:bg-white/10"
-                  onClick={() => handleCopy(location.address || '', 'address')}
-                >
-                  <Copy className="mr-1.5 h-3.5 w-3.5" />
-                  <PublicCopy text={copiedField === 'address' ? '地址已复制' : '复制地址'} />
-                </Button>
+                <div className="flex flex-wrap items-center gap-2">
+                  {isChinaLocation ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 rounded-full border border-amber-200/15 bg-amber-200/[0.06] px-3 text-xs text-amber-100 hover:bg-amber-200/[0.11]"
+                      onClick={handleOpenBaiduMap}
+                    >
+                      <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
+                      <PublicCopy text="百度地图" />
+                    </Button>
+                  ) : null}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 rounded-full border border-white/10 bg-white/5 px-3 text-xs text-white hover:bg-white/10"
+                    onClick={() => handleCopy(location.address || '', 'address')}
+                  >
+                    <Copy className="mr-1.5 h-3.5 w-3.5" />
+                    <PublicCopy text={copiedField === 'address' ? '地址已复制' : '复制地址'} />
+                  </Button>
+                </div>
               </div>
               <p className="text-sm leading-6 text-gray-200">{location.address}</p>
             </div>
@@ -1107,6 +1125,8 @@ export default function SpotContent({
                 title={affiliateTitle}
                 description={affiliateDescription}
                 showDisclosure
+                compact
+                singleColumn
               />
             ) : null}
             {!isDrawer ? <SupportSidebarCard className="bg-white/5" /> : null}
