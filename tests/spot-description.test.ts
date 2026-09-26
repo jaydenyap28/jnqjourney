@@ -75,3 +75,20 @@ test('transport section remains when it adds useful arrival guidance beyond the 
   assert.match(html, /步行约5分钟/)
   assert.match(html, /建议打车/)
 })
+
+
+test('generic menu caveats are removed without deleting the useful food fact', () => {
+  const html = render(
+    '## 吃什么\n创意烟花双人套餐是其中一个选择。实际菜单与当天供应以现场为准。'
+  )
+  assert.match(html, /创意烟花双人套餐/)
+  assert.doesNotMatch(html, /实际菜单与当天供应以现场为准/)
+})
+
+test('generic menu-only section is omitted', () => {
+  const html = render(
+    '## 介绍\n餐厅位于市区。\n\n## 吃什么\n可按现场菜单与个人口味选择。'
+  )
+  assert.match(html, /介绍/)
+  assert.doesNotMatch(html, /What to order/)
+})

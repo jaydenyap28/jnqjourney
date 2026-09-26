@@ -38,6 +38,31 @@ const lowValueLines = new Set([
   '出发前可再确认地址与开放时间是否有临时调整',
 ])
 
+const lowValuePatterns = [
+  /^可按当天路线(?:与[^。]*)?(?:灵活)?(?:安排|决定)/u,
+  /^可根据(?:自己的|同行人数与当天)行程节奏/u,
+  /^可按(?:页面)?地址与地图导航前往/u,
+  /^可按页面地图(?:定位|导航)?前往/u,
+  /^可结合页面照片与自己的/u,
+  /^可按现场菜单与个人口味选择/u,
+  /^可以按自己的口味选择(?:酒水与)?餐点/u,
+  /^出发前(?:可|建议)?再?确认(?:页面中的)?(?:地址|开放|营业)/u,
+]
+
+const removableSentencePatterns = [
+  /实际菜单与当天供应以现场为准[。.]?/gu,
+  /具体(?:套餐|菜色|菜单|配料)与?当天供应以(?:现场|现场菜单|到店时提供的菜单)为准[。.]?/gu,
+  /菜单与供应情况可能调整，以现场为准[。.]?/gu,
+  /菜单、配料与供应情况可能变化，以到访时实际提供为准[。.]?/gu,
+]
+
+function cleanLowValueSentences(value: string) {
+  return removableSentencePatterns
+    .reduce((result, pattern) => result.replace(pattern, ''), value)
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
 function cleanHeading(value: string) {
   return value.replace(/^[^\p{L}\p{N}]+/u, '').trim()
 }
@@ -53,7 +78,14 @@ function normalizeLine(value: string) {
 function isLowValueBlock(block: SpotDescriptionBlock) {
   if (block.type !== 'p') return false
   const lines = block.content.split('\n').map((line) => normalizeLine(line)).filter(Boolean)
-  return lines.length > 0 && lines.every((line) => lowValueLines.has(line))
+  return lines.length > 0 && lines.every((line) =>
+    lowValueLines.has(line) || lowValuePatterns.some((pattern) => pattern.test(line))
+  )
+}
+
+function cleanBlock(block: SpotDescriptionBlock): SpotDescriptionBlock {
+  if (block.type !== 'p') return block
+  return { ...block, content: cleanLowValueSentences(block.content) }
 }
 
 function normalizeComparable(value: string) {
@@ -156,7 +188,10 @@ export default function SpotDescription({ children, address }: { children: strin
   const sections = groupSections(parseSpotDescription(children))
     .map((section) => ({
       ...section,
-      blocks: section.blocks.filter((block) => !isLowValueBlock(block)),
+      blocks: section.blocks
+        .map(cleanBlock)
+        .filter((block) => block.content.trim())
+        .filter((block) => !isLowValueBlock(block)),
     }))
     .filter((section) => section.blocks.length > 0)
     .filter((section) => !isRedundantTransportSection(section, address))

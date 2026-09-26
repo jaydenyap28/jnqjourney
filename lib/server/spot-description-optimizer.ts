@@ -109,6 +109,7 @@ Rules:
 - "## 介绍" must remain. Every other H2 section is optional.
 - If a non-introduction section has no useful place-specific evidence, remove that entire section instead of filling it with neutral or generic planning text.
 - Generic filler such as "可按当天路线灵活安排。", "可根据自己的行程节奏安排停留。" or "可按页面地址与地图导航前往。" should not appear in the final public description.
+- Generic menu caveats such as "实际菜单与当天供应以现场为准", "菜单与供应情况可能调整，以现场为准", or "具体菜色以到店时提供的菜单为准" are also low-value filler. Remove them unless the source contains a specific operational reason that materially matters to the visitor.
 - Public copy must not mention its evidence source or recovery process. Phrases such as "旧行程记录", "现有记录", "现有资料", "资料中记录", "住宿记录显示", "同次行程记录", "本次记录" or "根据记录" are editorial leakage. Mark safe=false and rewrite the same supported fact directly for travellers.
 - Mark safe=false when the candidate omits useful supported facts from the source, even if every sentence it kept is factually safe. Add each omission to unsupported_claims prefixed with "MISSING:" and restore those facts in corrected_description.
 - Pay special attention to omitted numbers, times, seasons, prices, distances, durations, free/paid status, route details and named viewpoints.
@@ -183,6 +184,11 @@ const disallowedPublicPatterns = [
   '同次行程记录',
   '本次记录',
   '根据记录',
+  '不需要为了凑内容',
+  '当前地址字段',
+  '实际菜单与当天供应以现场为准',
+  '菜单与供应情况可能调整，以现场为准',
+  '具体菜色以到店时提供的菜单为准',
 ]
 
 function hasStandardStructure(value: string) {
