@@ -64,6 +64,7 @@ async function readCdnSpot(slug: string): Promise<PublicSpotLookup> {
   try {
     const indexResponse = await withTimeout(
       fetch(`${base}/public-data/spots/index.json`, {
+        headers: { 'Cache-Control': 'no-cache' },
         next: { revalidate: 3600, tags: ['public-spots'] },
       }),
       'Public spot CDN index'
@@ -83,6 +84,7 @@ async function readCdnSpot(slug: string): Promise<PublicSpotLookup> {
     }
     const response = await withTimeout(
       fetch(`${base}/public-data/spots/${encodeURIComponent(slug)}.json`, {
+        headers: { 'Cache-Control': 'no-cache' },
         next: { revalidate: 3600, tags: ['public-spots', `public-spot:${slug}`] },
       }),
       'Public spot CDN'

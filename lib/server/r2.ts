@@ -223,11 +223,15 @@ async function uploadPublicJsonObject(key: string, body: Buffer | Uint8Array, ca
 export function uploadPublicSpotSnapshot(slug: string, body: Buffer | Uint8Array) {
   const safeSlug = String(slug || '').trim()
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*-\d+$/.test(safeSlug)) throw new Error(`Invalid public spot slug: ${slug}`)
-  return uploadPublicJsonObject(`public-data/spots/${safeSlug}.json`, body)
+  return uploadPublicJsonObject(
+    `public-data/spots/${safeSlug}.json`,
+    body,
+    'no-store, max-age=0'
+  )
 }
 
 export function uploadPublicSpotIndex(body: Buffer | Uint8Array) {
-  return uploadPublicJsonObject('public-data/spots/index.json', body)
+  return uploadPublicJsonObject('public-data/spots/index.json', body, 'no-store, max-age=0')
 }
 
 export async function uploadPublicGuidesSnapshot(body: Buffer | Uint8Array) {
