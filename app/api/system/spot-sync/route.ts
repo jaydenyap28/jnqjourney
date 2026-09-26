@@ -45,8 +45,9 @@ async function isAuthorizedSystemJob(request: Request) {
 async function runBatch(skipEnglish = false) {
   const supabase = adminClient()
   const ids: number[] = []
+  const batchSize = skipEnglish ? 20 : PUBLICATION_BATCH_SIZE
 
-  for (let index = 0; index < PUBLICATION_BATCH_SIZE; index += 1) {
+  for (let index = 0; index < batchSize; index += 1) {
     const { data: claimRows, error: claimError } = await supabase.rpc('claim_next_spot_publication_sync')
     if (claimError) throw new Error(claimError.message || 'Unable to claim pending Spot publication.')
 
