@@ -224,12 +224,6 @@ function buildEvidenceSafeFallback(source: {
     return cleanedCurrent
   }
 
-  if (archive.length >= 120) {
-    return `## 介绍
-
-${archive}`
-  }
-
   if (cleanedCurrent.includes('## 介绍') && cleanedCurrent.length >= 60) {
     return cleanedCurrent
   }
@@ -248,8 +242,15 @@ ${archive}`
 ${intro}`
 }
 
+function normalizePublicMarkdown(value: string) {
+  return String(value || '')
+    .replace(/\\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 function fillEmptyTipsSection(value: string) {
-  return value
+  return normalizePublicMarkdown(value)
 }
 
 const disallowedPublicPatterns = [
@@ -345,7 +346,7 @@ export async function optimizeSpotDescription(spotId: number, options: { offline
   const maxOutputChars = evidenceChars < 150 ? 600 : evidenceChars < 400 ? 900 : 1300
 
   if (options.offlineRecovery) {
-    const description = buildEvidenceSafeFallback(source)
+    const description = normalizePublicMarkdown(buildEvidenceSafeFallback(source))
     const { error: updateError } = await supabase
       .from('locations')
       .update({ description })
@@ -377,7 +378,7 @@ export async function optimizeSpotDescription(spotId: number, options: { offline
     model: process.env.GEMINI_CONTENT_MODEL || 'gemini-3.5-flash',
   })
 
-  const candidate = clean(generated.description)
+  const candidate = normalizePublicMarkdown(clean(generated.description))
   if (!candidate || candidate.length > maxOutputChars + 120 || !hasStandardStructure(candidate)) {
     const description = buildEvidenceSafeFallback(source)
     const { error: updateError } = await supabase
@@ -405,7 +406,7 @@ export async function optimizeSpotDescription(spotId: number, options: { offline
 
   if (!firstCheck.safe) {
     const secondCheck = await verifyDescription(source, description)
-    description = secondCheck.safe ? secondCheck.corrected : buildEvidenceSafeFallback(source)
+    description = secondCheck.safe ? normalizePublicMarkdown(secondCheck.corrected) : normalizePublicMarkdown(buildEvidenceSafeFallback(source))
   }
 
   description = fillEmptyTipsSection(description)
