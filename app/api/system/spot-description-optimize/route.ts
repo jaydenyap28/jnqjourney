@@ -43,7 +43,7 @@ async function isAuthorizedSystemJob(request: Request) {
   return !error && data === true
 }
 
-async function runOne() {
+async function runOne(options: { offlineRecovery?: boolean; force?: boolean } = {}) {
   const supabase = adminClient()
   const { data: claimRows, error: claimError } = await supabase.rpc('claim_next_spot_description_optimization')
   if (claimError) throw new Error(claimError.message || 'Unable to claim pending Spot optimization.')
@@ -56,7 +56,7 @@ async function runOne() {
   const id = Number(claim.spot_id)
 
   try {
-    const result = await optimizeSpotDescription(id)
+    const result = await optimizeSpotDescription(id, options)
     if (
       result.skipped &&
       result.reason !== 'Spot description already uses the JnQ structure.' &&
@@ -100,8 +100,33 @@ export async function GET(request: Request) {
       )
     }
 
-    const result = await runOne()
-    return NextResponse.json(result, { status: result.ok ? 200 : 503, headers: HEADERS })
+    const url = new URL(request.url)
+    const offlineRecovery = url.searchParams.get('offline') === '1'
+    const force = url.searchParams.get('force') === '1' || offlineRecovery
+    const requestedBatch = Number.parseInt(url.searchParams.get('batch') || '1', 10)
+    const batchSize = Number.isFinite(requestedBatch) ? Math.max(1, Math.min(requestedBatch, offlineRecovery ? 20 : 3)) : 1
+
+    const results = []
+    for (let index = 0; index < batchSize; index += 1) {
+      const result = await runOne({ offlineRecovery, force })
+      results.push(result)
+      if (!result.processed) break
+      if (!result.ok && !offlineRecovery) break
+    }
+
+    const failed = results.filter((result) => !result.ok)
+    const remaining = results.length ? results[results.length - 1].remaining : 0
+    return NextResponse.json(
+      {
+        ok: failed.length === 0,
+        processed: results.some((result) => result.processed),
+        count: results.filter((result) => result.processed).length,
+        offlineRecovery,
+        results,
+        remaining,
+      },
+      { status: failed.length === 0 ? 200 : 503, headers: HEADERS }
+    )
   } catch (error) {
     return NextResponse.json(
       { ok: false, processed: false, error: error instanceof Error ? error.message : 'Automatic Spot optimization failed.' },

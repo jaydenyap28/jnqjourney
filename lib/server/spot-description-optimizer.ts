@@ -144,13 +144,96 @@ async function verifyDescription(source: unknown, candidate: string) {
   return { safe, unsupported, corrected }
 }
 
+function stripEmoji(value: string) {
+  return value
+    .replace(/[\uFE0E\uFE0F]/g, '')
+    .replace(/\p{Extended_Pictographic}/gu, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
+
+function cleanArchivedSummary(value: string) {
+  return stripEmoji(value)
+    .replace(/\s+([，。！？；：])/g, '$1')
+    .replace(/([，。！？；：])\s+/g, '$1')
+    .trim()
+}
+
+function isGenericFiller(value: string) {
+  const normalized = value.replace(/^[-*]\s*/, '').replace(/[。.!！?？]+$/u, '').replace(/\s+/g, '')
+  return [
+    '可按当天路线灵活安排',
+    '可根据自己的行程节奏安排停留',
+    '可按页面地址与地图导航前往',
+    '可根据页面地图位置规划前往路线',
+    '可结合页面照片与自己的兴趣判断是否安排停留',
+    '可结合页面照片与自己的住宿需求判断是否适合',
+    '可结合页面照片与自己的用餐偏好决定',
+    '可按当天路线与用餐安排灵活决定',
+    '可根据同行人数与当天行程节奏安排',
+    '可按当天路线与入住计划灵活安排',
+    '可根据自己的住宿需求与行程节奏安排',
+    '行程安排可保留弹性出发前再确认页面中的地址与开放资讯',
+    '出发前可再确认地址与开放时间是否有临时调整',
+  ].includes(normalized)
+}
+
+function cleanExistingForRecovery(value: string) {
+  const sections = String(value || '')
+    .replace(/\r\n?/g, '\n')
+    .split(/(?=^##\s+)/m)
+
+  return sections
+    .map((section) => {
+      const lines = section.split('\n')
+      const heading = lines.shift()?.trim() || ''
+      const body = lines
+        .filter((line) => !isGenericFiller(line))
+        .join('\n')
+        .replace(/实际菜单与当天供应以现场为准[。.]?/g, '')
+        .replace(/菜单与供应情况可能调整，以现场为准[。.]?/g, '')
+        .replace(/具体菜色以到店时提供的菜单为准[。.]?/g, '')
+        .replace(/\n{3,}/g, '\n\n')
+        .trim()
+
+      if (!body) return ''
+      return heading ? `${heading}\n\n${body}` : body
+    })
+    .filter(Boolean)
+    .join('\n\n')
+    .trim()
+}
+
 function buildEvidenceSafeFallback(source: {
   name: string
   name_cn: string
   category: string
   address: string
   region: { name: string; name_cn: string; country: string }
+  existing_description?: string
+  legacy_archive_summary?: string
 }) {
+  const cleanedCurrent = cleanExistingForRecovery(clean(source.existing_description))
+  const archive = cleanArchivedSummary(clean(source.legacy_archive_summary))
+
+  if (
+    cleanedCurrent.includes('## 介绍') &&
+    cleanedCurrent.length >= 180 &&
+    (!archive || cleanedCurrent.length >= archive.length * 0.75)
+  ) {
+    return cleanedCurrent
+  }
+
+  if (archive.length >= 120) {
+    return `## 介绍
+
+${archive}`
+  }
+
+  if (cleanedCurrent.includes('## 介绍') && cleanedCurrent.length >= 60) {
+    return cleanedCurrent
+  }
+
   const displayName = clean(source.name_cn) || clean(source.name) || '这个地点'
   const regionName = clean(source.region?.name_cn) || clean(source.region?.name)
   const address = clean(source.address)
@@ -195,7 +278,7 @@ function hasStandardStructure(value: string) {
   return value.includes('## 介绍') && !disallowedPublicPatterns.some((pattern) => value.includes(pattern))
 }
 
-export async function optimizeSpotDescription(spotId: number) {
+export async function optimizeSpotDescription(spotId: number, options: { offlineRecovery?: boolean; force?: boolean } = {}) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) throw new Error('Missing Supabase configuration for Spot optimization.')
@@ -220,7 +303,7 @@ export async function optimizeSpotDescription(spotId: number) {
     .maybeSingle()
   const legacyArchiveSummary = clean(queueState?.legacy_archive_summary)
 
-  if (hasStandardStructure(existingDescription)) {
+  if (!options.force && hasStandardStructure(existingDescription)) {
     return { skipped: true, reason: 'Spot description already uses the JnQ structure.' }
   }
 
@@ -260,6 +343,25 @@ export async function optimizeSpotDescription(spotId: number) {
     JSON.stringify(Array.isArray(row.tags) ? row.tags : []).length
 
   const maxOutputChars = evidenceChars < 150 ? 600 : evidenceChars < 400 ? 900 : 1300
+
+  if (options.offlineRecovery) {
+    const description = buildEvidenceSafeFallback(source)
+    const { error: updateError } = await supabase
+      .from('locations')
+      .update({ description })
+      .eq('id', spotId)
+
+    if (updateError) throw new Error(updateError.message || 'Unable to save recovered Spot description.')
+
+    return {
+      skipped: false,
+      id: spotId,
+      name: clean(row.name),
+      chars: description.length,
+      fallback: true,
+      offlineRecovery: true,
+    }
+  }
 
   const generated = await generateGeminiJson<{ description?: unknown }>({
     instructions: `${instructions}\n- Keep the finished description at or below ${maxOutputChars} Chinese characters. Do not pad the text to reach a target length.`,
