@@ -149,6 +149,19 @@ async function readStaticSpot(slug: string): Promise<PublicSpotLookup> {
 
 async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | null> {
   if (!extractLocationIdFromSlug(slug)) return null
+
+  // Spot detail pages are freshness-sensitive. Prefer the authoritative
+  // Supabase row so a recently published edit cannot be masked by an older
+  // CDN object that is still being revalidated. CDN/static data remain
+  // resilience fallbacks when Supabase is unavailable.
+  try {
+    const live = await readSupabaseSpot(slug)
+    if (live.status === 'found') {
+      return isSpotPublished(live.spot) ? { spot: live.spot, source: 'supabase' } : null
+    }
+    if (live.status === 'not-found' && live.authoritative) return null
+  } catch {}
+
   const result = await resolvePublicSpotSources({
     cdn: () => readCdnSpot(slug),
     supabase: () => readSupabaseSpot(slug),
