@@ -1425,7 +1425,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       tags: formData.tags ? formData.tags.split(/[,，、]/).map((tag) => tag.trim()).filter((tag) => tag) : [],
       visit_date: formData.visit_date || null,
       opening_hours: JSON.stringify(structuredHours),
-      price_info: serializePriceInfo(structuredPriceInfo),
+      price_info: structuredPriceInfo,
       status: formData.status || 'active',
     }
 

@@ -14,6 +14,28 @@ function validId(value: unknown): value is number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value > 0
 }
 
+function normalizeJsonObjectField(value: unknown) {
+  if (typeof value !== 'string') return value
+
+  const trimmed = value.trim()
+  if (!trimmed.startsWith('{') || !trimmed.endsWith('}')) return value
+
+  try {
+    const parsed = JSON.parse(trimmed)
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : value
+  } catch {
+    return value
+  }
+}
+
+function normalizeLocationMutationData(data: Record<string, unknown>) {
+  if (!Object.prototype.hasOwnProperty.call(data, 'price_info')) return data
+  return {
+    ...data,
+    price_info: normalizeJsonObjectField(data.price_info),
+  }
+}
+
 async function mutate(request: Request, method: 'POST' | 'PATCH' | 'DELETE') {
   const auth = await requireAdminRequest(request)
   if (!auth.ok) return auth.response
@@ -46,7 +68,8 @@ async function mutate(request: Request, method: 'POST' | 'PATCH' | 'DELETE') {
   }
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const table = supabase.from('locations')
-  const query = method === 'POST' ? table.insert([body.data]) : method === 'PATCH' ? table.update(body.data) : table.delete()
+  const mutationData = method === 'DELETE' ? null : normalizeLocationMutationData(body.data)
+  const query = method === 'POST' ? table.insert([mutationData]) : method === 'PATCH' ? table.update(mutationData) : table.delete()
   const filtered = method === 'POST' ? query : hasId ? query.eq('id', body.id) : query.in('id', body.ids)
   // Save returns the same ID/timestamp used by slug saving and snapshot publishing.
   // Cover clears and list mutations retain their original minimal-return behavior.

@@ -90,7 +90,7 @@ const allFields = {
   video_url: 'https://youtube.test/watch?v=test', facebook_video_url: 'https://facebook.test/video',
   image_url: 'https://cdn.test/cover.webp#focus=50,50', images: ['https://cdn.test/gallery.webp'],
   description: 'Complete description', tags: ['景点'], visit_date: null,
-  opening_hours: '{"isUnknown":true}', price_info: '{"currency":"RM"}', status: 'active',
+  opening_hours: '{"isUnknown":true}', price_info: { currency: 'RM' }, status: 'active',
   publication_status: 'draft', seo_title_zh: '中文标题', seo_description_zh: '中文说明',
   seo_title_en: 'English title', seo_description_en: 'English description',
   experience_zh: '中文体验', experience_en: 'English experience', related_note_slugs: ['test-note'],
@@ -144,4 +144,22 @@ test('clear cover through admin API changes only image_url with minimal result',
   assert.deepEqual(f.writes[0].data, { image_url: '' })
   assert.equal(f.writes[0].url.searchParams.get('id'), 'eq.903')
   assert.equal(f.writes[0].url.searchParams.has('select'), false)
+})
+
+
+test('admin API normalizes legacy stringified price_info before writing JSONB', async (t) => {
+  const f = fixture(); t.after(() => f.restore())
+  const legacy = { ...allFields, price_info: '{"currency":"CNY","mealBudget":"87","mealPartySize":2}' }
+  const saved = await f.mutate('POST', { data: legacy })
+  assert.equal(saved.error, null)
+  assert.deepEqual(f.writes[0].data[0].price_info, {
+    currency: 'CNY',
+    mealBudget: '87',
+    mealPartySize: 2,
+  })
+  assert.deepEqual(f.rows.get(901).price_info, {
+    currency: 'CNY',
+    mealBudget: '87',
+    mealPartySize: 2,
+  })
 })
