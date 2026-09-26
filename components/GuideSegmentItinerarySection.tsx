@@ -46,10 +46,16 @@ export default function GuideSegmentItinerarySection({ guideSlug, segments, spot
         const segmentLabel = segment.dayEnd > segment.dayStart ? `Day ${segment.dayStart}–${segment.dayEnd}` : `Day ${segment.dayStart}`
         const routes = segment.verifiedRoutes.filter((route) => typeof route.dayNumber === 'number')
         const video = segment.media?.map((item) => ({ label: item.label, id: youtubeId(item.url) })).find((item) => item.id)
-        return <article id={`day-${segment.dayStart}`} key={segment.id} className="scroll-mt-24 py-10 md:py-14">
-          <header className="grid gap-3 md:grid-cols-[7rem_minmax(0,1fr)_auto] md:items-end"><p className="text-sm font-semibold uppercase tracking-[0.22em] text-amber-200">{segmentLabel}</p><h3 className="text-3xl font-semibold leading-tight text-white md:text-4xl">{segment.city}</h3><time dateTime={segment.dateStart} className="text-sm tabular-nums text-white/55">{formatDate(segment.dateStart)}－{formatDate(segment.dateEnd)}</time></header>
-          <p className="mt-5 max-w-[800px] text-[15px] leading-[1.85] text-white/76 md:text-base">{formatShortText(segment.summary)}</p>
-          <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
+        return <article id={`day-${segment.dayStart}`} key={segment.id} className="scroll-mt-24 py-12 md:py-16">
+          <header className="grid gap-4 border-l border-amber-300/45 pl-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:pl-6">
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/42">{segmentLabel}</p>
+              <h3 className="mt-2 font-display text-[clamp(2.35rem,5vw,3.5rem)] font-medium leading-[0.96] tracking-[-0.02em] text-white">{segment.city}</h3>
+            </div>
+            <time dateTime={segment.dateStart} className="text-xs tabular-nums text-white/48 md:pb-1 md:text-sm">{formatDate(segment.dateStart)}－{formatDate(segment.dateEnd)}</time>
+          </header>
+          <p className="mt-5 max-w-[760px] pl-5 text-[15px] leading-[1.85] text-white/68 md:pl-6 md:text-base">{formatShortText(segment.summary)}</p>
+          <div className="mt-10 divide-y divide-white/10 border-y border-white/10 md:mt-12">
             {routes.map((route) => {
               const dayNumber = route.dayNumber as number
               const date = addDays(segment.dateStart, dayNumber - segment.dayStart)
