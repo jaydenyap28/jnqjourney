@@ -1,4 +1,18 @@
-export type SpotDescriptionBlock = { type: 'p' | 'h2' | 'h3' | 'h4' | 'blockquote'; content: string }
+export type SpotDescriptionBlock =
+  | { type: 'p' | 'h2' | 'h3' | 'h4' | 'blockquote'; content: string }
+  | { type: 'image'; src: string; alt: string; caption?: string }
+
+function parseSpotDescriptionImage(line: string): Extract<SpotDescriptionBlock, { type: 'image' }> | null {
+  const match = line.trim().match(/^!\[([^\]\n]*)\]\(\s*(\S+?)(?:\s+["']([^"']*)["'])?\s*\)$/)
+  if (!match) return null
+  try {
+    const url = new URL(match[2], 'https://jnqjourney.com')
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return null
+  } catch {
+    return null
+  }
+  return { type: 'image', alt: match[1], src: match[2], caption: match[3] || undefined }
+}
 
 // Deliberately excludes Note embeds, shortcodes, inferred headings, and H1.
 export function parseSpotDescription(value: string): SpotDescriptionBlock[] {
@@ -6,6 +20,11 @@ export function parseSpotDescription(value: string): SpotDescriptionBlock[] {
   for (const line of value.replace(/\r\n?/g, '\n').split('\n')) {
     if (!line.trim()) {
       blocks.push({ type: 'p', content: '' })
+      continue
+    }
+    const image = parseSpotDescriptionImage(line)
+    if (image) {
+      blocks.push(image)
       continue
     }
     const heading = line.match(/^ {0,3}(#{2,4})[\t ]+(.+)$/)
@@ -19,7 +38,7 @@ export function parseSpotDescription(value: string): SpotDescriptionBlock[] {
       blocks.push({ type, content })
     }
   }
-  return blocks.filter((block) => block.content)
+  return blocks.filter((block) => block.type === 'image' || block.content)
 }
 
 export function spotDescriptionExcerpt(value?: string | null): string {
@@ -28,7 +47,7 @@ export function spotDescriptionExcerpt(value?: string | null): string {
     .replace(/[\t ]+#+[\t ]*$/gm, '')
     .replace(/^ {0,3}>[\t ]?/gm, '')
     .replace(/`([^`\n]+)`/g, '$1')
-    .replace(/!?\[([^\]\n]+)\]\([^\s)]+\)/g, '$1')
+    .replace(/!?\[([^\]\n]+)\]\([^\s)]+(?:\s+["'][^"']*["'])?\)/g, '$1')
     .replace(/\*\*([^*\n]+)\*\*/g, '$1')
     .replace(/\*([^*\n]+)\*/g, '$1')
     .replace(/<[^>]*>/g, '')

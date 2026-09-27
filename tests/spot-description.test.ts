@@ -17,7 +17,9 @@ function load(file: string): any {
   const context = { exports: {}, URL, require: (name: string) => {
     if (!name.startsWith('.') && !name.startsWith('@/')) return require(name)
     const base = name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(filename), name)
-    return load(['.ts', '.tsx'].map((ext) => base + ext).find((candidate) => fs.existsSync(candidate))!)
+    const candidate = [base, ...['.ts', '.tsx'].map((ext) => base + ext)].find((file) => fs.existsSync(file))
+    if (!candidate) throw new Error(`Cannot resolve ${name} from ${filename}`)
+    return load(candidate)
   } }
   vm.runInNewContext(compiled, context)
   return context.exports
@@ -53,4 +55,12 @@ test('description-derived meta excerpts omit Markdown while explicit SEO stays u
     assert.equal(spotSeo(spot, locale).description, 'Heading bold italic link code')
     assert.equal(spotSeo({ ...spot, [`seo_description_${locale}`]: 'Custom excerpt' }, locale).description, 'Custom excerpt')
   }
+})
+
+test('standalone Markdown images keep alt and caption and render a keyboard trigger', () => {
+  const html = render('地图说明\n![拙政园景点图](/map.webp "拙政园园区导览图")\n后续说明')
+  assert.match(html, /<button[^>]*type="button"[^>]*aria-label="查看大图：拙政园景点图"/)
+  assert.match(html, /alt="拙政园景点图"/)
+  assert.match(html, /<figcaption[^>]*>拙政园园区导览图<\/figcaption>/)
+  assert.equal((html.match(/<p /g) || []).length, 2)
 })

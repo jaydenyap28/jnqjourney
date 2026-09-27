@@ -15,6 +15,7 @@ import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInt
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import InlineMarkdown from '@/components/InlineMarkdown'
+import ZoomableImage from '@/components/ZoomableImage'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
 import { readPublicNoteBySlug, readPublicNotes } from '@/lib/server/public-content-store'
@@ -212,28 +213,21 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
     const alt = block.alt?.trim() || buildFallbackAlt(undefined, block.caption)
     return (
       <figure key={block.id} className={`${getImageFigureClass(block.imageSize)} mx-auto w-full my-10 space-y-3 group`}>
-        <div
-          data-lightbox-src={block.imageUrl}
-          data-lightbox-alt={alt}
-          data-lightbox-caption={block.caption || ''}
-          className="lightbox-trigger relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)] cursor-zoom-in group"
+        <ZoomableImage
+          src={block.imageUrl}
+          alt={alt}
+          caption={block.caption}
+          overlayLabel="点击放大查看"
+          className="relative aspect-[16/9] overflow-hidden rounded-[34px] border border-white/10 bg-white/5 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
         >
           <FallbackImage
             src={block.imageUrl}
             alt={alt}
             fill
             sizes="(max-width: 1024px) 100vw, 980px"
-            className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+            className="object-contain transition-transform duration-300 ease-out group-hover/zoom:scale-[1.015]"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <span className="bg-black/60 backdrop-blur-md text-white/90 border border-white/10 px-4 py-2 rounded-full text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path>
-              </svg>
-              点击放大查看
-            </span>
-          </div>
-        </div>
+        </ZoomableImage>
         {block.caption ? (
           <figcaption className="px-2 text-sm leading-7 text-white/55 text-center italic">{block.caption}</figcaption>
         ) : null}
@@ -285,28 +279,21 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
             const imgAlt = image.alt?.trim() || buildFallbackAlt(spotLabel, image.caption)
             return (
               <div key={`${block.id}-${index}`} className="space-y-2 group">
-                <div
-                  data-lightbox-src={image.src}
-                  data-lightbox-alt={imgAlt}
-                  data-lightbox-caption={image.caption || ''}
-                  className="lightbox-trigger relative aspect-[4/3] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-md cursor-zoom-in"
+                <ZoomableImage
+                  src={image.src}
+                  alt={imgAlt}
+                  caption={image.caption}
+                  overlayLabel="放大"
+                  className="relative aspect-[4/3] overflow-hidden rounded-[26px] border border-white/10 bg-white/5 shadow-md"
                 >
                   <FallbackImage
                     src={image.src}
                     alt={imgAlt}
                     fill
                     sizes="(max-width: 1024px) 100vw, 400px"
-                    className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="object-contain transition-transform duration-300 ease-out group-hover/zoom:scale-[1.015]"
                   />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="bg-black/60 backdrop-blur-md text-white/90 border border-white/10 px-4 py-2 rounded-full text-xs font-medium tracking-wide translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex items-center gap-2">
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path>
-                      </svg>
-                      放大
-                    </span>
-                  </div>
-                </div>
+                </ZoomableImage>
                 {image.caption ? (
                   <p className="px-2 text-xs text-white/45 text-center leading-relaxed tracking-wide italic">{image.caption}</p>
                 ) : null}
@@ -427,7 +414,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#101418_0%,#05070a_52%,#000000_100%)] text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      {/* Dynamic Reading Progress Bar & Immersive Full-Screen Lightbox Image Viewer */}
+      {/* Dynamic reading progress bar; body images own the shared Lightbox trigger. */}
       <NoteInteractiveReader headings={headings} />
 
       <div className="mx-auto max-w-[1500px] px-4 py-8 md:px-8 md:py-12">
