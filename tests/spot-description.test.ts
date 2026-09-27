@@ -92,3 +92,18 @@ test('generic menu-only section is omitted', () => {
   assert.match(html, /介绍/)
   assert.doesNotMatch(html, /What to order/)
 })
+
+
+test('spot description renders a standalone image with accessible alt and optional caption', () => {
+  const html = render('## 看点\n![拙政园景点图](/placeholder-image.jpg "中园池水与亭台")')
+  assert.match(html, /<figure/)
+  assert.match(html, /alt="拙政园景点图"/)
+  assert.match(html, /中园池水与亭台/)
+})
+
+test('unsafe image URLs stay inert and description excerpts omit image URLs', () => {
+  const html = render('![bad](javascript:alert(1))')
+  assert.doesNotMatch(html, /<figure|<img/)
+  const spot = { name: 'Spot', description: '## 看点\n![拙政园景点图](https://cdn.example.com/garden.webp "中园池水与亭台")' }
+  assert.equal(spotSeo(spot, 'zh').description, '看点 拙政园景点图 中园池水与亭台')
+})
