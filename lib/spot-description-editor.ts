@@ -27,3 +27,31 @@ export function formatDescription(value: string, start: number, end: number, for
   }
   return { value: value.slice(0, start) + insertion + value.slice(end), selectionStart, selectionEnd }
 }
+
+function cleanImageText(value: string) {
+  return value.replace(/[\r\n]+/g, ' ').replace(/\]/g, '').replace(/"/g, '“').trim()
+}
+
+export function insertDescriptionImage(
+  value: string,
+  start: number,
+  end: number,
+  image: { url: string; alt?: string; caption?: string }
+) {
+  const url = image.url.trim()
+  if (!/^(https?:\/\/|\/)/i.test(url)) throw new Error('Invalid image URL')
+
+  const alt = cleanImageText(image.alt || '') || '景点图片'
+  const caption = cleanImageText(image.caption || '')
+  const markdown = `![${alt}](${url}${caption ? ` "${caption}"` : ''})`
+  const leading = start > 0 && value[start - 1] !== '\n' ? '\n' : ''
+  const trailing = end < value.length && value[end] !== '\n' ? '\n' : ''
+  const insertion = leading + markdown + trailing
+  const cursor = start + insertion.length
+
+  return {
+    value: value.slice(0, start) + insertion + value.slice(end),
+    selectionStart: cursor,
+    selectionEnd: cursor,
+  }
+}

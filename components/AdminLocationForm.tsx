@@ -855,7 +855,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     }
   }
 
-  const uploadFilesToStorage = async (files: File[], target: 'cover' | 'gallery') => {
+  const uploadFilesToStorage = async (files: File[], target: 'cover' | 'gallery' | 'description') => {
     if (!files.length) return []
 
     const optimizedFiles = await Promise.all(files.map(optimizeImage))
@@ -870,7 +870,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     for (const file of optimizedFiles) {
       const payload = new FormData()
       payload.append('category', 'locations')
-      payload.append('field', target === 'cover' ? 'image_url' : 'images')
+      payload.append('field', target === 'cover' ? 'image_url' : target === 'gallery' ? 'images' : 'description')
       payload.append('target', target)
       if (country) payload.append('country', country)
       if (selectedRegion?.name) payload.append('city', parentRegion?.name || selectedRegion.name)
@@ -1018,6 +1018,21 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       setUploadingGallery(false)
       event.target.value = ''
     }
+  }
+
+  const handleDescriptionImageUpload = async (file: File) => {
+    setMessage('正在上传景点资讯图片到 Cloudflare R2...')
+
+    const uploaded = await uploadFilesToStorage([file], 'description')
+    const firstFile = uploaded[0]
+
+    if (!firstFile?.url) {
+      throw new Error('景点资讯图片上传结果异常')
+    }
+
+    assertR2ImageUrl(firstFile.url)
+    setMessage('景点资讯图片上传成功，已插入正文。')
+    return firstFile.url
   }
 
   const handleAutoEnrichPlace = async () => {
@@ -2784,6 +2799,8 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             <SpotDescriptionEditor
               value={formData.review}
               onChange={(review) => setFormData((previous) => ({ ...previous, review }))}
+              onUploadImage={handleDescriptionImageUpload}
+              imageAlt={formData.name_cn || formData.name}
             />
           </div>
 

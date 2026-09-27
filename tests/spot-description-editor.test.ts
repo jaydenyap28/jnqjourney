@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { formatDescription, type DescriptionFormat } from '../lib/spot-description-editor.ts'
+import { formatDescription, insertDescriptionImage, type DescriptionFormat } from '../lib/spot-description-editor.ts'
 
 const expected: Record<DescriptionFormat, string> = {
   H2: '## 内容', H3: '### 内容', H4: '#### 内容', Bold: '**内容**', Italic: '*内容*', Link: '[内容](https://example.com)', Quote: '> 内容',
@@ -27,4 +27,29 @@ test('block formatting creates explicit lines and preserves surrounding text', (
 test('inline formatting preserves surrounding text', () => {
   assert.equal(formatDescription('before内容after', 6, 8, 'Bold').value, 'before**内容**after')
   assert.equal(formatDescription('beforeafter', 6, 6, 'Italic').value, 'before*文字*after')
+})
+
+
+test('description images are inserted as standalone Markdown image blocks', () => {
+  const result = insertDescriptionImage('前文后文', 2, 2, {
+    url: 'https://cdn.example.com/garden.webp',
+    alt: '拙政园景点图',
+  })
+  assert.equal(result.value, '前文\n![拙政园景点图](https://cdn.example.com/garden.webp)\n后文')
+  assert.equal(result.selectionStart, result.selectionEnd)
+})
+
+test('description image captions are optional and unsafe URLs are rejected', () => {
+  assert.equal(
+    insertDescriptionImage('', 0, 0, {
+      url: '/garden.webp',
+      alt: '拙政园',
+      caption: '中园池水与亭台',
+    }).value,
+    '![拙政园](/garden.webp "中园池水与亭台")'
+  )
+  assert.throws(() => insertDescriptionImage('', 0, 0, {
+    url: 'javascript:alert(1)',
+    alt: 'bad',
+  }), /Invalid image URL/)
 })
