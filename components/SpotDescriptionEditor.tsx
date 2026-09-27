@@ -1,6 +1,6 @@
 'use client'
 
-import { useLayoutEffect, useRef, useState } from 'react'
+import { type ChangeEvent, useLayoutEffect, useRef, useState } from 'react'
 import { Textarea } from './ui/textarea'
 import { formatDescription, insertDescriptionImage, type DescriptionFormat } from '@/lib/spot-description-editor'
 
@@ -19,7 +19,7 @@ export default function SpotDescriptionEditor({
   name = 'review',
   placeholder = '补充景点特色、注意事项、推荐玩法等',
   rows = 5,
-  hint = '支持 Markdown：## H2、### H3、#### H4、**粗体**、*斜体*、[链接](https://...)、> 引用、`行内代码`。需要时可用 Image 直接上传一张正文图到 Cloudflare R2。',
+  hint = '支持 Markdown：## H2、### H3、#### H4、**粗体**、*斜体*、[链接](https://...)、> 引用、`行内代码`。选中文字后可套用格式；需要时用 Image 把图片直接上传到 Cloudflare R2，并插入当前光标位置。',
   onUploadImage,
   imageAlt,
 }: {
@@ -74,7 +74,7 @@ export default function SpotDescriptionEditor({
     imageInput.current?.click()
   }
 
-  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
     event.target.value = ''
     if (!file || !onUploadImage) return
@@ -128,7 +128,7 @@ export default function SpotDescriptionEditor({
         </>
       ) : null}
     </div>
-    <Textarea id={id} name={name} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} rows={rows} aria-describedby={`${id}-hint`} />
+    <Textarea id={id} name={name} value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} rows={rows} disabled={uploadingImage} aria-describedby={`${id}-hint`} />
     <p id={`${id}-hint`} className="text-xs text-muted-foreground">{hint}</p>
     {imageError ? <p className="text-xs text-red-600">图片上传失败：{imageError}</p> : null}
   </div>
