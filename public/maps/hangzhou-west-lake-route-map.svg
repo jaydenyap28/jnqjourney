@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">西湖怎么玩｜JnQ Journey 西湖路线地图</title>
+<desc id="desc">西湖经典北线、舒服南线、游船玩法和小众安静线的路线示意图</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#f7f3e8"/>
+    <stop offset="100%" stop-color="#eef4ec"/>
+  </linearGradient>
+  <linearGradient id="lake" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#d9eef1"/>
+    <stop offset="100%" stop-color="#a9d9df"/>
+  </linearGradient>
+  <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0f2b36" flood-opacity=".12"/>
+  </filter>
+  <marker id="arrowRed" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#d45445"/></marker>
+  <marker id="arrowOrange" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#e7902f"/></marker>
+  <marker id="arrowBlue" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#3b78bb"/></marker>
+  <marker id="arrowPurple" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#7750a8"/></marker>
+  <style>
+    .cn{font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",Arial,sans-serif}
+    .serif{font-family:"Noto Serif SC","Songti SC","SimSun",serif}
+    .label{font-size:27px;font-weight:700;fill:#173443;paint-order:stroke;stroke:#fff;stroke-width:7px;stroke-linejoin:round}
+    .small{font-size:20px;fill:#4a646d}
+    .pin{fill:#fff;stroke:#173443;stroke-width:3}
+    .route{fill:none;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+  </style>
+</defs>
+
+<rect width="1600" height="1000" fill="url(#bg)"/>
+<path d="M0 175 C230 115 335 205 520 150 C715 92 910 170 1080 110 C1265 44 1430 126 1600 75 L1600 0 L0 0Z" fill="#dce9df" opacity=".75"/>
+<path d="M0 205 C220 145 380 225 555 180 C730 135 935 190 1110 142 C1290 92 1460 158 1600 112" fill="none" stroke="#bdcfbf" stroke-width="4" opacity=".8"/>
+
+<text x="82" y="92" class="serif" font-size="70" font-weight="800" fill="#123f58">西湖怎么玩</text>
+<text x="86" y="136" class="cn" font-size="25" letter-spacing="3" fill="#385d69">JnQ Journey · 西湖路线地图</text>
+<text x="88" y="175" class="serif" font-size="23" fill="#6d7d76">一湖山水，一城诗意｜路线示意 · 非严格比例导航地图</text>
+
+<!-- recommendation cards -->
+<g transform="translate(700 42)">
+  <rect x="0" y="0" width="190" height="115" rx="22" fill="#fff7ef" stroke="#efd6c1"/>
+  <circle cx="32" cy="30" r="17" fill="#df7a58"/><text x="32" y="37" text-anchor="middle" class="cn" font-size="18" fill="#fff">1</text>
+  <text x="58" y="30" class="cn" font-size="20" font-weight="700" fill="#873e2a">第一次来</text>
+  <text x="22" y="65" class="cn" font-size="21" font-weight="700" fill="#243f48">先走经典北线</text>
+  <text x="22" y="92" class="cn" font-size="16" fill="#745d53">断桥、白堤、孤山一路串</text>
+</g>
+<g transform="translate(905 42)">
+  <rect x="0" y="0" width="190" height="115" rx="22" fill="#f2f8ef" stroke="#cfdfc7"/>
+  <circle cx="32" cy="30" r="17" fill="#619e67"/><text x="32" y="37" text-anchor="middle" class="cn" font-size="18" fill="#fff">2</text>
+  <text x="58" y="30" class="cn" font-size="20" font-weight="700" fill="#326439">想慢慢走</text>
+  <text x="22" y="65" class="cn" font-size="21" font-weight="700" fill="#243f48">选舒服南线</text>
+  <text x="22" y="92" class="cn" font-size="16" fill="#58705b">公园、湖景、古塔更悠闲</text>
+</g>
+<g transform="translate(1110 42)">
+  <rect x="0" y="0" width="190" height="115" rx="22" fill="#eef6fb" stroke="#c3ddec"/>
+  <circle cx="32" cy="30" r="17" fill="#4a86b8"/><text x="32" y="37" text-anchor="middle" class="cn" font-size="18" fill="#fff">3</text>
+  <text x="58" y="30" class="cn" font-size="20" font-weight="700" fill="#315e80">想换视角</text>
+  <text x="22" y="65" class="cn" font-size="21" font-weight="700" fill="#243f48">至少坐一次船</text>
+  <text x="22" y="92" class="cn" font-size="16" fill="#526d7d">从湖上看三潭印月</text>
+</g>
+<g transform="translate(1315 42)">
+  <rect x="0" y="0" width="205" height="115" rx="22" fill="#f5f1fa" stroke="#d9cceb"/>
+  <circle cx="32" cy="30" r="17" fill="#8260aa"/><text x="32" y="37" text-anchor="middle" class="cn" font-size="18" fill="#fff">4</text>
+  <text x="58" y="30" class="cn" font-size="20" font-weight="700" fill="#60427d">想避人潮</text>
+  <text x="22" y="65" class="cn" font-size="21" font-weight="700" fill="#243f48">去浴鹄湾、乌龟潭</text>
+  <text x="22" y="92" class="cn" font-size="16" fill="#6d6177">西湖另一种安静</text>
+</g>
+
+<!-- land and lake -->
+<path d="M205 290 C350 205 565 210 765 230 C975 250 1240 235 1392 352 C1495 433 1476 656 1368 757 C1236 882 1033 905 833 881 C657 860 505 887 352 801 C224 729 142 608 155 472 C163 388 172 330 205 290Z" fill="#d9e8d5"/>
+<path d="M350 320 C518 250 784 269 966 297 C1155 326 1328 333 1380 439 C1434 550 1358 704 1238 773 C1116 843 947 829 804 796 C679 768 545 801 436 745 C330 691 266 583 285 478 C297 410 310 353 350 320Z" fill="url(#lake)" stroke="#8fc2c9" stroke-width="5"/>
+
+<!-- lake islands -->
+<ellipse cx="925" cy="575" rx="95" ry="44" fill="#d3e5cf" stroke="#95b69b" stroke-width="3"/>
+<circle cx="895" cy="568" r="11" fill="#6e8f83"/><circle cx="925" cy="554" r="11" fill="#6e8f83"/><circle cx="958" cy="575" r="11" fill="#6e8f83"/>
+
+<!-- stylized causeways -->
+<path d="M610 328 C665 400 684 489 688 575 C690 656 674 708 647 768" fill="none" stroke="#dde6c6" stroke-width="30" stroke-linecap="round"/>
+<path d="M610 328 C665 400 684 489 688 575 C690 656 674 708 647 768" fill="none" stroke="#9fbf8d" stroke-width="4" stroke-dasharray="7 11"/>
+<path d="M440 326 C565 304 690 302 850 322 C980 337 1112 347 1258 370" fill="none" stroke="#e6e7cf" stroke-width="26" stroke-linecap="round"/>
+
+<!-- routes -->
+<path d="M1290 355 C1175 337 1035 337 858 321 C705 308 560 304 442 327" class="route" stroke="#d45445" stroke-dasharray="15 13" marker-end="url(#arrowRed)"/>
+<path d="M365 747 C455 743 560 726 646 766 C680 707 695 635 691 565 C686 477 666 400 610 329 C650 323 705 320 758 323" class="route" stroke="#e7902f" stroke-dasharray="15 13" marker-end="url(#arrowOrange)"/>
+<path d="M1290 510 C1178 506 1065 534 989 566 C944 587 918 603 902 614 C938 644 1016 651 1096 629 C1189 604 1265 565 1312 528" class="route" stroke="#3b78bb" stroke-dasharray="13 12" marker-end="url(#arrowBlue)"/>
+<path d="M515 622 C450 620 402 646 371 676 C343 703 326 724 317 744" class="route" stroke="#7750a8" stroke-dasharray="11 12" marker-end="url(#arrowPurple)"/>
+
+<!-- pins -->
+<g>
+  <circle cx="1290" cy="355" r="13" class="pin"/><circle cx="1150" cy="340" r="13" class="pin"/><circle cx="975" cy="330" r="13" class="pin"/>
+  <circle cx="805" cy="318" r="13" class="pin"/><circle cx="610" cy="327" r="13" class="pin"/><circle cx="442" cy="327" r="13" class="pin"/>
+  <circle cx="365" cy="747" r="13" class="pin"/><circle cx="515" cy="622" r="13" class="pin"/><circle cx="690" cy="565" r="13" class="pin"/>
+  <circle cx="646" cy="766" r="13" class="pin"/><circle cx="790" cy="801" r="13" class="pin"/><circle cx="902" cy="614" r="13" class="pin"/>
+  <circle cx="370" cy="676" r="13" class="pin"/><circle cx="317" cy="744" r="13" class="pin"/>
+</g>
+
+<!-- landmark icons -->
+<g transform="translate(636 708)">
+  <path d="M0 45 H70 L59 34 H11Z" fill="#7b4b2d"/><path d="M11 34 H59 L52 22 H18Z" fill="#a66135"/><path d="M21 22 H49 L44 11 H26Z" fill="#c0783f"/><rect x="31" y="0" width="8" height="11" fill="#704127"/>
+</g>
+<g transform="translate(778 748)">
+  <path d="M0 42 H66 L57 31 H9Z" fill="#7d5135"/><path d="M11 31 H55 L49 20 H17Z" fill="#a56c42"/><rect x="29" y="8" width="8" height="12" fill="#74452d"/>
+</g>
+
+<!-- labels -->
+<text x="1280" y="320" class="cn label">湖滨 in77</text>
+<text x="1192" y="405" class="cn label">断桥残雪</text>
+<text x="1088" y="300" class="cn label">白堤</text>
+<text x="920" y="284" class="cn label">平湖秋月</text>
+<text x="765" y="274" class="cn label">孤山</text>
+<text x="382" y="285" class="cn label">曲院风荷</text>
+
+<text x="608" y="510" class="cn label" transform="rotate(76 608 510)">苏堤春晓</text>
+<text x="898" y="665" class="cn label">三潭印月</text>
+
+<text x="460" y="600" class="cn label">花港观鱼</text>
+<text x="284" y="650" class="cn label">浴鹄湾</text>
+<text x="242" y="725" class="cn label">乌龟潭</text>
+<text x="245" y="800" class="cn label">太子湾公园</text>
+<text x="612" y="832" class="cn label">雷峰塔</text>
+<text x="775" y="856" class="cn label">净慈寺</text>
+<text x="1035" y="820" class="cn label">柳浪闻莺</text>
+
+<!-- lake title -->
+<text x="1005" y="715" class="serif" font-size="66" font-weight="800" fill="#397e91" opacity=".75">西湖</text>
+
+<!-- legend -->
+<g transform="translate(1110 650)" filter="url(#shadow)">
+  <rect x="0" y="0" width="390" height="286" rx="28" fill="#fffdf8" opacity=".96" stroke="#d7ded6"/>
+  <text x="28" y="40" class="serif" font-size="28" font-weight="800" fill="#1f3f4d">路线图例</text>
+  <line x1="30" y1="76" x2="94" y2="76" stroke="#d45445" stroke-width="8" stroke-dasharray="13 9"/><text x="112" y="84" class="cn" font-size="21" font-weight="700" fill="#823b33">经典北线</text>
+  <text x="112" y="108" class="cn" font-size="16" fill="#657277">断桥 → 白堤 → 平湖秋月 → 孤山 → 曲院风荷</text>
+  <line x1="30" y1="138" x2="94" y2="138" stroke="#e7902f" stroke-width="8" stroke-dasharray="13 9"/><text x="112" y="146" class="cn" font-size="21" font-weight="700" fill="#9a611c">舒服南线</text>
+  <text x="112" y="170" class="cn" font-size="16" fill="#657277">太子湾 → 花港观鱼 → 苏堤 → 雷峰塔 → 净慈寺</text>
+  <line x1="30" y1="200" x2="94" y2="200" stroke="#3b78bb" stroke-width="8" stroke-dasharray="13 9"/><text x="112" y="208" class="cn" font-size="21" font-weight="700" fill="#355d86">游船玩法</text>
+  <text x="112" y="232" class="cn" font-size="16" fill="#657277">湖边上船 → 三潭印月 → 湖上看苏堤 / 雷峰塔</text>
+  <line x1="30" y1="262" x2="94" y2="262" stroke="#7750a8" stroke-width="8" stroke-dasharray="11 9"/><text x="112" y="270" class="cn" font-size="21" font-weight="700" fill="#5f477a">小众安静线</text>
+  <text x="112" y="294" class="cn" font-size="16" fill="#657277">花港观鱼 → 浴鹄湾 → 乌龟潭</text>
+</g>
+
+<text x="78" y="933" class="serif" font-size="30" fill="#264c59">西湖四时皆美，总有一条路线适合此刻的你</text>
+<text x="80" y="970" class="cn" font-size="17" letter-spacing="3" fill="#72827e">JnQ Journey · TRAVEL MORE · LIVE BETTER</text>
+</svg>
