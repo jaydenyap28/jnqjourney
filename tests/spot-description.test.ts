@@ -17,7 +17,9 @@ function load(file: string): any {
   const context = { exports: {}, URL, require: (name: string) => {
     if (!name.startsWith('.') && !name.startsWith('@/')) return require(name)
     const base = name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(filename), name)
-    const candidate = ['.ts', '.tsx', '.js', '.jsx'].map((ext) => base + ext).find((entry) => fs.existsSync(entry))
+    const candidate = fs.existsSync(base)
+      ? base
+      : ['.ts', '.tsx', '.js', '.jsx'].map((ext) => base + ext).find((entry) => fs.existsSync(entry))
     if (!candidate) throw new Error(`Unable to resolve ${name} from ${filename}`)
     return load(candidate)
   } }
