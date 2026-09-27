@@ -58,7 +58,7 @@ export function spotDescriptionExcerpt(value?: string | null): string {
     .replace(/^ {0,3}#{1,6}[\t ]+/gm, '')
     .replace(/[\t ]+#+[\t ]*$/gm, '')
     .replace(/^ {0,3}>[\t ]?/gm, '')
-    .replace(/![([^\]\n]*)\]\((?:\S+?)(?:[\t ]+"([^"\n]*)")?\)/g, '$1 $2')
+    .replace(/!\[([^\]\n]*)\]\((?:\S+?)(?:[\t ]+"([^"\n]*)")?\)/g, '$1 $2')
     .replace(/`([^`\n]+)`/g, '$1')
     .replace(/\[([^\]\n]+)\]\([^\s)]+\)/g, '$1')
     .replace(/\*\*([^*\n]+)\*\*/g, '$1')
