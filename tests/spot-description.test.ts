@@ -17,7 +17,9 @@ function load(file: string): any {
   const context = { exports: {}, URL, require: (name: string) => {
     if (!name.startsWith('.') && !name.startsWith('@/')) return require(name)
     const base = name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(filename), name)
-    return load(['.ts', '.tsx'].map((ext) => base + ext).find((candidate) => fs.existsSync(candidate))!)
+    const candidate = [base, ...['.ts', '.tsx'].map((ext) => base + ext)].find((file) => fs.existsSync(file))
+    if (!candidate) throw new Error(`Cannot resolve ${name} from ${filename}`)
+    return load(candidate)
   } }
   vm.runInNewContext(compiled, context)
   return context.exports
@@ -106,4 +108,11 @@ test('unsafe image URLs stay inert and description excerpts omit image URLs', ()
   assert.doesNotMatch(html, /<figure|<img/)
   const spot = { name: 'Spot', description: '## 看点\n![拙政园景点图](https://cdn.example.com/garden.webp "中园池水与亭台")' }
   assert.equal(spotSeo(spot, 'zh').description, '看点 拙政园景点图 中园池水与亭台')
+})
+
+test('spot description image uses the shared keyboard-accessible Lightbox trigger', () => {
+  const html = render('## 看点\n![拙政园导览图](/placeholder-image.jpg "园区完整导览图")')
+  assert.match(html, /<button[^>]*type="button"[^>]*aria-label="查看大图：拙政园导览图"/)
+  assert.match(html, /alt="拙政园导览图"/)
+  assert.match(html, /园区完整导览图/)
 })

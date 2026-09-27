@@ -1,5 +1,6 @@
 import InlineMarkdown from './InlineMarkdown'
 import FallbackImage from './FallbackImage'
+import ZoomableImage from './ZoomableImage'
 import { parseSpotDescription, type SpotDescriptionBlock } from '@/lib/spot-description'
 
 const sectionMeta: Record<string, { title: string; eyebrow: string }> = {
@@ -167,7 +168,12 @@ function ContentBlock({ block }: { block: SpotDescriptionBlock }) {
     const alt = block.alt?.trim() || block.caption?.trim() || '景点图片'
     return (
       <figure className="space-y-2 pt-1">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.08]">
+        <ZoomableImage
+          src={block.src}
+          alt={alt}
+          caption={block.caption}
+          className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.08]"
+        >
           <FallbackImage
             src={block.src}
             alt={alt}
@@ -175,7 +181,7 @@ function ContentBlock({ block }: { block: SpotDescriptionBlock }) {
             sizes="(max-width: 768px) 100vw, 820px"
             className="object-cover"
           />
-        </div>
+        </ZoomableImage>
         {block.caption ? (
           <figcaption className="px-1 text-center text-xs leading-5 text-white/45 sm:text-sm">
             <InlineMarkdown>{block.caption}</InlineMarkdown>
