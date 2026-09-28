@@ -34,21 +34,54 @@ const note = (slug = 'a', version = '2026-09-20T00:00:00.000Z') => ({ ...EMPTY_N
 
 function cloudHarness() {
   const objects = new Map()
+  const timestamps = new Map()
   const pointer = '_system/notes-latest.webp'
   let serial = 0, options, blockRead, failRead = false
-  function seed(notes) { const key = `_system/notes/seed-${serial++}.webp`; objects.set(key, JSON.stringify(notes)); objects.set(pointer, key) }
+  function put(key, value, timestamp = Date.now()) {
+    objects.set(key, value)
+    timestamps.set(key, timestamp)
+  }
+  function seed(notes) {
+    const key = `_system/notes/seed-${serial++}.webp`
+    put(key, JSON.stringify(notes))
+    put(pointer, key)
+  }
   seed([note()])
   const bucket = {
     download: async key => {
       if (blockRead) await blockRead
       return { data: !failRead && objects.has(key) ? new Blob([objects.get(key)]) : null }
     },
-    list: async () => ({ data: [] }),
+    list: async (prefix = '', opts = {}) => {
+      const start = prefix ? prefix + '/' : ''
+      const data = [...objects.keys()]
+        .filter(key => key.startsWith(start))
+        .map(key => key.slice(start.length))
+        .filter(name => !name.includes('/') && (!opts.search || name.includes(opts.search)))
+        .map(name => {
+          const key = start + name
+          const stamp = new Date(timestamps.get(key) || Date.now()).toISOString()
+          return { name, created_at: stamp, updated_at: stamp, id: key }
+        })
+      return { data }
+    },
     upload: async (key, bytes, opts) => {
       if (!opts.upsert && objects.has(key)) return { error: { message: 'already exists' } }
-      objects.set(key, bytes); return {}
+      put(key, bytes)
+      return {}
     },
-    remove: async keys => { keys.forEach(key => objects.delete(key)); return {} },
+    move: async (from, to) => {
+      if (!objects.has(from) || objects.has(to)) return { error: { message: 'move failed' } }
+      const value = objects.get(from)
+      const timestamp = timestamps.get(from) || Date.now()
+      objects.delete(from); timestamps.delete(from)
+      put(to, value, timestamp)
+      return {}
+    },
+    remove: async keys => {
+      keys.forEach(key => { objects.delete(key); timestamps.delete(key) })
+      return {}
+    },
   }
   const load = loader({
     'fs/promises': { readFile: async () => JSON.stringify([note('stale-local')]), writeFile: async () => {} },
@@ -61,8 +94,16 @@ function cloudHarness() {
     process: { cwd: () => process.cwd(), env: { NEXT_PUBLIC_SUPABASE_URL: 'https://example.test', SUPABASE_SERVICE_ROLE_KEY: 'test-only' } },
     fetch: async (url, init) => ({ url, init }),
   })
-  return { store: load('lib/server/notes-store.ts'), route: load('app/api/admin/notes/route.ts'), seed, objects,
-    fail: () => { failRead = true }, block: promise => { blockRead = promise }, options: () => options }
+  return {
+    store: load('lib/server/notes-store.ts'),
+    route: load('app/api/admin/notes/route.ts'),
+    seed,
+    objects,
+    staleLock: (ageMs = 180000) => put('_system/notes-write-lock.webp', 'stale-lock', Date.now() - ageMs),
+    fail: () => { failRead = true },
+    block: promise => { blockRead = promise },
+    options: () => options,
+  }
 }
 
 test('admin bypasses warmed memory; saves merge fresh unrelated Notes and generate server versions', async () => {
@@ -115,6 +156,18 @@ test('shared storage lock prevents concurrent whole-document lost updates and re
   assert.equal(h.objects.has('_system/notes-write-lock.webp'), false)
   await assert.rejects(h.store.mutateAuthoritativeNotes(() => { throw new Error('conflict') }), /conflict/)
   assert.equal(h.objects.has('_system/notes-write-lock.webp'), false)
+})
+
+test('stale storage lock is recovered after the route lifetime while fresh locks remain protected', async () => {
+  const h = cloudHarness()
+  h.staleLock(3 * 60 * 1000)
+  const saved = await h.store.mutateAuthoritativeNotes(notes => notes)
+  assert.equal(saved.length, 1)
+  assert.equal(h.objects.has('_system/notes-write-lock.webp'), false)
+
+  h.staleLock(30 * 1000)
+  await assert.rejects(h.store.mutateAuthoritativeNotes(notes => notes), /busy/)
+  assert.equal(h.objects.has('_system/notes-write-lock.webp'), true)
 })
 
 test('slug collisions, deleted notes, and aliases cannot overwrite another cloud copy', () => {

@@ -225,21 +225,64 @@ export async function readAuthoritativeNotes(): Promise<LongformNote[]> {
   return sortNotes(parsed.map(normalizeNotePayload))
 }
 
-// Atomic create serializes read/merge/write across servers. Never steal a lock:
-// a paused writer must not be allowed to overwrite another writer's changes.
+const NOTES_WRITE_LOCK_PATH = '_system/notes-write-lock.webp'
+// Vercel caps this route at 60 seconds, so a lock older than two minutes cannot
+// belong to a live save request. Recovering only after that grace period keeps
+// concurrent writers serialized while preventing a crashed invocation from
+// blocking all future Note saves indefinitely.
+const NOTES_WRITE_LOCK_STALE_MS = 2 * 60 * 1000
+
+async function acquireNotesWriteLock(bucket: any) {
+  const token = crypto.randomUUID()
+  const payload = Buffer.from(JSON.stringify({ token, createdAt: new Date().toISOString() }))
+
+  const attempt = () => bucket.upload(NOTES_WRITE_LOCK_PATH, payload, {
+    upsert: false,
+    contentType: 'image/webp',
+    cacheControl: '0',
+  })
+
+  let { error } = await attempt()
+  if (!error) return
+
+  const { data: lockFiles, error: listError } = await bucket.list('_system', {
+    limit: 20,
+    search: 'notes-write-lock.webp',
+  })
+  const lock = Array.isArray(lockFiles)
+    ? lockFiles.find((item: any) => item?.name === 'notes-write-lock.webp')
+    : null
+  const lockTimestamp = Date.parse(String(lock?.updated_at || lock?.created_at || ''))
+  const isStale = Number.isFinite(lockTimestamp) && Date.now() - lockTimestamp > NOTES_WRITE_LOCK_STALE_MS
+
+  if (listError || !isStale) {
+    throw new Error('Notes cloud save is busy or unavailable. Please retry.')
+  }
+
+  // Move is used instead of delete so two servers cannot both "win" stale-lock
+  // recovery. Only one request can move the existing object; everyone then
+  // competes normally for a fresh create-only lock.
+  const stalePath = `_system/stale-note-locks/${Date.now()}-${token}.webp`
+  const { error: moveError } = await bucket.move(NOTES_WRITE_LOCK_PATH, stalePath)
+  if (!moveError) {
+    await bucket.remove([stalePath])
+  }
+
+  ;({ error } = await attempt())
+  if (error) throw new Error('Notes cloud save is busy or unavailable. Please retry.')
+}
+
+// Atomic create serializes read/merge/write across servers. An active lock is
+// never stolen; only a lock older than the route's maximum lifetime is recovered.
 export async function mutateAuthoritativeNotes(mutate: (notes: LongformNote[]) => LongformNote[]) {
   const supabase = getAdminSupabaseClient()
   if (!supabase) throw new Error('Notes cloud storage is not configured.')
   const bucket = supabase.storage.from(STORAGE_BUCKET)
-  const lockPath = '_system/notes-write-lock.webp'
-  const { error } = await bucket.upload(lockPath, Buffer.from(crypto.randomUUID()), {
-    upsert: false, contentType: 'image/webp', cacheControl: '0',
-  })
-  if (error) throw new Error('Notes cloud save is busy or unavailable. Please retry.')
+  await acquireNotesWriteLock(bucket)
   try {
     return await saveNotes(mutate(await readAuthoritativeNotes()))
   } finally {
-    await bucket.remove([lockPath])
+    await bucket.remove([NOTES_WRITE_LOCK_PATH])
   }
 }
 
