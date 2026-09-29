@@ -63,7 +63,7 @@ export async function GET(request: Request) {
   }
   const selectedPackage = id > 0 ? packagesResult.data?.[0] || null : null
   let options: unknown[] = []
-  if (selectedPackage && isTiomanMainPackageSlug(selectedPackage.slug)) {
+  if (selectedPackage && (isTiomanMainPackageSlug(selectedPackage.slug) || selectedPackage.slug === 'batam-3d2n')) {
     const { data, error: comparisonError } = await supabase
       .from('travel_package_options')
       .select('*')
@@ -146,6 +146,8 @@ export async function POST(request: Request) {
   if (status === 'published' || body.action === 'validate') {
     const missing: string[] = []
     const isTiomanMainPackage = isTiomanMainPackageSlug(payload.slug)
+    const isBatamMainPackage = payload.slug === 'batam-3d2n'
+    const isOptionBasedPackage = isTiomanMainPackage || isBatamMainPackage
     let validRegion = false
     if (payload.region_id) {
       const { data: region } = await supabase.from('regions').select('name,name_cn,country').eq('id', payload.region_id).maybeSingle()
@@ -158,26 +160,29 @@ export async function POST(request: Request) {
     if (!validRegion) missing.push('正确地区')
     if (!payload.title_zh) missing.push('标题')
     if (!payload.short_description) missing.push('简短介绍')
-    if (!isTiomanMainPackage && !payload.included_items.length) missing.push('配套包含')
-    if (!isTiomanMainPackage && !payload.excluded_items.length) missing.push('不包含项目')
+    if (!isOptionBasedPackage && !payload.included_items.length) missing.push('配套包含')
+    if (!isOptionBasedPackage && !payload.excluded_items.length) missing.push('不包含项目')
     if (!payload.whatsapp_message || !payload.source_code) missing.push('WhatsApp CTA')
     if (!payload.cover_image) missing.push('封面图')
-    if (!isTiomanMainPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
-    if (!payload.itinerary_days.length) missing.push('行程概览')
-    if (isTiomanMainPackage) {
+    if (!isOptionBasedPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
+    if (!isOptionBasedPackage && !payload.itinerary_days.length) missing.push('行程概览')
+    if (isOptionBasedPackage) {
       if (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人')) missing.push('主配套最低每人价格')
       if (!payload.price_note?.includes('最终') || !payload.price_note.includes('确认')) missing.push('最终确认说明')
       const { data: activeOptions, error: optionsError } = await supabase
         .from('travel_package_options')
-        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,slug')
+        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,itinerary_days,slug')
         .eq('package_id', id || 0)
         .eq('status', 'active')
       if (optionsError) return NextResponse.json({ error: optionsError.message }, { status: 500 })
       if (!(activeOptions || []).length) missing.push('至少一个 active option')
       for (const option of activeOptions || []) {
         // Final-confirmation language is rendered consistently on the public detail page.
-        // Do not reject an otherwise complete option because a supplier uses different wording.
-        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.length || !option.gallery?.[0]?.url) missing.push(`完整 option：${option.name_zh || option.slug}`)
+        // Batam intentionally does not expose supplier brochures; Tioman still requires a public resort poster.
+        const missingPublicFields = !option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.length
+        const missingTiomanPoster = isTiomanMainPackage && !option.gallery?.[0]?.url
+        if (missingPublicFields || missingTiomanPoster) missing.push(`完整 option：${option.name_zh || option.slug}`)
+        if (isBatamMainPackage && !option.itinerary_days?.length) missing.push(`Batam option 行程：${option.name_zh || option.slug}`)
         if (option.slug === 'the-barat-tioman' && option.price_unit !== 'room') missing.push('The Barat 每房价格单位')
         if (option.slug === 'aman-tioman' && !option.notes?.some((note: string) => note.includes('年龄区间'))) missing.push('Aman 儿童年龄区间提醒')
       }
