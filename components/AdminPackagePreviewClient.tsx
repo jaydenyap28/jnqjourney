@@ -6,6 +6,7 @@ import { Loader2 } from 'lucide-react'
 import SiteFooter from '@/components/SiteFooter'
 import TravelPackageDetail from '@/components/TravelPackageDetail'
 import TiomanPackageDetail from '@/components/TiomanPackageDetail'
+import BatamPackageDetail from '@/components/BatamPackageDetail'
 import { adminFetch } from '@/lib/admin-fetch'
 import type { TravelPackage, TravelPackageOption } from '@/lib/server/travel-packages'
 
@@ -49,5 +50,5 @@ export default function AdminPackagePreviewClient({ packageId }: { packageId: nu
   if (error) return <main className="flex min-h-[70vh] items-center justify-center bg-[#050816] px-5 text-white"><div className="max-w-md rounded-lg border border-rose-300/20 bg-rose-300/10 p-5 text-sm text-rose-50">{error}</div></main>
   if (!item) return <main className="flex min-h-[70vh] items-center justify-center bg-[#050816] text-white"><Loader2 className="h-6 w-6 animate-spin" /><span className="ml-3 text-sm text-white/60">载入草稿预览</span></main>
 
-  return <>{item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} preview /> : <TravelPackageDetail item={item} preview publishCheckMessage={checkMessage} onPublishCheck={() => void runPublishCheck()} />}<SiteFooter /></>
+  return <>{item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} preview /> : item.slug === 'batam-3d2n' ? <BatamPackageDetail item={item} options={options} preview /> : <TravelPackageDetail item={item} preview publishCheckMessage={checkMessage} onPublishCheck={() => void runPublishCheck()} />}<SiteFooter /></>
 }

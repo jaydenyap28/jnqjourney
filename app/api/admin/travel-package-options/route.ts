@@ -22,6 +22,14 @@ function priceRows(value: unknown) {
   if (!Array.isArray(value)) return []
   return value.map((entry) => ({ label: text((entry as any)?.label, 300), price: text((entry as any)?.price, 300) })).filter((entry) => entry.label && entry.price).slice(0, 40)
 }
+function itineraryDays(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value.map((entry) => ({
+    title: text((entry as any)?.title, 300),
+    summary: text((entry as any)?.summary, 1200),
+    items: strings((entry as any)?.items, 40),
+  })).filter((entry) => entry.title || entry.summary || entry.items.length).slice(0, 10)
+}
 
 export async function GET(request: Request) {
   const auth = await requireAdminRequest(request)
@@ -31,7 +39,14 @@ export async function GET(request: Request) {
   if (!supabase || !Number.isInteger(packageId) || packageId <= 0) return NextResponse.json({ error: 'Invalid package.' }, { status: 400 })
   const { data, error } = await supabase.from('travel_package_options').select('*').eq('package_id', packageId).order('sort_order')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ options: data || [] })
+  const optionIds = (data || []).map((option) => option.id)
+  const internalResult = optionIds.length
+    ? await supabase.from('travel_package_option_internal').select('option_id,supplier_ref,supplier_package_name,internal_notes').in('option_id', optionIds)
+    : { data: [], error: null }
+  if (internalResult.error) return NextResponse.json({ error: internalResult.error.message }, { status: 500 })
+  const internalById = new Map((internalResult.data || []).map((entry) => [Number(entry.option_id), entry]))
+  const options = (data || []).map((option) => ({ ...option, ...(internalById.get(Number(option.id)) || {}) }))
+  return NextResponse.json({ options })
 }
 
 export async function POST(request: Request) {
@@ -51,7 +66,8 @@ export async function POST(request: Request) {
     name_zh: text(body.name_zh, 240), name_en: text(body.name_en, 240) || null,
     accommodation_name: text(body.accommodation_name, 240), accommodation_type: text(body.accommodation_type, 120) || null,
     village_name: text(body.village_name, 120) || null, short_description: text(body.short_description, 1000) || null,
-    suitable_for: strings(body.suitable_for), price_from: Number.isFinite(Number(body.price_from)) ? Number(body.price_from) : null,
+    highlights: strings(body.highlights), suitable_for: strings(body.suitable_for), itinerary_days: itineraryDays(body.itinerary_days),
+    price_from: Number.isFinite(Number(body.price_from)) ? Number(body.price_from) : null,
     price_currency: text(body.price_currency, 12) || 'MYR', price_unit: priceUnit,
     price_display: text(body.price_display, 240), price_rows: priceRows(body.price_rows),
     included_items: strings(body.included_items), excluded_items: strings(body.excluded_items), notes: strings(body.notes),
@@ -61,6 +77,13 @@ export async function POST(request: Request) {
     sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 0, status,
     updated_at: new Date().toISOString(),
   }
+  const { data: parentPackage, error: parentError } = await supabase.from('travel_packages').select('slug,title_zh').eq('id', packageId).maybeSingle()
+  if (parentError) return NextResponse.json({ error: parentError.message }, { status: 500 })
+  const parentSlug = String(parentPackage?.slug || '')
+  const supplierRef = text(body.supplier_ref, 120) || null
+  const supplierPackageName = text(body.supplier_package_name, 240) || null
+  const internalNotes = strings(body.internal_notes)
+
   const missing = []
   if (!Number.isInteger(packageId) || packageId <= 0) missing.push('package')
   if (!payload.slug || !payload.name_zh || !payload.accommodation_name) missing.push('name')
@@ -70,14 +93,25 @@ export async function POST(request: Request) {
   // The public Tioman detail page always displays the final-confirmation notice.
   // Option notes must be present, but existing supplier wording must not block edits.
   if (!payload.notes.length) missing.push('option notes')
-  if (payload.status === 'active' && !gallery[0]?.url) missing.push('brochure image')
+  if (payload.status === 'active' && parentSlug === 'tioman-3d2n' && !gallery[0]?.url) missing.push('brochure image')
+  if (payload.status === 'active' && parentSlug === 'batam-3d2n' && !payload.itinerary_days.length) missing.push('Batam itinerary')
   if (payload.slug === 'the-barat-tioman' && payload.price_unit !== 'room') missing.push('The Barat room unit')
   if (payload.slug === 'aman-tioman' && !payload.notes.some((note) => note.includes('年龄区间'))) missing.push('Aman child age overlap warning')
   if (missing.length) return NextResponse.json({ error: `Cannot save option: ${missing.join(', ')}` }, { status: 400 })
   const query = Number.isInteger(id) && id > 0 ? supabase.from('travel_package_options').update(payload).eq('id', id).eq('package_id', packageId) : supabase.from('travel_package_options').insert(payload)
   const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ option: data })
+
+  const { error: internalError } = await supabase.from('travel_package_option_internal').upsert({
+    option_id: data.id,
+    supplier_ref: supplierRef,
+    supplier_package_name: supplierPackageName,
+    internal_notes: internalNotes,
+    updated_at: new Date().toISOString(),
+  }, { onConflict: 'option_id' })
+  if (internalError) return NextResponse.json({ error: internalError.message }, { status: 500 })
+
+  return NextResponse.json({ option: { ...data, supplier_ref: supplierRef, supplier_package_name: supplierPackageName, internal_notes: internalNotes } })
 }
 
 export async function DELETE(request: Request) {
