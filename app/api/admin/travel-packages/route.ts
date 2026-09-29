@@ -167,8 +167,9 @@ export async function POST(request: Request) {
     if (!isOptionBasedPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
     if (!isOptionBasedPackage && !payload.itinerary_days.length) missing.push('行程概览')
     if (isOptionBasedPackage) {
-      if (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人')) missing.push('主配套最低每人价格')
-      if (!payload.price_note?.includes('最终') || !payload.price_note.includes('确认')) missing.push('最终确认说明')
+      if (isTiomanMainPackage && (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人'))) missing.push('主配套最低每人价格')
+      if (isBatamMainPackage && !payload.price_display?.includes('RM499')) missing.push('Batam 主配套最低价格')
+      if (!payload.price_note?.includes('确认')) missing.push('最终确认说明')
       const { data: activeOptions, error: optionsError } = await supabase
         .from('travel_package_options')
         .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,itinerary_days,slug')
