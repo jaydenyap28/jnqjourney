@@ -43,49 +43,70 @@ function optionCtaLabel(option: TravelPackageOption) {
   return `查询「${option.name_zh}」`
 }
 
-const OPTION_VISUALS: Record<string, { url: string; label: string; badge: string }> = {
+const OPTION_VISUALS: Record<string, {
+  kind: 'photo' | 'theme'
+  url?: string
+  label: string
+  badge: string
+  photoPlace?: string
+  themeText?: string
+}> = {
   'value-499': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/281-golden-view-hotel4-5d8511f3-d667-4e41-8087-24a9cccc7ad8.webp',
-    label: '经典住宿',
-    badge: '入门推荐',
+    kind: 'photo',
+    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028801259-5f6746a2-895d-4354-beda-68600e136857-4-1-4--wa-d8b999a8-b7f3-465f-9b02-d5bf7b25faca.webp',
+    label: 'JnQ 实拍 · 行程景点',
+    badge: '性价比路线',
+    photoPlace: 'Blue Fire Beach Club',
   },
   'new-classic-599': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028801259-5f6746a2-895d-4354-beda-68600e136857-4-1-4--wa-d8b999a8-b7f3-465f-9b02-d5bf7b25faca.webp',
-    label: '按摩轻享',
+    kind: 'photo',
+    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028811065-0e4d7a22-f636-4d71-ba4e-11480cf2eb36-4-1-1--wa-e180ac4a-029d-420a-a0c3-58977d7dd908.webp',
+    label: 'JnQ 实拍 · 行程景点',
     badge: '含按摩',
+    photoPlace: 'Blue Fire Beach Club',
   },
   'economy-island': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028811525-ec2fdce2-904f-4d2c-8068-3064d3e061fa-4-1-3--wa-ff36f68e-317d-4f62-ab7e-c85700fc3091.webp',
-    label: '海岛慢游',
-    badge: 'Beach Club',
+    kind: 'photo',
+    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/276-1775031040868-eb590ade-2680-4104-9b56-ca9e8001f2a3-4-1-10--w-238db8e2-7f34-4848-b949-174ec6addc5a.webp',
+    label: 'JnQ 实拍 · 行程景点',
+    badge: '海岛慢游',
+    photoPlace: 'Barelang Bridge',
   },
   'goa-cave': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/276-1775031040868-eb590ade-2680-4104-9b56-ca9e8001f2a3-4-1-10--w-238db8e2-7f34-4848-b949-174ec6addc5a.webp',
-    label: '特别体验',
+    kind: 'theme',
+    label: '方案主题 · 非行程实拍',
     badge: '自然探索',
+    themeText: 'Goa Cave · 海洞探秘',
   },
   'ibis-relax-666': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028811065-0e4d7a22-f636-4d71-ba4e-11480cf2eb36-4-1-1--wa-e180ac4a-029d-420a-a0c3-58977d7dd908.webp',
-    label: '放松优先',
+    kind: 'photo',
+    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/276-1775031046155-61512f34-b064-49db-a7db-0efcbdef25d8-4-1-5--wa-23f67a6c-451d-42b0-9bcc-69de46e8315b.webp',
+    label: 'JnQ 实拍 · 行程景点',
     badge: '深度按摩',
+    photoPlace: 'Barelang Bridge',
   },
   'lobster-lunch': {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/275-1775031659061-363e82f0-e24a-4e1d-ac9b-722261a27244-4-1--wate-420bd15c-7b77-4bfa-8316-341a05ee5615.webp',
-    label: '美食体验',
+    kind: 'photo',
+    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/278-1775028812082-70f11ab7-a19a-4fb0-be02-bb2fe1f26f4f-4-1-5--wa-e6855506-db46-42bc-b9fe-1c632d37b675.webp',
+    label: 'JnQ 实拍 · 行程景点',
     badge: '龙虾午餐',
+    photoPlace: 'Blue Fire Beach Club',
   },
   'pirate-afternoon-tea': {
+    kind: 'photo',
     url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/277-1775030198550-318fe90d-4e88-4f51-a8db-2e32a053c4fb-4-1-6--wa-6b446cc1-1c63-4bae-b1e6-961f7eb246e6.webp',
-    label: '团体玩法',
+    label: 'JnQ 实拍 · 行程景点',
     badge: '20人以上',
+    photoPlace: 'Puncak Beliung',
   },
 }
 
 function optionVisual(option: TravelPackageOption) {
   return OPTION_VISUALS[option.slug] || {
-    url: 'https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/276-1775031040868-eb590ade-2680-4104-9b56-ca9e8001f2a3-4-1-10--w-238db8e2-7f34-4848-b949-174ec6addc5a.webp',
-    label: 'Batam 3天2夜',
+    kind: 'theme' as const,
+    label: '方案主题 · 非行程实拍',
     badge: '精选方案',
+    themeText: option.name_zh,
   }
 }
 
@@ -218,7 +239,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
 
         <section>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p></div>
+            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">图片标注「JnQ 实拍 · 行程景点」时，只代表该方案包含的相关景点，并不表示我们亲自参加过这个具体配套；没有准确对应实拍的方案会使用主题视觉。</p></div>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {activeOptions.map((option) => {
@@ -227,9 +248,23 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
               return (
                 <article key={option.id} className={`group flex flex-col overflow-hidden rounded-[24px] border transition duration-300 ${selected?.id === option.id ? 'border-amber-200/55 bg-amber-200/[0.065] shadow-[0_18px_55px_rgba(251,191,36,0.08)]' : 'border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]'}`}>
                   <button type="button" onClick={() => selectOption(option)} className="relative block aspect-[16/9] overflow-hidden text-left">
-                    <FallbackImage src={visual.url} alt={`${option.name_zh}｜JnQ Journey 巴淡岛实拍`} fill className="object-cover transition duration-500 group-hover:scale-[1.03]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#080d19] via-black/10 to-black/10" />
-                    <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/55 px-3 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-sm">{visual.label}</div>
+                    {visual.kind === 'photo' && visual.url ? (
+                      <>
+                        <FallbackImage src={visual.url} alt={`${visual.photoPlace || 'Batam'}｜JnQ Journey 实拍`} fill className="object-cover transition duration-500 group-hover:scale-[1.03]" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#080d19] via-black/10 to-black/10" />
+                        <div className="absolute left-4 top-4 rounded-full border border-white/20 bg-black/55 px-3 py-1.5 text-[11px] font-medium text-white/85 backdrop-blur-sm">{visual.label}</div>
+                        {visual.photoPlace ? <div className="absolute bottom-4 right-4 max-w-[58%] rounded-full border border-white/15 bg-black/45 px-3 py-1.5 text-right text-[10px] text-white/70 backdrop-blur-sm">{visual.photoPlace}</div> : null}
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.18),transparent_35%),linear-gradient(135deg,#13233a_0%,#0a1322_48%,#07101a_100%)]">
+                        <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/10" />
+                        <div className="absolute right-8 top-8 h-24 w-24 rounded-full border border-amber-200/15" />
+                        <div className="absolute bottom-5 left-5 right-5">
+                          <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-amber-100/60">{visual.label}</p>
+                          <p className="mt-2 max-w-[85%] text-xl font-semibold leading-snug text-white/92">{visual.themeText || option.name_zh}</p>
+                        </div>
+                      </div>
+                    )}
                     <div className="absolute bottom-4 left-4 rounded-full bg-amber-100 px-3 py-1.5 text-[11px] font-semibold text-[#171109]">{option.featured ? '性价比推荐' : visual.badge}</div>
                   </button>
 
