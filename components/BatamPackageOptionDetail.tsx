@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect } from 'react'
-import { Check, ChevronRight, Coffee, Hotel, Users, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Check, ChevronRight, Coffee, Hotel, Maximize2, Users, X } from 'lucide-react'
 
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { getDeviceType, trackEvent } from '@/lib/analytics'
@@ -20,6 +20,8 @@ const THEMES: Record<string, { eyebrow: string; title: string; subtitle: string;
 
 export default function BatamPackageOptionDetail({ item, option }: { item: TravelPackage; option: TravelPackageOption }) {
   const theme = THEMES[option.slug] || { eyebrow: 'BATAM PACKAGE', title: option.name_zh, subtitle: option.short_description || '', badge: '精选方案' }
+  const brochure = option.brochure_image?.url ? option.brochure_image : null
+  const [brochureOpen, setBrochureOpen] = useState(false)
 
   useEffect(() => {
     trackEvent('package_option_view', {
@@ -36,6 +38,29 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
       device_type: getDeviceType(),
     })
   }, [item.id, item.title_zh, option])
+
+  useEffect(() => {
+    if (!brochureOpen) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setBrochureOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [brochureOpen])
+
+  const openBrochure = () => {
+    setBrochureOpen(true)
+    trackEvent('package_brochure_view', {
+      page_path: window.location.pathname,
+      page_type: 'package',
+      package_id: item.id,
+      package_name: item.title_zh,
+      option_id: option.id,
+      option_name: option.name_zh,
+      source_code: option.source_code,
+      device_type: getDeviceType(),
+    })
+  }
 
   const cta = (label: string, position: string) => (
     <WhatsAppButton
@@ -97,6 +122,25 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
 
         {option.price_rows?.length ? <section><h2 className="text-2xl font-semibold">人数与价格</h2><div className="mt-5 overflow-hidden rounded-xl border border-white/10"><div className="grid grid-cols-[1fr_auto] gap-4 bg-white/[0.04] px-4 py-3 text-xs text-white/45"><span>人数 / 条件</span><span>价格</span></div>{option.price_rows.map((row) => <div key={`${row.label}-${row.price}`} className="grid grid-cols-[1fr_auto] gap-4 border-t border-white/10 px-4 py-3 text-sm"><span className="text-white/68">{row.label}</span><strong className="font-medium text-amber-100">{row.price}</strong></div>)}</div></section> : null}
 
+        {brochure ? (
+          <section className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.025]">
+            <div className="grid lg:grid-cols-[minmax(0,0.95fr)_minmax(300px,0.65fr)]">
+              <button type="button" onClick={openBrochure} className="group relative bg-black/25 p-3 text-left md:p-5" aria-label={`放大查看 ${option.name_zh} 配套详情图`}>
+                <img src={brochure.url} alt={brochure.alt || `${option.name_zh} 配套详情图`} className="mx-auto h-auto w-full max-w-[760px] rounded-xl object-contain shadow-[0_18px_70px_rgba(0,0,0,0.34)]" />
+                <span className="absolute right-6 top-6 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-black/65 px-3 py-1.5 text-xs text-white/85 opacity-90 backdrop-blur-sm transition group-hover:bg-black/80"><Maximize2 className="h-3.5 w-3.5" />查看大图</span>
+              </button>
+              <div className="flex flex-col justify-center border-t border-white/10 p-6 lg:border-l lg:border-t-0 lg:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-200/70">JnQ package visual</p>
+                <h2 className="mt-2 text-2xl font-semibold">一张看完这个配套</h2>
+                <p className="mt-4 leading-7 text-white/62">这张是 JnQ Journey 重新整理制作的配套详情图，方便快速查看路线、价格和主要包含项目。</p>
+                <p className="mt-3 text-sm leading-6 text-white/42">它不代表我们亲自参加过这个具体配套。若图片与最新文字资料出现差异，以本页最新内容和查询时的最终确认为准。</p>
+                {brochure.caption ? <p className="mt-4 text-xs text-white/35">{brochure.caption}</p> : null}
+                <button type="button" onClick={openBrochure} className="mt-6 inline-flex min-h-11 w-fit items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-5 text-sm font-medium text-white/80 transition hover:bg-white/[0.08]"><Maximize2 className="h-4 w-4" />放大查看完整配套图</button>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         {option.itinerary_days?.length ? <section><h2 className="text-2xl font-semibold">3天2夜详细行程</h2><div className="mt-6 space-y-4">{option.itinerary_days.map((day, index) => <article key={`${option.id}-day-${index}`} className="grid gap-4 rounded-xl border border-white/10 bg-white/[0.025] p-5 md:grid-cols-[7rem_1fr]"><p className="text-sm font-semibold text-amber-200">Day {index + 1}</p><div><h3 className="text-lg font-semibold">{day.title}</h3>{day.summary ? <p className="mt-2 leading-7 text-white/55">{day.summary}</p> : null}{day.items?.length ? <ul className="mt-4 space-y-2 text-sm leading-6 text-white/68">{day.items.map((entry) => <li key={entry}>· {entry}</li>)}</ul> : null}</div></article>)}</div></section> : null}
 
         <section className="grid gap-8 lg:grid-cols-3">
@@ -111,6 +155,15 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
 
         <div><Link href="/packages/batam-3d2n" className="inline-flex min-h-11 items-center rounded-full border border-white/15 px-5 text-sm text-white/70 transition hover:bg-white/5 hover:text-white">← 返回比较全部 Batam 配套</Link></div>
       </div>
+
+      {brochureOpen && brochure ? (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/92 p-3 md:p-8" role="dialog" aria-modal="true" aria-label={`${option.name_zh} 配套详情图`} onMouseDown={() => setBrochureOpen(false)}>
+          <button type="button" onClick={() => setBrochureOpen(false)} className="absolute right-4 top-4 z-10 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/65 text-white" aria-label="关闭配套详情图"><X className="h-5 w-5" /></button>
+          <div className="max-h-full max-w-5xl overflow-auto" onMouseDown={(event) => event.stopPropagation()}>
+            <img src={brochure.url} alt={brochure.alt || `${option.name_zh} 配套详情图`} className="h-auto w-full object-contain" />
+          </div>
+        </div>
+      ) : null}
     </main>
   )
 }
