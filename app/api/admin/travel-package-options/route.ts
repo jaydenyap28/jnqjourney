@@ -18,6 +18,19 @@ function images(value: unknown) {
   if (!Array.isArray(value)) return []
   return value.map((entry, index) => ({ url: text((entry as any)?.url || entry, 2000), alt: text((entry as any)?.alt, 300), caption: text((entry as any)?.caption, 500), sort_order: Number((entry as any)?.sort_order ?? index) || index })).filter((entry) => entry.url)
 }
+
+function image(value: unknown) {
+  if (!value) return null
+  const entry = typeof value === 'string' ? { url: value } : value as any
+  const url = text(entry?.url, 2000)
+  if (!url) return null
+  return {
+    url,
+    alt: text(entry?.alt, 300),
+    caption: text(entry?.caption, 500),
+    sort_order: Number(entry?.sort_order ?? 0) || 0,
+  }
+}
 function priceRows(value: unknown) {
   if (!Array.isArray(value)) return []
   return value.map((entry) => ({ label: text((entry as any)?.label, 300), price: text((entry as any)?.price, 300) })).filter((entry) => entry.label && entry.price).slice(0, 40)
@@ -60,6 +73,7 @@ export async function POST(request: Request) {
   const priceUnit = ['person', 'room', 'package', 'group'].includes(body.price_unit) ? body.price_unit : ''
   const status = ['active', 'inactive', 'archived'].includes(body.status) ? body.status : 'inactive'
   const gallery = images(body.gallery)
+  const brochureImage = image(body.brochure_image) || gallery[0] || null
   const payload = {
     package_id: packageId,
     slug: text(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''),
@@ -72,7 +86,7 @@ export async function POST(request: Request) {
     price_display: text(body.price_display, 240), price_rows: priceRows(body.price_rows),
     included_items: strings(body.included_items), excluded_items: strings(body.excluded_items), notes: strings(body.notes),
     validity_label: text(body.validity_label, 240) || null, valid_until: text(body.valid_until, 20) || null,
-    brochure_image: gallery[0] || null, gallery, whatsapp_message: text(body.whatsapp_message, 2000) || null,
+    brochure_image: brochureImage, gallery, whatsapp_message: text(body.whatsapp_message, 2000) || null,
     source_code: text(body.source_code, 160) || null, featured: Boolean(body.featured),
     sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 0, status,
     updated_at: new Date().toISOString(),
