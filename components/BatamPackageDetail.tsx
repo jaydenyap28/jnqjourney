@@ -57,7 +57,21 @@ const OPTION_VISUALS: Record<string, {
     themeText: '经典景点 · 轻松入门',
     themeSubtext: '适合先控制预算，再保留主要 Batam 体验',
   },
+  'amazing-promo-499': {
+    kind: 'theme',
+    label: 'VALUE CLASSIC',
+    badge: '性价比路线',
+    themeText: '经典景点 · 轻松入门',
+    themeSubtext: '适合先控制预算，再保留主要 Batam 体验',
+  },
   'new-classic-599': {
+    kind: 'theme',
+    label: 'RELAX & EXPLORE',
+    badge: '含按摩',
+    themeText: '经典路线 · 按摩轻享',
+    themeSubtext: '30分钟按摩搭配景点与 Beach Club',
+  },
+  'new-version-599': {
     kind: 'theme',
     label: 'RELAX & EXPLORE',
     badge: '含按摩',
@@ -192,8 +206,8 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
   ] as const
 
   const quickPicks = [
-    { slug: 'value-499', icon: CircleDollarSign, title: '预算先看', text: 'RM499 起，保留主要经典景点' },
-    { slug: 'new-classic-599', icon: Sparkles, title: '想含按摩', text: '30分钟按摩 + Dino’s Gate' },
+    { slug: 'amazing-promo-499', icon: CircleDollarSign, title: '预算先看', text: 'RM499 起，保留主要经典景点' },
+    { slug: 'new-version-599', icon: Sparkles, title: '想含按摩', text: '30分钟按摩 + Dino’s Gate' },
     { slug: 'economy-island', icon: Ship, title: '想慢一点', text: '双 Beach Club + 下午茶' },
     { slug: 'goa-cave', icon: MapPinned, title: '想玩特别一点', text: 'Goa Cave 海洞乘船体验' },
     { slug: 'ibis-relax-666', icon: Sparkles, title: '想深度放松', text: '90分钟按摩 + 30分钟洗头按摩' },
