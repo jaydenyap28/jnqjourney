@@ -28,6 +28,17 @@ type OptionForm = AdminOption & {
 const toLines = (items?: string[] | null) => (items || []).join('\n')
 const fromLines = (value: string) => value.split(/\r?\n/).map((entry) => entry.trim()).filter(Boolean)
 
+function matchBatamBrochureSlug(fileName: string) {
+  const name = fileName.toLowerCase()
+  if (name.includes('非常优惠')) return 'amazing-promo-499'
+  if (name.includes('新品新版本')) return 'new-version-599'
+  if (name.includes('economy')) return 'economy-island'
+  if (name.includes('goa cave')) return 'goa-cave'
+  if (name.includes('龙虾餐')) return 'lobster-lunch'
+  if (name.includes('海盗船')) return 'pirate-afternoon-tea'
+  return ''
+}
+
 const toForm = (option: AdminOption): OptionForm => ({
   ...option,
   galleryText: JSON.stringify(option.gallery || [], null, 2),
@@ -47,6 +58,7 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [uploadingBrochure, setUploadingBrochure] = useState(false)
+  const [batchUploading, setBatchUploading] = useState(false)
   const isBatam = packageSlug === 'batam-3d2n'
 
   const load = useCallback(async () => {
@@ -145,6 +157,67 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
     }
   }
 
+
+  const batchUploadBatamBrochures = async (files: FileList | null) => {
+    if (!isBatam || !files?.length) return
+    setBatchUploading(true)
+    setMessage('')
+    try {
+      const selectedFiles = Array.from(files)
+      const mapped = selectedFiles.map((file) => ({ file, slug: matchBatamBrochureSlug(file.name) }))
+      const unknown = mapped.filter((entry) => !entry.slug)
+      if (unknown.length) throw new Error(`无法自动识别：${unknown.map((entry) => entry.file.name).join('、')}`)
+
+      const duplicateSlugs = mapped.map((entry) => entry.slug).filter((slug, index, all) => all.indexOf(slug) !== index)
+      if (duplicateSlugs.length) throw new Error('检测到同一配套选择了多张图片，请每个配套只保留一张。')
+
+      let savedCount = 0
+      for (const { file, slug } of mapped) {
+        const option = options.find((entry) => entry.slug === slug)
+        if (!option) throw new Error(`找不到对应配套：${slug}`)
+
+        const data = new FormData()
+        data.append('file', file)
+        data.append('category', 'packages')
+        data.append('country', 'Indonesia')
+        data.append('city', 'Batam')
+        data.append('locationSlug', `${packageSlug}/${slug}`)
+        data.append('field', 'brochure')
+        const uploadResponse = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
+        const uploadPayload = await uploadResponse.json()
+        if (!uploadResponse.ok) throw new Error(uploadPayload.error || `${file.name} 上传失败。`)
+        const url = String(uploadPayload.url || uploadPayload.urls?.[0] || '')
+        if (!url) throw new Error(`${file.name} 上传成功但没有返回图片 URL。`)
+
+        const saveResponse = await adminFetch('/api/admin/travel-package-options', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...option,
+            brochure_image: {
+              url,
+              alt: `${option.name_zh} 配套详情图`,
+              caption: 'JnQ Journey 重新整理配套详情图',
+              sort_order: 0,
+            },
+            gallery: option.gallery || [],
+            internal_notes: option.internal_notes || [],
+          }),
+        })
+        const savePayload = await saveResponse.json()
+        if (!saveResponse.ok) throw new Error(savePayload.error || `${option.name_zh} 保存失败。`)
+        savedCount += 1
+      }
+
+      setMessage(`已自动匹配并保存 ${savedCount} 张 JnQ 配套详情图。`)
+      await load()
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '批量导入配套详情图失败。')
+    } finally {
+      setBatchUploading(false)
+    }
+  }
+
   if (loading) return <div className="mt-8 flex items-center gap-2 text-sm text-white/55"><Loader2 className="h-4 w-4 animate-spin" />读取配套选项</div>
   if (!form) return <div className="mt-8 border border-dashed border-white/15 p-5 text-sm text-white/55">尚未建立配套选项。</div>
 
@@ -154,6 +227,16 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
         <p className="text-xs uppercase text-emerald-200/70">Package options</p>
         <h3 className="mt-2 text-xl font-semibold">{isBatam ? 'Batam 多方案管理' : 'Resort 与房价选项'}</h3>
         <p className="mt-2 text-sm text-white/50">{isBatam ? '公开页面只显示 JnQ 方案名称。Supplier Ref 与供应商原方案名只在后台保存，不会传到公开页面。重新制作的 JnQ 配套详情图可以单独上传，并会显示在该方案自己的详情页。' : 'Paya、Aman 与 The Barat 是同一主配套下的选项，不会出现在主配套列表。'}</p>
+        {isBatam ? (
+          <div className="mt-4">
+            <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/[0.08] px-4 text-sm font-medium text-emerald-50">
+              <ImagePlus className="h-4 w-4" />
+              {batchUploading ? '批量上传中…' : '批量导入 JnQ 配套图'}
+              <input type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" disabled={batchUploading} onChange={(event) => void batchUploadBatamBrochures(event.target.files)} />
+            </label>
+            <p className="mt-2 text-xs leading-5 text-white/35">可一次选择「非常优惠 / 新品新版本 / Economy / Goa Cave / 龙虾餐 / 海盗船」6 张图，系统会按文件名自动对应到各自配套并保存。</p>
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-5 grid gap-2 md:grid-cols-3">{options.map((option) => (
