@@ -10,7 +10,9 @@ import type { TravelPackage, TravelPackageOption } from '@/lib/server/travel-pac
 
 const THEMES: Record<string, { eyebrow: string; title: string; subtitle: string; badge: string }> = {
   'value-499': { eyebrow: 'VALUE CLASSIC', title: '经典景点 · 轻松入门', subtitle: '适合先控制预算，再保留主要 Batam 体验', badge: '性价比路线' },
+  'amazing-promo-499': { eyebrow: 'VALUE CLASSIC', title: '经典景点 · 轻松入门', subtitle: '适合先控制预算，再保留主要 Batam 体验', badge: '性价比路线' },
   'new-classic-599': { eyebrow: 'RELAX & EXPLORE', title: '经典路线 · 按摩轻享', subtitle: '30分钟按摩搭配景点与 Beach Club', badge: '含按摩' },
+  'new-version-599': { eyebrow: 'RELAX & EXPLORE', title: '经典路线 · 按摩轻享', subtitle: '30分钟按摩搭配景点与 Beach Club', badge: '含按摩' },
   'economy-island': { eyebrow: 'ISLAND SLOW TRAVEL', title: '双 Beach Club · 慢节奏', subtitle: '更适合想把海岛时间留得宽松一点', badge: 'Beach Club' },
   'goa-cave': { eyebrow: 'NATURE DISCOVERY', title: 'Goa Cave · 海洞探秘', subtitle: '把特别自然体验放在这趟行程的重点', badge: '自然探索' },
   'ibis-relax-666': { eyebrow: 'DEEP RELAX', title: 'IBIS Styles · 深度放松', subtitle: '90分钟全身按摩 + 30分钟洗头按摩', badge: '深度按摩' },
