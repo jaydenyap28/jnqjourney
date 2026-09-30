@@ -151,3 +151,21 @@ export async function readPublishedPackageOptions(packageId: number) {
   }
   return (data || []) as TravelPackageOption[]
 }
+
+
+export async function readPublishedPackageOption(packageId: number, optionSlug: string) {
+  const supabase = createServerClient()
+  if (!supabase || !Number.isInteger(packageId) || packageId <= 0 || !optionSlug) return null
+  const { data, error } = await supabase
+    .from('travel_package_options')
+    .select(PACKAGE_OPTION_SELECT)
+    .eq('package_id', packageId)
+    .eq('slug', optionSlug)
+    .eq('status', 'active')
+    .maybeSingle()
+  if (error) {
+    if (!error.message.includes('travel_package_options')) console.error('[travel-package-option]', error.message)
+    return null
+  }
+  return data as TravelPackageOption | null
+}
