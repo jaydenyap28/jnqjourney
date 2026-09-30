@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import BatamPackageOptionDetail from '@/components/BatamPackageOptionDetail'
 import PackageViewTracker from '@/components/PackageViewTracker'
@@ -10,10 +10,19 @@ import { readPublishedPackage, readPublishedPackageOption } from '@/lib/server/t
 
 export const revalidate = 3600
 
+const LEGACY_BATAM_OPTION_SLUGS: Record<string, string> = {
+  'value-499': 'amazing-promo-499',
+  'new-classic-599': 'new-version-599',
+}
+
+function resolveOptionSlug(slug: string) {
+  return LEGACY_BATAM_OPTION_SLUGS[slug] || slug
+}
+
 export async function generateMetadata({ params }: { params: { slug: string; optionSlug: string } }): Promise<Metadata> {
   const item = await readPublishedPackage(params.slug)
   if (!item || item.slug !== 'batam-3d2n') notFound()
-  const option = await readPublishedPackageOption(item.id, params.optionSlug)
+  const option = await readPublishedPackageOption(item.id, resolveOptionSlug(params.optionSlug))
   if (!option) notFound()
 
   const title = `${option.name_zh}｜巴淡岛3天2夜配套｜JnQ Journey`
@@ -32,8 +41,10 @@ export async function generateMetadata({ params }: { params: { slug: string; opt
 export default async function BatamOptionPage({ params }: { params: { slug: string; optionSlug: string } }) {
   const item = await readPublishedPackage(params.slug)
   if (!item || item.slug !== 'batam-3d2n') notFound()
-  const option = await readPublishedPackageOption(item.id, params.optionSlug)
+  const resolvedOptionSlug = resolveOptionSlug(params.optionSlug)
+  const option = await readPublishedPackageOption(item.id, resolvedOptionSlug)
   if (!option) notFound()
+  if (resolvedOptionSlug !== params.optionSlug) redirect(`/packages/${item.slug}/${resolvedOptionSlug}`)
 
   const canonicalPath = `/packages/${item.slug}/${option.slug}`
   const jsonLd = [
