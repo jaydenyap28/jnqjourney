@@ -5,7 +5,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
-import { readPublishedPackages } from '@/lib/server/travel-packages'
+import { readPublishedPackageOptions, readPublishedPackages } from '@/lib/server/travel-packages'
 import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
 
 export const revalidate = 3600
@@ -77,7 +77,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes]
+  const packageOptionGroups = await Promise.all(
+    packages
+      .filter((item) => item.slug === 'batam-3d2n')
+      .map(async (item) => {
+        const options = await readPublishedPackageOptions(item.id)
+        return options.map((option) => ({
+          url: absoluteUrl(`/packages/${item.slug}/${option.slug}`),
+          lastModified: validDateOrUndefined(option.updated_at || option.created_at),
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        }))
+      })
+  )
+  const packageOptionRoutes: MetadataRoute.Sitemap = packageOptionGroups.flat()
+
+  const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes, ...packageOptionRoutes]
   const localization=await readLocalizationSnapshot('en')
   const englishRoutes:MetadataRoute.Sitemap=[]
   for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
