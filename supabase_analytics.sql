@@ -18,27 +18,12 @@ CREATE INDEX IF NOT EXISTS idx_page_views_session_id ON public.page_views(sessio
 
 ALTER TABLE IF EXISTS public.page_views ENABLE ROW LEVEL SECURITY;
 
+-- Page views are written and read only through server-side routes using the
+-- Supabase service role. Keep anon/authenticated clients away from raw
+-- analytics rows so bot filtering and production-host validation cannot be
+-- bypassed from the browser.
 DROP POLICY IF EXISTS "Anyone can insert page views" ON public.page_views;
 DROP POLICY IF EXISTS "Authenticated users can read page views" ON public.page_views;
 DROP POLICY IF EXISTS "Authenticated users can manage page views" ON public.page_views;
-
-CREATE POLICY "Anyone can insert page views"
-ON public.page_views
-FOR INSERT
-TO anon, authenticated
-WITH CHECK (true);
-
-CREATE POLICY "Authenticated users can read page views"
-ON public.page_views
-FOR SELECT
-TO authenticated
-USING (true);
-
-CREATE POLICY "Authenticated users can manage page views"
-ON public.page_views
-FOR ALL
-TO authenticated
-USING (true)
-WITH CHECK (true);
 
 COMMIT;
