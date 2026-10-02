@@ -58,6 +58,7 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [uploadingBrochure, setUploadingBrochure] = useState(false)
+  const [uploadingGallery, setUploadingGallery] = useState(false)
   const [batchUploading, setBatchUploading] = useState(false)
   const isBatam = packageSlug === 'batam-3d2n'
 
@@ -157,6 +158,88 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
     }
   }
 
+
+  const parseGalleryText = () => {
+    if (!form) return []
+    const parsed = JSON.parse(form.galleryText || '[]')
+    if (!Array.isArray(parsed)) throw new Error('方案照片资料格式不正确。')
+    return parsed
+      .map((entry, index) => typeof entry === 'string'
+        ? { url: entry, alt: '', caption: '', sort_order: index }
+        : {
+            url: String(entry?.url || ''),
+            alt: String(entry?.alt || ''),
+            caption: String(entry?.caption || ''),
+            sort_order: Number(entry?.sort_order ?? index),
+          })
+      .filter((entry) => entry.url)
+  }
+
+  const setGalleryItems = (items: Array<{ url: string; alt?: string; caption?: string; sort_order?: number }>) => {
+    const normalized = items.map((entry, index) => ({ ...entry, sort_order: index }))
+    set('galleryText', JSON.stringify(normalized, null, 2))
+  }
+
+  const uploadOptionGallery = async (files: FileList | null) => {
+    if (!form || !files?.length) return
+    setUploadingGallery(true)
+    setMessage('')
+    try {
+      const data = new FormData()
+      Array.from(files).forEach((file) => data.append('files', file))
+      data.append('category', 'packages')
+      data.append('country', isBatam ? 'Indonesia' : 'Malaysia')
+      data.append('city', isBatam ? 'Batam' : 'Pulau Tioman')
+      data.append('locationSlug', `${packageSlug}/${form.slug}`)
+      data.append('field', 'gallery')
+      const response = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload.error || '方案照片上传失败。')
+      const urls = Array.isArray(payload.urls) ? payload.urls : payload.url ? [payload.url] : []
+      if (!urls.length) throw new Error('上传成功但没有返回图片 URL。')
+
+      const current = parseGalleryText()
+      const start = current.length
+      setGalleryItems([
+        ...current,
+        ...urls.map((url: string, index: number) => ({
+          url,
+          alt: `${form.name_zh} 照片 ${start + index + 1}`,
+          caption: '',
+          sort_order: start + index,
+        })),
+      ])
+      setMessage(`已上传 ${urls.length} 张方案照片。第一张会作为公开卡片主图；请再按「保存 option」。`)
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '方案照片上传失败。')
+    } finally {
+      setUploadingGallery(false)
+    }
+  }
+
+  const moveGalleryItemToFront = (index: number) => {
+    try {
+      const current = parseGalleryText()
+      if (index <= 0 || index >= current.length) return
+      const next = [...current]
+      const [selected] = next.splice(index, 1)
+      next.unshift(selected)
+      setGalleryItems(next)
+      setMessage('已设为卡片主图。请按「保存 option」完成保存。')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '无法调整方案照片。')
+    }
+  }
+
+  const removeGalleryItem = (index: number) => {
+    try {
+      const current = parseGalleryText()
+      setGalleryItems(current.filter((_, itemIndex) => itemIndex !== index))
+      setMessage('已从方案照片中移除。请按「保存 option」完成保存。')
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : '无法移除方案照片。')
+    }
+  }
 
   const batchUploadBatamBrochures = async (files: FileList | null) => {
     if (!isBatam || !files?.length) return
@@ -292,6 +375,44 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
           ) : <p className="mt-4 text-xs text-white/35">目前这个方案还没有独立详情图。</p>}
         </section>
       ) : null}
+
+      {isBatam ? (
+        <section className="mt-5 rounded-xl border border-sky-200/20 bg-sky-200/[0.035] p-5">
+          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100">方案照片</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">这些是真正属于这个方案的公开照片。第一张会自动成为 Batam 方案卡片主图，其余照片会显示在方案详情页。</p>
+            </div>
+            <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-sky-200/20 bg-sky-200/[0.08] px-4 text-sm font-medium text-sky-50">
+              <ImagePlus className="h-4 w-4" />
+              {uploadingGallery ? '上传中…' : '添加方案照片'}
+              <input type="file" accept="image/png,image/jpeg,image/webp" multiple className="hidden" disabled={uploadingGallery} onChange={(event) => void uploadOptionGallery(event.target.files)} />
+            </label>
+          </div>
+
+          {(() => {
+            let gallery: Array<{ url: string; alt?: string; caption?: string; sort_order?: number }> = []
+            try { gallery = parseGalleryText() } catch {}
+            return gallery.length ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {gallery.map((image, index) => (
+                  <div key={`${image.url}-${index}`} className="overflow-hidden rounded-lg border border-white/10 bg-black/20">
+                    <div className="relative aspect-[16/10] bg-black/30">
+                      <img src={image.url} alt={image.alt || `${form.name_zh} 照片 ${index + 1}`} className="h-full w-full object-cover" />
+                      {index === 0 ? <span className="absolute left-2 top-2 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold text-[#171109]">卡片主图</span> : null}
+                    </div>
+                    <div className="flex flex-wrap gap-2 p-3">
+                      {index > 0 ? <button type="button" onClick={() => moveGalleryItemToFront(index)} className="min-h-8 rounded-lg border border-white/10 px-2.5 text-xs text-white/70">设为主图</button> : null}
+                      <button type="button" onClick={() => removeGalleryItem(index)} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg border border-rose-300/20 px-2.5 text-xs text-rose-200"><Trash2 className="h-3.5 w-3.5" />移除</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="mt-4 text-xs text-white/35">这个方案还没有公开照片。上传后第一张会直接用于方案卡片。</p>
+          })()}
+        </section>
+      ) : null}
+
       {([
         ['highlightsText', '公开亮点，每行一项'],
         ['rowsText', '价格行 JSON'],
@@ -300,7 +421,7 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
         ['excludedText', '不包括项目，每行一项'],
         ['notesText', '公开注意事项，每行一项'],
         ['suitableText', '适合对象，每行一项'],
-        ['galleryText', isBatam ? '其他公开图片 JSON（不要放供应商原海报）' : '海报与图库 JSON'],
+        ['galleryText', isBatam ? '方案照片 JSON（通常无需手改，上方可直接上传）' : '海报与图库 JSON'],
         ['whatsapp_message', 'WhatsApp 预填文字'],
       ] as const).map(([key, label]) => <label key={key} className="mt-4 block"><span className="mb-1 block text-xs text-white/55">{label}</span><textarea value={String(form[key] || '')} onChange={(event) => set(key, event.target.value)} rows={key === 'whatsapp_message' || key === 'itineraryText' ? 7 : 4} className="w-full border border-white/10 bg-black/25 p-3 font-mono text-xs" /></label>)}
 
