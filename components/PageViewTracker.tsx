@@ -2,16 +2,7 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-
-function getSessionId() {
-  if (typeof window === 'undefined') return ''
-  const key = 'jnq_session_id'
-  const existing = window.localStorage.getItem(key)
-  if (existing) return existing
-  const value = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-  window.localStorage.setItem(key, value)
-  return value
-}
+import { getAnalyticsSessionId } from '@/lib/analytics'
 
 function deriveContentMeta(pathname: string) {
   if (pathname.startsWith('/spot/')) {
@@ -36,7 +27,7 @@ export default function PageViewTracker() {
     if (!pathname) return
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return
 
-    const sessionId = getSessionId()
+    const sessionId = getAnalyticsSessionId()
     const query = typeof window !== 'undefined' ? window.location.search.replace(/^\?/, '') : ''
     const trackedPath = query ? `${pathname}?${query}` : pathname
     const dedupeKey = `pageview:${trackedPath}:${new Date().toISOString().slice(0, 16)}`
