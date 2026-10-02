@@ -33,6 +33,17 @@ type AffiliateClickRow = {
   } | null
 }
 
+type AnalyticsEventRow = {
+  event_name?: string | null
+  path?: string | null
+  session_id?: string | null
+  package_id?: number | null
+  option_id?: number | null
+  source_code?: string | null
+  params?: Record<string, unknown> | null
+  occurred_at?: string | null
+}
+
 type RankedBucket = {
   key: string
   label?: string
@@ -179,6 +190,27 @@ async function fetchAffiliateClicks(supabase: ReportSupabaseClient, range: DateR
     if (result.error) return { rows, error: result.error.message, truncated: false }
 
     rows.push(...((result.data || []) as AffiliateClickRow[]))
+    if (!result.data || result.data.length < PAGE_SIZE) return { rows, error: null, truncated: false }
+  }
+
+  return { rows, error: null, truncated: true }
+}
+
+async function fetchAnalyticsEvents(supabase: ReportSupabaseClient, range: DateRange) {
+  const rows: AnalyticsEventRow[] = []
+
+  for (let from = 0; from < MAX_ROWS; from += PAGE_SIZE) {
+    const result = await supabase
+      .from('analytics_events')
+      .select('event_name, path, session_id, package_id, option_id, source_code, params, occurred_at')
+      .gte('occurred_at', range.from.toISOString())
+      .lte('occurred_at', range.to.toISOString())
+      .order('occurred_at', { ascending: false })
+      .range(from, from + PAGE_SIZE - 1)
+
+    if (result.error) return { rows, error: result.error.message, truncated: false }
+
+    rows.push(...((result.data || []) as AnalyticsEventRow[]))
     if (!result.data || result.data.length < PAGE_SIZE) return { rows, error: null, truncated: false }
   }
 
@@ -392,6 +424,84 @@ function summarizeTraffic(rows: PageViewRow[]) {
   }
 }
 
+function buildPackageFunnel(rows: AnalyticsEventRow[]) {
+  const eventCounts = new Map<string, { events: number; visitors: Set<string> }>()
+  const optionBuckets = new Map<string, {
+    key: string
+    packageId: number | null
+    optionId: number | null
+    optionName: string
+    packageName: string
+    views: number
+    brochureViews: number
+    enquiries: number
+    visitors: Set<string>
+  }>()
+
+  for (const row of rows) {
+    const eventName = String(row.event_name || '')
+    if (!eventName) continue
+    if (!eventCounts.has(eventName)) eventCounts.set(eventName, { events: 0, visitors: new Set() })
+    const event = eventCounts.get(eventName)!
+    event.events += 1
+    if (row.session_id) event.visitors.add(String(row.session_id))
+
+    const params = row.params || {}
+    const optionId = Number(row.option_id || 0) || null
+    const packageId = Number(row.package_id || 0) || null
+    const optionName = String(params.option_name || '').trim()
+    const packageName = String(params.package_name || '').trim()
+    if (!optionId && !optionName) continue
+
+    const key = optionId ? String(optionId) : optionName
+    if (!optionBuckets.has(key)) {
+      optionBuckets.set(key, {
+        key,
+        packageId,
+        optionId,
+        optionName: optionName || `Option ${optionId || ''}`.trim(),
+        packageName,
+        views: 0,
+        brochureViews: 0,
+        enquiries: 0,
+        visitors: new Set(),
+      })
+    }
+    const bucket = optionBuckets.get(key)!
+    if (row.session_id) bucket.visitors.add(String(row.session_id))
+    if (eventName === 'package_option_view') bucket.views += 1
+    if (eventName === 'package_brochure_view') bucket.brochureViews += 1
+    if (eventName === 'package_enquiry_start' || eventName === 'package_whatsapp_click') bucket.enquiries += 1
+  }
+
+  const count = (name: string) => {
+    const value = eventCounts.get(name)
+    return { events: value?.events || 0, visitors: value?.visitors.size || 0 }
+  }
+
+  return {
+    packageViews: count('package_view'),
+    optionViews: count('package_option_view'),
+    brochureViews: count('package_brochure_view'),
+    enquiries: count('package_enquiry_start'),
+    whatsappClicks: count('package_whatsapp_click'),
+    topOptions: Array.from(optionBuckets.values())
+      .sort((a, b) => b.enquiries - a.enquiries || b.views - a.views || b.brochureViews - a.brochureViews)
+      .slice(0, 12)
+      .map((item) => ({
+        key: item.key,
+        packageId: item.packageId,
+        optionId: item.optionId,
+        optionName: item.optionName,
+        packageName: item.packageName,
+        views: item.views,
+        brochureViews: item.brochureViews,
+        enquiries: item.enquiries,
+        visitors: item.visitors.size,
+      })),
+  }
+}
+
 function buildComparison(currentRows: PageViewRow[], previousRows: PageViewRow[]) {
   const current = summarizeTraffic(currentRows)
   const previous = summarizeTraffic(previousRows)
@@ -422,10 +532,11 @@ export async function GET(request: Request) {
   }
 
   const previousRange = buildPreviousRange(range)
-  const [pageViewsResult, previousPageViewsResult, affiliateClicksResult] = await Promise.all([
+  const [pageViewsResult, previousPageViewsResult, affiliateClicksResult, analyticsEventsResult] = await Promise.all([
     fetchPageViews(supabase, range),
     fetchPageViews(supabase, previousRange),
     fetchAffiliateClicks(supabase, range),
+    fetchAnalyticsEvents(supabase, range),
   ])
 
   const rawPageViews = pageViewsResult.rows.filter(isReportablePath)
@@ -433,6 +544,7 @@ export async function GET(request: Request) {
   const humanPageViews = rawPageViews.filter((row) => !isLikelyBot(row))
   const previousHumanPageViews = previousPageViewsResult.rows.filter(isReportablePath).filter((row) => !isLikelyBot(row))
   const affiliateClickRows = affiliateClicksResult.error ? [] : affiliateClicksResult.rows
+  const analyticsEventRows = analyticsEventsResult.error ? [] : analyticsEventsResult.rows
   const dailyTraffic = buildDailyTraffic(humanPageViews)
   const latestDay = dailyTraffic[0] || null
   const totalVisitors = new Set(humanPageViews.map((row) => String(row.session_id || '')).filter(Boolean)).size
@@ -465,6 +577,7 @@ export async function GET(request: Request) {
       rowLimit: MAX_ROWS,
       pageViewsTruncated: pageViewsResult.truncated,
       affiliateClicksTruncated: affiliateClicksResult.truncated,
+      analyticsEventsTruncated: analyticsEventsResult.truncated,
       notes: [
         '主指标已过滤常见 bot / preview user-agent，并排除 admin/api 路径。',
         '日期按 Asia/Singapore 统计，不再按 UTC 切天。',
@@ -477,6 +590,9 @@ export async function GET(request: Request) {
     topSpots: buildTopContent(humanPageViews, 'spot'),
     sources,
     topAffiliateClicks: buildTopAffiliateClicks(affiliateClickRows),
+    packageFunnel: buildPackageFunnel(analyticsEventRows),
+    analyticsEventsReady: !analyticsEventsResult.error,
+    analyticsEventsError: analyticsEventsResult.error,
     pageViewsReady: !pageViewsResult.error,
     pageViewsError: pageViewsResult.error,
     affiliateClicksReady: !affiliateClicksResult.error,
