@@ -255,7 +255,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
 
         <section>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">为了避免把 JnQ 去过的景点误解成我们亲自参加过某个具体配套，下面所有方案卡统一使用「主题视觉」，不把其他实拍照片硬套到单一配套。JnQ 的 Batam 实拍会保留在目的地内容与攻略中。</p></div>
+            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">有独立方案照片时，卡片会显示该方案自己的主图；没有照片的方案则继续使用主题视觉，避免把其他行程的照片误套到这个配套。</p></div>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {activeOptions.map((option) => {
@@ -264,15 +264,31 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
               return (
                 <article key={option.id} className={`group flex flex-col overflow-hidden rounded-[24px] border transition duration-300 ${selected?.id === option.id ? 'border-amber-200/55 bg-amber-200/[0.065] shadow-[0_18px_55px_rgba(251,191,36,0.08)]' : 'border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]'}`}>
                   <button type="button" onClick={() => selectOption(option)} className="relative block aspect-[16/9] overflow-hidden text-left">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.18),transparent_34%),radial-gradient(circle_at_82%_72%,rgba(52,211,153,0.10),transparent_32%),linear-gradient(135deg,#13233a_0%,#0a1322_50%,#07101a_100%)]">
-                      <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full border border-white/10" />
-                      <div className="absolute right-8 top-8 h-24 w-24 rounded-full border border-amber-200/15" />
-                      <div className="absolute left-5 top-5 rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/70">{visual.label}</div>
-                      <div className="absolute bottom-5 left-5 right-5">
-                        <p className="max-w-[88%] text-xl font-semibold leading-snug text-white/94">{visual.themeText}</p>
-                        <p className="mt-2 max-w-[90%] text-xs leading-5 text-white/52">{visual.themeSubtext}</p>
+                    {option.gallery?.[0]?.url ? (
+                      <>
+                        <FallbackImage
+                          src={option.gallery[0].url}
+                          alt={option.gallery[0].alt || `${option.name_zh} 方案主图`}
+                          fill
+                          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#07101a]/90 via-[#07101a]/20 to-black/15" />
+                        <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/85 backdrop-blur-sm">{visual.label}</div>
+                        <div className="absolute bottom-5 left-5 right-20">
+                          <p className="text-xl font-semibold leading-snug text-white">{visual.themeText}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.18),transparent_34%),radial-gradient(circle_at_82%_72%,rgba(52,211,153,0.10),transparent_32%),linear-gradient(135deg,#13233a_0%,#0a1322_50%,#07101a_100%)]">
+                        <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full border border-white/10" />
+                        <div className="absolute right-8 top-8 h-24 w-24 rounded-full border border-amber-200/15" />
+                        <div className="absolute left-5 top-5 rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/70">{visual.label}</div>
+                        <div className="absolute bottom-5 left-5 right-5">
+                          <p className="max-w-[88%] text-xl font-semibold leading-snug text-white/94">{visual.themeText}</p>
+                          <p className="mt-2 max-w-[90%] text-xs leading-5 text-white/52">{visual.themeSubtext}</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                     <div className="absolute bottom-4 right-4 rounded-full bg-amber-100 px-3 py-1.5 text-[11px] font-semibold text-[#171109]">{option.featured ? '性价比推荐' : visual.badge}</div>
                   </button>
 
