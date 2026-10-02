@@ -41,19 +41,20 @@ function requestHost(request: Request) {
   return rawHost.split(':')[0].toLowerCase()
 }
 
-function sanitizeParams(value: unknown) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return {}
-  const entries = Object.entries(value as Record<string, unknown>)
-    .slice(0, 40)
-    .flatMap(([key, raw]) => {
-      const safeKey = normalizeText(key, 80)
-      if (!safeKey || raw === undefined) return []
-      if (typeof raw === 'string') return [[safeKey, normalizeText(raw, 500)]]
-      if (typeof raw === 'number' && Number.isFinite(raw)) return [[safeKey, raw]]
-      if (typeof raw === 'boolean' || raw === null) return [[safeKey, raw]]
-      return []
-    })
-  return Object.fromEntries(entries)
+function sanitizeParams(value: unknown): Record<string, string | number | boolean | null> {
+  const output: Record<string, string | number | boolean | null> = {}
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return output
+
+  for (const [key, raw] of Object.entries(value as Record<string, unknown>).slice(0, 40)) {
+    const safeKey = normalizeText(key, 80)
+    if (!safeKey || raw === undefined) continue
+
+    if (typeof raw === 'string') output[safeKey] = normalizeText(raw, 500)
+    else if (typeof raw === 'number' && Number.isFinite(raw)) output[safeKey] = raw
+    else if (typeof raw === 'boolean' || raw === null) output[safeKey] = raw
+  }
+
+  return output
 }
 
 export async function POST(request: Request) {
