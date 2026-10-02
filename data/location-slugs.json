@@ -42,6 +42,7 @@
   "433": "ling-shui-ju-wuzhen-hotel",
   "434": "zao-cha-ke-wuzhen-cuisine",
   "435": "an-du-fang-yao-lu-wuzhen",
+  "436": "xiyuan-temple",
   "437": "han-shan-si-suzhou",
   "438": "hu-qiu-suzhou",
   "439": "qi-li-shan-tang-suzhou",
@@ -171,5 +172,14 @@
   "644": "shi-wu-dong-hangzhou",
   "645": "lao-xi-zi-hangzhou-cuisine",
   "647": "chao-man-jiu-dian-bei-beijing-hotel",
-  "648": "tian-wu-jiu-dian-xi-guangzhou-hotel"
+  "648": "tian-wu-jiu-dian-xi-guangzhou-hotel",
+  "788": "tachuan-village",
+  "794": "jinling-town-yanjili",
+  "795": "qixia-mountain",
+  "797": "zhonghua-gate",
+  "798": "confucius-temple-qinhuai-scenic-area",
+  "800": "yanque-lake-metasequoia-forest",
+  "805": "abu-dessert-shop",
+  "844": "yule-handicraft-workshop",
+  "845": "bishan-bookstore"
 }
