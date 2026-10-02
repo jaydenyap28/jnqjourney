@@ -105,10 +105,11 @@ export async function readLocationSlugMap(): Promise<LocationSlugMap> {
     readLocalLocationSlugMap(),
   ])
 
-  // Keep the local repository map as an SEO-safe override layer. This lets us
-  // repair canonical slugs in code while preserving any admin-managed storage
-  // slugs. A later admin save will persist the merged map back to storage.
-  const mergedMap = storageMap ? { ...storageMap, ...localMap } : localMap
+  // Fill gaps from the repository map, but always let the admin-managed
+  // storage map win when both sources define the same location. This keeps
+  // production edits authoritative while still giving newly added Chinese-only
+  // spots a descriptive fallback instead of /spot/spot-<id>.
+  const mergedMap = storageMap ? { ...localMap, ...storageMap } : localMap
 
   if (storageMap) {
     try {
