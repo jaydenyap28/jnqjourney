@@ -11,8 +11,17 @@ function deriveContentMeta(pathname: string) {
   if (pathname.startsWith('/guide/')) {
     return { contentType: 'guide', contentSlug: pathname.replace('/guide/', '') }
   }
+  if (pathname.startsWith('/notes/')) {
+    return { contentType: 'note', contentSlug: pathname.replace('/notes/', '') }
+  }
+  if (pathname.startsWith('/packages/')) {
+    return { contentType: 'package', contentSlug: pathname.replace('/packages/', '') }
+  }
   if (pathname.startsWith('/region/')) {
     return { contentType: 'region', contentSlug: pathname.replace('/region/', '') }
+  }
+  if (pathname === '/packages') {
+    return { contentType: 'package_index', contentSlug: 'packages' }
   }
   if (pathname === '/') {
     return { contentType: 'home', contentSlug: 'home' }
