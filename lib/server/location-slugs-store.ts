@@ -100,15 +100,23 @@ async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
 }
 
 export async function readLocationSlugMap(): Promise<LocationSlugMap> {
-  const storageMap = await readStorageLocationSlugMap()
+  const [storageMap, localMap] = await Promise.all([
+    readStorageLocationSlugMap(),
+    readLocalLocationSlugMap(),
+  ])
+
+  // Keep the local repository map as an SEO-safe override layer. This lets us
+  // repair canonical slugs in code while preserving any admin-managed storage
+  // slugs. A later admin save will persist the merged map back to storage.
+  const mergedMap = storageMap ? { ...storageMap, ...localMap } : localMap
+
   if (storageMap) {
     try {
-      await writeLocalLocationSlugMap(storageMap)
+      await writeLocalLocationSlugMap(mergedMap)
     } catch {}
-    return storageMap
   }
 
-  return readLocalLocationSlugMap()
+  return mergedMap
 }
 
 export async function readLocationSlugForId(id: number | string) {
