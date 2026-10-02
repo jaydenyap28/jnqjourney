@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Check, ChevronRight, Coffee, Hotel, Maximize2, Users, X } from 'lucide-react'
 
+import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import { getDeviceType, trackEvent } from '@/lib/analytics'
 import type { TravelPackage, TravelPackageOption } from '@/lib/server/travel-packages'
@@ -115,6 +116,28 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
       </section>
 
       <div className="mx-auto max-w-6xl space-y-14 px-5 py-14 md:px-8 md:py-18">
+        {option.gallery?.length ? (
+          <section>
+            <h2 className="text-2xl font-semibold">方案照片</h2>
+            <p className="mt-2 text-sm leading-6 text-white/45">这里显示的是这个方案自己的公开照片，不与其他 Batam 配套混用。</p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {option.gallery.map((image, index) => (
+                <div key={`${image.url}-${index}`} className={`group relative overflow-hidden rounded-xl border border-white/10 bg-black/25 ${index === 0 ? 'sm:col-span-2 lg:col-span-2' : ''}`}>
+                  <div className={index === 0 ? 'relative aspect-[16/9]' : 'relative aspect-[4/3]'}>
+                    <FallbackImage
+                      src={image.url}
+                      alt={image.alt || `${option.name_zh} 照片 ${index + 1}`}
+                      fill
+                      className="object-cover transition duration-500 group-hover:scale-[1.02]"
+                    />
+                  </div>
+                  {image.caption ? <p className="border-t border-white/10 px-4 py-3 text-xs leading-5 text-white/45">{image.caption}</p> : null}
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         {option.highlights?.length ? <section><h2 className="text-2xl font-semibold">这个方案的重点</h2><div className="mt-5 grid gap-3 md:grid-cols-2">{option.highlights.map((entry) => <div key={entry} className="flex gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4"><Check className="mt-1 h-4 w-4 shrink-0 text-emerald-300" /><span className="leading-7 text-white/72">{entry}</span></div>)}</div></section> : null}
 
         <section className="grid gap-4 md:grid-cols-2">
