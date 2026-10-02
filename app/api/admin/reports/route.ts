@@ -471,7 +471,10 @@ function buildPackageFunnel(rows: AnalyticsEventRow[]) {
     if (row.session_id) bucket.visitors.add(String(row.session_id))
     if (eventName === 'package_option_view') bucket.views += 1
     if (eventName === 'package_brochure_view') bucket.brochureViews += 1
-    if (eventName === 'package_enquiry_start' || eventName === 'package_whatsapp_click') bucket.enquiries += 1
+    // WhatsAppButton emits both package_whatsapp_click and package_enquiry_start
+    // for one user action. Use enquiry_start as the single conversion event so
+    // option-level enquiries are not double-counted.
+    if (eventName === 'package_enquiry_start') bucket.enquiries += 1
   }
 
   const count = (name: string) => {
