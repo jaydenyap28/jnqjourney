@@ -45,6 +45,23 @@ interface RankedAffiliateRow {
   clicks: number
 }
 
+interface PackageFunnelMetric {
+  events: number
+  visitors: number
+}
+
+interface PackageOptionFunnelRow {
+  key: string
+  packageId?: number | null
+  optionId?: number | null
+  optionName: string
+  packageName?: string
+  views: number
+  brochureViews: number
+  enquiries: number
+  visitors: number
+}
+
 interface ReportsPayload {
   summary?: {
     pageViews?: number
@@ -80,6 +97,7 @@ interface ReportsPayload {
     rowLimit?: number
     pageViewsTruncated?: boolean
     affiliateClicksTruncated?: boolean
+    analyticsEventsTruncated?: boolean
     notes?: string[]
   }
   dailyTraffic?: DailyTrafficRow[]
@@ -88,6 +106,16 @@ interface ReportsPayload {
   topSpots?: RankedContentRow[]
   sources?: SourceRow[]
   topAffiliateClicks?: RankedAffiliateRow[]
+  packageFunnel?: {
+    packageViews?: PackageFunnelMetric
+    optionViews?: PackageFunnelMetric
+    brochureViews?: PackageFunnelMetric
+    enquiries?: PackageFunnelMetric
+    whatsappClicks?: PackageFunnelMetric
+    topOptions?: PackageOptionFunnelRow[]
+  }
+  analyticsEventsReady?: boolean
+  analyticsEventsError?: string | null
   pageViewsReady?: boolean
   pageViewsError?: string | null
   affiliateClicksReady?: boolean
@@ -180,6 +208,8 @@ export default function AdminReportsPage() {
   const topSpots = payload?.topSpots || []
   const sources = payload?.sources || []
   const topAffiliateClicks = payload?.topAffiliateClicks || []
+  const packageFunnel = payload?.packageFunnel || {}
+  const topPackageOptions = packageFunnel.topOptions || []
   const qualityNotes = payload?.quality?.notes || []
 
   const latestTrafficLabel = useMemo(() => {
@@ -270,6 +300,64 @@ export default function AdminReportsPage() {
           <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-amber-200"><MousePointerClick className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Affiliate Clicks</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : summary.affiliateClicks || 0}</p><p className="mt-2 text-xs text-white/50">当前范围内的联盟点击数</p><p className="mt-2 text-xs text-amber-100/70">原始浏览 {summary.rawPageViews || 0} · bot {summary.botPageViews || 0}</p></CardContent></Card>
           <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-fuchsia-200"><Search className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Tracked Source</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : sourceTrackedRate}</p><p className="mt-2 text-xs text-white/50">有外部/内部来源的浏览占比</p><p className="mt-2 text-xs text-fuchsia-100/70">{latestTrafficLabel}</p></CardContent></Card>
         </div>
+
+        <Card className="border-emerald-200/15 bg-emerald-300/[0.035] text-white">
+          <CardHeader>
+            <CardTitle>旅游配套转化漏斗</CardTitle>
+            <CardDescription className="text-white/50">从主配套浏览 → 单一方案 → 查看配套图 → WhatsApp 查询。第一方事件从本次更新上线后开始累积，不回填旧 GA 数据。</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+              {[
+                ['主配套浏览', packageFunnel.packageViews?.events || 0, packageFunnel.packageViews?.visitors || 0],
+                ['方案详情浏览', packageFunnel.optionViews?.events || 0, packageFunnel.optionViews?.visitors || 0],
+                ['配套图放大', packageFunnel.brochureViews?.events || 0, packageFunnel.brochureViews?.visitors || 0],
+                ['WhatsApp 查询', packageFunnel.enquiries?.events || 0, packageFunnel.enquiries?.visitors || 0],
+                ['WA CTA 点击', packageFunnel.whatsappClicks?.events || 0, packageFunnel.whatsappClicks?.visitors || 0],
+              ].map(([label, events, visitors]) => (
+                <div key={String(label)} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className="text-xs text-white/42">{label}</div>
+                  <div className="mt-2 text-2xl font-semibold">{loading ? '...' : events}</div>
+                  <div className="mt-1 text-xs text-white/40">{visitors} 位访客</div>
+                </div>
+              ))}
+            </div>
+
+            <div>
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="font-semibold">方案表现</p>
+                  <p className="mt-1 text-xs text-white/42">看哪个 Option 被看得多、哪一个真正带来查询。</p>
+                </div>
+                {!payload?.analyticsEventsReady && payload?.analyticsEventsError ? <span className="text-xs text-rose-200">{payload.analyticsEventsError}</span> : null}
+              </div>
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-white/10 hover:bg-transparent">
+                      <TableHead className="text-white/55">方案</TableHead>
+                      <TableHead className="text-white/55">详情浏览</TableHead>
+                      <TableHead className="text-white/55">配套图</TableHead>
+                      <TableHead className="text-white/55">查询</TableHead>
+                      <TableHead className="text-white/55">访客</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {topPackageOptions.length ? topPackageOptions.map((row) => (
+                      <TableRow key={row.key} className="border-white/10">
+                        <TableCell><div className="font-medium text-white">{row.optionName}</div>{row.packageName ? <div className="mt-1 text-xs text-white/40">{row.packageName}</div> : null}</TableCell>
+                        <TableCell className="text-white/72">{row.views}</TableCell>
+                        <TableCell className="text-white/72">{row.brochureViews}</TableCell>
+                        <TableCell className="font-medium text-emerald-200">{row.enquiries}</TableCell>
+                        <TableCell className="text-white/72">{row.visitors}</TableCell>
+                      </TableRow>
+                    )) : <TableRow className="border-white/10"><TableCell colSpan={5} className="h-20 text-center text-white/42">{loading ? '正在读取数据...' : '新漏斗刚上线，等有新的配套访问后这里会开始累积。'}</TableCell></TableRow>}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
           <Card className="border-white/10 bg-white/5 text-white">
