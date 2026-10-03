@@ -9,11 +9,47 @@ import WhatsAppButton from '@/components/WhatsAppButton'
 import { getDeviceType, trackEvent } from '@/lib/analytics'
 import type { TravelPackage, TravelPackageOption } from '@/lib/server/travel-packages'
 
+type MealCounts = {
+  breakfast: number
+  lunch: number
+  dinner: number
+  afternoonTea: number
+}
+
+function countMealKeyword(items: string[], keyword: string) {
+  let total = 0
+  for (const item of items) {
+    const pattern = new RegExp(`(\\d+)\\s*(?:次)?[^+＋·，、,；;]{0,18}${keyword}`, 'g')
+    let matched = false
+    for (const match of item.matchAll(pattern)) {
+      total += Number(match[1] || 0)
+      matched = true
+    }
+    if (!matched && item.includes(keyword)) total += 1
+  }
+  return total
+}
+
+function includedMealCounts(option: TravelPackageOption): MealCounts {
+  const items = option.included_items || []
+  return {
+    breakfast: countMealKeyword(items, '早餐'),
+    lunch: countMealKeyword(items, '午餐'),
+    dinner: countMealKeyword(items, '晚餐'),
+    afternoonTea: countMealKeyword(items, '下午茶'),
+  }
+}
+
 function mealSummary(option: TravelPackageOption) {
-  const mealItems = (option.included_items || []).filter((item) =>
-    item.includes('早餐') || item.includes('午餐') || item.includes('晚餐') || item.includes('下午茶')
-  )
-  return mealItems.length ? mealItems.join(' · ') : '按方案确认'
+  const meals = includedMealCounts(option)
+  const parts = [
+    meals.breakfast ? `${meals.breakfast}早餐` : '',
+    meals.lunch ? `${meals.lunch}午餐` : '',
+    meals.dinner ? `${meals.dinner}晚餐` : '',
+    meals.afternoonTea ? `${meals.afternoonTea}下午茶` : '',
+  ].filter(Boolean)
+  const mainMealTotal = meals.breakfast + meals.lunch + meals.dinner
+  return parts.length ? `${parts.join(' + ')}${mainMealTotal ? `（正餐共${mainMealTotal}餐）` : ''}` : '按方案确认'
 }
 
 function massageSummary(option: TravelPackageOption) {
@@ -36,10 +72,43 @@ function groupSummary(option: TravelPackageOption) {
 }
 
 function selfPaySummary(option: TravelPackageOption) {
-  const entries = (option.excluded_items || [])
+  // Batam 3D2N is treated as 6 main meals in total:
+  // 2 breakfasts + 2 lunches + 2 dinners. Anything not explicitly included
+  // is surfaced here as self-paid so customers can compare the real trip budget.
+  const required = { breakfast: 2, lunch: 2, dinner: 2 }
+  const included = includedMealCounts(option)
+  const missing = {
+    breakfast: Math.max(0, required.breakfast - included.breakfast),
+    lunch: Math.max(0, required.lunch - included.lunch),
+    dinner: Math.max(0, required.dinner - included.dinner),
+  }
+
+  const missingMealParts = [
+    missing.breakfast ? `${missing.breakfast}早餐` : '',
+    missing.lunch ? `${missing.lunch}午餐` : '',
+    missing.dinner ? `${missing.dinner}晚餐` : '',
+  ].filter(Boolean)
+
+  const excluded = option.excluded_items || []
+  const specificMealEntries = excluded
+    .filter((item) => item.includes('早餐') || item.includes('午餐') || item.includes('晚餐'))
+    .filter((item) => !item.includes('未明确'))
+
+  const otherEntries = excluded
     .filter((item) => !item.includes('个人消费') && !item.includes('旺季') && !item.includes('未明确'))
+    .filter((item) => !item.includes('早餐') && !item.includes('午餐') && !item.includes('晚餐'))
     .slice(0, 3)
-  return entries.length ? entries.join(' · ') : '以方案详情为准'
+
+  const sections: string[] = []
+  if (missingMealParts.length) {
+    const detail = specificMealEntries.length ? `（其中：${specificMealEntries.join('、')}）` : ''
+    sections.push(`餐食：${missingMealParts.join(' + ')}需自费${detail}`)
+  } else {
+    sections.push('餐食：6餐已含')
+  }
+
+  if (otherEntries.length) sections.push(`其他：${otherEntries.join(' · ')}`)
+  return sections.join('｜')
 }
 
 function optionCtaLabel(option: TravelPackageOption) {
@@ -205,7 +274,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
     ['餐食', (option: TravelPackageOption) => mealSummary(option)],
     ['按摩', (option: TravelPackageOption) => massageSummary(option)],
     ['特色', (option: TravelPackageOption) => mainExperience(option)],
-    ['主要自费', (option: TravelPackageOption) => selfPaySummary(option)],
+    ['自费餐食 / 其他自费', (option: TravelPackageOption) => selfPaySummary(option)],
   ] as const
 
   const quickPicks = [
