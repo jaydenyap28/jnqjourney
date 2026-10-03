@@ -71,10 +71,10 @@ function groupSummary(option: TravelPackageOption) {
   return labels.length ? labels.join(' / ') : '按人数重新报价'
 }
 
-function selfPaySummary(option: TravelPackageOption) {
-  // Batam 3D2N is treated as 6 main meals in total:
-  // 2 breakfasts + 2 lunches + 2 dinners. Anything not explicitly included
-  // is surfaced here as self-paid so customers can compare the real trip budget.
+function excludedMealSummary(option: TravelPackageOption) {
+  // Batam 3D2N comparison baseline:
+  // 2 breakfasts + 2 lunches + 2 dinners = 6 main meals.
+  // Any meal not explicitly included in the package is treated as self-paid.
   const required = { breakfast: 2, lunch: 2, dinner: 2 }
   const included = includedMealCounts(option)
   const missing = {
@@ -83,32 +83,28 @@ function selfPaySummary(option: TravelPackageOption) {
     dinner: Math.max(0, required.dinner - included.dinner),
   }
 
-  const missingMealParts = [
+  const parts = [
     missing.breakfast ? `${missing.breakfast}早餐` : '',
     missing.lunch ? `${missing.lunch}午餐` : '',
     missing.dinner ? `${missing.dinner}晚餐` : '',
   ].filter(Boolean)
 
-  const excluded = option.excluded_items || []
-  const specificMealEntries = excluded
+  const specificMealEntries = (option.excluded_items || [])
     .filter((item) => item.includes('早餐') || item.includes('午餐') || item.includes('晚餐'))
     .filter((item) => !item.includes('未明确'))
 
-  const otherEntries = excluded
+  if (!parts.length) return '无｜6餐已包含'
+  const detail = specificMealEntries.length ? `｜已注明：${specificMealEntries.join('、')}` : ''
+  return `${parts.join(' + ')}需自费${detail}`
+}
+
+function otherSelfPaySummary(option: TravelPackageOption) {
+  const entries = (option.excluded_items || [])
     .filter((item) => !item.includes('个人消费') && !item.includes('旺季') && !item.includes('未明确'))
     .filter((item) => !item.includes('早餐') && !item.includes('午餐') && !item.includes('晚餐'))
-    .slice(0, 3)
+    .slice(0, 4)
 
-  const sections: string[] = []
-  if (missingMealParts.length) {
-    const detail = specificMealEntries.length ? `（其中：${specificMealEntries.join('、')}）` : ''
-    sections.push(`餐食：${missingMealParts.join(' + ')}需自费${detail}`)
-  } else {
-    sections.push('餐食：6餐已含')
-  }
-
-  if (otherEntries.length) sections.push(`其他：${otherEntries.join(' · ')}`)
-  return sections.join('｜')
+  return entries.length ? entries.join(' · ') : '无明确其他自费｜以方案详情为准'
 }
 
 function optionCtaLabel(option: TravelPackageOption) {
@@ -271,10 +267,11 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
     ['价格', (option: TravelPackageOption) => option.price_display],
     ['人数', (option: TravelPackageOption) => groupSummary(option)],
     ['住宿', (option: TravelPackageOption) => option.accommodation_name],
-    ['餐食', (option: TravelPackageOption) => mealSummary(option)],
+    ['包含餐食', (option: TravelPackageOption) => mealSummary(option)],
+    ['未包含餐食', (option: TravelPackageOption) => excludedMealSummary(option)],
     ['按摩', (option: TravelPackageOption) => massageSummary(option)],
     ['特色', (option: TravelPackageOption) => mainExperience(option)],
-    ['自费餐食 / 其他自费', (option: TravelPackageOption) => selfPaySummary(option)],
+    ['其他自费', (option: TravelPackageOption) => otherSelfPaySummary(option)],
   ] as const
 
   const quickPicks = [
