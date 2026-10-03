@@ -353,7 +353,7 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-100">JnQ 配套详情图</p>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">这里放你重新制作过的单一配套图。它会出现在该方案独立详情页，不会被当成 JnQ 实拍，也不会显示供应商资料。</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">这里放你重新制作过的单一配套图。它会出现在该方案独立详情页；如果这个方案没有另外上传「方案照片」，这张图也会自动作为外面方案卡片的封面。不会被当成 JnQ 实拍，也不会显示供应商资料。</p>
             </div>
             <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg bg-white px-4 text-sm font-semibold text-black">
               <ImagePlus className="h-4 w-4" />
