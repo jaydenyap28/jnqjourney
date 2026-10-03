@@ -154,8 +154,8 @@ const BATAM_ATTRACTION_ROWS = [
     slugs: ['amazing-promo-499'],
   },
   {
-    label: 'Tua Pek Kong Temple',
-    sublabel: '大伯公庙（非水口伯公宫）',
+    label: 'Vihara Budhi Bhakti',
+    sublabel: '大伯公庙',
     slugs: ['new-version-599', 'economy-island', 'lobster-lunch'],
   },
   {
