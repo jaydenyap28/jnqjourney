@@ -474,11 +474,14 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
         <section className="border-y border-white/10 py-10 md:py-14">
           <p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Quick comparison</p>
           <h2 className="mt-2 text-3xl font-semibold">一次看清主要差别</h2>
-          <p className="mt-3 max-w-3xl leading-7 text-white/60">重点看价格以外的差别：人数门槛、酒店、餐食、按摩和主要自费项目。手机建议先看上面的方案卡，再进入单一方案详情。</p>
-          <div className="mt-7 hidden overflow-x-auto border border-white/10 md:block">
-            <table className="min-w-[92rem] border-collapse text-left text-sm">
-              <thead className="bg-white/5"><tr><th className="sticky left-0 z-10 w-32 bg-[#0c1220] p-4 font-medium text-white/50">比较</th>{activeOptions.map((option) => <th key={option.id} className="min-w-48 p-4"><button type="button" onClick={() => selectOption(option)} className="text-left font-semibold hover:text-amber-100">{option.name_zh}</button></th>)}</tr></thead>
-              <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-10 bg-[#070b16] p-4 font-medium text-white/45">{label}</th>{activeOptions.map((option) => <td key={option.id} className="p-4 align-top leading-6 text-white/68">{getValue(option)}</td>)}</tr>)}</tbody>
+          <p className="mt-3 max-w-3xl leading-7 text-white/60">重点看价格以外的差别：人数门槛、酒店、餐食、按摩和主要自费项目。</p>
+          <div className="mt-4 flex items-center gap-2 text-xs text-amber-100/65 md:hidden">
+            <span>←</span><span>左右滑动查看全部 7 个方案</span><span>→</span>
+          </div>
+          <div className="-mx-5 mt-5 overflow-x-auto overscroll-x-contain border-y border-white/10 px-5 pb-2 [-webkit-overflow-scrolling:touch] md:mx-0 md:mt-7 md:border md:px-0 md:pb-0">
+            <table className="min-w-[88rem] border-collapse text-left text-xs sm:text-sm">
+              <thead className="bg-white/5"><tr><th className="sticky left-0 z-20 w-28 min-w-28 bg-[#0c1220] p-3 font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-32 md:min-w-32 md:p-4">比较</th>{activeOptions.map((option) => <th key={option.id} className="min-w-44 p-3 md:min-w-48 md:p-4"><button type="button" onClick={() => selectOption(option)} className="text-left font-semibold leading-5 hover:text-amber-100">{option.name_zh}</button></th>)}</tr></thead>
+              <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-20 bg-[#070b16] p-3 font-medium text-white/55 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:p-4">{label}</th>{activeOptions.map((option) => <td key={option.id} className="p-3 align-top leading-5 text-white/68 md:p-4 md:leading-6">{getValue(option)}</td>)}</tr>)}</tbody>
             </table>
           </div>
         </section>
@@ -487,13 +490,16 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
           <p className="text-xs uppercase tracking-[0.18em] text-sky-200/70">Attraction comparison</p>
           <h2 className="mt-2 text-3xl font-semibold">每个配套会去哪些景点？</h2>
           <p className="mt-3 max-w-4xl leading-7 text-white/60">这里只比较行程有没有安排这个景点 / 行程点。✓ 代表当前方案明确会去，— 代表当前方案没有列出；是否含门票、是否自费，请以上面的「包含 / 其他自费」为准。</p>
-          <div className="mt-7 overflow-x-auto border border-white/10">
-            <table className="min-w-[92rem] border-collapse text-sm">
+          <div className="mt-4 flex items-center gap-2 text-xs text-sky-100/65 md:hidden">
+            <span>←</span><span>左右滑动比较景点</span><span>→</span>
+          </div>
+          <div className="-mx-5 mt-5 overflow-x-auto overscroll-x-contain border-y border-white/10 px-5 pb-2 [-webkit-overflow-scrolling:touch] md:mx-0 md:mt-7 md:border md:px-0 md:pb-0">
+            <table className="min-w-[88rem] border-collapse text-xs sm:text-sm">
               <thead className="bg-white/5">
                 <tr>
-                  <th className="sticky left-0 z-10 w-56 bg-[#0c1220] p-4 text-left font-medium text-white/50">景点 / 行程点</th>
+                  <th className="sticky left-0 z-20 w-44 min-w-44 bg-[#0c1220] p-3 text-left font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-56 md:min-w-56 md:p-4">景点 / 行程点</th>
                   {activeOptions.map((option) => (
-                    <th key={option.id} className="min-w-44 p-4 text-center align-bottom">
+                    <th key={option.id} className="min-w-40 p-3 text-center align-bottom md:min-w-44 md:p-4">
                       <button type="button" onClick={() => selectOption(option)} className="font-semibold text-white/80 transition hover:text-amber-100">{option.name_zh}</button>
                     </th>
                   ))}
@@ -502,7 +508,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
               <tbody>
                 {BATAM_ATTRACTION_ROWS.map((attraction) => (
                   <tr key={attraction.label} className="border-t border-white/10">
-                    <th className="sticky left-0 z-10 bg-[#070b16] p-4 text-left">
+                    <th className="sticky left-0 z-20 bg-[#070b16] p-3 text-left shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:p-4">
                       <div className="font-medium text-white/82">{attraction.label}</div>
                       <div className="mt-1 text-xs font-normal leading-5 text-white/38">{attraction.sublabel}</div>
                     </th>
