@@ -111,6 +111,75 @@ function optionCtaLabel(option: TravelPackageOption) {
   return `查询「${option.name_zh}」`
 }
 
+
+const BATAM_ATTRACTION_ROWS = [
+  {
+    label: "Dino's Gate",
+    sublabel: '恐龙主题乐园 + 彩虹滑梯',
+    slugs: ['amazing-promo-499', 'new-version-599', 'goa-cave'],
+  },
+  {
+    label: 'Miniature House',
+    sublabel: '迷你文化村',
+    slugs: ['new-version-599', 'goa-cave'],
+  },
+  {
+    label: 'Blue Fire Beach Club',
+    sublabel: '粉红色俱乐部',
+    slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'lobster-lunch', 'pirate-afternoon-tea'],
+  },
+  {
+    label: 'Infinity Beach Club',
+    sublabel: '原 De\'Sand / 圣托里尼替代',
+    slugs: ['new-version-599', 'economy-island'],
+  },
+  {
+    label: 'Barelang Bridge',
+    sublabel: '彩虹桥',
+    slugs: ['amazing-promo-499', 'economy-island', 'ibis-relax-666', 'lobster-lunch', 'pirate-afternoon-tea'],
+  },
+  {
+    label: 'Goa Cave',
+    sublabel: '海洞探秘',
+    slugs: ['goa-cave'],
+  },
+  {
+    label: '70 Fahrenheit Koffie',
+    sublabel: '印尼咖啡文化',
+    slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'lobster-lunch', 'pirate-afternoon-tea'],
+  },
+  {
+    label: 'Cai Shen Ye Temple',
+    sublabel: '财神爷庙',
+    slugs: ['amazing-promo-499'],
+  },
+  {
+    label: 'Tua Pek Kong Temple',
+    sublabel: '大伯公庙（非水口伯公宫）',
+    slugs: ['new-version-599', 'economy-island', 'lobster-lunch'],
+  },
+  {
+    label: '郑和清真寺',
+    sublabel: 'Masjid Cheng Ho',
+    slugs: ['economy-island', 'goa-cave', 'lobster-lunch'],
+  },
+  {
+    label: 'Grand Batam Mall',
+    sublabel: '商场',
+    slugs: ['new-version-599', 'economy-island', 'goa-cave'],
+  },
+  {
+    label: 'Puncak Beliung',
+    sublabel: '彩虹滑梯',
+    slugs: ['pirate-afternoon-tea'],
+  },
+  {
+    label: '粉色沙滩',
+    sublabel: 'Ibis Styles 配套行程点',
+    slugs: ['ibis-relax-666'],
+  },
+] as const
+
 const OPTION_VISUALS: Record<string, {
   kind: 'theme'
   label: string
@@ -412,6 +481,47 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
               <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-10 bg-[#070b16] p-4 font-medium text-white/45">{label}</th>{activeOptions.map((option) => <td key={option.id} className="p-4 align-top leading-6 text-white/68">{getValue(option)}</td>)}</tr>)}</tbody>
             </table>
           </div>
+        </section>
+
+        <section className="border-y border-white/10 py-10 md:py-14">
+          <p className="text-xs uppercase tracking-[0.18em] text-sky-200/70">Attraction comparison</p>
+          <h2 className="mt-2 text-3xl font-semibold">每个配套会去哪些景点？</h2>
+          <p className="mt-3 max-w-4xl leading-7 text-white/60">这里只比较行程有没有安排这个景点 / 行程点。✓ 代表当前方案明确会去，— 代表当前方案没有列出；是否含门票、是否自费，请以上面的「包含 / 其他自费」为准。</p>
+          <div className="mt-7 overflow-x-auto border border-white/10">
+            <table className="min-w-[92rem] border-collapse text-sm">
+              <thead className="bg-white/5">
+                <tr>
+                  <th className="sticky left-0 z-10 w-56 bg-[#0c1220] p-4 text-left font-medium text-white/50">景点 / 行程点</th>
+                  {activeOptions.map((option) => (
+                    <th key={option.id} className="min-w-44 p-4 text-center align-bottom">
+                      <button type="button" onClick={() => selectOption(option)} className="font-semibold text-white/80 transition hover:text-amber-100">{option.name_zh}</button>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {BATAM_ATTRACTION_ROWS.map((attraction) => (
+                  <tr key={attraction.label} className="border-t border-white/10">
+                    <th className="sticky left-0 z-10 bg-[#070b16] p-4 text-left">
+                      <div className="font-medium text-white/82">{attraction.label}</div>
+                      <div className="mt-1 text-xs font-normal leading-5 text-white/38">{attraction.sublabel}</div>
+                    </th>
+                    {activeOptions.map((option) => {
+                      const included = attraction.slugs.includes(option.slug as never)
+                      return (
+                        <td key={option.id} className="p-4 text-center">
+                          {included
+                            ? <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-300/12 text-emerald-300" aria-label="行程包含"><Check className="h-4 w-4" /></span>
+                            : <span className="text-white/18" aria-label="行程未列">—</span>}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-xs leading-5 text-white/35">补充：海盗船下午茶属于 Blue Fire Beach Club 内的体验；千层糕与燕窝馆可能按当天安排更换店家，所以不列作固定景点比较。</p>
         </section>
 
         <section className="border border-white/10 bg-white/[0.03] p-6 md:p-8">
