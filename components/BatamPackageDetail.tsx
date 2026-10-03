@@ -255,25 +255,29 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
 
         <section>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">有独立方案照片时，卡片会显示该方案自己的主图；没有照片的方案则继续使用主题视觉，避免把其他行程的照片误套到这个配套。</p></div>
+            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">有独立方案照片时优先使用第一张作为卡片主图；如果没有另外上传方案照片，但已经有 JnQ 配套详情图，就会自动用详情图作为封面。两者都没有时才显示主题视觉。</p></div>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {activeOptions.map((option) => {
               const visual = optionVisual(option)
               const suitable = option.suitable_for?.[0]
+              const galleryCover = option.gallery?.[0]?.url ? option.gallery[0] : null
+              const cardImage = galleryCover || (option.brochure_image?.url ? option.brochure_image : null)
+              const usingBrochureAsCover = !galleryCover && Boolean(option.brochure_image?.url)
               return (
                 <article key={option.id} className={`group flex flex-col overflow-hidden rounded-[24px] border transition duration-300 ${selected?.id === option.id ? 'border-amber-200/55 bg-amber-200/[0.065] shadow-[0_18px_55px_rgba(251,191,36,0.08)]' : 'border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.045]'}`}>
                   <button type="button" onClick={() => selectOption(option)} className="relative block aspect-[16/9] overflow-hidden text-left">
-                    {option.gallery?.[0]?.url ? (
+                    {cardImage ? (
                       <>
                         <FallbackImage
-                          src={option.gallery[0].url}
-                          alt={option.gallery[0].alt || `${option.name_zh} 方案主图`}
+                          src={cardImage.url}
+                          alt={cardImage.alt || `${option.name_zh} 方案主图`}
                           fill
-                          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                          className={`transition duration-500 group-hover:scale-[1.03] ${usingBrochureAsCover ? 'object-cover object-top' : 'object-cover'}`}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#07101a]/90 via-[#07101a]/20 to-black/15" />
-                        <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/35 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/85 backdrop-blur-sm">{visual.label}</div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#07101a]/90 via-[#07101a]/18 to-black/10" />
+                        <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/90 backdrop-blur-sm">{visual.label}</div>
+                        {usingBrochureAsCover ? <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/45 px-2.5 py-1 text-[9px] font-medium text-white/75 backdrop-blur-sm">JnQ 配套图</div> : null}
                         <div className="absolute bottom-5 left-5 right-20">
                           <p className="text-xl font-semibold leading-snug text-white">{visual.themeText}</p>
                         </div>
