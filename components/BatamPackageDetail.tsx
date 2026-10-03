@@ -393,7 +393,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
 
         <section>
           <div className="flex flex-wrap items-end justify-between gap-4">
-            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">有独立方案照片时优先使用第一张作为卡片主图；如果没有另外上传方案照片，但已经有 JnQ 配套详情图，就会自动用详情图作为封面。两者都没有时才显示主题视觉。</p></div>
+            <div><p className="text-xs uppercase tracking-[0.18em] text-emerald-200/70">Package options</p><h2 className="mt-2 text-3xl font-semibold">巴淡岛 3天2夜方案</h2><p className="mt-3 max-w-3xl leading-7 text-white/60">每个方案都统一整理成价格、住宿、餐食、体验、自费项目和适合人数，直接比较会比一张张看海报更容易选。</p><p className="mt-3 max-w-4xl text-xs leading-6 text-white/42">有独立方案照片时优先使用第一张作为卡片主图；如果只有 JnQ 配套详情图，外面的方案卡只截取上方 Header 视觉，不展示完整行程表。完整配套图进入详情页再看。</p></div>
           </div>
           <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {activeOptions.map((option) => {
@@ -411,11 +411,13 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
                           src={cardImage.url}
                           alt={cardImage.alt || `${option.name_zh} 方案主图`}
                           fill
-                          className={`transition duration-500 group-hover:scale-[1.03] ${usingBrochureAsCover ? 'object-cover object-top' : 'object-cover'}`}
+                          className={usingBrochureAsCover
+                            ? 'object-cover object-top origin-top scale-[1.55] transition duration-500 group-hover:scale-[1.6]'
+                            : 'object-cover transition duration-500 group-hover:scale-[1.03]'
+                          }
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#07101a]/90 via-[#07101a]/18 to-black/10" />
                         <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/40 px-3 py-1.5 text-[10px] font-semibold tracking-[0.16em] text-amber-100/90 backdrop-blur-sm">{visual.label}</div>
-                        {usingBrochureAsCover ? <div className="absolute right-4 top-4 rounded-full border border-white/15 bg-black/45 px-2.5 py-1 text-[9px] font-medium text-white/75 backdrop-blur-sm">JnQ 配套图</div> : null}
                         <div className="absolute bottom-5 left-5 right-20">
                           <p className="text-xl font-semibold leading-snug text-white">{visual.themeText}</p>
                         </div>
