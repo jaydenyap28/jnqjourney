@@ -10,7 +10,10 @@ import { getDeviceType, trackEvent } from '@/lib/analytics'
 import type { TravelPackage, TravelPackageOption } from '@/lib/server/travel-packages'
 
 function mealSummary(option: TravelPackageOption) {
-  return option.included_items?.find((item) => item.includes('早餐') || item.includes('午餐') || item.includes('晚餐')) || '按方案确认'
+  const mealItems = (option.included_items || []).filter((item) =>
+    item.includes('早餐') || item.includes('午餐') || item.includes('晚餐') || item.includes('下午茶')
+  )
+  return mealItems.length ? mealItems.join(' · ') : '按方案确认'
 }
 
 function massageSummary(option: TravelPackageOption) {
