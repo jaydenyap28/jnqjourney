@@ -35,6 +35,7 @@ export default function PageViewTracker() {
   useEffect(() => {
     if (!pathname) return
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return
+    if (window.localStorage.getItem('jnq_exclude_analytics') === '1') return
 
     const sessionId = getAnalyticsSessionId()
     const query = typeof window !== 'undefined' ? window.location.search.replace(/^\?/, '') : ''
