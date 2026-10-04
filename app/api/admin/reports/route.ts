@@ -817,6 +817,7 @@ export async function GET(request: Request) {
   const packageFunnel = buildPackageFunnel(analyticsEventRows)
 
   return NextResponse.json({
+    generatedAt: new Date().toISOString(),
     summary: {
       pageViews: humanPageViews.length,
       visitors: totalVisitors,
