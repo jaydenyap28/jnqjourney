@@ -125,8 +125,8 @@ const BATAM_ATTRACTION_ROWS = [
   },
   {
     label: 'Blue Fire Beach Club',
-    sublabel: '粉红色俱乐部',
-    slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'lobster-lunch', 'pirate-afternoon-tea'],
+    sublabel: '粉色沙滩俱乐部',
+    slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'ibis-relax-666', 'lobster-lunch', 'pirate-afternoon-tea'],
   },
   {
     label: 'Infinity Beach Club',
@@ -159,8 +159,8 @@ const BATAM_ATTRACTION_ROWS = [
     slugs: ['new-version-599', 'economy-island', 'lobster-lunch'],
   },
   {
-    label: '郑和清真寺',
-    sublabel: 'Masjid Cheng Ho',
+    label: 'Masjid Cheng Hoo',
+    sublabel: '郑和清真寺',
     slugs: ['economy-island', 'goa-cave', 'lobster-lunch'],
   },
   {
@@ -172,11 +172,6 @@ const BATAM_ATTRACTION_ROWS = [
     label: 'Puncak Beliung',
     sublabel: '彩虹滑梯',
     slugs: ['pirate-afternoon-tea'],
-  },
-  {
-    label: '粉色沙滩',
-    sublabel: 'Ibis Styles 配套行程点',
-    slugs: ['ibis-relax-666'],
   },
 ] as const
 
