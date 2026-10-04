@@ -1,10 +1,12 @@
 'use client'
 
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowRight, Check, ChevronRight, Hotel, Luggage, MapPinned, Plane, Sparkles } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
+import { getDeviceType, trackEvent } from '@/lib/analytics'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 
 function findIncluded(item: TravelPackage, matcher: RegExp) {
@@ -33,6 +35,30 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
     .map((item) => Number((item.price_display || '').replace(/,/g, '').match(/RM\s*([0-9]+)/i)?.[1] || ''))
     .filter((value) => Number.isFinite(value) && value > 0)
     .sort((a, b) => a - b)[0]
+
+  useEffect(() => {
+    trackEvent('package_comparison_view', {
+      page_path: window.location.pathname,
+      page_type: 'package_hub',
+      package_name: '海南旅游配套',
+      option_count: options.length,
+      device_type: getDeviceType(),
+    })
+  }, [options.length])
+
+  const trackOptionSelect = (item: TravelPackage, position: string) => {
+    trackEvent('package_option_select', {
+      page_path: window.location.pathname,
+      page_type: 'package_hub',
+      package_id: item.id,
+      package_name: item.title_zh,
+      option_slug: item.slug,
+      option_duration: item.duration,
+      price_from: item.price_display,
+      position,
+      device_type: getDeviceType(),
+    })
+  }
 
   return (
     <main className="min-h-screen bg-[#050816] pb-20 text-white">
@@ -106,7 +132,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     ) : null}
 
                     <div className="mt-7 flex flex-wrap gap-3">
-                      <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
+                      <Link href={`/packages/${item.slug}`} onClick={() => trackOptionSelect(item, 'hainan_hub_card')} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
                         查看完整行程 <ArrowRight className="h-4 w-4" />
                       </Link>
                       <WhatsAppButton
@@ -181,7 +207,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">查看详情</th>
                     {options.map((item) => (
                       <td key={item.id} className="px-5 py-5">
-                        <Link href={`/packages/${item.slug}`} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100">
+                        <Link href={`/packages/${item.slug}`} onClick={() => trackOptionSelect(item, 'hainan_comparison_table')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100">
                           打开 {item.duration} 配套 <ArrowRight className="h-4 w-4" />
                         </Link>
                       </td>
