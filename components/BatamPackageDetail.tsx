@@ -92,10 +92,18 @@ function excludedMealSummary(option: TravelPackageOption) {
   const specificMealEntries = (option.excluded_items || [])
     .filter((item) => item.includes('早餐') || item.includes('午餐') || item.includes('晚餐'))
     .filter((item) => !item.includes('未明确'))
+    .map((item) =>
+      item
+        .replace(/（自理）/g, '')
+        .replace(/\(自理\)/g, '')
+        .replace(/自理/g, '')
+        .replace(/\s{2,}/g, ' ')
+        .trim()
+    )
 
   if (!parts.length) return '无｜6餐已包含'
   const detail = specificMealEntries.length ? `｜已注明：${specificMealEntries.join('、')}` : ''
-  return `${parts.join(' + ')}需自费${detail}`
+  return `${parts.join(' + ')}${detail}`
 }
 
 function otherSelfPaySummary(option: TravelPackageOption) {
