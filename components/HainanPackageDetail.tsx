@@ -67,6 +67,10 @@ export default function HainanPackageDetail({
     ].filter(Boolean)
   }, [item.duration, item.included_items])
 
+  const itineraryCount = item.itinerary_days?.length || Number.parseInt(item.duration || '', 10) || 0
+  const itineraryLabel = itineraryCount ? `${itineraryCount} 天行程` : '详细行程'
+  const itineraryKicker = item.duration ? `${item.duration} itinerary` : 'itinerary'
+
   const relatedSpots = (item.related_location_ids || [])
     .map((id) => RELATED_SPOTS[String(id)])
     .filter(Boolean)
@@ -162,7 +166,7 @@ export default function HainanPackageDetail({
                 href="#itinerary"
                 className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
               >
-                查看 5 天行程
+                查看 {itineraryLabel}
               </a>
             </div>
           </div>
@@ -297,8 +301,8 @@ export default function HainanPackageDetail({
 
         <section id="itinerary" className="scroll-mt-24">
           <div className="max-w-3xl">
-            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">5D4N itinerary</p>
-            <h2 className="mt-2 text-3xl font-semibold md:text-4xl">5 天行程</h2>
+            <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">{itineraryKicker}</p>
+            <h2 className="mt-2 text-3xl font-semibold md:text-4xl">{itineraryLabel}</h2>
           </div>
 
           <div className="mt-8 space-y-5">
