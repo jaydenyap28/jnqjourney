@@ -17,7 +17,7 @@ type PackageRow = Record<string, any> & { id?: number; slug: string; title_zh: s
 
 const emptyForm: PackageRow = {
   slug: '', title_zh: '', title_en: '', destination: '', region_id: '', duration: '', short_description: '', full_description: '',
-  cover_image: '', gallery: [], video_url: '', highlights: [], suitable_for: [], itinerary_days: [], included_items: [],
+  cover_image: '', hero_image: '', hero_image_mobile: '', hero_image_contains_text: false, gallery: [], video_url: '', highlights: [], suitable_for: [], itinerary_days: [], included_items: [],
   excluded_items: [], notes: [], price_display: '', price_note: '', whatsapp_message: '', source_code: '', status: 'draft',
   featured: false, sort_order: 0, seo_title: '', seo_description: '', canonical_url: '', related_location_ids: [],
   related_guide_slugs: [], related_note_slugs: [], affiliate_link_ids: [],
@@ -50,7 +50,7 @@ export default function AdminPackagesPage() {
   const [form, setForm] = useState<PackageRow>(emptyForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState<'cover' | 'gallery' | ''>('')
+  const [uploading, setUploading] = useState<'cover' | 'hero' | 'hero_mobile' | 'gallery' | ''>('')
   const [message, setMessage] = useState('')
   const [coverUrlDraft, setCoverUrlDraft] = useState('')
   const [itineraryJson, setItineraryJson] = useState('[]')
@@ -123,7 +123,7 @@ export default function AdminPackagesPage() {
     set('gallery', next.map((item, sort_order) => ({ ...item, sort_order })))
   }
 
-  const uploadImages = async (files: FileList | null, target: 'cover' | 'gallery') => {
+  const uploadImages = async (files: FileList | null, target: 'cover' | 'hero' | 'hero_mobile' | 'gallery') => {
     if (!files?.length) return
     setUploading(target)
     setMessage('')
@@ -141,6 +141,8 @@ export default function AdminPackagesPage() {
       if (!response.ok) throw new Error(payload.error || '图片上传失败。')
       const urls = Array.isArray(payload.urls) ? payload.urls : payload.url ? [payload.url] : []
       if (target === 'cover') setCoverImage(urls[0] || '')
+      else if (target === 'hero') set('hero_image', urls[0] || '')
+      else if (target === 'hero_mobile') set('hero_image_mobile', urls[0] || '')
       else {
         const start = form.gallery.length
         set('gallery', [...form.gallery, ...urls.map((url: string, index: number) => ({ url, alt: '', caption: '', sort_order: start + index }))])
@@ -225,6 +227,42 @@ export default function AdminPackagesPage() {
           </div>
 
           {['tioman-3d2n', 'batam-3d2n'].includes(form.slug) && form.id ? <TiomanOptionsEditor packageId={Number(form.id)} packageSlug={form.slug} packageTitle={form.title_zh} /> : null}
+
+          <div className="mt-8 border-t border-white/10 pt-6">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h3 className="text-lg font-semibold">页面 Hero 背景</h3>
+                <p className="mt-2 max-w-3xl text-xs leading-6 text-white/45">这里专门控制配套详情页最上方的大图，不会影响配套卡片封面。建议 Desktop 做 16:9（例如 1920×1080），Mobile 做 4:5（例如 1080×1350）。如果不上传，会继续使用目前的封面图。</p>
+              </div>
+            </div>
+            <div className="mt-4 grid gap-5 md:grid-cols-2">
+              <div className="rounded-xl border border-white/10 bg-black/15 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div><p className="text-sm font-medium text-white/80">Desktop Hero</p><p className="mt-1 text-xs text-white/40">建议 1920×1080 · 16:9</p></div>
+                  <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'hero' ? '上传中' : '上传 Hero'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'hero')} disabled={Boolean(uploading)} /></label>
+                </div>
+                <div className="relative mt-3 aspect-video overflow-hidden rounded-lg border border-white/10 bg-black/25">
+                  {form.hero_image ? <FallbackImage src={form.hero_image} alt="Desktop Hero 预览" fill className="object-cover" /> : <div className="flex h-full items-center justify-center text-xs text-white/30">未设置 · 会使用封面图</div>}
+                </div>
+                <input value={form.hero_image || ''} onChange={(event) => set('hero_image', event.target.value)} placeholder="或输入 Desktop Hero URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" />
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-black/15 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div><p className="text-sm font-medium text-white/80">Mobile Hero</p><p className="mt-1 text-xs text-white/40">建议 1080×1350 · 4:5</p></div>
+                  <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'hero_mobile' ? '上传中' : '上传 Mobile'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'hero_mobile')} disabled={Boolean(uploading)} /></label>
+                </div>
+                <div className="relative mt-3 aspect-[4/5] max-h-[24rem] overflow-hidden rounded-lg border border-white/10 bg-black/25">
+                  {form.hero_image_mobile ? <FallbackImage src={form.hero_image_mobile} alt="Mobile Hero 预览" fill className="object-cover" /> : <div className="flex h-full items-center justify-center px-5 text-center text-xs leading-5 text-white/30">未设置 · 手机会使用 Desktop Hero 或封面图</div>}
+                </div>
+                <input value={form.hero_image_mobile || ''} onChange={(event) => set('hero_image_mobile', event.target.value)} placeholder="或输入 Mobile Hero URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" />
+              </div>
+            </div>
+            <label className="mt-4 flex items-start gap-3 rounded-xl border border-amber-200/15 bg-amber-200/[0.04] p-4 text-sm text-white/70">
+              <input type="checkbox" checked={Boolean(form.hero_image_contains_text)} onChange={(event) => set('hero_image_contains_text', event.target.checked)} className="mt-1" />
+              <span><strong className="text-white">Hero 图片本身已经排好标题文字</strong><br /><span className="text-xs leading-6 text-white/45">开启后，公开页不会再在图片上盖超大的标题和简介，避免你自己设计的字被重复覆盖。价格与查询按钮会放到图片下方。</span></span>
+            </label>
+          </div>
 
           <div className="mt-8 border-t border-white/10 pt-6">
             <h3 className="text-lg font-semibold">{form.slug === 'batam-3d2n' ? '主配套图片' : '图片'}</h3>
