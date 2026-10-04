@@ -124,13 +124,18 @@ const BATAM_ATTRACTION_ROWS = [
     slugs: ['new-version-599', 'goa-cave'],
   },
   {
+    label: 'Maha Vihara Duta Maitreya',
+    sublabel: '天恩弥勒佛院',
+    slugs: ['new-version-599', 'economy-island', 'pirate-afternoon-tea'],
+  },
+  {
     label: 'Blue Fire Beach Club',
     sublabel: '粉色沙滩俱乐部',
     slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'ibis-relax-666', 'lobster-lunch', 'pirate-afternoon-tea'],
   },
   {
     label: 'Infinity Beach Club',
-    sublabel: '原 De\'Sand / 圣托里尼替代',
+    sublabel: '蓝色沙滩俱乐部',
     slugs: ['new-version-599', 'economy-island'],
   },
   {
