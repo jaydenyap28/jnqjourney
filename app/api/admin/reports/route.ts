@@ -764,6 +764,93 @@ function buildPackageAcquisition(rows: AnalyticsEventRow[]) {
     }))
 }
 
+function splitAutomationLikeTraffic(rows: PageViewRow[]) {
+  const visitorStats = new Map<string, {
+    userAgent: string
+    views: number
+    hasReferrer: boolean
+    device: string
+    paths: Set<string>
+  }>()
+
+  for (const row of rows) {
+    const visitor = visitorKey(row)
+    if (!visitor) continue
+    const userAgent = String(row.user_agent || '').trim()
+    if (!visitorStats.has(visitor)) {
+      visitorStats.set(visitor, {
+        userAgent,
+        views: 0,
+        hasReferrer: false,
+        device: effectiveDevice(row),
+        paths: new Set(),
+      })
+    }
+    const item = visitorStats.get(visitor)!
+    item.views += 1
+    item.hasReferrer ||= Boolean(String(row.referrer || '').trim())
+    item.paths.add(normalizePath(row.path))
+  }
+
+  const uaStats = new Map<string, {
+    visitors: number
+    totalViews: number
+    oneViewNoReferrer: number
+    paths: Set<string>
+  }>()
+
+  for (const item of visitorStats.values()) {
+    if (!item.userAgent) continue
+    if (!uaStats.has(item.userAgent)) {
+      uaStats.set(item.userAgent, { visitors: 0, totalViews: 0, oneViewNoReferrer: 0, paths: new Set() })
+    }
+    const ua = uaStats.get(item.userAgent)!
+    ua.visitors += 1
+    ua.totalViews += item.views
+    if (item.views === 1 && !item.hasReferrer && item.device === 'desktop') ua.oneViewNoReferrer += 1
+    for (const path of item.paths) ua.paths.add(path)
+  }
+
+  const anomalousUserAgents = new Set(
+    Array.from(uaStats.entries())
+      .filter(([userAgent, stats]) => {
+        const desktopWindows = /windows nt/i.test(userAgent)
+        const oneShotRatio = stats.visitors ? stats.oneViewNoReferrer / stats.visitors : 0
+        const viewsPerVisitor = stats.visitors ? stats.totalViews / stats.visitors : 0
+        return (
+          desktopWindows &&
+          stats.visitors >= 20 &&
+          stats.paths.size >= 20 &&
+          oneShotRatio >= 0.7 &&
+          viewsPerVisitor <= 1.6
+        )
+      })
+      .map(([userAgent]) => userAgent)
+  )
+
+  const automationVisitors = new Set<string>()
+  for (const [visitor, stats] of visitorStats.entries()) {
+    if (
+      anomalousUserAgents.has(stats.userAgent) &&
+      stats.device === 'desktop' &&
+      stats.views === 1 &&
+      !stats.hasReferrer
+    ) {
+      automationVisitors.add(visitor)
+    }
+  }
+
+  const automationRows = rows.filter((row) => automationVisitors.has(visitorKey(row)))
+  const trustedRows = rows.filter((row) => !automationVisitors.has(visitorKey(row)))
+
+  return {
+    trustedRows,
+    automationRows,
+    automationVisitors: automationVisitors.size,
+    anomalousUserAgents: anomalousUserAgents.size,
+  }
+}
+
 function buildComparison(currentRows: PageViewRow[], previousRows: PageViewRow[]) {
   const current = summarizeTraffic(currentRows)
   const previous = summarizeTraffic(previousRows)
@@ -800,8 +887,15 @@ export async function GET(request: Request) {
 
   const rawPageViews = pageViewsResult.rows.filter(isReportablePath)
   const botPageViews = rawPageViews.filter(isLikelyBot)
-  const humanPageViews = rawPageViews.filter((row) => !isLikelyBot(row))
-  const previousHumanPageViews = previousPageViewsResult.rows.filter(isReportablePath).filter((row) => !isLikelyBot(row))
+  const uaFilteredPageViews = rawPageViews.filter((row) => !isLikelyBot(row))
+  const currentTrafficSplit = splitAutomationLikeTraffic(uaFilteredPageViews)
+  const humanPageViews = currentTrafficSplit.trustedRows
+
+  const previousRawPageViews = previousPageViewsResult.rows.filter(isReportablePath)
+  const previousUaFilteredPageViews = previousRawPageViews.filter((row) => !isLikelyBot(row))
+  const previousTrafficSplit = splitAutomationLikeTraffic(previousUaFilteredPageViews)
+  const previousHumanPageViews = previousTrafficSplit.trustedRows
+
   const affiliateClickRows = affiliateClicksResult.error ? [] : affiliateClicksResult.rows
   const analyticsEventRows = analyticsEventsResult.error ? [] : analyticsEventsResult.rows
 
@@ -832,7 +926,10 @@ export async function GET(request: Request) {
       latestDay,
       rawPageViews: rawPageViews.length,
       botPageViews: botPageViews.length,
-      botRate: rawPageViews.length ? Number(((botPageViews.length / rawPageViews.length) * 100).toFixed(1)) : 0,
+      automationLikeViews: currentTrafficSplit.automationRows.length,
+      automationLikeVisitors: currentTrafficSplit.automationVisitors,
+      anomalousUserAgentGroups: currentTrafficSplit.anomalousUserAgents,
+      botRate: rawPageViews.length ? Number((((botPageViews.length + currentTrafficSplit.automationRows.length) / rawPageViews.length) * 100).toFixed(1)) : 0,
       directViews: directSource?.views || 0,
       sourceTrackedViews: Math.max(0, attributedViews),
       sourceTrackedRate: humanPageViews.length ? Number(((Math.max(0, attributedViews) / humanPageViews.length) * 100).toFixed(1)) : 0,
@@ -854,8 +951,11 @@ export async function GET(request: Request) {
       affiliateClicksTruncated: affiliateClicksResult.truncated,
       analyticsEventsTruncated: analyticsEventsResult.truncated,
       sessionTrackingCoverage: sessionMetrics.coveragePercent,
+      automationLikeViews: currentTrafficSplit.automationRows.length,
+      automationLikeVisitors: currentTrafficSplit.automationVisitors,
+      anomalousUserAgentGroups: currentTrafficSplit.anomalousUserAgents,
       notes: [
-        'Trusted Views 会排除常见 bot / preview user-agent 以及 admin/api 路径；历史记录也会重新过滤。',
+        'Trusted Views 会排除常见 bot / preview user-agent、admin/api 路径，以及大量「同一桌面 User-Agent + 无来源 + 单页访问 + 分散随机页面」的自动化抓取模式。',
         'Visitors 使用浏览器匿名 visitor_id 去重；旧记录会兼容原 session_id。',
         'Sessions 使用 30 分钟无活动切分的 visit_id，只对新版 Tracking 上线后的流量计算，不会伪造旧 Session。',
         '来源优先使用会话级 attribution / UTM；没有新版 attribution 的旧记录才回退到 URL UTM 或 referrer。',
