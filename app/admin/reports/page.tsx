@@ -4,18 +4,12 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft,
-  BarChart3,
   CalendarRange,
   Download,
-  ExternalLink,
   Globe2,
-  MapPin,
   MonitorOff,
-  MousePointerClick,
-  Search,
   ShieldCheck,
   Smartphone,
-  Users,
 } from 'lucide-react'
 
 import { adminFetch } from '@/lib/admin-fetch'
