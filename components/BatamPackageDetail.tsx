@@ -276,6 +276,9 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
   }, null)
 
   const optionHref = (option: TravelPackageOption) => `/packages/${item.slug}/${option.slug}`
+  const desktopHeroImage = item.hero_image || item.cover_image || ''
+  const mobileHeroImage = item.hero_image_mobile || item.hero_image || item.cover_image || ''
+  const heroArtworkMode = Boolean(item.hero_image_contains_text && (item.hero_image || item.hero_image_mobile))
 
   useEffect(() => {
     if (!selected || preview) return
@@ -357,23 +360,65 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
 
   return (
     <main className="min-h-screen bg-[#050816] pb-20 text-white md:pb-0">
-      <section className="relative flex min-h-[72svh] items-end overflow-hidden">
-        {item.cover_image ? <FallbackImage src={item.cover_image} alt={item.title_zh} fill priority className="object-cover" /> : <div className="absolute inset-0 bg-[#08101d]" />}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/65 to-black/20" />
-        <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-36 md:px-8 md:pb-20">
-          <nav className="mb-7 flex items-center gap-2 text-xs text-white/55"><Link href="/">首页</Link><ChevronRight className="h-3 w-3" /><Link href="/packages">旅游配套</Link></nav>
-          <p className="text-xs uppercase text-amber-200/75">{item.destination} · {item.duration}</p>
-          <h1 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight md:text-7xl">{item.title_zh}</h1>
-          {item.title_en ? <p className="mt-3 text-lg text-white/55">{item.title_en}</p> : null}
-          <p className="mt-6 max-w-3xl text-base leading-8 text-white/75">{item.short_description}</p>
-          <div className="mt-7 flex flex-wrap gap-3 text-sm">
-            <span className="rounded-full border border-amber-200/25 bg-amber-200/10 px-4 py-2 text-amber-50">{activeOptions.length} 个方案可选</span>
-            {lowestPrice !== null ? <span className="rounded-full border border-white/15 bg-black/20 px-4 py-2">RM{lowestPrice.toLocaleString('en-MY')} 起 / 人</span> : null}
-            <span className="rounded-full border border-white/15 bg-black/20 px-4 py-2">来回船票 + 酒店 + 当地交通</span>
+      {heroArtworkMode ? (
+        <section className="overflow-hidden border-b border-white/10 bg-[#050816]">
+          <div className="mx-auto w-full max-w-6xl px-5 pb-4 pt-8 md:px-8 md:pt-10">
+            <nav className="flex items-center gap-2 text-xs text-white/55"><Link href="/">首页</Link><ChevronRight className="h-3 w-3" /><Link href="/packages">旅游配套</Link></nav>
+            <h1 className="sr-only">{item.title_zh}</h1>
           </div>
-          {featured ? <div className="mt-8">{cta(featured, 'batam_hero', '先看方案 / WhatsApp 查询')}</div> : null}
-        </div>
-      </section>
+
+          <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden bg-[#08101d] md:rounded-[28px]">
+            <div className="relative aspect-[4/5] md:hidden">
+              {mobileHeroImage ? (
+                <>
+                  <FallbackImage src={mobileHeroImage} alt="" fill priority sizes="100vw" className="scale-105 object-cover opacity-25 blur-xl" />
+                  <FallbackImage src={mobileHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-contain" />
+                </>
+              ) : null}
+            </div>
+            <div className="relative hidden aspect-video md:block">
+              {desktopHeroImage ? (
+                <>
+                  <FallbackImage src={desktopHeroImage} alt="" fill priority sizes="100vw" className="scale-105 object-cover opacity-25 blur-xl" />
+                  <FallbackImage src={desktopHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-contain" />
+                </>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-5 py-7 md:flex-row md:items-center md:justify-between md:px-8 md:py-8">
+            <div>
+              <p className="text-xs uppercase text-amber-200/75">{item.destination} · {item.duration}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-sm">
+                <span className="rounded-full border border-amber-200/25 bg-amber-200/10 px-4 py-2 text-amber-50">{activeOptions.length} 个方案可选</span>
+                {lowestPrice !== null ? <span className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2">RM{lowestPrice.toLocaleString('en-MY')} 起 / 人</span> : null}
+                <span className="rounded-full border border-white/15 bg-white/[0.04] px-4 py-2">来回船票 + 酒店 + 当地交通</span>
+              </div>
+            </div>
+            {featured ? <div className="shrink-0">{cta(featured, 'batam_hero_artwork', '先看方案 / WhatsApp 查询')}</div> : null}
+          </div>
+        </section>
+      ) : (
+        <section className="relative flex min-h-[72svh] items-end overflow-hidden">
+          {mobileHeroImage ? <FallbackImage src={mobileHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-cover md:hidden" /> : null}
+          {desktopHeroImage ? <FallbackImage src={desktopHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="hidden object-cover md:block" /> : null}
+          {!desktopHeroImage && !mobileHeroImage ? <div className="absolute inset-0 bg-[#08101d]" /> : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/65 to-black/20" />
+          <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-36 md:px-8 md:pb-20">
+            <nav className="mb-7 flex items-center gap-2 text-xs text-white/55"><Link href="/">首页</Link><ChevronRight className="h-3 w-3" /><Link href="/packages">旅游配套</Link></nav>
+            <p className="text-xs uppercase text-amber-200/75">{item.destination} · {item.duration}</p>
+            <h1 className="mt-3 max-w-4xl text-4xl font-semibold leading-tight md:text-7xl">{item.title_zh}</h1>
+            {item.title_en ? <p className="mt-3 text-lg text-white/55">{item.title_en}</p> : null}
+            <p className="mt-6 max-w-3xl text-base leading-8 text-white/75">{item.short_description}</p>
+            <div className="mt-7 flex flex-wrap gap-3 text-sm">
+              <span className="rounded-full border border-amber-200/25 bg-amber-200/10 px-4 py-2 text-amber-50">{activeOptions.length} 个方案可选</span>
+              {lowestPrice !== null ? <span className="rounded-full border border-white/15 bg-black/20 px-4 py-2">RM{lowestPrice.toLocaleString('en-MY')} 起 / 人</span> : null}
+              <span className="rounded-full border border-white/15 bg-black/20 px-4 py-2">来回船票 + 酒店 + 当地交通</span>
+            </div>
+            {featured ? <div className="mt-8">{cta(featured, 'batam_hero', '先看方案 / WhatsApp 查询')}</div> : null}
+          </div>
+        </section>
+      )}
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
         <section>
