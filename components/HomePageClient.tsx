@@ -504,6 +504,29 @@ export default function HomePageClient({
 
       <section className="relative z-10 px-3 pb-16 pt-5 md:px-8 md:pb-20 md:pt-8">
         <div className="mx-auto max-w-7xl space-y-10 md:space-y-14">
+          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            {[
+              { href: '/guide', eyebrow: 'PLAN', title: '完整游记攻略', text: '直接看路线、天数、预算和每日安排' },
+              { href: '/notes', eyebrow: 'READ', title: '长文笔记', text: '交通、玩法、实测路线与旅行心得' },
+              { href: '/packages', eyebrow: 'BOOK', title: '旅游配套', text: '比较价格、景点、餐食与 WhatsApp 查询' },
+              { href: '/region/malaysia', eyebrow: 'LOCAL', title: '走遍马来西亚', text: '按州属和城市继续找景点与美食' },
+              { href: '/region', eyebrow: 'EXPLORE', title: '全部目的地', text: '从地图和地区页继续探索世界' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group rounded-[22px] border border-white/10 bg-white/[0.045] p-4 transition duration-300 hover:-translate-y-1 hover:border-amber-200/25 hover:bg-white/[0.07] md:p-5"
+              >
+                <p className="section-kicker text-[10px] text-amber-200/65">{item.eyebrow}</p>
+                <div className="mt-2 flex items-start justify-between gap-3">
+                  <h2 className="font-cjk-display text-xl leading-tight text-white">{item.title}</h2>
+                  <ArrowRight className="mt-1 h-4 w-4 shrink-0 text-white/35 transition group-hover:translate-x-1 group-hover:text-amber-100" />
+                </div>
+                <p className="mt-3 text-xs leading-6 text-white/50">{item.text}</p>
+              </Link>
+            ))}
+          </section>
+
           <section id="guides" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
