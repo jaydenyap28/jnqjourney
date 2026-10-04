@@ -127,6 +127,9 @@ interface ReportsPayload {
     latestDay?: DailyTrafficRow | null
     rawPageViews?: number
     botPageViews?: number
+    automationLikeViews?: number
+    automationLikeVisitors?: number
+    anomalousUserAgentGroups?: number
     botRate?: number
     directViews?: number
     sourceTrackedViews?: number
@@ -158,6 +161,9 @@ interface ReportsPayload {
     affiliateClicksTruncated?: boolean
     analyticsEventsTruncated?: boolean
     sessionTrackingCoverage?: number
+    automationLikeViews?: number
+    automationLikeVisitors?: number
+    anomalousUserAgentGroups?: number
     notes?: string[]
   }
   sessionMetrics?: SessionMetrics
@@ -583,7 +589,7 @@ export default function AdminReportsPage() {
           <MetricCard
             eyebrow="Trusted Views"
             value={loading ? '...' : summary.pageViews || 0}
-            detail="过滤 bot / admin 后"
+            detail="过滤 bot、后台与自动化抓取后"
             footer={formatDelta(payload?.comparison?.pageViewsDelta, payload?.comparison?.pageViewsDeltaPercent)}
           />
           <MetricCard
@@ -699,9 +705,9 @@ export default function AdminReportsPage() {
                   <div className="mt-2 text-2xl font-semibold">{summary.rawPageViews || 0}</div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-                  <div className="text-xs text-white/40">Bot / Preview</div>
+                  <div className="text-xs text-white/40">Known Bot / Preview</div>
                   <div className="mt-2 text-2xl font-semibold">{summary.botPageViews || 0}</div>
-                  <div className="mt-1 text-xs text-white/40">{formatPercent(summary.botRate)}</div>
+                  <div className="mt-1 text-xs text-white/40">明确标识的机器人</div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <div className="text-xs text-white/40">Session Tracking</div>
@@ -709,12 +715,17 @@ export default function AdminReportsPage() {
                   <div className="mt-1 text-xs text-white/40">新版数据覆盖率</div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                  <div className="text-xs text-white/40">Automation-like</div>
+                  <div className="mt-2 text-2xl font-semibold">{summary.automationLikeViews || 0}</div>
+                  <div className="mt-1 text-xs text-white/40">{summary.automationLikeVisitors || 0} 个疑似自动化访客 · {summary.anomalousUserAgentGroups || 0} 组异常 UA</div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
                   <div className="text-xs text-white/40">Direct / Unknown</div>
                   <div className="mt-2 text-2xl font-semibold">{summary.directViews || 0}</div>
                 </div>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-white/60">
-                {qualityNotes.length ? qualityNotes.join(' ') : '主指标以过滤后的第一方 page_views 为准。'}
+                {qualityNotes.length ? qualityNotes.join(' ') : '主指标以过滤后的第一方 page_views 为准。'} 当前 Filtered Rate：{formatPercent(summary.botRate)}
                 {payload?.quality?.pageViewsTruncated ? ' 当前范围超过读取上限，数字可能低估。' : ''}
               </div>
             </CardContent>
