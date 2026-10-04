@@ -8,7 +8,8 @@ import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { absoluteUrl } from '@/lib/site'
 import { readPublishedPackage, readPublishedPackageOption } from '@/lib/server/travel-packages'
 
-export const revalidate = 3600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 const LEGACY_BATAM_OPTION_SLUGS: Record<string, string> = {
   'value-499': 'amazing-promo-499',
