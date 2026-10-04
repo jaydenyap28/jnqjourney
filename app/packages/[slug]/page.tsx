@@ -11,7 +11,8 @@ import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { absoluteUrl } from '@/lib/site'
 import { readPublishedPackage, readPublishedPackageOptions } from '@/lib/server/travel-packages'
 
-export const revalidate = 3600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const item = await readPublishedPackage(params.slug)
