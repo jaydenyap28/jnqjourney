@@ -56,6 +56,9 @@ export default function HainanPackageDetail({
   const brochure = gallery.find(isBrochureImage) || null
   const travelPhotos = gallery.filter((image) => !isBrochureImage(image))
   const [activeImage, setActiveImage] = useState<TravelPackageImage | null>(null)
+  const desktopHeroImage = item.hero_image || item.cover_image || ''
+  const mobileHeroImage = item.hero_image_mobile || item.hero_image || item.cover_image || ''
+  const heroArtworkMode = Boolean(item.hero_image_contains_text && (item.hero_image || item.hero_image_mobile))
 
   const quickFacts = useMemo(() => {
     const included = item.included_items || []
@@ -120,80 +123,146 @@ export default function HainanPackageDetail({
 
   return (
     <main className="min-h-screen bg-[#050816] pb-32 text-white md:pb-0">
-      <section className="relative flex min-h-[82svh] items-end overflow-hidden">
-        {item.cover_image ? (
-          <FallbackImage
-            src={item.cover_image}
-            alt={item.title_zh}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-[#08101d]" />
-        )}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,8,22,0.92)_0%,rgba(5,8,22,0.68)_48%,rgba(5,8,22,0.20)_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-black/15" />
+      {heroArtworkMode ? (
+        <section className="overflow-hidden border-b border-white/10 bg-[#050816]">
+          <div className="mx-auto w-full max-w-6xl px-5 pb-4 pt-8 md:px-8 md:pt-10">
+            <nav className="flex items-center gap-2 text-xs text-white/55">
+              <Link href="/">首页</Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link href="/packages">旅游配套</Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link href="/packages/hainan">海南方案</Link>
+            </nav>
+            <h1 className="sr-only">{item.title_zh}</h1>
+          </div>
 
-        <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-32 md:px-8 md:pb-20">
-          <nav className="mb-7 flex items-center gap-2 text-xs text-white/55">
-            <Link href="/">首页</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/packages">旅游配套</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/packages/hainan">海南方案</Link>
-          </nav>
-
-          <p className="text-xs uppercase tracking-[0.2em] text-amber-200/80">
-            {item.destination} · {item.duration}
-          </p>
-
-          <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.08] md:text-7xl">
-            {item.title_zh}
-          </h1>
-          {item.title_en ? <p className="mt-3 text-base text-white/50 md:text-lg">{item.title_en}</p> : null}
-          {item.short_description ? (
-            <p className="mt-6 max-w-3xl text-base leading-8 text-white/72">{item.short_description}</p>
-          ) : null}
-
-          <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-white/40">参考价格</p>
-              <p className="mt-1 text-3xl font-semibold text-amber-100 md:text-4xl">{item.price_display || '查询最新价格'}</p>
+          <div className="relative mx-auto w-full max-w-[1600px] overflow-hidden bg-[#08101d] md:rounded-[30px]">
+            <div className="relative aspect-[4/5] md:hidden">
+              {mobileHeroImage ? (
+                <>
+                  <FallbackImage src={mobileHeroImage} alt="" fill priority sizes="100vw" className="scale-105 object-cover opacity-25 blur-xl" />
+                  <FallbackImage src={mobileHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-contain" />
+                </>
+              ) : null}
             </div>
-            <div className="flex flex-wrap gap-3">
-              {cta('查询这个海南配套', 'hainan_hero')}
-              <Link
-                href="/packages/hainan"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-amber-200/25 bg-amber-200/[0.08] px-5 py-2.5 text-sm font-medium text-amber-50 transition hover:bg-amber-200/[0.14]"
-              >
-                比较 4天3夜 / 5天4夜
-              </Link>
-              <a
-                href="#itinerary"
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
-              >
-                查看 {itineraryLabel}
-              </a>
+            <div className="relative hidden aspect-video md:block">
+              {desktopHeroImage ? (
+                <>
+                  <FallbackImage src={desktopHeroImage} alt="" fill priority sizes="100vw" className="scale-105 object-cover opacity-25 blur-xl" />
+                  <FallbackImage src={desktopHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-contain" />
+                </>
+              ) : null}
             </div>
           </div>
 
-          {quickFacts.length ? (
-            <div className="mt-8 grid max-w-4xl gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              {quickFacts.map((fact, index) => {
-                const Icon = index === 1 ? Plane : index === 2 ? Luggage : index === 3 ? Hotel : Sparkles
-                return (
-                  <div key={fact} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-sm">
-                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
-                    <span className="text-sm leading-6 text-white/72">{fact}</span>
-                  </div>
-                )
-              })}
+          <div className="mx-auto w-full max-w-6xl px-5 py-7 md:px-8 md:py-9">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-amber-200/80">{item.destination} · {item.duration}</p>
+                <p className="mt-2 text-3xl font-semibold text-amber-100 md:text-4xl">{item.price_display || '查询最新价格'}</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {cta('查询这个海南配套', 'hainan_hero_artwork')}
+                <Link
+                  href="/packages/hainan"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-amber-200/25 bg-amber-200/[0.08] px-5 py-2.5 text-sm font-medium text-amber-50 transition hover:bg-amber-200/[0.14]"
+                >
+                  比较 4天3夜 / 5天4夜
+                </Link>
+                <a
+                  href="#itinerary"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/[0.08]"
+                >
+                  查看 {itineraryLabel}
+                </a>
+              </div>
             </div>
+            {quickFacts.length ? (
+              <div className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {quickFacts.map((fact, index) => {
+                  const Icon = index === 1 ? Plane : index === 2 ? Luggage : index === 3 ? Hotel : Sparkles
+                  return (
+                    <div key={fact} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
+                      <span className="text-sm leading-6 text-white/72">{fact}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : (
+        <section className="relative flex min-h-[82svh] items-end overflow-hidden">
+          {mobileHeroImage ? (
+            <FallbackImage src={mobileHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-cover md:hidden" />
           ) : null}
-        </div>
-      </section>
+          {desktopHeroImage ? (
+            <FallbackImage src={desktopHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="hidden object-cover md:block" />
+          ) : null}
+          {!desktopHeroImage && !mobileHeroImage ? <div className="absolute inset-0 bg-[#08101d]" /> : null}
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,8,22,0.92)_0%,rgba(5,8,22,0.68)_48%,rgba(5,8,22,0.20)_100%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-transparent to-black/15" />
+
+          <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-32 md:px-8 md:pb-20">
+            <nav className="mb-7 flex items-center gap-2 text-xs text-white/55">
+              <Link href="/">首页</Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link href="/packages">旅游配套</Link>
+              <ChevronRight className="h-3 w-3" />
+              <Link href="/packages/hainan">海南方案</Link>
+            </nav>
+
+            <p className="text-xs uppercase tracking-[0.2em] text-amber-200/80">
+              {item.destination} · {item.duration}
+            </p>
+
+            <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-[1.08] md:text-7xl">
+              {item.title_zh}
+            </h1>
+            {item.title_en ? <p className="mt-3 text-base text-white/50 md:text-lg">{item.title_en}</p> : null}
+            {item.short_description ? (
+              <p className="mt-6 max-w-3xl text-base leading-8 text-white/72">{item.short_description}</p>
+            ) : null}
+
+            <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40">参考价格</p>
+                <p className="mt-1 text-3xl font-semibold text-amber-100 md:text-4xl">{item.price_display || '查询最新价格'}</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {cta('查询这个海南配套', 'hainan_hero')}
+                <Link
+                  href="/packages/hainan"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-amber-200/25 bg-amber-200/[0.08] px-5 py-2.5 text-sm font-medium text-amber-50 transition hover:bg-amber-200/[0.14]"
+                >
+                  比较 4天3夜 / 5天4夜
+                </Link>
+                <a
+                  href="#itinerary"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
+                >
+                  查看 {itineraryLabel}
+                </a>
+              </div>
+            </div>
+
+            {quickFacts.length ? (
+              <div className="mt-8 grid max-w-4xl gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {quickFacts.map((fact, index) => {
+                  const Icon = index === 1 ? Plane : index === 2 ? Luggage : index === 3 ? Hotel : Sparkles
+                  return (
+                    <div key={fact} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 backdrop-blur-sm">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0 text-amber-200" />
+                      <span className="text-sm leading-6 text-white/72">{fact}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : null}
+          </div>
+        </section>
+      )}
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
         {item.full_description ? (
