@@ -182,12 +182,15 @@ interface ReportsPayload {
   affiliateProviders?: AffiliateProviderRow[]
   packageFunnel?: {
     packageViews?: PackageFunnelMetric
+    comparisonViews?: PackageFunnelMetric
+    optionSelects?: PackageFunnelMetric
     optionViews?: PackageFunnelMetric
     brochureViews?: PackageFunnelMetric
     enquiries?: PackageFunnelMetric
     whatsappClicks?: PackageFunnelMetric
     rates?: {
       packageToOption?: number | null
+      comparisonToSelect?: number | null
       optionToBrochure?: number | null
       optionToEnquiry?: number | null
       packageToEnquiry?: number | null
@@ -483,6 +486,10 @@ export default function AdminReportsPage() {
     devices.forEach((row) => rows.push(['device', row.label, row.views, row.visitors, '', '', '', '', '', '', '', '']))
     sources.forEach((row) => rows.push(['source', row.label, row.views, row.visitors, '', '', '', '', row.group, '', '', row.key]))
     campaigns.forEach((row) => rows.push(['utm_campaign', row.campaign, row.views, row.visitors, '', '', '', '', row.source, row.medium, row.campaign, '']))
+    rows.push(
+      ['package_funnel', 'Package Comparison Views', '', packageFunnel.comparisonViews?.visitors || 0, '', packageFunnel.comparisonViews?.events || 0, '', packageFunnel.rates?.comparisonToSelect ?? '', '', '', '', 'destination package hubs'],
+      ['package_funnel', 'Package Option Selects', '', packageFunnel.optionSelects?.visitors || 0, '', packageFunnel.optionSelects?.events || 0, '', packageFunnel.rates?.comparisonToSelect ?? '', '', '', '', 'selected from comparison hubs'],
+    )
     topPackageOptions.forEach((row) => rows.push(['package_option', row.optionName, row.views, row.viewVisitors || row.visitors, '', '', row.enquiries, row.enquiryRate ?? '', '', '', '', row.packageName || '']))
     packageAcquisition.forEach((row) => rows.push(['package_acquisition', row.source, row.optionViews, row.optionVisitors, '', '', row.enquiries, row.enquiryRate ?? '', row.source, '', row.campaign, '']))
     affiliateProviders.forEach((row) => rows.push(['affiliate_provider', row.provider, '', row.visitors, '', row.clicks, '', '', row.provider, '', '', '']))
@@ -631,6 +638,7 @@ export default function AdminReportsPage() {
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {[
                   ['主配套 → 方案', packageFunnel.rates?.packageToOption],
+                  ['比较页 → 选择方案', packageFunnel.rates?.comparisonToSelect],
                   ['方案 → 配套图', packageFunnel.rates?.optionToBrochure],
                   ['方案 → 查询', packageFunnel.rates?.optionToEnquiry],
                   ['主配套 → 查询', packageFunnel.rates?.packageToEnquiry],
@@ -642,9 +650,11 @@ export default function AdminReportsPage() {
                 ))}
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-7">
                 {[
                   ['主配套浏览', packageFunnel.packageViews],
+                  ['方案比较页', packageFunnel.comparisonViews],
+                  ['选择方案', packageFunnel.optionSelects],
                   ['方案详情', packageFunnel.optionViews],
                   ['配套图', packageFunnel.brochureViews],
                   ['WhatsApp 查询', packageFunnel.enquiries],
