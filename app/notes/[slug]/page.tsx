@@ -190,9 +190,9 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
     return (
       <blockquote
         key={block.id}
-        className="max-w-2xl mx-auto rounded-[32px] border border-amber-200/15 bg-amber-200/10 px-8 py-6 text-xl leading-9 text-white/88 my-8 relative pl-12"
+        className="font-display relative mx-auto my-10 max-w-2xl border-l border-amber-200/50 px-7 py-2 text-[1.55rem] leading-[1.55] text-white/86"
       >
-        <span className="absolute left-4 top-3 text-5xl font-serif text-amber-400/40 select-none">“</span>
+        <span className="absolute -left-1 -top-6 select-none font-serif text-5xl text-amber-300/25">“</span>
         {block.content}
       </blockquote>
     )
@@ -460,10 +460,13 @@ export default async function NoteDetailPage({ params }: PageProps) {
         </section>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
-          <article className="min-w-0 space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12">
+          <article className="min-w-0 space-y-2 rounded-[38px] border border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.018))] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.20)] md:px-10 md:py-12">
             {note.summary?.trim() ? (
-              <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
-                {note.summary.trim()}
+              <div className="mx-auto mb-10 max-w-2xl border-y border-amber-100/15 py-6">
+                <p className="section-kicker text-[10px] text-amber-200/70">JnQ Note</p>
+                <p className="mt-3 font-cjk-display text-[1.28rem] leading-9 text-white/82 md:text-[1.4rem] md:leading-10">
+                  {note.summary.trim()}
+                </p>
               </div>
             ) : null}
 
