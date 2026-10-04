@@ -120,6 +120,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
                       src={coverImage}
                       alt={title.primary || title.secondary}
                       fill
+                      sizes="(max-width: 1024px) 100vw, 33vw"
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
                   ) : (
@@ -217,6 +218,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
             alt={location.name}
             onError={() => onImageError(coverImage)}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 25vw"
             className="object-cover transition duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -273,6 +275,7 @@ function RegionCard({ region, onImageError }: { region: RegionHighlight; onImage
             alt={region.name}
             onError={() => onImageError(region.coverImage)}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
             className="object-cover transition duration-700 group-hover:scale-105"
           />
         ) : (
