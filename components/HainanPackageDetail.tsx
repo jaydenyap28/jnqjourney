@@ -71,9 +71,7 @@ export default function HainanPackageDetail({
     .map((id) => RELATED_SPOTS[String(id)])
     .filter(Boolean)
 
-  // Keep the helicopter activity in the itinerary/source content, but do not
-  // promote the ~1 km ride as a headline selling point.
-  const featuredHighlights = (item.highlights || []).filter((text) => !text.includes('直升机'))
+  const featuredHighlights = item.highlights || []
 
   useEffect(() => {
     if (!activeImage) return
