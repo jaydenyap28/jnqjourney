@@ -46,6 +46,11 @@ async function guardPackage(request: NextRequest) {
   const slug = pathParts[1]
   if (!slug) return NextResponse.next()
 
+  // Destination hubs under /packages (for example /packages/hainan) are
+  // editorial comparison pages, not rows in travel_packages. Let Next.js
+  // resolve these static routes instead of checking package publication.
+  if (slug === 'hainan') return NextResponse.next()
+
   if (['tioman-aman-resort-3d2n', 'tioman-paya-beach-resort-3d2n', 'tioman-barat-resort-3d2n'].includes(slug)) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/packages/tioman-3d2n'
