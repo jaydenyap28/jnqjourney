@@ -45,6 +45,12 @@ export async function POST(request: Request) {
     const contentType = normalizeText(payload?.contentType, 50)
     const contentSlug = normalizeText(payload?.contentSlug, 250)
     const sessionId = normalizeText(payload?.sessionId, 120)
+    const visitorId = normalizeText(payload?.visitorId, 120)
+    const visitId = normalizeText(payload?.visitId, 120)
+    const deviceType = normalizeText(payload?.deviceType, 30)
+    const trafficSource = normalizeText(payload?.trafficSource, 120)
+    const trafficMedium = normalizeText(payload?.trafficMedium, 120)
+    const trafficCampaign = normalizeText(payload?.trafficCampaign, 180)
     const referrer = normalizeText(payload?.referrer, 500)
     const userAgent = normalizeText(payload?.userAgent, 500)
 
@@ -60,7 +66,13 @@ export async function POST(request: Request) {
       path,
       content_type: contentType,
       content_slug: contentSlug || null,
-      session_id: sessionId || null,
+      session_id: sessionId || visitorId || null,
+      visitor_id: visitorId || sessionId || null,
+      visit_id: visitId || null,
+      device_type: deviceType || null,
+      traffic_source: trafficSource || null,
+      traffic_medium: trafficMedium || null,
+      traffic_campaign: trafficCampaign || null,
       referrer: referrer || null,
       user_agent: userAgent || null,
     })
