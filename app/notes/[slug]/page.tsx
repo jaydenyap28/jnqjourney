@@ -40,6 +40,7 @@ interface RegionData {
 
 interface LocationData {
   id: number
+  slug?: string | null
   name: string
   name_cn?: string | null
   category?: string | null
@@ -264,7 +265,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
 
           {spot && (
             <Link
-              href={buildLocationPath(spot.name, spot.id)}
+              href={spot.slug ? `/spot/${spot.slug}` : buildLocationPath(spot.name, spot.id)}
               className="inline-flex items-center gap-1 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/10 hover:border-emerald-500/20 px-4 py-2 rounded-full"
             >
               <span>查看景点详情</span>
@@ -311,7 +312,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
     return (
       <div key={block.id} className="max-w-3xl mx-auto w-full my-8">
         <Link
-          href={buildLocationPath(spot.name, spot.id)}
+          href={spot.slug ? `/spot/${spot.slug}` : buildLocationPath(spot.name, spot.id)}
           className="grid gap-5 overflow-hidden rounded-[30px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10 md:grid-cols-[240px_minmax(0,1fr)] shadow-[0_16px_50px_rgba(0,0,0,0.18)]"
         >
           <div className="relative aspect-[4/3] overflow-hidden bg-black/20">
@@ -562,7 +563,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
                   {relatedSpots.slice(0, 8).map((spot) => (
                     <Link
                       key={spot.id}
-                      href={buildLocationPath(spot.name, spot.id)}
+                      href={spot.slug ? `/spot/${spot.slug}` : buildLocationPath(spot.name, spot.id)}
                       className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 transition hover:bg-white/10"
                     >
                       <div className="relative h-16 w-16 overflow-hidden rounded-xl">
