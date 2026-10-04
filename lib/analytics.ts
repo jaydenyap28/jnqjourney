@@ -58,6 +58,7 @@ export function getAnalyticsSessionId() {
 
 export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParams = {}) {
   if (typeof window === 'undefined') return
+  if (window.localStorage.getItem('jnq_exclude_analytics') === '1') return
 
   const safeParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
