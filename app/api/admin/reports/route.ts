@@ -257,7 +257,7 @@ function isLikelyBot(row: PageViewRow) {
   const userAgent = String(row.user_agent || '').toLowerCase()
   if (!userAgent) return false
 
-  return /bot|crawler|spider|crawl|slurp|facebookexternalhit|preview|validator|lighthouse|pagespeed|headless|python-requests|curl|wget|uptime|monitor|semrush|ahrefs|mj12bot|bytespider|petalbot|yandex|duckduckbot|bingpreview/.test(userAgent)
+  return /bot|crawler|spider|crawl|slurp|facebookexternalhit|preview|validator|lighthouse|pagespeed|headless|python-requests|curl|wget|uptime|monitor|semrush|ahrefs|mj12bot|bytespider|petalbot|yandex|duckduckbot|bingpreview|mediapartners-google|adsbot-google|google-inspectiontool/.test(userAgent)
 }
 
 function isReportablePath(row: PageViewRow) {
@@ -340,30 +340,56 @@ function buildTopPages(rows: PageViewRow[]) {
   return mapRankedBuckets(bucket, 15)
 }
 
-function getSourceMeta(referrer?: string | null) {
-  const host = normalizeHost(referrer)
+function trackingParams(value?: string | null) {
+  const rawValue = String(value || '').trim()
+  if (!rawValue) return new URLSearchParams()
+  try {
+    const url = rawValue.startsWith('http') ? new URL(rawValue) : new URL(rawValue, 'https://jnqjourney.local')
+    return url.searchParams
+  } catch {
+    const query = rawValue.includes('?') ? rawValue.split('?').slice(1).join('?') : ''
+    return new URLSearchParams(query)
+  }
+}
 
+function classifyNamedSource(value: string) {
+  const source = value.trim().toLowerCase()
+  if (!source) return { key: 'direct', label: 'Direct / Unknown', group: 'direct' }
+  if (source.includes('google')) return { key: source, label: 'Google', group: 'search' }
+  if (source.includes('bing')) return { key: source, label: 'Bing', group: 'search' }
+  if (source.includes('yahoo')) return { key: source, label: 'Yahoo', group: 'search' }
+  if (source.includes('baidu')) return { key: source, label: 'Baidu', group: 'search' }
+  if (source.includes('youtube') || source.includes('youtu')) return { key: source, label: 'YouTube', group: 'video' }
+  if (source.includes('facebook') || source === 'fb') return { key: source, label: 'Facebook', group: 'social' }
+  if (source.includes('instagram')) return { key: source, label: 'Instagram', group: 'social' }
+  if (source.includes('threads')) return { key: source, label: 'Threads', group: 'social' }
+  if (source.includes('tiktok')) return { key: source, label: 'TikTok', group: 'social' }
+  if (source.includes('xiaohongshu') || source.includes('xhs')) return { key: source, label: '小红书', group: 'social' }
+  if (source.includes('whatsapp')) return { key: source, label: 'WhatsApp', group: 'social' }
+  if (source.includes('telegram')) return { key: source, label: 'Telegram', group: 'social' }
+  if (source.includes('chatgpt') || source.includes('perplexity') || source.includes('gemini')) return { key: source, label: source, group: 'ai' }
+  return { key: source, label: value.trim(), group: 'referral' }
+}
+
+function getSourceMeta(referrer?: string | null, path?: string | null) {
+  const params = trackingParams(path)
+  const utmSource = params.get('utm_source')
+  if (utmSource) {
+    const source = classifyNamedSource(utmSource)
+    return { ...source, key: `utm:${source.key}`, label: `${source.label} · UTM` }
+  }
+
+  const host = normalizeHost(referrer)
   if (!host) return { key: 'direct', label: 'Direct / Unknown', group: 'direct' }
   if (isInternalReferrer(referrer)) return { key: 'internal', label: 'Internal Navigation', group: 'internal' }
-  if (host.includes('google')) return { key: 'google', label: 'Google', group: 'search' }
-  if (host.includes('bing')) return { key: 'bing', label: 'Bing', group: 'search' }
-  if (host.includes('yahoo')) return { key: 'yahoo', label: 'Yahoo', group: 'search' }
-  if (host.includes('baidu')) return { key: 'baidu', label: 'Baidu', group: 'search' }
-  if (host.includes('youtube') || host.includes('youtu.be')) return { key: 'youtube', label: 'YouTube', group: 'video' }
-  if (host.includes('facebook') || host === 'fb.com') return { key: 'facebook', label: 'Facebook', group: 'social' }
-  if (host.includes('instagram')) return { key: 'instagram', label: 'Instagram', group: 'social' }
-  if (host.includes('tiktok')) return { key: 'tiktok', label: 'TikTok', group: 'social' }
-  if (host.includes('xiaohongshu') || host.includes('xhslink')) return { key: 'xiaohongshu', label: '小红书', group: 'social' }
-  if (host.includes('chatgpt') || host.includes('perplexity') || host.includes('gemini')) return { key: host, label: host, group: 'ai' }
-
-  return { key: host, label: host, group: 'referral' }
+  return classifyNamedSource(host)
 }
 
 function buildSources(rows: PageViewRow[]) {
   const bucket = new Map<string, RankedBucket & { group: string }>()
 
   for (const row of rows) {
-    const source = getSourceMeta(row.referrer)
+    const source = getSourceMeta(row.referrer, row.path)
     if (!bucket.has(source.key)) {
       bucket.set(source.key, { key: source.key, label: source.label, group: source.group, views: 0, visitors: new Set() })
     }
@@ -379,6 +405,36 @@ function buildSources(rows: PageViewRow[]) {
       key: item.key,
       label: item.label || item.key,
       group: item.group,
+      views: item.views,
+      visitors: item.visitors.size,
+    }))
+}
+
+function buildCampaigns(rows: PageViewRow[]) {
+  const bucket = new Map<string, RankedBucket & { source: string; medium: string }>()
+
+  for (const row of rows) {
+    const params = trackingParams(row.path)
+    const campaign = String(params.get('utm_campaign') || '').trim()
+    if (!campaign) continue
+    const source = String(params.get('utm_source') || 'unknown').trim()
+    const medium = String(params.get('utm_medium') || '').trim()
+    const key = `${source}::${medium}::${campaign}`
+    if (!bucket.has(key)) {
+      bucket.set(key, { key, label: campaign, source, medium, views: 0, visitors: new Set() })
+    }
+    const current = bucket.get(key)!
+    current.views += 1
+    if (row.session_id) current.visitors.add(String(row.session_id))
+  }
+
+  return Array.from(bucket.values())
+    .sort((a, b) => b.views - a.views || b.visitors.size - a.visitors.size)
+    .slice(0, 20)
+    .map((item) => ({
+      campaign: item.label || item.key,
+      source: item.source,
+      medium: item.medium,
       views: item.views,
       visitors: item.visitors.size,
     }))
@@ -582,9 +638,9 @@ export async function GET(request: Request) {
       affiliateClicksTruncated: affiliateClicksResult.truncated,
       analyticsEventsTruncated: analyticsEventsResult.truncated,
       notes: [
-        '主指标已过滤常见 bot / preview user-agent，并排除 admin/api 路径。',
+        '主指标已过滤常见 bot / preview user-agent，并排除 admin/api 路径；历史记录也会再做一次 bot 过滤。',
         '日期按 Asia/Singapore 统计，不再按 UTC 切天。',
-        'Direct / Unknown 包含直接访问、隐私浏览器、App 内打开和没有 referrer 的访问。',
+        '来源统计会优先使用 utm_source；没有 UTM 时才回退到 referrer。Direct / Unknown 仍会包含直接访问、隐私浏览器、App 内打开和没有 referrer 的访问。',
       ],
     },
     dailyTraffic,
@@ -592,6 +648,7 @@ export async function GET(request: Request) {
     topGuides: buildTopContent(humanPageViews, 'guide'),
     topSpots: buildTopContent(humanPageViews, 'spot'),
     sources,
+    campaigns: buildCampaigns(humanPageViews),
     topAffiliateClicks: buildTopAffiliateClicks(affiliateClickRows),
     packageFunnel: buildPackageFunnel(analyticsEventRows),
     analyticsEventsReady: !analyticsEventsResult.error,
