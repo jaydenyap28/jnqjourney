@@ -324,6 +324,14 @@ export default function AdminReportsPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" disabled={!payload || loading} onClick={exportJson} className="border-emerald-200/20 bg-emerald-300/[0.06] text-emerald-50 hover:bg-emerald-300/[0.12]">
+              <Download className="mr-2 h-4 w-4" />
+              导出给 ChatGPT
+            </Button>
+            <Button type="button" variant="outline" disabled={!payload || loading} onClick={exportCsv} className="border-white/15 bg-white/5 text-white hover:bg-white/10">
+              <Download className="mr-2 h-4 w-4" />
+              导出 CSV
+            </Button>
             <Link href="/admin">
               <Button variant="outline" className="border-white/15 bg-white/5 text-white hover:bg-white/10">
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -358,7 +366,17 @@ export default function AdminReportsPage() {
               </div>
             </div>
             <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-white/60">
-              当前主口径来自 Supabase page_views。访客按浏览器 session 去重，仍可能包含你自己在前台浏览的数据；GA / Vercel Analytics 会因为广告拦截、cookie、bot 过滤与采样口径不同，不会与这里完全一致。
+              当前主口径来自 Supabase page_views。访客按浏览器匿名 ID 去重；GA / Vercel Analytics 会因为广告拦截、cookie、bot 过滤与采样口径不同，不会与这里完全一致。
+            </div>
+            <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-amber-200/15 bg-amber-200/[0.04] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-white/80">排除这台设备的测试流量</p>
+                <p className="mt-1 text-xs leading-5 text-white/45">开启后，你用这台浏览器查看公开网站不会再写入 Page View 或 Package 事件；只影响之后的新记录，不会删除历史数据。</p>
+              </div>
+              <Button type="button" variant="outline" onClick={toggleDeviceExclusion} className={excludeThisDevice ? 'border-emerald-200/25 bg-emerald-300/[0.08] text-emerald-100 hover:bg-emerald-300/[0.12]' : 'border-white/15 bg-white/5 text-white hover:bg-white/10'}>
+                <MonitorOff className="mr-2 h-4 w-4" />
+                {excludeThisDevice ? '本机已排除' : '排除本机'}
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -383,7 +401,7 @@ export default function AdminReportsPage() {
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-emerald-200"><ShieldCheck className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Trusted Views</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : summary.pageViews || 0}</p><p className="mt-2 text-xs text-white/50">过滤 bot/admin 后的人类浏览</p><p className="mt-2 text-xs text-emerald-100/70">{formatDelta(payload?.comparison?.pageViewsDelta, payload?.comparison?.pageViewsDeltaPercent)} vs 上期</p></CardContent></Card>
-          <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-sky-200"><BarChart3 className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Visitors</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : summary.visitors || 0}</p><p className="mt-2 text-xs text-white/50">按 session 去重的访客数</p><p className="mt-2 text-xs text-sky-100/70">{formatDelta(payload?.comparison?.visitorsDelta, payload?.comparison?.visitorsDeltaPercent)} vs 上期</p></CardContent></Card>
+          <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-sky-200"><BarChart3 className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Visitors</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : summary.visitors || 0}</p><p className="mt-2 text-xs text-white/50">按浏览器匿名 ID 去重</p><p className="mt-2 text-xs text-sky-100/70">{formatDelta(payload?.comparison?.visitorsDelta, payload?.comparison?.visitorsDeltaPercent)} vs 上期</p></CardContent></Card>
           <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-amber-200"><MousePointerClick className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Affiliate Clicks</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : summary.affiliateClicks || 0}</p><p className="mt-2 text-xs text-white/50">当前范围内的联盟点击数</p><p className="mt-2 text-xs text-amber-100/70">原始浏览 {summary.rawPageViews || 0} · bot {summary.botPageViews || 0}</p></CardContent></Card>
           <Card className="border-white/10 bg-white/5 text-white"><CardContent className="p-5"><div className="flex items-center gap-2 text-fuchsia-200"><Search className="h-4 w-4" /><p className="text-xs uppercase tracking-[0.24em]">Tracked Source</p></div><p className="mt-3 text-3xl font-semibold">{loading ? '...' : sourceTrackedRate}</p><p className="mt-2 text-xs text-white/50">有外部/内部来源的浏览占比</p><p className="mt-2 text-xs text-fuchsia-100/70">{latestTrafficLabel}</p></CardContent></Card>
         </div>
@@ -505,6 +523,45 @@ export default function AdminReportsPage() {
             </CardContent>
           </Card>
         </div>
+
+        <Card className="border-sky-200/15 bg-sky-300/[0.025] text-white">
+          <CardHeader>
+            <CardTitle>UTM Campaign</CardTitle>
+            <CardDescription className="text-white/50">以后从小红书、Facebook、Threads、WhatsApp 等平台分享带 utm_source / utm_campaign 的链接，这里会直接显示每个活动带来的浏览和访客。</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {campaigns.length ? (
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-white/10 hover:bg-transparent">
+                      <TableHead className="text-white/55">Campaign</TableHead>
+                      <TableHead className="text-white/55">Source</TableHead>
+                      <TableHead className="text-white/55">Medium</TableHead>
+                      <TableHead className="text-white/55">浏览</TableHead>
+                      <TableHead className="text-white/55">访客</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {campaigns.map((row) => (
+                      <TableRow key={`${row.source}-${row.medium}-${row.campaign}`} className="border-white/10">
+                        <TableCell className="font-medium text-white">{row.campaign}</TableCell>
+                        <TableCell className="text-white/65">{row.source}</TableCell>
+                        <TableCell className="text-white/65">{row.medium || '—'}</TableCell>
+                        <TableCell className="text-white/72">{row.views}</TableCell>
+                        <TableCell className="text-white/72">{row.visitors}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-dashed border-white/10 px-5 py-7 text-sm leading-7 text-white/48">
+                目前还没有 UTM Campaign 数据。以后分享链接时加入例如 <span className="text-sky-100">?utm_source=xiaohongshu&amp;utm_medium=social&amp;utm_campaign=batam</span>，来源识别会比单看 Referrer 更准确。
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
           <Card className="border-white/10 bg-white/5 text-white">
