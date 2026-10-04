@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { getAnalyticsSessionId } from '@/lib/analytics'
+import { getAnalyticsTrackingContext } from '@/lib/analytics'
 
 function deriveContentMeta(pathname: string) {
   if (pathname.startsWith('/spot/')) {
@@ -37,7 +37,7 @@ export default function PageViewTracker() {
     if (pathname.startsWith('/admin') || pathname.startsWith('/api')) return
     if (window.localStorage.getItem('jnq_exclude_analytics') === '1') return
 
-    const sessionId = getAnalyticsSessionId()
+    const tracking = getAnalyticsTrackingContext()
     const query = typeof window !== 'undefined' ? window.location.search.replace(/^\?/, '') : ''
     const trackedPath = query ? `${pathname}?${query}` : pathname
     const dedupeKey = `pageview:${trackedPath}:${new Date().toISOString().slice(0, 16)}`
@@ -64,7 +64,13 @@ export default function PageViewTracker() {
         path: trackedPath,
         contentType,
         contentSlug,
-        sessionId,
+        sessionId: tracking.visitorId,
+        visitorId: tracking.visitorId,
+        visitId: tracking.visitId,
+        deviceType: tracking.deviceType,
+        trafficSource: tracking.attribution.source,
+        trafficMedium: tracking.attribution.medium,
+        trafficCampaign: tracking.attribution.campaign,
         referrer,
         userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
       }),
