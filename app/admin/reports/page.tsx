@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, BarChart3, CalendarRange, Globe2, MapPin, MousePointerClick, Search, ShieldCheck } from 'lucide-react'
+import { ArrowLeft, BarChart3, CalendarRange, Download, Globe2, MapPin, MonitorOff, MousePointerClick, Search, ShieldCheck } from 'lucide-react'
 import { adminFetch } from '@/lib/admin-fetch'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -32,6 +32,14 @@ interface SourceRow {
   key: string
   label: string
   group: string
+  views: number
+  visitors: number
+}
+
+interface CampaignRow {
+  campaign: string
+  source: string
+  medium: string
   views: number
   visitors: number
 }
@@ -105,6 +113,7 @@ interface ReportsPayload {
   topGuides?: RankedContentRow[]
   topSpots?: RankedContentRow[]
   sources?: SourceRow[]
+  campaigns?: CampaignRow[]
   topAffiliateClicks?: RankedAffiliateRow[]
   packageFunnel?: {
     packageViews?: PackageFunnelMetric
@@ -165,11 +174,33 @@ function getDefaultDateRange() {
   }
 }
 
+function csvCell(value: unknown) {
+  const text = String(value ?? '')
+  return `"${text.replace(/"/g, '""')}"`
+}
+
+function downloadTextFile(filename: string, content: string, type: string) {
+  const blob = new Blob([content], { type })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  URL.revokeObjectURL(url)
+}
+
 export default function AdminReportsPage() {
   const [payload, setPayload] = useState<ReportsPayload | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [range, setRange] = useState(getDefaultDateRange())
+  const [excludeThisDevice, setExcludeThisDevice] = useState(false)
+
+  useEffect(() => {
+    setExcludeThisDevice(window.localStorage.getItem('jnq_exclude_analytics') === '1')
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -207,6 +238,7 @@ export default function AdminReportsPage() {
   const topGuides = payload?.topGuides || []
   const topSpots = payload?.topSpots || []
   const sources = payload?.sources || []
+  const campaigns = payload?.campaigns || []
   const topAffiliateClicks = payload?.topAffiliateClicks || []
   const packageFunnel = payload?.packageFunnel || {}
   const topPackageOptions = packageFunnel.topOptions || []
@@ -221,6 +253,61 @@ export default function AdminReportsPage() {
     if (!summary.pageViews) return '0%'
     return `${Math.round(((summary.sourceTrackedViews || 0) / summary.pageViews) * 100)}%`
   }, [summary.pageViews, summary.sourceTrackedViews])
+
+
+  const toggleDeviceExclusion = () => {
+    const next = !excludeThisDevice
+    window.localStorage.setItem('jnq_exclude_analytics', next ? '1' : '0')
+    setExcludeThisDevice(next)
+  }
+
+  const exportJson = () => {
+    if (!payload) return
+    const from = payload.range?.from || range.from
+    const to = payload.range?.to || range.to
+    const snapshot = {
+      exportVersion: 1,
+      generatedAt: new Date().toISOString(),
+      purpose: 'JnQ Journey admin report snapshot for analysis / ChatGPT',
+      range: payload.range || range,
+      report: payload,
+    }
+    downloadTextFile(
+      `jnq-report-${from}-to-${to}.json`,
+      JSON.stringify(snapshot, null, 2),
+      'application/json;charset=utf-8'
+    )
+  }
+
+  const exportCsv = () => {
+    if (!payload) return
+    const rows: Array<Array<string | number>> = [[
+      'section', 'label', 'views', 'visitors', 'clicks', 'enquiries', 'brochure_views', 'source', 'medium', 'details',
+    ]]
+
+    rows.push(
+      ['summary', 'Trusted Views', summary.pageViews || 0, '', '', '', '', '', '', 'bot/admin filtered'],
+      ['summary', 'Visitors', '', summary.visitors || 0, '', '', '', '', '', 'browser anonymous ID dedupe'],
+      ['summary', 'Affiliate Clicks', '', '', summary.affiliateClicks || 0, '', '', '', '', ''],
+      ['summary', 'Raw Page Views', summary.rawPageViews || 0, '', '', '', '', '', '', ''],
+      ['summary', 'Bot / Preview Filtered', summary.botPageViews || 0, '', '', '', '', '', '', ''],
+      ['summary', 'Direct / Unknown', summary.directViews || 0, '', '', '', '', '', '', ''],
+    )
+
+    dailyTraffic.forEach((row) => rows.push(['daily_traffic', row.date, row.pageViews, row.visitors, '', '', '', '', '', '']))
+    topPages.forEach((row) => rows.push(['top_page', row.label, row.views, row.visitors, '', '', '', '', '', row.key]))
+    topGuides.forEach((row) => rows.push(['top_guide', row.slug, row.views, row.visitors, '', '', '', '', '', '']))
+    topSpots.forEach((row) => rows.push(['top_spot', row.slug, row.views, row.visitors, '', '', '', '', '', '']))
+    sources.forEach((row) => rows.push(['source', row.label, row.views, row.visitors, '', '', '', row.group, '', row.key]))
+    campaigns.forEach((row) => rows.push(['utm_campaign', row.campaign, row.views, row.visitors, '', '', '', row.source, row.medium, '']))
+    topPackageOptions.forEach((row) => rows.push(['package_option', row.optionName, row.views, row.visitors, '', row.enquiries, row.brochureViews, '', '', row.packageName || '']))
+    topAffiliateClicks.forEach((row) => rows.push(['affiliate', row.title, '', '', row.clicks, '', '', row.provider, row.type, row.target]))
+
+    const csv = '\uFEFF' + rows.map((row) => row.map(csvCell).join(',')).join('\n')
+    const from = payload.range?.from || range.from
+    const to = payload.range?.to || range.to
+    downloadTextFile(`jnq-report-${from}-to-${to}.csv`, csv, 'text/csv;charset=utf-8')
+  }
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.16),transparent_24%),linear-gradient(180deg,#06101d_0%,#020617_100%)] px-4 py-8 text-white md:px-8">
