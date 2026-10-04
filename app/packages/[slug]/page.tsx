@@ -37,11 +37,18 @@ export default async function PackagePage({ params }: { params: { slug: string }
   const jsonLd = [
     { '@context': 'https://schema.org', '@type': 'WebPage', name: item.title_zh, description: item.short_description, url: absoluteUrl(canonicalPath), primaryImageOfPage: item.cover_image ? { '@type': 'ImageObject', url: item.cover_image } : undefined },
     { '@context': 'https://schema.org', '@type': 'TouristTrip', name: item.title_zh, description: item.short_description, image: item.cover_image || undefined, url: absoluteUrl(canonicalPath), touristType: item.suitable_for || undefined },
-    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'JnQ Journey', item: absoluteUrl('/') },
-      { '@type': 'ListItem', position: 2, name: '旅游配套', item: absoluteUrl('/packages') },
-      { '@type': 'ListItem', position: 3, name: item.title_zh, item: absoluteUrl(canonicalPath) },
-    ] },
+    { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: item.slug.startsWith('hainan-')
+      ? [
+          { '@type': 'ListItem', position: 1, name: 'JnQ Journey', item: absoluteUrl('/') },
+          { '@type': 'ListItem', position: 2, name: '旅游配套', item: absoluteUrl('/packages') },
+          { '@type': 'ListItem', position: 3, name: '海南旅游配套', item: absoluteUrl('/packages/hainan') },
+          { '@type': 'ListItem', position: 4, name: item.title_zh, item: absoluteUrl(canonicalPath) },
+        ]
+      : [
+          { '@type': 'ListItem', position: 1, name: 'JnQ Journey', item: absoluteUrl('/') },
+          { '@type': 'ListItem', position: 2, name: '旅游配套', item: absoluteUrl('/packages') },
+          { '@type': 'ListItem', position: 3, name: item.title_zh, item: absoluteUrl(canonicalPath) },
+        ] },
   ]
 
   return (
