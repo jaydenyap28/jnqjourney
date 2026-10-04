@@ -50,7 +50,7 @@ export default function AdminPackagesPage() {
   const [form, setForm] = useState<PackageRow>(emptyForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState<'cover' | 'hero' | 'hero_mobile' | 'gallery' | ''>('')
+  const [uploading, setUploading] = useState<'cover' | 'hero' | 'hero_mobile' | 'brochure' | 'gallery' | ''>('')
   const [message, setMessage] = useState('')
   const [coverUrlDraft, setCoverUrlDraft] = useState('')
   const [itineraryJson, setItineraryJson] = useState('[]')
@@ -123,7 +123,7 @@ export default function AdminPackagesPage() {
     set('gallery', next.map((item, sort_order) => ({ ...item, sort_order })))
   }
 
-  const uploadImages = async (files: FileList | null, target: 'cover' | 'hero' | 'hero_mobile' | 'gallery') => {
+  const uploadImages = async (files: FileList | null, target: 'cover' | 'hero' | 'hero_mobile' | 'brochure' | 'gallery') => {
     if (!files?.length) return
     setUploading(target)
     setMessage('')
@@ -131,9 +131,12 @@ export default function AdminPackagesPage() {
       const data = new FormData()
       Array.from(files).forEach((file) => data.append('files', file))
       data.append('category', 'packages')
+      const destinationText = `${form.destination || ''} ${form.slug || ''}`.toLowerCase()
       const isTioman = isTiomanPackage(form.slug)
-      data.append('country', isTioman ? 'Malaysia' : 'Indonesia')
-      data.append('city', isTioman ? 'Pulau Tioman' : form.destination || 'travel-package')
+      const isHainan = destinationText.includes('hainan') || destinationText.includes('china') || destinationText.includes('海南')
+      const isBatam = destinationText.includes('batam') || destinationText.includes('indonesia') || destinationText.includes('巴淡')
+      data.append('country', isTioman ? 'Malaysia' : isHainan ? 'China' : isBatam ? 'Indonesia' : 'Travel')
+      data.append('city', isTioman ? 'Pulau Tioman' : isHainan ? 'Hainan' : isBatam ? 'Batam' : form.destination || 'travel-package')
       data.append('locationSlug', form.slug || 'travel-package')
       data.append('field', target)
       const response = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
@@ -143,7 +146,19 @@ export default function AdminPackagesPage() {
       if (target === 'cover') setCoverImage(urls[0] || '')
       else if (target === 'hero') set('hero_image', urls[0] || '')
       else if (target === 'hero_mobile') set('hero_image_mobile', urls[0] || '')
-      else {
+      else if (target === 'brochure') {
+        const brochureUrl = urls[0] || ''
+        const remaining = form.gallery.filter((image: any) => !/完整配套图|配套详情|brochure/i.test(`${image?.alt || ''} ${image?.caption || ''}`))
+        set('gallery', [
+          ...remaining,
+          ...(brochureUrl ? [{
+            url: brochureUrl,
+            alt: `${form.title_zh || '旅游配套'} 完整配套图`,
+            caption: 'JnQ Journey 完整配套图｜点击查看全图',
+            sort_order: remaining.length,
+          }] : []),
+        ])
+      } else {
         const start = form.gallery.length
         set('gallery', [...form.gallery, ...urls.map((url: string, index: number) => ({ url, alt: '', caption: '', sort_order: start + index }))])
       }
@@ -265,6 +280,19 @@ export default function AdminPackagesPage() {
           </div>
 
           <div className="mt-8 border-t border-white/10 pt-6">
+            <div className="mb-5 rounded-xl border border-amber-200/15 bg-amber-200/[0.04] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-white">完整配套图</h3>
+                  <p className="mt-1 text-xs leading-5 text-white/45">上传你自己排版好的完整行程海报。公开页会自动把它独立放在「完整配套图」区，顾客可以点开看全图。</p>
+                </div>
+                <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-amber-200/20 bg-amber-200/[0.05] px-3 text-sm text-amber-50">
+                  <Upload className="h-4 w-4" />
+                  {uploading === 'brochure' ? '上传中' : '上传完整配套图'}
+                  <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'brochure')} disabled={Boolean(uploading)} />
+                </label>
+              </div>
+            </div>
             <h3 className="text-lg font-semibold">{form.slug === 'batam-3d2n' ? '主配套图片' : '图片'}</h3>
             {form.slug === 'batam-3d2n' ? <p className="mt-2 max-w-3xl text-xs leading-6 text-white/45">这里管理整个 Batam 3天2夜页面的主封面与共用图，不会自动变成上方 7 个方案卡片的照片。每个方案自己的照片请在「Batam 多方案管理」里上传。</p> : null}<div className="mt-4 grid gap-5 md:grid-cols-[14rem_1fr]"><div><p className="text-xs text-white/55">封面图</p><div className="relative mt-2 aspect-[4/3] overflow-hidden rounded-lg border border-white/10 bg-black/25">{form.cover_image ? <FallbackImage src={form.cover_image} alt={form.title_zh || '旅游配套封面'} fill className="object-cover" /> : <div className="flex h-full items-center justify-center text-white/30"><ImagePlus className="h-8 w-8" /></div>}</div><label className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'cover' ? '上传中' : '上传封面'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'cover')} disabled={Boolean(uploading)} /></label><input value={coverUrlDraft} onChange={(event) => setCoverUrlDraft(event.target.value)} onBlur={() => setCoverImage(coverUrlDraft)} placeholder="或输入封面 URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div><div className="flex items-center justify-between gap-3"><p className="text-xs text-white/55">实拍图集</p><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><ImagePlus className="h-4 w-4" />{uploading === 'gallery' ? '上传中' : '添加图片'}<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'gallery')} disabled={Boolean(uploading)} /></label></div><div className="mt-3 space-y-3">{form.gallery.map((image, index) => <div key={`${image.url}-${index}`} className="grid gap-3 rounded-lg border border-white/10 bg-black/20 p-3 sm:grid-cols-[7rem_1fr_auto]"><div className="relative aspect-square overflow-hidden rounded-lg bg-black/30"><FallbackImage src={image.url} alt={image.alt || `图集照片 ${index + 1}`} fill className="object-cover" /></div><div className="space-y-2"><input value={image.url} onChange={(event) => updateGallery(index, { url: event.target.value })} aria-label={`图片 ${index + 1} URL`} className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.alt} onChange={(event) => updateGallery(index, { alt: event.target.value })} placeholder="Alt text" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.caption} onChange={(event) => updateGallery(index, { caption: event.target.value })} placeholder="图片说明" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div className="flex gap-1 sm:flex-col"><button type="button" title="设为封面" aria-label={`将图集照片 ${index + 1} 设为封面`} onClick={() => setCoverImage(image.url)} className="rounded-lg border border-emerald-300/30 p-2 text-emerald-100"><ImageUp className="h-4 w-4" /></button><button type="button" title="向前移动" onClick={() => moveGallery(index, -1)} className="rounded-lg border border-white/10 p-2" disabled={index === 0}><ArrowUp className="h-4 w-4" /></button><button type="button" title="向后移动" onClick={() => moveGallery(index, 1)} className="rounded-lg border border-white/10 p-2" disabled={index === form.gallery.length - 1}><ArrowDown className="h-4 w-4" /></button><button type="button" title="删除图片" onClick={() => set('gallery', form.gallery.filter((_, itemIndex) => itemIndex !== index).map((item, sort_order) => ({ ...item, sort_order })))} className="rounded-lg border border-rose-300/20 p-2 text-rose-200"><Trash2 className="h-4 w-4" /></button></div></div>)}{!form.gallery.length ? <p className="rounded-lg border border-dashed border-white/15 p-5 text-sm text-white/40">尚未上传实拍图。</p> : null}</div></div></div></div>
 
