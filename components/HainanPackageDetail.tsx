@@ -71,6 +71,10 @@ export default function HainanPackageDetail({
     .map((id) => RELATED_SPOTS[String(id)])
     .filter(Boolean)
 
+  // Keep the helicopter activity in the itinerary/source content, but do not
+  // promote the ~1 km ride as a headline selling point.
+  const featuredHighlights = (item.highlights || []).filter((text) => !text.includes('直升机'))
+
   useEffect(() => {
     if (!activeImage) return
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -192,14 +196,14 @@ export default function HainanPackageDetail({
           </section>
         ) : null}
 
-        {item.highlights?.length ? (
+        {featuredHighlights.length ? (
           <section>
             <div className="max-w-3xl">
               <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Highlights</p>
               <h2 className="mt-2 text-3xl font-semibold md:text-4xl">配套亮点</h2>
             </div>
             <div className="mt-7 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {item.highlights.map((text, index) => (
+              {featuredHighlights.map((text, index) => (
                 <div key={text} className="rounded-[24px] border border-white/10 bg-white/[0.04] p-5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-full border border-amber-200/20 bg-amber-200/10 text-sm font-semibold text-amber-100">
                     {String(index + 1).padStart(2, '0')}
@@ -303,11 +307,7 @@ export default function HainanPackageDetail({
             {(item.itinerary_days || []).map((day, index) => (
               <article
                 key={`${day.title}-${index}`}
-                className={`grid gap-5 rounded-[28px] border p-5 md:grid-cols-[8rem_1fr] md:p-7 ${
-                  index === 2
-                    ? 'border-amber-200/25 bg-amber-200/[0.055]'
-                    : 'border-white/10 bg-white/[0.03]'
-                }`}
+                className="grid gap-5 rounded-[28px] border border-white/10 bg-white/[0.03] p-5 md:grid-cols-[8rem_1fr] md:p-7"
               >
                 <div>
                   <p className="text-xs uppercase tracking-[0.18em] text-amber-200/70">Day {index + 1}</p>
