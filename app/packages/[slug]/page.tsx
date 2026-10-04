@@ -48,8 +48,8 @@ export default async function PackagePage({ params }: { params: { slug: string }
     <>
       <PackageViewTracker packageId={item.id} packageName={item.title_zh} sourceCode={item.source_code} />
       {jsonLd.map((data, index) => <script key={index} type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />)}
-      {item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} /> : item.slug === 'batam-3d2n' ? <BatamPackageDetail item={item} options={options} /> : item.slug === 'hainan-5d4n-sea-land-air' ? <HainanPackageDetail item={item} /> : <TravelPackageDetail item={item} />}
-      {item.slug !== 'hainan-5d4n-sea-land-air' ? <WhatsAppFloatingButton
+      {item.slug === 'tioman-3d2n' ? <TiomanPackageDetail item={item} options={options} /> : item.slug === 'batam-3d2n' ? <BatamPackageDetail item={item} options={options} /> : item.slug.startsWith('hainan-') ? <HainanPackageDetail item={item} /> : <TravelPackageDetail item={item} />}
+      {!item.slug.startsWith('hainan-') ? <WhatsAppFloatingButton
         pageType="package"
         packageName={item.title_zh}
         packageId={item.id}
