@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/guide'), changeFrequency: 'weekly', priority: 0.8 },
     { url: absoluteUrl('/notes'), changeFrequency: 'weekly', priority: 0.7 },
     { url: absoluteUrl('/packages'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: absoluteUrl('/packages/hainan'), changeFrequency: 'weekly', priority: 0.85 },
     { url: absoluteUrl('/contact'), changeFrequency: 'yearly', priority: 0.4 },
     { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.2 },
     { url: absoluteUrl('/about'), changeFrequency: 'yearly', priority: 0.5 },
