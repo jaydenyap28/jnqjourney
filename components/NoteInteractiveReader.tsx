@@ -87,12 +87,15 @@ export function NoteTableOfContents({ headings }: NoteInteractiveReaderProps) {
   }
 
   return (
-    <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.24em] text-amber-300/80 mb-4">
-        <List className="h-4 w-4 text-amber-400" />
-        <span>目录 / Table of Contents</span>
+    <section className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.055),rgba(255,255,255,0.025))]">
+      <div className="border-b border-white/10 px-5 py-4">
+        <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.24em] text-amber-200/70">
+          <List className="h-4 w-4 text-amber-300/80" />
+          <span>On this page</span>
+        </div>
+        <p className="mt-1 font-cjk-display text-lg text-white/90">文章目录</p>
       </div>
-      <nav className="space-y-1 max-h-[300px] overflow-y-auto pr-1">
+      <nav className="max-h-[320px] space-y-1 overflow-y-auto p-3">
         {headings.map((heading) => {
           const isActive = activeId === heading.id
           return (
@@ -100,13 +103,13 @@ export function NoteTableOfContents({ headings }: NoteInteractiveReaderProps) {
               key={heading.id}
               href={`#heading-${heading.id}`}
               onClick={(event) => handleScrollTo(event, heading.id)}
-              className={`${heading.level === 3 ? 'ml-4 w-[calc(100%-1rem)] text-[13px]' : 'w-full text-sm'} text-left rounded-xl px-3 py-2 transition-all duration-200 flex items-start gap-2 ${
+              className={`${heading.level === 3 ? 'ml-3 w-[calc(100%-0.75rem)] text-[13px]' : 'w-full text-sm'} flex items-start gap-2 rounded-xl border-l px-3 py-2 text-left transition-all duration-200 ${
                 isActive
-                  ? 'bg-amber-400/10 text-amber-200 border-l-2 border-amber-400 pl-2 font-medium'
-                  : 'text-white/60 hover:text-white hover:bg-white/5 border-l border-transparent'
+                  ? 'border-amber-300 bg-amber-200/[0.07] text-amber-100 font-medium'
+                  : 'border-transparent text-white/58 hover:bg-white/[0.04] hover:text-white'
               }`}
             >
-              <span className="shrink-0 text-white/20 mt-0.5">•</span>
+              <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${isActive ? 'bg-amber-300' : 'bg-white/18'}`} />
               <span className="line-clamp-2 leading-relaxed">{heading.content}</span>
             </a>
           )
