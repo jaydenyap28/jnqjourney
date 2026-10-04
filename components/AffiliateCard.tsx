@@ -8,7 +8,7 @@ import { ExternalLink, Hotel, MapPin, Star, Ticket, Train, TrendingUp } from 'lu
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { getDeviceType, trackEvent } from '@/lib/analytics'
+import { getAnalyticsTrackingContext, getDeviceType, trackEvent } from '@/lib/analytics'
 
 interface AffiliateCardProps {
   linkIds?: number[]
@@ -62,16 +62,6 @@ interface AffiliatePreview {
   image?: string
   finalUrl?: string
   hostname?: string
-}
-
-function getTrackingSessionId() {
-  if (typeof window === 'undefined') return ''
-  const key = 'jnq_session_id'
-  const existing = window.localStorage.getItem(key)
-  if (existing) return existing
-  const value = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-  window.localStorage.setItem(key, value)
-  return value
 }
 
 const PROVIDER_ICONS: Record<string, React.ReactNode> = {
@@ -329,6 +319,7 @@ export default function AffiliateCard({
     })
 
     try {
+      const tracking = getAnalyticsTrackingContext()
       await fetch('/api/affiliate-click', {
         method: 'POST',
         keepalive: true,
@@ -337,7 +328,12 @@ export default function AffiliateCard({
         },
         body: JSON.stringify({
           affiliateLinkId: link.id,
-          sessionId: getTrackingSessionId(),
+          sessionId: tracking.visitorId,
+          visitorId: tracking.visitorId,
+          visitId: tracking.visitId,
+          trafficSource: tracking.attribution.source,
+          trafficMedium: tracking.attribution.medium,
+          trafficCampaign: tracking.attribution.campaign,
           userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
           referrer: typeof document !== 'undefined' ? document.referrer : '',
         }),
