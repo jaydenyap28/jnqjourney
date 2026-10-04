@@ -179,7 +179,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
       <Heading
         id={headingId}
         key={block.id}
-        className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}
+        className={headingLevel === 2 ? 'font-display max-w-2xl mx-auto pt-9 pb-3 text-[30px] font-medium leading-[1.15] tracking-tight text-white md:pt-10 md:text-[38px] scroll-mt-24' : headingLevel === 3 ? 'font-display max-w-2xl mx-auto pt-8 pb-2 text-[24px] font-medium leading-snug tracking-tight text-white md:pt-9 md:text-[28px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}
       >
         <InlineMarkdown>{block.content}</InlineMarkdown>
       </Heading>
@@ -426,11 +426,36 @@ export default async function NoteDetailPage({ params }: PageProps) {
           <span className="text-white/65">{note.title}</span>
         </div>
 
-        <section className={`overflow-hidden rounded-[42px] border border-white/10 p-7 shadow-[0_28px_90px_rgba(0,0,0,0.28)] backdrop-blur-sm md:p-10 ${note.coverAccent || ''}`}>
-          <div className="max-w-5xl space-y-5">
-            {getDisplayKicker(note.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(note.kicker)}</p> : null}
-            <h1 className="text-4xl font-semibold leading-tight text-white md:text-7xl">{note.title}</h1>
-            {note.tagline ? <p className="max-w-3xl text-lg leading-9 text-white/80">{note.tagline}</p> : null}
+        <section className={`relative isolate overflow-hidden rounded-[42px] border border-white/10 shadow-[0_28px_90px_rgba(0,0,0,0.30)] ${note.coverImage ? 'min-h-[420px] md:min-h-[500px]' : `p-7 backdrop-blur-sm md:p-10 ${note.coverAccent || ''}`}`}>
+          {note.coverImage ? (
+            <>
+              <FallbackImage
+                src={note.coverImage}
+                alt={note.shortTitle || note.title}
+                fill
+                priority
+                sizes="(max-width: 1536px) 100vw, 1500px"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.86)_0%,rgba(2,6,23,0.58)_48%,rgba(2,6,23,0.18)_100%)]" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/68 via-black/10 to-black/20" />
+            </>
+          ) : null}
+
+          <div className={`relative z-10 flex h-full max-w-5xl flex-col justify-end ${note.coverImage ? 'min-h-[420px] px-7 py-8 md:min-h-[500px] md:px-12 md:py-11' : ''}`}>
+            {getDisplayKicker(note.kicker) ? (
+              <p className="section-kicker text-[11px] uppercase tracking-[0.28em] text-amber-100/85 md:text-xs">
+                {getDisplayKicker(note.kicker)}
+              </p>
+            ) : null}
+            <h1 className="font-display mt-4 max-w-[1050px] text-[clamp(2.9rem,7vw,5.8rem)] font-normal leading-[0.92] tracking-[-0.03em] text-white [text-wrap:balance]">
+              {note.title}
+            </h1>
+            {note.tagline ? (
+              <p className="mt-6 max-w-3xl border-l border-amber-200/55 pl-4 text-base leading-8 text-white/78 md:text-lg md:leading-9">
+                {note.tagline}
+              </p>
+            ) : null}
           </div>
         </section>
 
