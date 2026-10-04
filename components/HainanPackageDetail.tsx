@@ -38,7 +38,7 @@ function normalizeGallery(item: TravelPackage) {
 }
 
 function isBrochureImage(image: TravelPackageImage) {
-  return /原封面|配套图|brochure/i.test(`${image.caption || ''} ${image.alt || ''}`)
+  return /原封面|配套图|配套详情|brochure/i.test(`${image.caption || ''} ${image.alt || ''}`)
 }
 
 function isJnqPhoto(image: TravelPackageImage) {
