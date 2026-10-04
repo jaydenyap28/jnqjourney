@@ -679,6 +679,8 @@ function buildPackageFunnel(rows: AnalyticsEventRow[]) {
   }
 
   const packageViews = count('package_view')
+  const comparisonViews = count('package_comparison_view')
+  const optionSelects = count('package_option_select')
   const optionViews = count('package_option_view')
   const brochureViews = count('package_brochure_view')
   const enquiries = count('package_enquiry_start')
@@ -687,12 +689,15 @@ function buildPackageFunnel(rows: AnalyticsEventRow[]) {
 
   return {
     packageViews,
+    comparisonViews,
+    optionSelects,
     optionViews,
     brochureViews,
     enquiries,
     whatsappClicks,
     rates: {
       packageToOption: rate(optionViews.visitors, packageViews.visitors),
+      comparisonToSelect: rate(optionSelects.visitors, comparisonViews.visitors),
       optionToBrochure: rate(brochureViews.visitors, optionViews.visitors),
       optionToEnquiry: rate(enquiries.visitors, optionViews.visitors),
       packageToEnquiry: rate(enquiries.visitors, packageViews.visitors),
