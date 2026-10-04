@@ -72,7 +72,13 @@ export async function POST(request: Request) {
     const eventName = normalizeText(body?.eventName, 80)
     const path = normalizeText(body?.path, 300)
     const sessionId = normalizeText(body?.sessionId, 120)
+    const visitorId = normalizeText(body?.visitorId, 120)
+    const visitId = normalizeText(body?.visitId, 120)
     const userAgent = normalizeText(body?.userAgent, 500)
+    const deviceType = normalizeText(body?.deviceType, 30)
+    const trafficSource = normalizeText(body?.trafficSource, 120)
+    const trafficMedium = normalizeText(body?.trafficMedium, 120)
+    const trafficCampaign = normalizeText(body?.trafficCampaign, 180)
     const params = sanitizeParams(body?.params)
 
     if (!ALLOWED_EVENTS.has(eventName)) {
@@ -85,8 +91,13 @@ export async function POST(request: Request) {
     const { error } = await supabase.from('analytics_events').insert({
       event_name: eventName,
       path: path || null,
-      session_id: sessionId || null,
-      device_type: normalizeText((params as any).device_type, 30) || null,
+      session_id: sessionId || visitorId || null,
+      visitor_id: visitorId || sessionId || null,
+      visit_id: visitId || null,
+      device_type: deviceType || normalizeText((params as any).device_type, 30) || null,
+      traffic_source: trafficSource || null,
+      traffic_medium: trafficMedium || null,
+      traffic_campaign: trafficCampaign || null,
       package_id: normalizeNumber((params as any).package_id),
       option_id: normalizeNumber((params as any).option_id),
       source_code: normalizeText((params as any).source_code, 120) || null,
