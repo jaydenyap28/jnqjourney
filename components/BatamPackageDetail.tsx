@@ -94,16 +94,21 @@ function excludedMealSummary(option: TravelPackageOption) {
     .filter((item) => !item.includes('未明确'))
     .map((item) =>
       item
+        .replace(/^Day\s*\d+\s*/i, '')
         .replace(/（自理）/g, '')
         .replace(/\(自理\)/g, '')
         .replace(/自理/g, '')
+        .replace(/海盗主题网红餐厅/g, '')
+        .replace(/美食阁/g, '')
         .replace(/\s{2,}/g, ' ')
         .trim()
     )
 
   if (!parts.length) return '无｜6餐已包含'
-  const detail = specificMealEntries.length ? `｜已注明：${specificMealEntries.join('、')}` : ''
-  return `${parts.join(' + ')}${detail}`
+  if (!specificMealEntries.length) return parts.join(' + ')
+
+  const [first, ...rest] = specificMealEntries
+  return [parts.join(' + '), `已注明：${first}`, ...rest].join('\n')
 }
 
 function otherSelfPaySummary(option: TravelPackageOption) {
@@ -536,7 +541,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
           <div className="-mx-5 mt-5 overflow-x-auto overscroll-x-contain border-y border-white/10 px-5 pb-2 [-webkit-overflow-scrolling:touch] md:mx-0 md:mt-7 md:border md:px-0 md:pb-0">
             <table className="min-w-[88rem] border-collapse text-left text-xs sm:text-sm">
               <thead className="bg-white/5"><tr><th className="sticky left-0 z-20 w-28 min-w-28 bg-[#0c1220] p-3 font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-32 md:min-w-32 md:p-4">比较</th>{activeOptions.map((option) => <th key={option.id} className="min-w-44 p-3 md:min-w-48 md:p-4"><button type="button" onClick={() => selectOption(option)} className="text-left font-semibold leading-5 hover:text-amber-100">{option.name_zh}</button></th>)}</tr></thead>
-              <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-20 bg-[#070b16] p-3 font-medium text-white/55 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:p-4">{label}</th>{activeOptions.map((option) => <td key={option.id} className="p-3 align-top leading-5 text-white/68 md:p-4 md:leading-6">{getValue(option)}</td>)}</tr>)}</tbody>
+              <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-20 bg-[#070b16] p-3 font-medium text-white/55 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:p-4">{label}</th>{activeOptions.map((option) => <td key={option.id} className="whitespace-pre-line p-3 align-top leading-5 text-white/68 md:p-4 md:leading-6">{getValue(option)}</td>)}</tr>)}</tbody>
             </table>
           </div>
         </section>
