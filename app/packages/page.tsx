@@ -6,7 +6,7 @@ import FallbackImage from '@/components/FallbackImage'
 import SiteFooter from '@/components/SiteFooter'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
-import { readPublishedPackages } from '@/lib/server/travel-packages'
+import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -17,7 +17,14 @@ export const metadata: Metadata = {
 }
 
 export default async function PackagesPage() {
-  const packages = await readPublishedPackages()
+  const packages = await readPublishedPackagesUncached()
+  const hainanPackages = packages.filter((item) => item.slug.startsWith('hainan-'))
+  const regularPackages = packages.filter((item) => !item.slug.startsWith('hainan-'))
+  const hainanCover = hainanPackages.find((item) => item.slug.includes('5d4n'))?.cover_image || hainanPackages[0]?.cover_image || ''
+  const hainanLowestPrice = hainanPackages
+    .map((item) => Number((item.price_display || '').replace(/,/g, '').match(/RM\s*([0-9]+)/i)?.[1] || ''))
+    .filter((value) => Number.isFinite(value) && value > 0)
+    .sort((a, b) => a - b)[0]
   return (
     <main className="min-h-screen bg-[#050816] text-white">
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
@@ -27,7 +34,7 @@ export default async function PackagesPage() {
 
         {packages.length ? (
           <div className="mt-12 grid gap-5 md:grid-cols-2">
-            {packages.map((item) => (
+            {regularPackages.map((item) => (
               <article key={item.id} className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
                 {item.cover_image ? <div className="relative aspect-[16/9]"><FallbackImage src={item.cover_image} alt={item.title_zh} fill className="object-cover" /></div> : null}
                 <div className="p-6">
@@ -42,6 +49,29 @@ export default async function PackagesPage() {
                 </div>
               </article>
             ))}
+            {hainanPackages.length ? (
+              <article className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
+                {hainanCover ? <div className="relative aspect-[16/9]"><FallbackImage src={hainanCover} alt="海南旅游配套" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" /></div> : null}
+                <div className="p-6">
+                  <div className="flex items-center gap-2 text-xs text-amber-200/75"><MapPinned className="h-4 w-4" />Hainan, China</div>
+                  <h2 className="mt-3 text-2xl font-semibold">海南旅游配套</h2>
+                  <p className="mt-1 text-sm text-white/45">4天3夜 / 5天4夜 · {hainanPackages.length} 个方案可选</p>
+                  <p className="mt-4 leading-7 text-white/65">先比较两个海南方案的价格、天数和行程，再进入单个配套查看完整内容。</p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs text-white/55">
+                    {hainanPackages
+                      .slice()
+                      .sort((a, b) => (Number.parseInt(a.duration || '', 10) || 99) - (Number.parseInt(b.duration || '', 10) || 99))
+                      .map((item) => (
+                        <span key={item.id} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5">{item.duration} · {item.price_display}</span>
+                      ))}
+                  </div>
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    <Link href="/packages/hainan" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">比较海南方案 <ArrowRight className="h-4 w-4" /></Link>
+                    <WhatsAppButton pageType="package" packageName="海南旅游配套" source="JNQ-HAINAN-HUB" label="WhatsApp 咨询" position="inline" />
+                  </div>
+                </div>
+              </article>
+            ) : null}
           </div>
         ) : (
           <div className="mt-12 border-y border-white/10 py-10 md:py-14">
