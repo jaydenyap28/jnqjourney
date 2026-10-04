@@ -10,6 +10,7 @@ export type AnalyticsEventName =
   | 'package_whatsapp_click'
   | 'package_cta_click'
   | 'package_brochure_view'
+  | 'package_gallery_open'
   | 'package_comparison_view'
   | 'package_option_view'
   | 'package_option_select'
@@ -50,6 +51,7 @@ const FIRST_PARTY_EVENTS = new Set<AnalyticsEventName>([
   'package_whatsapp_click',
   'package_cta_click',
   'package_brochure_view',
+  'package_gallery_open',
   'package_comparison_view',
   'package_option_view',
   'package_option_select',
