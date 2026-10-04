@@ -149,7 +149,7 @@ const BATAM_ATTRACTION_ROWS = [
     slugs: ['amazing-promo-499', 'new-version-599', 'economy-island', 'goa-cave', 'lobster-lunch', 'pirate-afternoon-tea'],
   },
   {
-    label: 'Cai Shen Ye Temple',
+    label: 'Vihara Viriya Pala',
     sublabel: '财神爷庙',
     slugs: ['amazing-promo-499'],
   },
