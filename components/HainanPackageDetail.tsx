@@ -63,7 +63,7 @@ export default function HainanPackageDetail({
       item.duration || '',
       included.find((entry) => entry.includes('往返机票')) || '',
       included.find((entry) => entry.includes('23KG')) || '',
-      included.find((entry) => entry.includes('4 晚')) || '',
+      included.find((entry) => /酒店|住宿/.test(entry)) || '',
     ].filter(Boolean)
   }, [item.duration, item.included_items])
 
@@ -141,6 +141,8 @@ export default function HainanPackageDetail({
             <Link href="/">首页</Link>
             <ChevronRight className="h-3 w-3" />
             <Link href="/packages">旅游配套</Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link href="/packages/hainan">海南方案</Link>
           </nav>
 
           <p className="text-xs uppercase tracking-[0.2em] text-amber-200/80">
@@ -162,6 +164,12 @@ export default function HainanPackageDetail({
             </div>
             <div className="flex flex-wrap gap-3">
               {cta('查询这个海南配套', 'hainan_hero')}
+              <Link
+                href="/packages/hainan"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-amber-200/25 bg-amber-200/[0.08] px-5 py-2.5 text-sm font-medium text-amber-50 transition hover:bg-amber-200/[0.14]"
+              >
+                比较 4天3夜 / 5天4夜
+              </Link>
               <a
                 href="#itinerary"
                 className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/20 bg-black/25 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
@@ -424,7 +432,15 @@ export default function HainanPackageDetail({
               {item.price_display ? <p className="mt-5 text-3xl font-semibold text-amber-100">{item.price_display}</p> : null}
               {item.price_note ? <p className="mt-4 max-w-3xl leading-7 text-white/62">{item.price_note}</p> : null}
             </div>
-            <div>{cta('查询最新出发日期和价格', 'hainan_page_bottom')}</div>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/packages/hainan"
+                className="inline-flex min-h-11 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/[0.08]"
+              >
+                返回比较两个海南方案
+              </Link>
+              {cta('查询最新出发日期和价格', 'hainan_page_bottom')}
+            </div>
           </div>
         </section>
       </div>
