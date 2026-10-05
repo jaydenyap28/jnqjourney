@@ -166,7 +166,12 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
           </section>
         ) : null}
 
-        {option.itinerary_days?.length ? <section><h2 className="text-2xl font-semibold">3天2夜详细行程</h2><div className="mt-6 space-y-4">{option.itinerary_days.map((day, index) => <article key={`${option.id}-day-${index}`} className="grid gap-4 rounded-xl border border-white/10 bg-white/[0.025] p-5 md:grid-cols-[7rem_1fr]"><p className="text-sm font-semibold text-amber-200">Day {index + 1}</p><div><h3 className="text-lg font-semibold">{day.title}</h3>{day.summary ? <p className="mt-2 leading-7 text-white/55">{day.summary}</p> : null}{day.items?.length ? <ul className="mt-4 space-y-2 text-sm leading-6 text-white/68">{day.items.map((entry) => <li key={entry}>· {entry}</li>)}</ul> : null}</div></article>)}</div></section> : null}
+        {option.itinerary_days?.length ? <section><h2 className="text-2xl font-semibold">3天2夜详细行程</h2><div className="mt-6 space-y-4">{option.itinerary_days.map((day, index) => <article key={`${option.id}-day-${index}`} className="grid gap-4 rounded-xl border border-white/10 bg-white/[0.025] p-5 md:grid-cols-[7rem_1fr]"><p className="text-sm font-semibold text-amber-200">Day {index + 1}</p><div><h3 className="text-lg font-semibold">{day.title}</h3>{day.summary ? <p className="mt-2 leading-7 text-white/55">{day.summary}</p> : null}{day.items?.length ? <ul className="mt-4 space-y-2 text-sm leading-6 text-white/68">{day.items.map((entry) => {
+  const isFootnote = entry.trim().startsWith('*')
+  return isFootnote
+    ? <li key={entry} className="mt-3 rounded-lg border border-amber-200/10 bg-amber-200/[0.04] px-3 py-2 text-xs leading-5 text-amber-100/65">{entry}</li>
+    : <li key={entry}>· {entry}</li>
+})}</ul> : null}</div></article>)}</div></section> : null}
 
         <section className="grid gap-8 lg:grid-cols-3">
           <div><h2 className="text-lg font-semibold">配套包含</h2><ul className="mt-4 space-y-2.5 text-sm leading-6 text-white/68">{option.included_items?.map((entry) => <li key={entry} className="flex gap-2"><Check className="mt-1 h-4 w-4 shrink-0 text-emerald-300" />{entry}</li>)}</ul></div>
