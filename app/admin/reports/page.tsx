@@ -492,6 +492,9 @@ export default function AdminReportsPage() {
       ['summary', 'Raw Page Views', summary.rawPageViews || 0, '', '', '', '', '', '', '', '', '', ''],
       ['summary', 'Bot / Preview Filtered', summary.botPageViews || 0, '', '', '', '', summary.botRate ?? '', '', '', '', '', ''],
       ['summary', 'Acquisition Tracked', summary.sourceTrackedViews || 0, '', '', '', '', summary.sourceTrackedRate ?? '', '', '', '', '', ''],
+      ['content_quality', 'Published Spots', contentQuality.totalPublishedSpots || 0, '', '', '', '', '', '', '', '', '', 'AdSense quality inventory'],
+      ['content_quality', 'Indexable Spots', contentQuality.indexableSpots || 0, '', '', '', '', contentQuality.indexableRate ?? '', '', '', '', ''],
+      ['content_quality', 'Noindex Spots', contentQuality.noindexSpots || 0, '', '', '', '', '', '', '', '', '', 'temporarily excluded from sitemap'],
     )
 
     dailyTraffic.forEach((row) => rows.push(['daily_traffic', row.date, row.pageViews, row.visitors, row.sessions || '', '', '', '', '', '', '', '']))
