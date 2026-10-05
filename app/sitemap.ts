@@ -71,12 +71,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  const packageRoutes: MetadataRoute.Sitemap = packages.map((item) => ({
-    url: absoluteUrl(`/packages/${item.slug}`),
-    lastModified: validDateOrUndefined(item.updated_at || item.published_at),
-    changeFrequency: 'weekly',
-    priority: 0.8,
-  }))
+  const packageRoutes: MetadataRoute.Sitemap = packages
+    .filter((item) => !item.slug.startsWith('hainan-'))
+    .map((item) => ({
+      url: absoluteUrl(`/packages/${item.slug}`),
+      lastModified: validDateOrUndefined(item.updated_at || item.published_at),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    }))
+
+  const hainanDetailRoutes: MetadataRoute.Sitemap = packages
+    .filter((item) => item.slug.startsWith('hainan-'))
+    .map((item) => ({
+      url: absoluteUrl(`/packages/hainan/${item.slug.replace(/^hainan-/, '')}`),
+      lastModified: validDateOrUndefined(item.updated_at || item.published_at),
+      changeFrequency: 'weekly',
+      priority: 0.78,
+    }))
 
   const packageOptionGroups = await Promise.all(
     packages
@@ -93,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   )
   const packageOptionRoutes: MetadataRoute.Sitemap = packageOptionGroups.flat()
 
-  const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes, ...packageOptionRoutes]
+  const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes, ...hainanDetailRoutes, ...packageOptionRoutes]
   const localization=await readLocalizationSnapshot('en')
   const englishRoutes:MetadataRoute.Sitemap=[]
   for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
