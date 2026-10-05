@@ -49,7 +49,7 @@ function mealSummary(option: TravelPackageOption) {
     meals.afternoonTea ? `${meals.afternoonTea}下午茶` : '',
   ].filter(Boolean)
   const mainMealTotal = meals.breakfast + meals.lunch + meals.dinner
-  return parts.length ? `${parts.join(' + ')}${mainMealTotal ? `（正餐共${mainMealTotal}餐）` : ''}` : '按方案确认'
+  return parts.length ? `${parts.join(' + ')}${mainMealTotal ? `\n（正餐共${mainMealTotal}餐）` : ''}` : '按方案确认'
 }
 
 function massageSummary(option: TravelPackageOption) {
