@@ -297,8 +297,8 @@ export default function HainanPackageDetail({
         {featuredHighlights.length ? (
           <section>
             <div className="max-w-3xl">
-              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Highlights</p>
-              <h2 className="mt-2 text-3xl font-semibold md:text-4xl">配套亮点</h2>
+              <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Why this option</p>
+              <h2 className="mt-2 text-3xl font-semibold md:text-4xl">为什么选 {item.duration}</h2>
             </div>
             <div className="mt-7 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {featuredHighlights.map((text, index) => (
