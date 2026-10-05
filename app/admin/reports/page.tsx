@@ -198,6 +198,23 @@ interface ReportsPayload {
     topOptions?: PackageOptionFunnelRow[]
   }
   packageAcquisition?: PackageAcquisitionRow[]
+  contentQuality?: {
+    totalPublishedSpots?: number
+    indexableSpots?: number
+    noindexSpots?: number
+    indexableRate?: number
+    weakSpotExamples?: Array<{
+      id: number
+      name: string
+      score: number
+      descriptionLength: number
+      mediaCount: number
+      reasons: string[]
+    }>
+    rule?: string
+    ready?: boolean
+    error?: string | null
+  }
   analyticsEventsReady?: boolean
   analyticsEventsError?: string | null
   pageViewsReady?: boolean
@@ -418,6 +435,8 @@ export default function AdminReportsPage() {
   const topPackageOptions = packageFunnel.topOptions || []
   const packageAcquisition = payload?.packageAcquisition || []
   const qualityNotes = payload?.quality?.notes || []
+  const contentQuality = payload?.contentQuality || {}
+  const weakSpotExamples = contentQuality.weakSpotExamples || []
 
   const latestTrafficLabel = useMemo(() => {
     if (!summary.latestDay?.date) return '还没有浏览记录'
@@ -627,6 +646,50 @@ export default function AdminReportsPage() {
             footer={latestTrafficLabel}
           />
         </div>
+
+        <Card className="border-amber-200/15 bg-amber-200/[0.035] text-white">
+          <CardHeader>
+            <CardTitle>AdSense 内容质量门槛</CardTitle>
+            <CardDescription className="text-white/50">低价值 Spot 不删除，仍可站内访问；只是暂时 noindex，并从 sitemap 移除，补强后会自动恢复。</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><div className="text-xs text-white/40">已发布 Spot</div><div className="mt-2 text-2xl font-semibold">{contentQuality.totalPublishedSpots || 0}</div></div>
+              <div className="rounded-2xl border border-emerald-200/15 bg-emerald-300/[0.05] p-4"><div className="text-xs text-white/40">可索引</div><div className="mt-2 text-2xl font-semibold text-emerald-100">{contentQuality.indexableSpots || 0}</div></div>
+              <div className="rounded-2xl border border-amber-200/15 bg-amber-300/[0.05] p-4"><div className="text-xs text-white/40">暂时 noindex</div><div className="mt-2 text-2xl font-semibold text-amber-100">{contentQuality.noindexSpots || 0}</div></div>
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-4"><div className="text-xs text-white/40">索引通过率</div><div className="mt-2 text-2xl font-semibold">{formatPercent(contentQuality.indexableRate)}</div></div>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-3 text-xs leading-6 text-white/58">
+              当前门槛：{contentQuality.rule || '读取中'}。这个门槛只控制 SEO 索引，不会删除 Spot，也不会影响站内地图、Guide 或用户直接打开页面。
+            </div>
+            {weakSpotExamples.length ? (
+              <div className="overflow-x-auto rounded-2xl border border-white/10">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-white/10 hover:bg-transparent">
+                      <TableHead className="text-white/55">优先补强 Spot</TableHead>
+                      <TableHead className="text-white/55">分数</TableHead>
+                      <TableHead className="text-white/55">正文</TableHead>
+                      <TableHead className="text-white/55">媒体</TableHead>
+                      <TableHead className="text-white/55">原因</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {weakSpotExamples.slice(0, 12).map((row) => (
+                      <TableRow key={row.id} className="border-white/10">
+                        <TableCell><Link href={`/spot/spot-${row.id}`} className="font-medium text-white hover:text-amber-100">{row.name}</Link><div className="mt-1 text-xs text-white/35">ID {row.id}</div></TableCell>
+                        <TableCell className="text-amber-100">{row.score}/12</TableCell>
+                        <TableCell className="text-white/65">{row.descriptionLength} 字</TableCell>
+                        <TableCell className="text-white/65">{row.mediaCount}</TableCell>
+                        <TableCell className="max-w-[360px] text-xs leading-5 text-white/52">{row.reasons.join(' · ')}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <Card className="border-emerald-200/15 bg-emerald-300/[0.035] text-white">
