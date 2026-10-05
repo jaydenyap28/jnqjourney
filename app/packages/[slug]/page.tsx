@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 
 import PackageViewTracker from '@/components/PackageViewTracker'
 import SiteFooter from '@/components/SiteFooter'
@@ -32,6 +32,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function PackagePage({ params }: { params: { slug: string } }) {
   const item = await readPublishedPackage(params.slug)
   if (!item) notFound()
+
+  // Hainan now follows the same information architecture as Batam:
+  // destination hub first, then individual package detail pages.
+  if (item.slug.startsWith('hainan-')) redirect('/packages/hainan')
+
   const options = ['tioman-3d2n', 'batam-3d2n'].includes(item.slug) ? await readPublishedPackageOptions(item.id) : []
   const canonicalPath = item.canonical_url || `/packages/${item.slug}`
   const jsonLd = [
