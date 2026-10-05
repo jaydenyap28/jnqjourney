@@ -20,7 +20,11 @@ async function guardSpot(request: NextRequest) {
     if (response.ok) {
       const nextResponse = NextResponse.next()
       const source = response.headers.get('X-JNQ-Data-Source')
+      const seoIndexable = response.headers.get('X-JNQ-SEO-Indexable')
+      const qualityScore = response.headers.get('X-JNQ-SEO-Quality-Score')
       if (source) nextResponse.headers.set('X-JNQ-Data-Source', source)
+      if (qualityScore) nextResponse.headers.set('X-JNQ-SEO-Quality-Score', qualityScore)
+      if (seoIndexable === '0') nextResponse.headers.set('X-Robots-Tag', 'noindex, follow')
       return nextResponse
     }
     if (response.status === 404) {
