@@ -62,11 +62,22 @@ export default function HainanPackageDetail({
 
   const quickFacts = useMemo(() => {
     const included = item.included_items || []
+    const airfareEntry = included.find((entry) => entry.includes('往返机票')) || ''
+    const airfareFact = airfareEntry
+      ? [
+          airfareEntry.includes('往返机票') ? '往返机票' : '',
+          airfareEntry.includes('税费') ? '税费' : '',
+          airfareEntry.includes('飞机餐') ? '飞机餐' : '',
+        ].filter(Boolean).join('＋')
+      : ''
+    const baggageFact = included.some((entry) => /23\s*KG/i.test(entry)) ? '23KG 托运行李' : ''
+    const hotelFact = included.find((entry) => /酒店|住宿/.test(entry)) || ''
+
     return [
       item.duration || '',
-      included.find((entry) => entry.includes('往返机票')) || '',
-      included.find((entry) => entry.includes('23KG')) || '',
-      included.find((entry) => /酒店|住宿/.test(entry)) || '',
+      airfareFact,
+      baggageFact,
+      hotelFact,
     ].filter(Boolean)
   }, [item.duration, item.included_items])
 
