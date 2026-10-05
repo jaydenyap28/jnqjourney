@@ -716,8 +716,8 @@ export default function SpotContent({
               <span>{location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}</span>
             </div>
             {location.visit_date ? (
-              <div className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2 py-1">
-                <span className="font-bold text-amber-400"><PublicCopy text="日期" /></span>
+              <div className="flex items-center gap-1.5 rounded-md border border-amber-300/15 bg-amber-300/[0.06] px-2 py-1">
+                <span className="font-bold text-amber-300"><PublicCopy text="JnQ 到访" /></span>
                 <span>{new Date(location.visit_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}</span>
               </div>
             ) : null}
