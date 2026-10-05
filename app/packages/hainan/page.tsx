@@ -32,7 +32,7 @@ export default async function HainanPackagesPage() {
           '@type': 'ListItem',
           position: index + 1,
           name: item.title_zh,
-          url: absoluteUrl(`/packages/${item.slug}`),
+          url: absoluteUrl(`/packages/hainan/${item.slug.replace(/^hainan-/, '')}`),
         })),
       },
     },
