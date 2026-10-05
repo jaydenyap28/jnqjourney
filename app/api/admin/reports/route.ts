@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -218,6 +219,22 @@ async function fetchAnalyticsEvents(supabase: ReportSupabaseClient, range: DateR
     if (!result.data || result.data.length < PAGE_SIZE) return { rows, error: null, truncated: false }
   }
   return { rows, error: null, truncated: true }
+}
+
+
+async function fetchSpotQualityInventory(supabase: ReportSupabaseClient) {
+  const result = await supabase
+    .from('locations')
+    .select('id,name,name_cn,description,review,image_url,images,experience_zh,visit_date,video_url,facebook_video_url,address,opening_hours,price_info,related_note_slugs,publication_status,status')
+    .eq('status', 'active')
+
+  if (result.error) return { rows: [] as any[], error: result.error.message }
+
+  const rows = (result.data || [])
+    .filter((row: any) => row.publication_status == null || row.publication_status === 'published')
+    .map((row: any) => ({ ...row, quality: evaluateSpotQuality(row) }))
+
+  return { rows, error: null }
 }
 
 function normalizePath(value?: string | null) {
@@ -883,11 +900,12 @@ export async function GET(request: Request) {
   if (!range) return NextResponse.json({ error: '日期范围无效。' }, { status: 400 })
 
   const previousRange = buildPreviousRange(range)
-  const [pageViewsResult, previousPageViewsResult, affiliateClicksResult, analyticsEventsResult] = await Promise.all([
+  const [pageViewsResult, previousPageViewsResult, affiliateClicksResult, analyticsEventsResult, spotQualityResult] = await Promise.all([
     fetchPageViews(supabase, range),
     fetchPageViews(supabase, previousRange),
     fetchAffiliateClicks(supabase, range),
     fetchAnalyticsEvents(supabase, range),
+    fetchSpotQualityInventory(supabase),
   ])
 
   const rawPageViews = pageViewsResult.rows.filter(isReportablePath)
@@ -914,6 +932,21 @@ export async function GET(request: Request) {
   const sessionMetrics = buildSessionMetrics(humanPageViews)
   const affiliateVisitors = new Set(affiliateClickRows.map(visitorKey).filter(Boolean)).size
   const packageFunnel = buildPackageFunnel(analyticsEventRows)
+  const spotQualityRows = spotQualityResult.rows
+  const indexableSpots = spotQualityRows.filter((row: any) => row.quality.indexable)
+  const noindexSpots = spotQualityRows.filter((row: any) => !row.quality.indexable)
+  const weakSpotExamples = noindexSpots
+    .slice()
+    .sort((a: any, b: any) => a.quality.score - b.quality.score || a.quality.descriptionLength - b.quality.descriptionLength)
+    .slice(0, 20)
+    .map((row: any) => ({
+      id: Number(row.id),
+      name: String(row.name_cn || row.name || `#${row.id}`),
+      score: row.quality.score,
+      descriptionLength: row.quality.descriptionLength,
+      mediaCount: row.quality.mediaCount,
+      reasons: row.quality.reasons,
+    }))
 
   return NextResponse.json({
     generatedAt: new Date().toISOString(),
@@ -983,6 +1016,16 @@ export async function GET(request: Request) {
     affiliateProviders: buildAffiliateProviders(affiliateClickRows),
     packageFunnel,
     packageAcquisition: buildPackageAcquisition(analyticsEventRows),
+    contentQuality: {
+      totalPublishedSpots: spotQualityRows.length,
+      indexableSpots: indexableSpots.length,
+      noindexSpots: noindexSpots.length,
+      indexableRate: spotQualityRows.length ? Number(((indexableSpots.length / spotQualityRows.length) * 100).toFixed(1)) : 0,
+      weakSpotExamples,
+      rule: 'Score >= 8/12 + at least 180 chars + 2 media, or strong first-hand experience',
+      ready: !spotQualityResult.error,
+      error: spotQualityResult.error,
+    },
     analyticsEventsReady: !analyticsEventsResult.error,
     analyticsEventsError: analyticsEventsResult.error,
     pageViewsReady: !pageViewsResult.error,
