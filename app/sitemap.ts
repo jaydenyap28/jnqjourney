@@ -104,6 +104,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // check and emits noindex when a formerly complete translation is stale.
     const languages={zh:absoluteUrl(record.canonicalPath),en:absoluteUrl(`/en${record.canonicalPath}`),'x-default':absoluteUrl(record.canonicalPath)}
     const existing=chineseRoutes.find(r=>r.url===languages.zh)
+    // Spot sitemap inclusion is controlled by the AdSense / SEO quality gate.
+    // Do not let a completed English translation re-add a low-value Spot.
+    if (record.canonicalPath.startsWith('/spot/') && !existing) continue
     if(existing) existing.alternates={languages}
     else chineseRoutes.push({url:languages.zh,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
     englishRoutes.push({url:languages.en,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
