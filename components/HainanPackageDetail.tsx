@@ -266,13 +266,10 @@ export default function HainanPackageDetail({
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
         <section className="rounded-[28px] border border-amber-200/20 bg-amber-200/[0.06] p-5 md:p-6">
-          <p className="text-xs uppercase tracking-[0.18em] text-amber-200/70">Important update</p>
-          <h2 className="mt-2 text-xl font-semibold text-amber-50 md:text-2xl">直升机低空飞行项目目前暂停</h2>
+          <p className="text-xs uppercase tracking-[0.18em] text-amber-200/70">Confirmed itinerary update</p>
+          <h2 className="mt-2 text-xl font-semibold text-amber-50 md:text-2xl">原直升机体验已改为凤凰岛高空酒廊</h2>
           <p className="mt-3 text-sm leading-7 text-white/62">
-            {item.slug.includes('5d4n')
-              ? '原直升机项目目前暂停，现行 5天4夜 行程改为凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）。'
-              : '原 1 公里直升机体验目前暂停，恢复时间未定；4天3夜替代安排以出发前最终确认为准。'}
-            旧版完整配套图若仍显示直升机项目，请以本页最新行程为准。
+            原低空直升机体验目前暂停。旅行社已确认改为凤凰岛高空酒廊，包含每人一杯饮料／鸡尾酒＋点心。旧版完整配套图若仍显示直升机项目，请以本页最新行程为准。
           </p>
         </section>
 
