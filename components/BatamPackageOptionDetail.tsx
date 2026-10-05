@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Check, ChevronRight, Coffee, Hotel, Maximize2, Users, X } from 'lucide-react'
+import { CalendarDays, Check, ChevronRight, Coffee, Hotel, Maximize2, Users, X } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
@@ -27,9 +27,18 @@ const THEMES: Record<string, { eyebrow: string; title: string; subtitle: string;
   'pirate-afternoon-tea': { eyebrow: 'GROUP ESCAPE', title: '海盗船下午茶 · 团体玩法', subtitle: '更适合公司团、朋友团与大型包团', badge: '20人以上' },
 }
 
+const GOLDEN_VIEW_2026_SURCHARGE_DATES = [
+  { month: '2月', occasion: 'Chinese New Year', dates: '16、17、18、19 February 2026' },
+  { month: '4月', occasion: 'Good Friday', dates: '3、4 April 2026' },
+  { month: '8月', occasion: 'Singapore National Day', dates: '8、9 August 2026' },
+  { month: '11月', occasion: 'Deepavali', dates: '7、8 November 2026' },
+  { month: '12月', occasion: 'Christmas & New Year', dates: '25、26、27、31 December 2026' },
+] as const
+
 export default function BatamPackageOptionDetail({ item, option }: { item: TravelPackage; option: TravelPackageOption }) {
   const theme = THEMES[option.slug] || { eyebrow: 'BATAM PACKAGE', title: option.name_zh, subtitle: option.short_description || '', badge: '精选方案' }
   const brochure = option.brochure_image?.url ? option.brochure_image : null
+  const usesGoldenViewHotel = option.accommodation_name.toLowerCase().includes('golden view hotel')
   const [brochureOpen, setBrochureOpen] = useState(false)
 
   useEffect(() => {
@@ -150,6 +159,28 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><Hotel className="h-5 w-5 text-amber-200" /><p className="mt-3 text-xs text-white/40">住宿</p><p className="mt-1 text-lg font-semibold">{option.accommodation_name}</p></div>
           <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5"><Users className="h-5 w-5 text-amber-200" /><p className="mt-3 text-xs text-white/40">比较适合</p><p className="mt-1 text-lg font-semibold">{option.suitable_for?.[0] || '按人数与需求选择'}</p></div>
         </section>
+
+        {usesGoldenViewHotel ? (
+          <section className="rounded-xl border border-amber-200/25 bg-amber-200/[0.055] p-5 md:p-6">
+            <div className="flex gap-3">
+              <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-amber-200" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-100/60">Golden View Hotel · 2026 Surcharge Dates</p>
+                <h2 className="mt-2 text-xl font-semibold">Golden View Hotel 2026 旺季附加费日期</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-6 text-white/62">若此方案最终安排入住 Golden View Hotel，以下住宿日期将另外收取酒店旺季附加费。附加费金额以查询时酒店及配套最终确认为准。</p>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {GOLDEN_VIEW_2026_SURCHARGE_DATES.map((entry) => (
+                <div key={`${entry.month}-${entry.occasion}`} className="rounded-lg border border-white/10 bg-black/15 px-4 py-3">
+                  <p className="text-sm font-semibold text-amber-100">{entry.month}｜{entry.occasion}</p>
+                  <p className="mt-1 text-sm leading-6 text-white/66">{entry.dates}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-white/42">仅在实际入住 Golden View Hotel 且住宿日期落在上述日期时适用。</p>
+          </section>
+        ) : null}
 
         {option.price_rows?.length ? <section><h2 className="text-2xl font-semibold">人数与价格</h2><div className="mt-5 overflow-hidden rounded-xl border border-white/10"><div className="grid grid-cols-[1fr_auto] gap-4 bg-white/[0.04] px-4 py-3 text-xs text-white/45"><span>人数 / 条件</span><span>价格</span></div>{option.price_rows.map((row) => <div key={`${row.label}-${row.price}`} className="grid grid-cols-[1fr_auto] gap-4 border-t border-white/10 px-4 py-3 text-sm"><span className="text-white/68">{row.label}</span><strong className="font-medium text-amber-100">{row.price}</strong></div>)}</div></section> : null}
 
