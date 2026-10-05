@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 
 import { PUBLIC_CACHE_CONTROL } from '@/lib/public-data'
 import { PublicSpotUnavailableError, getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 export const runtime = 'nodejs'
 
@@ -14,9 +15,17 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
         { status: 404, headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } }
       )
     }
+    const quality = evaluateSpotQuality(resolved.spot)
     return NextResponse.json(
       { spot: resolved.spot },
-      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL, 'X-JNQ-Data-Source': resolved.source } }
+      {
+        headers: {
+          'Cache-Control': PUBLIC_CACHE_CONTROL,
+          'X-JNQ-Data-Source': resolved.source,
+          'X-JNQ-SEO-Indexable': quality.indexable ? '1' : '0',
+          'X-JNQ-SEO-Quality-Score': String(quality.score),
+        },
+      }
     )
   } catch (error) {
     const message = error instanceof PublicSpotUnavailableError ? 'Spot data is temporarily unavailable.' : 'Unable to load spot data.'
