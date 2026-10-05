@@ -35,10 +35,32 @@ const GOLDEN_VIEW_2026_SURCHARGE_DATES = [
   { month: '12月', occasion: 'Christmas & New Year', dates: '25、26、27、31 December 2026' },
 ] as const
 
+const BATAM_SMALL_GROUP_SURCHARGES: Record<string, { packageLabel: string; rows: Array<{ people: string; surcharge: string }> }> = {
+  'amazing-promo-499': {
+    packageLabel: 'Batam 非常优惠',
+    rows: [{ people: '2–3人出发', surcharge: '+ RM200 / pax' }],
+  },
+  'economy-island': {
+    packageLabel: 'Batam Economy Package',
+    rows: [
+      { people: '2人出发', surcharge: '+ RM150 / pax' },
+      { people: '3人出发', surcharge: '+ RM80 / pax' },
+    ],
+  },
+  'new-version-599': {
+    packageLabel: 'Batam 新品配套',
+    rows: [
+      { people: '2人出发', surcharge: '+ RM160 / pax' },
+      { people: '3人出发', surcharge: '+ RM90 / pax' },
+    ],
+  },
+}
+
 export default function BatamPackageOptionDetail({ item, option }: { item: TravelPackage; option: TravelPackageOption }) {
   const theme = THEMES[option.slug] || { eyebrow: 'BATAM PACKAGE', title: option.name_zh, subtitle: option.short_description || '', badge: '精选方案' }
   const brochure = option.brochure_image?.url ? option.brochure_image : null
   const usesGoldenViewHotel = option.accommodation_name.toLowerCase().includes('golden view hotel')
+  const smallGroupSurcharge = BATAM_SMALL_GROUP_SURCHARGES[option.slug]
   const [brochureOpen, setBrochureOpen] = useState(false)
 
   useEffect(() => {
@@ -183,6 +205,28 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
         ) : null}
 
         {option.price_rows?.length ? <section><h2 className="text-2xl font-semibold">人数与价格</h2><div className="mt-5 overflow-hidden rounded-xl border border-white/10"><div className="grid grid-cols-[1fr_auto] gap-4 bg-white/[0.04] px-4 py-3 text-xs text-white/45"><span>人数 / 条件</span><span>价格</span></div>{option.price_rows.map((row) => <div key={`${row.label}-${row.price}`} className="grid grid-cols-[1fr_auto] gap-4 border-t border-white/10 px-4 py-3 text-sm"><span className="text-white/68">{row.label}</span><strong className="font-medium text-amber-100">{row.price}</strong></div>)}</div></section> : null}
+
+        {smallGroupSurcharge ? (
+          <section className="rounded-xl border border-sky-200/20 bg-sky-200/[0.045] p-5 md:p-6">
+            <div className="flex gap-3">
+              <Users className="mt-0.5 h-5 w-5 shrink-0 text-sky-200" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-sky-100/55">Small Group Surcharge</p>
+                <h2 className="mt-2 text-xl font-semibold">不足 4 人也可以出发</h2>
+                <p className="mt-3 text-sm leading-6 text-white/62">{smallGroupSurcharge.packageLabel} 若不足 4 人成团，可补以下差额安排小团出发：</p>
+              </div>
+            </div>
+            <div className="mt-5 overflow-hidden rounded-lg border border-white/10">
+              {smallGroupSurcharge.rows.map((row, index) => (
+                <div key={row.people} className={`grid grid-cols-[1fr_auto] gap-4 px-4 py-3 text-sm ${index ? 'border-t border-white/10' : ''}`}>
+                  <span className="text-white/70">{row.people}</span>
+                  <strong className="font-semibold text-sky-100">{row.surcharge}</strong>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-white/42">以上为不足 4 人成团时每人需补的差额，最终安排及价格以查询时确认为准。</p>
+          </section>
+        ) : null}
 
         {brochure ? (
           <section className="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.025]">
