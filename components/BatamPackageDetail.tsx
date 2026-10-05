@@ -85,6 +85,7 @@ function excludedMealSummary(option: TravelPackageOption) {
     missing.dinner ? `${missing.dinner}晚餐` : '',
   ].filter(Boolean)
 
+  const mealOrder: Record<string, number> = { 早餐: 0, 午餐: 1, 晚餐: 2 }
   const specificMealEntries = (option.excluded_items || [])
     .filter((item) => item.includes('早餐') || item.includes('午餐') || item.includes('晚餐'))
     .filter((item) => !item.includes('未明确'))
@@ -100,8 +101,10 @@ function excludedMealSummary(option: TravelPackageOption) {
         .replace(/早餐|午餐|晚餐/g, '')
         .replace(/\s{2,}/g, ' ')
         .trim()
-      return `1${mealType} ${place}`
+      return { mealType, place }
     })
+    .sort((left, right) => mealOrder[left.mealType] - mealOrder[right.mealType])
+    .map(({ mealType, place }) => `1${mealType} ${place}`)
 
   if (!parts.length) return '无｜6餐已包含'
   if (!specificMealEntries.length) return parts.join(' + ')
