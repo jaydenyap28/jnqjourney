@@ -602,7 +602,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
               </tbody>
             </table>
           </div>
-          <p className="mt-3 text-xs leading-5 text-white/35">补充：海盗船下午茶属于 Blue Fire Beach Club 内的体验；千层糕与燕窝馆可能按当天安排更换店家，所以不列作固定景点比较。</p>
+          <p className="mt-3 text-xs leading-5 text-white/35">补充：海盗船下午茶为独立体验，原配套没有明确写明具体登船点；千层糕与燕窝馆可能按当天安排更换店家，所以不列作固定景点比较。</p>
         </section>
 
         <section className="border border-white/10 bg-white/[0.03] p-6 md:p-8">
