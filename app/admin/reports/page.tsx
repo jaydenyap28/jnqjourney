@@ -677,7 +677,7 @@ export default function AdminReportsPage() {
                   <TableBody>
                     {weakSpotExamples.slice(0, 12).map((row) => (
                       <TableRow key={row.id} className="border-white/10">
-                        <TableCell><Link href={`/spot/spot-${row.id}`} className="font-medium text-white hover:text-amber-100">{row.name}</Link><div className="mt-1 text-xs text-white/35">ID {row.id}</div></TableCell>
+                        <TableCell><div className="font-medium text-white">{row.name}</div><div className="mt-1 text-xs text-white/35">ID {row.id}</div></TableCell>
                         <TableCell className="text-amber-100">{row.score}/12</TableCell>
                         <TableCell className="text-white/65">{row.descriptionLength} 字</TableCell>
                         <TableCell className="text-white/65">{row.mediaCount}</TableCell>
