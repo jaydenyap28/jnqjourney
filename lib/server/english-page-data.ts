@@ -17,6 +17,7 @@ import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 async function readPagesPublicSpotFallback(id: number, slug: string): Promise<PublicSpotRecord | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -57,6 +58,7 @@ export interface EnglishPageData {
   guides: Array<Pick<TravelGuide,'slug'|'title'|'duration'|'tagline'|'coverImage'> & { translationStatus: TranslationStatus }>
   region?: PublicRegion
   spot?: PublicSpotRecord & { title: string }
+  spotSeoIndexable?: boolean
   guide?: TravelGuide
   tripCost?: PublicGuideTripCost
 }
@@ -218,7 +220,7 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     if (sourceSpot.publication_status && sourceSpot.publication_status !== 'published') return null
     const source = {...sourceSpot,title:sourceSpot.name}
     const result = applyLocalization(source,spotLocalization)
-    data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
+    data.kind='spot'; data.spot=result.value; data.spotSeoIndexable=evaluateSpotQuality(sourceSpot).indexable; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
     data.description=result.value.description || result.value.review || ''
     if (source.related_note_slugs?.length) {
       const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
