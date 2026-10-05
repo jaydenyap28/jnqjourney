@@ -94,6 +94,14 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
       </section>
 
       <div className="mx-auto max-w-6xl space-y-16 px-5 py-14 md:px-8 md:py-20">
+        <section className="rounded-[28px] border border-amber-200/20 bg-amber-200/[0.06] p-5 md:p-6">
+          <p className="text-xs uppercase tracking-[0.18em] text-amber-200/70">Important update</p>
+          <h2 className="mt-2 text-xl font-semibold text-amber-50 md:text-2xl">直升机低空飞行项目目前暂停</h2>
+          <p className="mt-3 max-w-4xl text-sm leading-7 text-white/62">
+            目前海南配套不再把低空直升机飞行列为可提供项目。5天4夜现行资料已改为凤凰岛高空酒廊；4天3夜的替代安排以出发前最终确认为准。旧版配套图若仍出现直升机项目，请以网页最新行程为准。
+          </p>
+        </section>
+
         <section>
           <div className="max-w-3xl">
             <p className="text-xs uppercase tracking-[0.2em] text-emerald-200/70">Package options</p>
