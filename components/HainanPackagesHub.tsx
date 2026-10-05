@@ -24,6 +24,10 @@ function highlightSummary(item: TravelPackage) {
   return highlights.slice(0, 4)
 }
 
+function hainanDetailHref(item: TravelPackage) {
+  return `/packages/hainan/${item.slug.replace(/^hainan-/, '')}`
+}
+
 export default function HainanPackagesHub({ packages }: { packages: TravelPackage[] }) {
   const options = [...packages].sort((a, b) => {
     const da = Number.parseInt(a.duration || '', 10) || 999
@@ -132,7 +136,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     ) : null}
 
                     <div className="mt-7 flex flex-wrap gap-3">
-                      <Link href={`/packages/${item.slug}`} onClick={() => trackOptionSelect(item, 'hainan_hub_card')} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
+                      <Link href={hainanDetailHref(item)} onClick={() => trackOptionSelect(item, 'hainan_hub_card')} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">
                         查看完整行程 <ArrowRight className="h-4 w-4" />
                       </Link>
                       <WhatsAppButton
@@ -207,7 +211,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">查看详情</th>
                     {options.map((item) => (
                       <td key={item.id} className="px-5 py-5">
-                        <Link href={`/packages/${item.slug}`} onClick={() => trackOptionSelect(item, 'hainan_comparison_table')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100">
+                        <Link href={hainanDetailHref(item)} onClick={() => trackOptionSelect(item, 'hainan_comparison_table')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100">
                           打开 {item.duration} 配套 <ArrowRight className="h-4 w-4" />
                         </Link>
                       </td>
