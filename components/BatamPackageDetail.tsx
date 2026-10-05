@@ -126,6 +126,20 @@ function optionCtaLabel(option: TravelPackageOption) {
   return `查询「${option.name_zh}」`
 }
 
+const BATAM_COMPARISON_LABELS: Record<string, string> = {
+  'amazing-promo-499': '超值优惠',
+  'new-version-599': '按摩轻享',
+  'economy-island': '双 Beach Club 轻松',
+  'goa-cave': 'Goa Cave 海洞探秘',
+  'ibis-relax-666': 'Ibis Styles 深度按摩',
+  'lobster-lunch': '龙虾午餐',
+  'pirate-afternoon-tea': '海盗船下午茶',
+}
+
+function comparisonOptionLabel(option: TravelPackageOption) {
+  return BATAM_COMPARISON_LABELS[option.slug] || option.name_zh.replace(/配套$/u, '').trim()
+}
+
 
 const BATAM_ATTRACTION_ROWS = [
   {
@@ -542,7 +556,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
           </div>
           <div className="-mx-5 mt-5 overflow-x-auto overscroll-x-contain border-y border-white/10 px-5 pb-2 [-webkit-overflow-scrolling:touch] md:mx-0 md:mt-7 md:border md:px-0 md:pb-0">
             <table className="min-w-[88rem] border-collapse text-left text-xs sm:text-sm">
-              <thead className="bg-white/5"><tr><th className="sticky left-0 z-20 w-28 min-w-28 bg-[#0c1220] p-3 font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-32 md:min-w-32 md:p-4">比较</th>{activeOptions.map((option) => <th key={option.id} className="min-w-44 p-3 md:min-w-48 md:p-4"><button type="button" onClick={() => selectOption(option)} className="text-left font-semibold leading-5 hover:text-amber-100">{option.name_zh}</button></th>)}</tr></thead>
+              <thead className="bg-white/5"><tr><th className="sticky left-0 z-20 w-28 min-w-28 bg-[#0c1220] p-3 font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-32 md:min-w-32 md:p-4">比较</th>{activeOptions.map((option) => <th key={option.id} className="min-w-44 p-3 md:min-w-48 md:p-4"><button type="button" onClick={() => selectOption(option)} className="text-left font-semibold leading-5 hover:text-amber-100">{comparisonOptionLabel(option)}</button></th>)}</tr></thead>
               <tbody>{comparisonRows.map(([label, getValue]) => <tr key={label} className="border-t border-white/10"><th className="sticky left-0 z-20 bg-[#070b16] p-3 font-medium text-white/55 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:p-4">{label}</th>{activeOptions.map((option) => <td key={option.id} className="whitespace-pre-line p-3 align-top leading-5 text-white/68 md:p-4 md:leading-6">{getValue(option)}</td>)}</tr>)}</tbody>
             </table>
           </div>
@@ -562,7 +576,7 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
                   <th className="sticky left-0 z-20 w-44 min-w-44 bg-[#0c1220] p-3 text-left font-medium text-white/50 shadow-[8px_0_18px_rgba(5,8,22,0.45)] md:w-56 md:min-w-56 md:p-4">景点 / 行程点</th>
                   {activeOptions.map((option) => (
                     <th key={option.id} className="min-w-40 p-3 text-center align-bottom md:min-w-44 md:p-4">
-                      <button type="button" onClick={() => selectOption(option)} className="font-semibold text-white/80 transition hover:text-amber-100">{option.name_zh}</button>
+                      <button type="button" onClick={() => selectOption(option)} className="font-semibold text-white/80 transition hover:text-amber-100">{comparisonOptionLabel(option)}</button>
                     </th>
                   ))}
                 </tr>
