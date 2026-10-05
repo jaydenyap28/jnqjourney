@@ -198,7 +198,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     { label: '参考价格', values: options.map((item) => item.price_display || '—') },
                     { label: '行程天数', values: options.map((item) => item.duration || '—') },
                     { label: '主要路线', values: options.map(routeSummary) },
-                    { label: '住宿', values: options.map((item) => item.slug.includes('4d3n') ? '全程入住四星酒店' : item.slug.includes('5d4n') ? '全程入住四星＋五星酒店' : findIncluded(item, /酒店|住宿/)) },
+                    { label: '住宿', values: options.map((item) => findIncluded(item, /酒店|住宿/)) },
                   ].map((row) => (
                     <tr key={row.label}>
                       <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">{row.label}</th>
