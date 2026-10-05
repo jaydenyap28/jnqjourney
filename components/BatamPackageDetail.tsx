@@ -64,11 +64,7 @@ function mainExperience(option: TravelPackageOption) {
 }
 
 function groupSummary(option: TravelPackageOption) {
-  const labels = (option.price_rows || [])
-    .map((row) => row.label)
-    .filter((label) => /\d+.*人|人以上|团体|领队/.test(label))
-    .slice(0, 3)
-  return labels.length ? labels.join(' / ') : '按人数重新报价'
+  return option.slug === 'pirate-afternoon-tea' ? '20人成团' : '4人成团'
 }
 
 function excludedMealSummary(option: TravelPackageOption) {
