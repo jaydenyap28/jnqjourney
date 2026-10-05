@@ -1022,7 +1022,7 @@ export async function GET(request: Request) {
       noindexSpots: noindexSpots.length,
       indexableRate: spotQualityRows.length ? Number(((indexableSpots.length / spotQualityRows.length) * 100).toFixed(1)) : 0,
       weakSpotExamples,
-      rule: 'Score >= 8/12 + at least 180 chars + 2 media, or strong first-hand experience',
+      rule: 'Tiered gate: substantial first-hand pages pass; shorter pages need stronger media / experience signals',
       ready: !spotQualityResult.error,
       error: spotQualityResult.error,
     },
