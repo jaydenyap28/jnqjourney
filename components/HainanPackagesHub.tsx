@@ -14,6 +14,13 @@ function findIncluded(item: TravelPackage, matcher: RegExp) {
 }
 
 function routeSummary(item: TravelPackage) {
+  if (item.slug === 'hainan-4d3n-sea-land-air') {
+    return '吉隆坡 → 琼海 → 三亚 → 琼海 → 吉隆坡'
+  }
+  if (item.slug === 'hainan-5d4n-sea-land-air') {
+    return '吉隆坡 → 琼海 → 三亚 → 海花岛 → 海口 → 琼海 → 吉隆坡'
+  }
+
   const days = item.itinerary_days || []
   if (!days.length) return '—'
   return days.map((day) => day.title).join(' · ')
