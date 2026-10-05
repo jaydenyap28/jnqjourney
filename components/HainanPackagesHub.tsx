@@ -206,7 +206,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     </tr>
                   ))}
                   <tr>
-                    <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">重点体验</th>
+                    <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">方案差异亮点</th>
                     {options.map((item) => (
                       <td key={item.id} className="px-5 py-4 align-top">
                         <ul className="space-y-2">
