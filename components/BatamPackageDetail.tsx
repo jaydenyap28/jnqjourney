@@ -64,7 +64,11 @@ function mainExperience(option: TravelPackageOption) {
 }
 
 function groupSummary(option: TravelPackageOption) {
-  return option.slug === 'pirate-afternoon-tea' ? '20人成团' : '4人成团'
+  if (option.slug === 'pirate-afternoon-tea') return '20人成团'
+  if (['amazing-promo-499', 'economy-island', 'new-version-599'].includes(option.slug)) {
+    return '4人成团\n2–3人可补差额'
+  }
+  return '4人成团'
 }
 
 function excludedMealSummary(option: TravelPackageOption) {
