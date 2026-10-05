@@ -114,7 +114,8 @@ function excludedMealSummary(option: TravelPackageOption) {
 
 function otherSelfPaySummary(option: TravelPackageOption) {
   const entries = (option.excluded_items || [])
-    .filter((item) => !item.includes('个人消费') && !item.includes('旺季') && !item.includes('未明确'))
+    .filter((item) => !item.includes('个人消费') && !item.includes('未明确'))
+    .filter((item) => !item.includes('按摩'))
     .filter((item) => !item.includes('早餐') && !item.includes('午餐') && !item.includes('晚餐'))
     .slice(0, 4)
 
