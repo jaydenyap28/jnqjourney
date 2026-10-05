@@ -1,8 +1,10 @@
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
+import { createClient } from '@supabase/supabase-js'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 export interface LocationSummary {
   id: number
@@ -148,8 +150,27 @@ export const fetchTopRegions = unstable_cache(
 )
 
 export async function fetchAllLocationsForSitemap() {
-  const { locations } = await resolvePublicData()
-  return locations.map((location) => ({ id: location.id, name: location.name, updated_at: undefined as string | undefined }))
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (url && key) {
+    const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+    const result = await supabase
+      .from('locations')
+      .select('id,name,description,review,image_url,images,experience_zh,visit_date,video_url,facebook_video_url,address,opening_hours,price_info,related_note_slugs,updated_at,publication_status,status')
+      .eq('status', 'active')
+
+    if (!result.error && result.data) {
+      return result.data
+        .filter((location: any) => (location.publication_status == null || location.publication_status === 'published') && evaluateSpotQuality(location).indexable)
+        .map((location: any) => ({ id: Number(location.id), name: String(location.name || ''), updated_at: location.updated_at || undefined }))
+    }
+  }
+
+  // Conservative fallback: if the quality inventory cannot be loaded, avoid
+  // re-introducing every thin Spot into the sitemap. Existing Spot URLs remain
+  // reachable internally and can still be crawled through links.
+  return []
 }
 
 export async function fetchAllRegionsForSitemap() {
