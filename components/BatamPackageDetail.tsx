@@ -432,11 +432,11 @@ export default function BatamPackageDetail({ item, options, preview = false }: {
           </div>
         </section>
       ) : (
-        <section className="relative flex min-h-[72svh] items-end overflow-hidden">
+        <section className="relative flex min-h-[82svh] items-end overflow-hidden md:min-h-[86svh]">
           {mobileHeroImage ? <FallbackImage src={mobileHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="object-cover md:hidden" /> : null}
           {desktopHeroImage ? <FallbackImage src={desktopHeroImage} alt={item.title_zh} fill priority sizes="100vw" className="hidden object-cover md:block" /> : null}
           {!desktopHeroImage && !mobileHeroImage ? <div className="absolute inset-0 bg-[#08101d]" /> : null}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/65 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050816] via-[#050816]/42 to-black/10" />
           <div className="relative mx-auto w-full max-w-6xl px-5 pb-14 pt-36 md:px-8 md:pb-20">
             <nav className="mb-7 flex items-center gap-2 text-xs text-white/55"><Link href="/">首页</Link><ChevronRight className="h-3 w-3" /><Link href="/packages">旅游配套</Link></nav>
             <p className="text-xs uppercase text-amber-200/75">{item.destination} · {item.duration}</p>
