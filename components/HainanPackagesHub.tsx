@@ -31,6 +31,23 @@ function highlightSummary(item: TravelPackage) {
   return highlights.slice(0, 4)
 }
 
+function differenceHighlights(item: TravelPackage) {
+  if (item.slug === 'hainan-4d3n-sea-land-air') {
+    return [
+      '4天3夜短线，路线集中琼海、三亚与万宁',
+      '日月湾旅游区',
+    ]
+  }
+  if (item.slug === 'hainan-5d4n-sea-land-air') {
+    return [
+      '多1天1夜，行程延伸至海花岛与海口',
+      '海花岛 1 号岛＋童世界海洋乐园＋婚礼庄园灯光秀',
+      '海口骑楼老街',
+    ]
+  }
+  return []
+}
+
 function hainanDetailHref(item: TravelPackage) {
   return `/packages/hainan/${item.slug.replace(/^hainan-/, '')}`
 }
@@ -210,7 +227,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                     {options.map((item) => (
                       <td key={item.slug} className="px-5 py-4 align-top">
                         <ul className="space-y-2">
-                          {highlightSummary(item).map((text) => (
+                          {differenceHighlights(item).map((text) => (
                             <li key={text} className="flex gap-2 leading-6 text-white/68">
                               <Sparkles className="mt-1 h-3.5 w-3.5 shrink-0 text-amber-200" />
                               <span>{text}</span>
