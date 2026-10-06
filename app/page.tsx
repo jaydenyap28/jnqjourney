@@ -1,6 +1,6 @@
 import HomePageClient from '@/components/AppHomePageClient'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
-import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
+import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 
@@ -11,7 +11,7 @@ export default async function Home() {
     resolvePublicData(),
     readPublicGuides(),
     readPublicNotes(),
-    readPublishedPackagesUncached(),
+    readPublishedPackages(),
   ])
 
   const hainanParent = packages.find((item) => item.slug === 'hainan')
