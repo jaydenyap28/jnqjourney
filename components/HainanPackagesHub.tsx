@@ -51,7 +51,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
     trackEvent('package_comparison_view', {
       page_path: window.location.pathname,
       page_type: 'package_hub',
-      package_name: '海南旅游配套',
+      package_name: '海南岛旅游配套',
       option_count: options.length,
       device_type: getDeviceType(),
     })
@@ -75,7 +75,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
     <main className="min-h-screen bg-[#050816] pb-20 text-white">
       <section className="relative flex min-h-[68svh] items-end overflow-hidden">
         {hero?.cover_image ? (
-          <FallbackImage src={hero.cover_image} alt="海南旅游配套" fill priority sizes="100vw" className="object-cover" />
+          <FallbackImage src={hero.cover_image} alt="海南岛旅游配套" fill priority sizes="100vw" className="object-cover" />
         ) : (
           <div className="absolute inset-0 bg-[#08101d]" />
         )}
@@ -88,7 +88,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
             <Link href="/packages">旅游配套</Link>
           </nav>
           <p className="text-xs uppercase tracking-[0.2em] text-amber-200/80">Hainan · China</p>
-          <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.05] md:text-7xl">海南旅游配套</h1>
+          <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.05] md:text-7xl">海南岛旅游配套</h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-white/70 md:text-lg">
             目前有 {options.length} 个方案可选，先比较天数、价格与行程，再进入单个配套查看完整内容。
           </p>
