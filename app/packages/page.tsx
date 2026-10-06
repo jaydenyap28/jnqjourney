@@ -6,7 +6,7 @@ import FallbackImage from '@/components/FallbackImage'
 import SiteFooter from '@/components/SiteFooter'
 import WhatsAppButton from '@/components/WhatsAppButton'
 import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
-import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
+import { packageFromOption, readPublishedPackageOptions, readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -18,9 +18,13 @@ export const metadata: Metadata = {
 
 export default async function PackagesPage() {
   const packages = await readPublishedPackagesUncached()
-  const hainanPackages = packages.filter((item) => item.slug.startsWith('hainan-'))
-  const regularPackages = packages.filter((item) => !item.slug.startsWith('hainan-'))
-  const hainanCover = hainanPackages.find((item) => item.slug.includes('5d4n'))?.cover_image || hainanPackages[0]?.cover_image || ''
+  const hainanParent = packages.find((item) => item.slug === 'hainan')
+  const legacyHainanPackages = packages.filter((item) => item.slug.startsWith('hainan-'))
+  const hainanPackages = hainanParent
+    ? (await readPublishedPackageOptions(hainanParent.id)).map((option) => packageFromOption(hainanParent, option))
+    : legacyHainanPackages
+  const regularPackages = packages.filter((item) => item.slug !== 'hainan' && !item.slug.startsWith('hainan-'))
+  const hainanCover = hainanParent?.cover_image || hainanPackages.find((item) => item.slug.includes('5d4n'))?.cover_image || hainanPackages[0]?.cover_image || ''
   const hainanLowestPrice = hainanPackages
     .map((item) => Number((item.price_display || '').replace(/,/g, '').match(/RM\s*([0-9]+)/i)?.[1] || ''))
     .filter((value) => Number.isFinite(value) && value > 0)
