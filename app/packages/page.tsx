@@ -51,10 +51,10 @@ export default async function PackagesPage() {
             ))}
             {hainanPackages.length ? (
               <article className="overflow-hidden rounded-[28px] border border-white/10 bg-white/5">
-                {hainanCover ? <div className="relative aspect-[16/9]"><FallbackImage src={hainanCover} alt="海南旅游配套" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" /></div> : null}
+                {hainanCover ? <div className="relative aspect-[16/9]"><FallbackImage src={hainanCover} alt="海南岛旅游配套" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" /></div> : null}
                 <div className="p-6">
                   <div className="flex items-center gap-2 text-xs text-amber-200/75"><MapPinned className="h-4 w-4" />Hainan, China</div>
-                  <h2 className="mt-3 text-2xl font-semibold">海南旅游配套</h2>
+                  <h2 className="mt-3 text-2xl font-semibold">海南岛旅游配套</h2>
                   <p className="mt-1 text-sm text-white/45">4天3夜 / 5天4夜 · {hainanPackages.length} 个方案可选</p>
                   <p className="mt-4 leading-7 text-white/65">先比较两个海南方案的价格、天数和行程，再进入单个配套查看完整内容。</p>
                   <div className="mt-4 flex flex-wrap gap-2 text-xs text-white/55">
@@ -67,7 +67,7 @@ export default async function PackagesPage() {
                   </div>
                   <div className="mt-6 flex flex-wrap gap-3">
                     <Link href="/packages/hainan" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">比较海南方案 <ArrowRight className="h-4 w-4" /></Link>
-                    <WhatsAppButton pageType="package" packageName="海南旅游配套" source="JNQ-HAINAN-HUB" label="WhatsApp 咨询" position="inline" />
+                    <WhatsAppButton pageType="package" packageName="海南岛旅游配套" source="JNQ-HAINAN-HUB" label="WhatsApp 咨询" position="inline" />
                   </div>
                 </div>
               </article>
