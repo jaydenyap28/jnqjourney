@@ -14,9 +14,23 @@ interface TravelPackageCardProps {
   detailLabel?: string
 }
 
+function formatCardPrice(value?: string | null) {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+
+  const match = raw.match(/RM\s*([0-9][0-9,.]*)(\+\+)?/i)
+  if (!match) return raw
+
+  const amount = `RM${match[1]}${match[2] || ''}`
+  if (/每房|\/\s*房|房起|per\s*room/i.test(raw)) return `${amount} 起 / 房`
+  if (/每人|\/\s*人|人起|pax|per\s*person/i.test(raw)) return `${amount} 起 / 人`
+  return raw
+}
+
 export default function TravelPackageCard({ item, compact = false, showWhatsApp = true, detailLabel = '查看详情' }: TravelPackageCardProps) {
   const locale=usePublicLocale()
   const name=locale==='en'&&item.title_en?item.title_en:item.title_zh
+  const price=formatCardPrice(item.price_display)
   return (
     <article className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,31,50,0.96),rgba(8,15,28,0.98))]">
       <div className={`relative ${compact ? 'aspect-[16/8]' : 'aspect-[16/9]'} bg-[#0d1726]`}>
@@ -26,7 +40,7 @@ export default function TravelPackageCard({ item, compact = false, showWhatsApp 
         <p className="flex items-center gap-2 text-xs text-amber-200/75"><MapPinned className="h-4 w-4" />{item.destination || 'JnQ Journey'}{item.duration ? ` · ${item.duration}` : ''}</p>
         <h3 className="mt-3 text-2xl font-semibold text-white">{name}</h3>
         <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/65">{item.short_description}</p>
-        {item.price_display ? <p className="mt-4 text-lg font-semibold text-amber-100">{item.price_display}</p> : null}
+        {price ? <p className="mt-4 text-lg font-semibold text-amber-100">{price}</p> : null}
         <div className="mt-5 flex flex-wrap gap-2.5">
           <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black"><PublicCopy text={detailLabel}/> <ArrowRight className="h-4 w-4" /></Link>
           {showWhatsApp ? <WhatsAppButton pageType="package" packageName={name} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" /> : null}
