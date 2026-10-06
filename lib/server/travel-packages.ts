@@ -66,7 +66,10 @@ export interface TravelPackageOption {
 
 
 export function packageFromOption(parent: TravelPackage, option: TravelPackageOption): TravelPackage {
-  const optionGallery = option.gallery || []
+  const rawGallery = option.gallery || []
+  const optionGallery = option.brochure_image?.url && !rawGallery.some((image) => image.url === option.brochure_image?.url)
+    ? [...rawGallery, option.brochure_image]
+    : rawGallery
   return {
     ...parent,
     slug: `${parent.slug}-${option.slug}`,
