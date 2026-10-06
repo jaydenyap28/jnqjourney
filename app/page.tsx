@@ -27,7 +27,7 @@ export default async function Home() {
     ...(hainanPrimary ? [{
       ...hainanPrimary,
       slug: 'hainan',
-      title_zh: '海南旅游配套',
+      title_zh: '海南岛旅游配套',
       title_en: 'Hainan Tour Packages',
       duration: '4天3夜 / 5天4夜',
       short_description: `共有 ${hainanPackages.length} 个海南方案可选，先比较天数、价格与行程，再选择适合自己的配套。`,
