@@ -63,7 +63,7 @@ export async function GET(request: Request) {
   }
   const selectedPackage = id > 0 ? packagesResult.data?.[0] || null : null
   let options: unknown[] = []
-  if (selectedPackage && (isTiomanMainPackageSlug(selectedPackage.slug) || selectedPackage.slug === 'batam-3d2n')) {
+  if (selectedPackage && (isTiomanMainPackageSlug(selectedPackage.slug) || selectedPackage.slug === 'batam-3d2n' || selectedPackage.slug === 'hainan')) {
     const { data, error: comparisonError } = await supabase
       .from('travel_package_options')
       .select('*')
@@ -150,7 +150,8 @@ export async function POST(request: Request) {
     const missing: string[] = []
     const isTiomanMainPackage = isTiomanMainPackageSlug(payload.slug)
     const isBatamMainPackage = payload.slug === 'batam-3d2n'
-    const isOptionBasedPackage = isTiomanMainPackage || isBatamMainPackage
+    const isHainanMainPackage = payload.slug === 'hainan'
+    const isOptionBasedPackage = isTiomanMainPackage || isBatamMainPackage || isHainanMainPackage
     let validRegion = false
     if (payload.region_id) {
       const { data: region } = await supabase.from('regions').select('name,name_cn,country').eq('id', payload.region_id).maybeSingle()
@@ -172,10 +173,11 @@ export async function POST(request: Request) {
     if (isOptionBasedPackage) {
       if (isTiomanMainPackage && (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人'))) missing.push('主配套最低每人价格')
       if (isBatamMainPackage && !payload.price_display?.includes('RM499')) missing.push('Batam 主配套最低价格')
+      if (isHainanMainPackage && !payload.price_display?.includes('RM2,088')) missing.push('海南主配套最低价格')
       if (!payload.price_note?.includes('确认')) missing.push('最终确认说明')
       const { data: activeOptions, error: optionsError } = await supabase
         .from('travel_package_options')
-        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,itinerary_days,slug')
+        .select('name_zh,duration,full_description,cover_image,seo_title,seo_description,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,itinerary_days,slug')
         .eq('package_id', id || 0)
         .eq('status', 'active')
       if (optionsError) return NextResponse.json({ error: optionsError.message }, { status: 500 })
@@ -187,6 +189,7 @@ export async function POST(request: Request) {
         const missingTiomanPoster = isTiomanMainPackage && !option.gallery?.[0]?.url
         if (missingPublicFields || missingTiomanPoster) missing.push(`完整 option：${option.name_zh || option.slug}`)
         if (isBatamMainPackage && !option.itinerary_days?.length) missing.push(`Batam option 行程：${option.name_zh || option.slug}`)
+        if (isHainanMainPackage && (!option.duration || !option.itinerary_days?.length || !option.full_description || (!option.cover_image && !option.gallery?.[0]?.url) || !option.seo_title || !option.seo_description)) missing.push(`海南 option 完整资料：${option.name_zh || option.slug}`)
         if (option.slug === 'the-barat-tioman' && option.price_unit !== 'room') missing.push('The Barat 每房价格单位')
         if (option.slug === 'aman-tioman' && !option.notes?.some((note: string) => note.includes('年龄区间'))) missing.push('Aman 儿童年龄区间提醒')
       }
