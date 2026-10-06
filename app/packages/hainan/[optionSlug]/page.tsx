@@ -5,7 +5,7 @@ import HainanPackageDetail from '@/components/HainanPackageDetail'
 import PackageViewTracker from '@/components/PackageViewTracker'
 import SiteFooter from '@/components/SiteFooter'
 import { absoluteUrl } from '@/lib/site'
-import { readPublishedPackage } from '@/lib/server/travel-packages'
+import { packageFromOption, readPublishedPackage, readPublishedPackageOption } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -14,8 +14,17 @@ function packageSlug(optionSlug: string) {
   return `hainan-${optionSlug}`
 }
 
+async function readHainanOption(optionSlug: string) {
+  const parent = await readPublishedPackage('hainan')
+  if (parent) {
+    const option = await readPublishedPackageOption(parent.id, optionSlug)
+    if (option) return packageFromOption(parent, option)
+  }
+  return readPublishedPackage(packageSlug(optionSlug))
+}
+
 export async function generateMetadata({ params }: { params: { optionSlug: string } }): Promise<Metadata> {
-  const item = await readPublishedPackage(packageSlug(params.optionSlug))
+  const item = await readHainanOption(params.optionSlug)
   if (!item) notFound()
 
   const title = item.seo_title || item.title_zh
@@ -32,7 +41,7 @@ export async function generateMetadata({ params }: { params: { optionSlug: strin
 }
 
 export default async function HainanOptionPage({ params }: { params: { optionSlug: string } }) {
-  const item = await readPublishedPackage(packageSlug(params.optionSlug))
+  const item = await readHainanOption(params.optionSlug)
   if (!item) notFound()
 
   const canonicalPath = `/packages/hainan/${params.optionSlug}`
