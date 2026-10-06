@@ -15,6 +15,13 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  if (params.slug.startsWith('hainan-')) {
+    return {
+      title: '海南岛旅游配套',
+      description: '比较 JnQ Journey 海南 4天3夜与 5天4夜旅游配套。',
+      alternates: { canonical: '/packages/hainan' },
+    }
+  }
   const item = await readPublishedPackage(params.slug)
   if (!item) notFound()
   const title = item.seo_title || item.title_zh
@@ -30,12 +37,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function PackagePage({ params }: { params: { slug: string } }) {
+  if (params.slug.startsWith('hainan-')) {
+    redirect(`/packages/hainan/${params.slug.replace(/^hainan-/, '')}`)
+  }
+
   const item = await readPublishedPackage(params.slug)
   if (!item) notFound()
-
-  // Hainan now follows the same information architecture as Batam:
-  // destination hub first, then individual package detail pages.
-  if (item.slug.startsWith('hainan-')) redirect('/packages/hainan')
 
   const options = ['tioman-3d2n', 'batam-3d2n'].includes(item.slug) ? await readPublishedPackageOptions(item.id) : []
   const canonicalPath = item.canonical_url || `/packages/${item.slug}`
