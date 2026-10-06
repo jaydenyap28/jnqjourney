@@ -14,14 +14,14 @@ interface TravelPackageCardProps {
   detailLabel?: string
 }
 
-function formatCardPrice(value?: string | null) {
+function formatCardPrice(value?: string | null, slug?: string) {
   const raw = String(value || '').trim()
   if (!raw) return ''
 
   const match = raw.match(/RM\s*([0-9][0-9,.]*)(\+\+)?/i)
   if (!match) return raw
 
-  const amount = `RM${match[1]}${match[2] || ''}`
+  const amount = `RM${match[1]}${slug === 'hainan' ? '' : (match[2] || '')}`
   if (/每房|\/\s*房|房起|per\s*room/i.test(raw)) return `${amount} 起 / 房`
   if (/每人|\/\s*人|人起|pax|per\s*person/i.test(raw)) return `${amount} 起 / 人`
   return raw
@@ -30,7 +30,7 @@ function formatCardPrice(value?: string | null) {
 export default function TravelPackageCard({ item, compact = false, showWhatsApp = true, detailLabel = '查看详情' }: TravelPackageCardProps) {
   const locale=usePublicLocale()
   const name=locale==='en'&&item.title_en?item.title_en:item.title_zh
-  const price=formatCardPrice(item.price_display)
+  const price=formatCardPrice(item.price_display, item.slug)
   return (
     <article className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,31,50,0.96),rgba(8,15,28,0.98))]">
       <div className={`relative ${compact ? 'aspect-[16/8]' : 'aspect-[16/9]'} bg-[#0d1726]`}>
