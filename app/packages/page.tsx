@@ -66,7 +66,7 @@ export default async function PackagesPage() {
                       .slice()
                       .sort((a, b) => (Number.parseInt(a.duration || '', 10) || 99) - (Number.parseInt(b.duration || '', 10) || 99))
                       .map((item) => (
-                        <span key={item.id} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5">{item.duration} · {item.price_display}</span>
+                        <span key={item.slug} className="rounded-full border border-white/10 bg-black/20 px-3 py-1.5">{item.duration} · {item.price_display}</span>
                       ))}
                   </div>
                   <div className="mt-6 flex flex-wrap gap-3">
