@@ -61,6 +61,10 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
   const [uploadingGallery, setUploadingGallery] = useState(false)
   const [batchUploading, setBatchUploading] = useState(false)
   const isBatam = packageSlug === 'batam-3d2n'
+  const isHainan = packageSlug === 'hainan'
+  const hasRichOptionMedia = isBatam || isHainan
+  const uploadCountry = isBatam ? 'Indonesia' : isHainan ? 'China' : 'Malaysia'
+  const uploadCity = isBatam ? 'Batam' : isHainan ? 'Hainan' : 'Pulau Tioman'
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -135,8 +139,8 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
       const data = new FormData()
       data.append('file', file)
       data.append('category', 'packages')
-      data.append('country', isBatam ? 'Indonesia' : 'Malaysia')
-      data.append('city', isBatam ? 'Batam' : 'Pulau Tioman')
+      data.append('country', uploadCountry)
+      data.append('city', uploadCity)
       data.append('locationSlug', `${packageSlug}/${form.slug}`)
       data.append('field', 'brochure')
       const response = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
@@ -188,8 +192,8 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
       const data = new FormData()
       Array.from(files).forEach((file) => data.append('files', file))
       data.append('category', 'packages')
-      data.append('country', isBatam ? 'Indonesia' : 'Malaysia')
-      data.append('city', isBatam ? 'Batam' : 'Pulau Tioman')
+      data.append('country', uploadCountry)
+      data.append('city', uploadCity)
       data.append('locationSlug', `${packageSlug}/${form.slug}`)
       data.append('field', 'gallery')
       const response = await adminFetch('/api/upload/r2', { method: 'POST', body: data })
@@ -209,6 +213,7 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
           sort_order: start + index,
         })),
       ])
+      if (isHainan && !form.cover_image && urls[0]) set('cover_image', urls[0])
       setMessage(`已上传 ${urls.length} 张方案照片。第一张会作为公开卡片主图；请再按「保存 option」。`)
     } catch (error) {
       setMessage(error instanceof Error ? error.message : '方案照片上传失败。')
@@ -308,8 +313,8 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
     <section className="mt-10 border-t border-white/10 pt-8">
       <div>
         <p className="text-xs uppercase text-emerald-200/70">Package options</p>
-        <h3 className="mt-2 text-xl font-semibold">{isBatam ? 'Batam 多方案管理' : 'Resort 与房价选项'}</h3>
-        <p className="mt-2 text-sm text-white/50">{isBatam ? '公开页面只显示 JnQ 方案名称。Supplier Ref 与供应商原方案名只在后台保存，不会传到公开页面。重新制作的 JnQ 配套详情图可以单独上传，并会显示在该方案自己的详情页。' : 'Paya、Aman 与 The Barat 是同一主配套下的选项，不会出现在主配套列表。'}</p>
+        <h3 className="mt-2 text-xl font-semibold">{isBatam ? 'Batam 多方案管理' : isHainan ? '海南 4天3夜 / 5天4夜方案管理' : 'Resort 与房价选项'}</h3>
+        <p className="mt-2 text-sm text-white/50">{isBatam ? '公开页面只显示 JnQ 方案名称。Supplier Ref 与供应商原方案名只在后台保存，不会传到公开页面。重新制作的 JnQ 配套详情图可以单独上传，并会显示在该方案自己的详情页。' : isHainan ? '海南现在是一个主配套，4天3夜与5天4夜都在这里管理。价格、酒店、行程、亮点、图片与 SEO 各自独立，不会再出现在主配套列表。' : 'Paya、Aman 与 The Barat 是同一主配套下的选项，不会出现在主配套列表。'}</p>
         {isBatam ? (
           <div className="mt-4">
             <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-emerald-200/20 bg-emerald-200/[0.08] px-4 text-sm font-medium text-emerald-50">
@@ -335,11 +340,17 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
           ['name_zh', '公开方案名称'],
           ['name_en', '英文方案名称'],
           ['slug', 'Option slug'],
+          ['duration', '行程天数'],
           ['accommodation_name', '住宿名称'],
           ['accommodation_type', '住宿类型'],
           ['village_name', isBatam ? '额外地区标签' : 'Kampung'],
           ['price_from', '价格起点'],
           ['price_display', '公开价格'],
+          ['price_note', '价格说明'],
+          ['cover_image', '方案封面 URL'],
+          ['seo_title', 'SEO 标题'],
+          ['seo_description', 'SEO Description'],
+          ['canonical_url', 'Canonical URL'],
           ['validity_label', '有效期 / 价格说明'],
           ['source_code', '公开追踪来源码'],
         ] as const).map(([key, label]) => <label key={key}><span className="mb-1 block text-xs text-white/55">{label}</span><input value={String(form[key] ?? '')} onChange={(event) => set(key, key === 'price_from' ? Number(event.target.value) : event.target.value)} className="h-10 w-full border border-white/10 bg-black/25 px-3 text-sm" /></label>)}
@@ -348,7 +359,8 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
       </div>
 
       <label className="mt-4 block"><span className="mb-1 block text-xs text-white/55">简介</span><textarea value={form.short_description || ''} onChange={(event) => set('short_description', event.target.value)} rows={3} className="w-full border border-white/10 bg-black/25 p-3 text-sm" /></label>
-      {isBatam ? (
+      {isHainan ? <label className="mt-4 block"><span className="mb-1 block text-xs text-white/55">完整说明</span><textarea value={form.full_description || ''} onChange={(event) => set('full_description', event.target.value)} rows={7} className="w-full border border-white/10 bg-black/25 p-3 text-sm" /></label> : null}
+      {hasRichOptionMedia ? (
         <section className="mt-5 rounded-xl border border-emerald-200/20 bg-emerald-200/[0.04] p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
@@ -376,12 +388,12 @@ export default function TiomanOptionsEditor({ packageId, packageSlug = 'tioman-3
         </section>
       ) : null}
 
-      {isBatam ? (
+      {hasRichOptionMedia ? (
         <section className="mt-5 rounded-xl border border-sky-200/20 bg-sky-200/[0.035] p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-100">方案照片</p>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">这些是真正属于这个方案的公开照片。第一张会自动成为 Batam 方案卡片主图，其余照片会显示在方案详情页。</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">这些是真正属于这个方案的公开照片。第一张会作为方案卡片主图，其余照片会显示在方案详情页。海南方案也可以在上方「方案封面 URL」单独指定封面。</p>
             </div>
             <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-sky-200/20 bg-sky-200/[0.08] px-4 text-sm font-medium text-sky-50">
               <ImagePlus className="h-4 w-4" />
