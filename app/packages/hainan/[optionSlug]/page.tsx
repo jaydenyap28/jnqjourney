@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { optionSlug: strin
   if (!item) notFound()
 
   const title = item.seo_title || item.title_zh
-  const description = item.seo_description || item.short_description || 'JnQ Journey 海南旅游配套详情。'
+  const description = item.seo_description || item.short_description || 'JnQ Journey 海南岛旅游配套详情。'
   const canonical = `/packages/hainan/${params.optionSlug}`
 
   return {
@@ -60,7 +60,7 @@ export default async function HainanOptionPage({ params }: { params: { optionSlu
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'JnQ Journey', item: absoluteUrl('/') },
         { '@type': 'ListItem', position: 2, name: '旅游配套', item: absoluteUrl('/packages') },
-        { '@type': 'ListItem', position: 3, name: '海南旅游配套', item: absoluteUrl('/packages/hainan') },
+        { '@type': 'ListItem', position: 3, name: '海南岛旅游配套', item: absoluteUrl('/packages/hainan') },
         { '@type': 'ListItem', position: 4, name: item.title_zh, item: absoluteUrl(canonicalPath) },
       ],
     },
