@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import HainanPackagesHub from '@/components/HainanPackagesHub'
 import SiteFooter from '@/components/SiteFooter'
 import { absoluteUrl } from '@/lib/site'
-import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
+import { packageFromOption, readPublishedPackage, readPublishedPackageOptions, readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -16,7 +16,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HainanPackagesPage() {
-  const packages = (await readPublishedPackagesUncached()).filter((item) => item.slug.startsWith('hainan-'))
+  const parent = await readPublishedPackage('hainan')
+  const packages = parent
+    ? (await readPublishedPackageOptions(parent.id)).map((option) => packageFromOption(parent, option))
+    : (await readPublishedPackagesUncached()).filter((item) => item.slug.startsWith('hainan-'))
   if (!packages.length) notFound()
 
   const jsonLd = [
