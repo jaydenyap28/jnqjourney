@@ -78,16 +78,27 @@ export async function POST(request: Request) {
     package_id: packageId,
     slug: text(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''),
     name_zh: text(body.name_zh, 240), name_en: text(body.name_en, 240) || null,
+    duration: text(body.duration, 80) || null,
     accommodation_name: text(body.accommodation_name, 240), accommodation_type: text(body.accommodation_type, 120) || null,
     village_name: text(body.village_name, 120) || null, short_description: text(body.short_description, 1000) || null,
+    full_description: text(body.full_description, 10000) || null,
+    cover_image: text(body.cover_image, 2000) || null,
+    hero_image: text(body.hero_image, 2000) || null,
+    hero_image_mobile: text(body.hero_image_mobile, 2000) || null,
+    hero_image_contains_text: Boolean(body.hero_image_contains_text),
     highlights: strings(body.highlights), suitable_for: strings(body.suitable_for), itinerary_days: itineraryDays(body.itinerary_days),
     price_from: Number.isFinite(Number(body.price_from)) ? Number(body.price_from) : null,
     price_currency: text(body.price_currency, 12) || 'MYR', price_unit: priceUnit,
-    price_display: text(body.price_display, 240), price_rows: priceRows(body.price_rows),
+    price_display: text(body.price_display, 240), price_note: text(body.price_note, 1000) || null, price_rows: priceRows(body.price_rows),
     included_items: strings(body.included_items), excluded_items: strings(body.excluded_items), notes: strings(body.notes),
     validity_label: text(body.validity_label, 240) || null, valid_until: text(body.valid_until, 20) || null,
     brochure_image: brochureImage, gallery, whatsapp_message: text(body.whatsapp_message, 2000) || null,
-    source_code: text(body.source_code, 160) || null, featured: Boolean(body.featured),
+    source_code: text(body.source_code, 160) || null,
+    seo_title: text(body.seo_title, 240) || null,
+    seo_description: text(body.seo_description, 500) || null,
+    canonical_url: text(body.canonical_url, 500) || null,
+    related_location_ids: strings(body.related_location_ids).map(Number).filter((value) => Number.isInteger(value) && value > 0),
+    featured: Boolean(body.featured),
     sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 0, status,
     updated_at: new Date().toISOString(),
   }
@@ -109,6 +120,13 @@ export async function POST(request: Request) {
   if (!payload.notes.length) missing.push('option notes')
   if (payload.status === 'active' && parentSlug === 'tioman-3d2n' && !gallery[0]?.url) missing.push('brochure image')
   if (payload.status === 'active' && parentSlug === 'batam-3d2n' && !payload.itinerary_days.length) missing.push('Batam itinerary')
+  if (payload.status === 'active' && parentSlug === 'hainan') {
+    if (!payload.duration) missing.push('Hainan duration')
+    if (!payload.itinerary_days.length) missing.push('Hainan itinerary')
+    if (!payload.cover_image && !gallery[0]?.url) missing.push('Hainan cover image')
+    if (!payload.full_description) missing.push('Hainan full description')
+    if (!payload.seo_title || !payload.seo_description) missing.push('Hainan SEO')
+  }
   if (payload.slug === 'the-barat-tioman' && payload.price_unit !== 'room') missing.push('The Barat room unit')
   if (payload.slug === 'aman-tioman' && !payload.notes.some((note) => note.includes('年龄区间'))) missing.push('Aman child age overlap warning')
   if (missing.length) return NextResponse.json({ error: `Cannot save option: ${missing.join(', ')}` }, { status: 400 })
