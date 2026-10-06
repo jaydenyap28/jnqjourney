@@ -120,7 +120,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
             {options.map((item) => {
               const highlights = highlightSummary(item)
               return (
-                <article key={item.id} className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04]">
+                <article key={item.slug} className="overflow-hidden rounded-[30px] border border-white/10 bg-white/[0.04]">
                   {item.cover_image ? (
                     <div className="relative aspect-[16/9] overflow-hidden">
                       <FallbackImage src={item.cover_image} alt={item.title_zh} fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover transition duration-500 hover:scale-[1.02]" />
@@ -187,7 +187,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                   <tr className="border-b border-white/10">
                     <th className="sticky left-0 z-10 w-[150px] bg-[#090d1b] px-5 py-4 text-xs uppercase tracking-[0.16em] text-white/35">比较项目</th>
                     {options.map((item) => (
-                      <th key={item.id} className="min-w-[300px] px-5 py-4 align-top">
+                      <th key={item.slug} className="min-w-[300px] px-5 py-4 align-top">
                         <p className="text-lg font-semibold text-white">{item.duration}</p>
                       </th>
                     ))}
@@ -208,7 +208,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                   <tr>
                     <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">方案差异亮点</th>
                     {options.map((item) => (
-                      <td key={item.id} className="px-5 py-4 align-top">
+                      <td key={item.slug} className="px-5 py-4 align-top">
                         <ul className="space-y-2">
                           {highlightSummary(item).map((text) => (
                             <li key={text} className="flex gap-2 leading-6 text-white/68">
@@ -223,7 +223,7 @@ export default function HainanPackagesHub({ packages }: { packages: TravelPackag
                   <tr>
                     <th className="sticky left-0 z-10 bg-[#090d1b] px-5 py-4 font-medium text-white/55">查看详情</th>
                     {options.map((item) => (
-                      <td key={item.id} className="px-5 py-5">
+                      <td key={item.slug} className="px-5 py-5">
                         <Link href={hainanDetailHref(item)} onClick={() => trackOptionSelect(item, 'hainan_comparison_table')} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100">
                           打开 {item.duration} 配套 <ArrowRight className="h-4 w-4" />
                         </Link>
