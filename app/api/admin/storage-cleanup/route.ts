@@ -64,15 +64,41 @@ async function fetchLivePublicSnapshots() {
   return docs.join('\n')
 }
 
+async function readAuthoritativeSnapshots(client: ReturnType<typeof storageClient>) {
+  // Draft notes/guides and the live English localization manifest may contain
+  // references not present in the public R2 snapshots. Never delete without
+  // verifying their current authoritative versions as well.
+  const bucket = client.storage.from(BUCKET)
+  const pointerPairs = [
+    { pointer: '_system/notes-latest.webp', prefix: '_system/notes/' },
+    { pointer: '_system/guides-latest.webp', prefix: '_system/guides/' },
+    { pointer: '_system/i18n/en/latest.webp', prefix: '_system/i18n/en/' },
+  ]
+  const docs = await Promise.all(pointerPairs.map(async ({ pointer, prefix }) => {
+    const { data: pointerFile, error: pointerError } = await bucket.download(pointer)
+    if (pointerError || !pointerFile) throw Error('Cannot verify authoritative content pointer: ' + pointer)
+    const target = (await pointerFile.text()).trim()
+    if (!target.startsWith(prefix) || !target.endsWith('.webp') || target === pointer ||
+        target.includes('..') || target.includes('?')) {
+      throw Error('Invalid authoritative content pointer: ' + pointer)
+    }
+    const { data, error } = await bucket.download(target)
+    if (error || !data) throw Error('Cannot verify authoritative content: ' + target)
+    return data.text()
+  }))
+  return docs.join('\n')
+}
+
 async function scanVerifiedCandidates() {
   const client = storageClient()
-  const [backupResult, currentResult, regionsResult, packagesResult, optionsResult, snapshots] = await Promise.all([
+  const [backupResult, currentResult, regionsResult, packagesResult, optionsResult, snapshots, authoritativeSnapshots] = await Promise.all([
     client.from('locations_backup_before_r2').select('id,images').range(0, 999),
     client.from('locations').select('id,image_url,images').range(0, 999),
     client.from('regions').select('image_url').range(0, 999),
     client.from('travel_packages').select('cover_image,hero_image,hero_image_mobile,gallery').range(0, 999),
     client.from('travel_package_options').select('cover_image,hero_image,hero_image_mobile,gallery,brochure_image').range(0, 999),
     fetchLivePublicSnapshots(),
+    readAuthoritativeSnapshots(client),
   ])
   for (const result of [backupResult, currentResult, regionsResult, packagesResult, optionsResult]) {
     if (result.error) throw Error('Cannot verify live references: ' + result.error.message)
@@ -85,7 +111,7 @@ async function scanVerifiedCandidates() {
     regions: regionsResult.data,
     packages: packagesResult.data,
     options: optionsResult.data,
-  }) + snapshots
+  }) + snapshots + authoritativeSnapshots
 
   const source = new Map<string, { locationId: number; urls: string[] }>()
   for (const old of backupResult.data || []) {
