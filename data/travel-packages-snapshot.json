@@ -1,0 +1,1832 @@
+{
+  "generatedAt": "2026-10-09",
+  "source": "Published public package data from JnQ Journey production Supabase (restricted public API fallback)",
+  "packages": [
+    {
+      "id": 1,
+      "slug": "batam-3d2n",
+      "title_zh": "巴淡岛旅游配套",
+      "title_en": "Batam 3D2N Travel Package",
+      "destination": "Batam, Indonesia",
+      "region_id": 38,
+      "duration": "3天2夜",
+      "short_description": "巴淡岛 3天2夜目前有多种方案可选，从 RM499 起，可按预算、酒店、按摩、Beach Club、Goa Cave、海盗船下午茶、龙虾午餐等重点来选。这里把价格、住宿、餐食、包含项目与自费项目统一整理在同一页，先比较，再选适合自己的方案。",
+      "full_description": "巴淡岛 3天2夜并不是只有一种固定玩法。不同方案会在酒店、人数门槛、餐食、按摩、Beach Club、Goa Cave、海盗船下午茶、龙虾午餐等项目上出现明显差异。\n\nJnQ Journey 会把目前可查询的方案统一整理成同一套格式，方便直接比较，不需要一张张看海报。你只需要先选比较适合自己的方案，再通过 WhatsApp 提供日期、成人儿童人数、房间数量和出发需求，我们会重新确认当期价格与可安排情况。\n\n页面价格属于当前方案参考，船班、酒店房况、旺季附加费、公共假期附加费和景点安排都可能调整，付款前以最终书面确认为准。",
+      "cover_image": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n/cover/2026-10-06/6f02aa13-c315-4b08-8f76-822069b12398-chatgpt-image-oct-6-2026-06_11_21-pm-1.webp",
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "gallery": [],
+      "video_url": "https://youtu.be/j09mJQ6a-iY",
+      "highlights": [
+        "多种 3天2夜方案可直接比较",
+        "来回船票 + 2晚住宿 + 当地交通",
+        "可选按摩、Goa Cave、海盗船下午茶、龙虾午餐等主题",
+        "不同人数与酒店选择有独立价格层级"
+      ],
+      "suitable_for": [
+        "情侣与夫妻",
+        "家庭旅行",
+        "朋友小团",
+        "4–10人小团",
+        "20人以上公司或团体",
+        "想把船票、酒店和当地交通一次处理的旅客"
+      ],
+      "itinerary_days": [],
+      "included_items": [],
+      "excluded_items": [],
+      "notes": [
+        "页面会持续更新当前可查询的巴淡岛 3天2夜方案。",
+        "所有报价在确认日期、人数、房型与出发安排后都会再次核实。"
+      ],
+      "price_display": "RM499 起 / 人",
+      "price_note": "不同方案、人数、酒店、公共假期、单人房及旺季会有不同价格。页面显示的是当前参考报价，预订前会根据日期和人数重新确认。",
+      "whatsapp_message": "你好，我们从 JnQ Journey 看到巴淡岛 3天2夜配套比较，想查询其中一个方案。\\n\\n想查询的方案：\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n其他要求：\\n\\n来源：JNQ-BATAM-COMPARE",
+      "source_code": "JNQ-BATAM-COMPARE",
+      "status": "published",
+      "featured": true,
+      "sort_order": 10,
+      "seo_title": "巴淡岛3天2夜配套比较｜RM499起｜船票酒店按摩与主题行程｜JnQ Journey",
+      "seo_description": "比较巴淡岛3天2夜多种旅游配套，从RM499起，可选按摩、Goa Cave、海盗船下午茶、龙虾午餐、Beach Club等玩法。一次比较价格、酒店、餐食、景点与附加费，再向JnQ Journey查询最新报价。",
+      "canonical_url": "https://jnqjourney.com/packages/batam-3d2n",
+      "related_location_ids": [
+        276,
+        278
+      ],
+      "related_guide_slugs": [],
+      "related_note_slugs": [],
+      "affiliate_link_ids": [],
+      "created_at": "2026-07-20T14:04:24.682516+00:00",
+      "updated_at": "2026-10-06T10:12:07.129+00:00",
+      "published_at": "2026-07-21T03:14:18.626+00:00"
+    },
+    {
+      "id": 5,
+      "slug": "tioman-3d2n",
+      "title_zh": "刁曼岛旅游配套",
+      "title_en": "Pulau Tioman 3D2N Snorkeling Package 2026",
+      "destination": "Pulau Tioman, Malaysia",
+      "region_id": 90,
+      "duration": "3天2夜",
+      "short_description": "刁曼岛 3天2夜浮潜配套提供多家 Resort 与不同预算选择，可根据人数、房型、出发日期和住宿偏好比较适合的方案。配套内容可能包括住宿、餐食、船票、浮潜或码头接送，具体项目以所选择的 Resort 为准。",
+      "full_description": "同一条刁曼岛 3天2夜浮潜路线可选择不同 Resort、房型与报价单位。价格会因 Resort、人数、房型、日期、船票和附加费用而不同；请选择住宿方案后查看详情，付款前以旅行社或 Resort 最终确认资料为准。",
+      "cover_image": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/malaysia/pulau-tioman/tioman-3d2n/cover/2026-10-06/57a5ec0e-65b8-4eb3-b43a-648a51ed7029-chatgpt-image-oct-6-2026-06_11_22-pm-2.webp",
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "gallery": [],
+      "video_url": null,
+      "highlights": [
+        "3 家 Resort 可选择",
+        "每人 RM509 起",
+        "浮潜、船票与接送以所选 Resort 为准"
+      ],
+      "suitable_for": [
+        "预算型海岛小旅行",
+        "情侣",
+        "家庭",
+        "朋友团体"
+      ],
+      "itinerary_days": [
+        {
+          "title": "选择 Resort 与房型",
+          "summary": "比较 Paya Beach Resort、Aman Tioman Resort 和 The Barat Tioman 的价格单位、船票与住宿安排。"
+        },
+        {
+          "title": "确认出发与浮潜安排",
+          "summary": "浮潜、船班、码头接送和 Resort 活动以所选方案、天气、海况与最终确认资料为准。"
+        },
+        {
+          "title": "返程",
+          "summary": "退房与返程安排以旅行社或 Resort 最终确认资料为准。"
+        }
+      ],
+      "included_items": [],
+      "excluded_items": [],
+      "notes": [
+        "价格会因 Resort、人数、房型、日期、船票和附加费用而不同，请选择住宿方案后查看详情。",
+        "所有价格、房况、船班、税费与活动安排以旅行社或 Resort 最终确认为准。"
+      ],
+      "price_display": "每人 RM509 起",
+      "price_note": "价格会因 Resort、人数、房型、日期、船票和附加费用而不同，请选择住宿方案后查看详情。最终价格、房况、船班、税费与活动安排以旅行社或 Resort 最终确认为准。",
+      "whatsapp_message": "你好，我从 JnQ Journey 看到刁曼岛 3天2夜浮潜配套，想请你们帮我比较适合的 Resort。\n\n预计日期：\n成人：\n儿童及年龄：\n预计预算：\n出发码头：\n偏好：\n其他要求：\n\n来源：JNQ-TIOMAN-COMPARE",
+      "source_code": "JNQ-TIOMAN-COMPARE",
+      "status": "published",
+      "featured": false,
+      "sort_order": 20,
+      "seo_title": "刁曼岛 3天2夜浮潜配套 2026｜酒店与价格比较｜JnQ Journey",
+      "seo_description": "比较刁曼岛 Aman Tioman、Paya Beach Resort 与 The Barat Tioman 3天2夜配套，包括住宿、船票、餐食、浮潜、房型价格与附加费用。",
+      "canonical_url": "https://www.jnqjourney.com/packages/tioman-3d2n",
+      "related_location_ids": [],
+      "related_guide_slugs": [],
+      "related_note_slugs": [],
+      "affiliate_link_ids": [],
+      "created_at": "2026-07-21T09:27:53.086867+00:00",
+      "updated_at": "2026-10-06T10:12:28.542+00:00",
+      "published_at": "2026-07-21T11:48:52.451+00:00"
+    },
+    {
+      "id": 9,
+      "slug": "hainan",
+      "title_zh": "海南岛旅游配套",
+      "title_en": "Hainan Tour Packages",
+      "destination": "Hainan, China",
+      "region_id": 70,
+      "duration": "4天3夜 / 5天4夜",
+      "short_description": "共有 2 个海南方案可选，先比较天数、价格与行程，再选择适合自己的配套。",
+      "full_description": "海南岛旅游配套目前提供 4天3夜 与 5天4夜 两个方案。两个方案分别保留自己的价格、住宿、行程、亮点与图片，先在比较页看清差异，再进入对应方案查看完整内容。",
+      "cover_image": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan/cover/2026-10-06/ea9f8f52-9cb9-4a04-860d-fbc46564b035-hainan-sunset-coastal-escape.webp",
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "gallery": [],
+      "video_url": "https://youtu.be/qtbcqy7uGcQ?si=KD7e8ZG2fslGbCFi",
+      "highlights": [],
+      "suitable_for": [],
+      "itinerary_days": [],
+      "included_items": [],
+      "excluded_items": [],
+      "notes": [],
+      "price_display": "约 RM2,088++ / 人起",
+      "price_note": "不同出发日期、机位、酒店与附加费用会调整，最终价格与可出发日期以查询时最终确认为准。",
+      "whatsapp_message": "你好，我从 JnQ Journey 看到海南岛旅游配套，想比较 4天3夜与 5天4夜方案。\\n\\n预计日期：\\n成人：\\n儿童及年龄：\\n房间数量：\\n其他要求：\\n\\n来源：JNQ-HAINAN-HUB",
+      "source_code": "JNQ-HAINAN-HUB",
+      "status": "published",
+      "featured": false,
+      "sort_order": 30,
+      "seo_title": "海南岛旅游配套｜4天3夜 / 5天4夜比较｜JnQ Journey",
+      "seo_description": "比较 JnQ Journey 海南岛 4天3夜与 5天4夜旅游配套的价格、酒店、行程与重点体验，最低约 RM2,088++／人起。",
+      "canonical_url": "/packages/hainan",
+      "related_location_ids": [
+        461,
+        466,
+        471,
+        477,
+        476,
+        847,
+        848,
+        849,
+        850,
+        851
+      ],
+      "related_guide_slugs": [],
+      "related_note_slugs": [],
+      "affiliate_link_ids": [],
+      "created_at": "2026-09-30T01:18:22.368741+00:00",
+      "updated_at": "2026-10-06T10:07:19.838+00:00",
+      "published_at": "2026-09-30T01:18:22.368741+00:00"
+    }
+  ],
+  "options": [
+    {
+      "id": 4,
+      "package_id": 1,
+      "slug": "amazing-promo-499",
+      "name_zh": "超值优惠配套",
+      "name_en": "Super Value",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel",
+      "accommodation_type": "4星酒店",
+      "village_name": null,
+      "short_description": "预算优先的 3天2夜方案，保留 Dino's Gate、Blue Fire Beach Club、彩虹桥、印尼咖啡体验与本地美食，4–5 人和 20 人以上当前都可做到 RM499 / 人。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "RM499起",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+        "Blue Fire Beach Club 粉色沙滩俱乐部",
+        "1晚餐",
+        "Golden View Hotel"
+      ],
+      "suitable_for": [
+        "预算优先",
+        "4–5人小团",
+        "20人以上团体",
+        "想保留主要景点但不需要含按摩"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "千层糕（当地店家，非固定品牌）",
+            "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+            "按摩（自费）",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "晚餐：Angkringan Tepi Danau 湖边景观印尼特色套餐"
+          ],
+          "title": "抵达巴淡岛",
+          "summary": "抵达后开始经典市区与休闲行程"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Vihara Viriya Pala 财神爷庙",
+            "Barelang Bridge 彩虹桥",
+            "午餐：Kepri Seafood Restaurant 海盗主题网红餐厅（自理）",
+            "燕窝馆（当天安排，非固定店家）",
+            "晚餐：A2 Food Court / Nagoya Food Court 美食阁（自理，当天安排）"
+          ],
+          "title": "咖啡、Barelang Bridge 彩虹桥与城市体验",
+          "summary": "第二天以咖啡、寺庙、Barelang Bridge 彩虹桥与购物为主"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 499,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM499–550 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "4–5人",
+          "price": "RM499 / 人"
+        },
+        {
+          "label": "6–10人",
+          "price": "RM550 / 人"
+        },
+        {
+          "label": "20人",
+          "price": "RM499 / 人"
+        },
+        {
+          "label": "30人",
+          "price": "RM499 / 人"
+        },
+        {
+          "label": "单人房差",
+          "price": "RM150 / 人"
+        },
+        {
+          "label": "公共假期附加费",
+          "price": "RM150 / 人"
+        }
+      ],
+      "included_items": [
+        "2晚4星 Golden View Hotel",
+        "2次酒店早餐 + 1次晚餐",
+        "新山—巴淡岛来回船票 + 码头税",
+        "旅游意外保险",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯 门票"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "按摩",
+        "Kepri Seafood Restaurant 海盗主题网红餐厅 午餐（自理）",
+        "酒店旺季附加费",
+        "未明确列在包含项目内的餐食与活动",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐（自理）"
+      ],
+      "notes": [
+        "Day 2 Kepri Seafood Restaurant 海盗主题网红餐厅午餐为自理。",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐为自理，不计入配套包含餐食。",
+        "原配套没有单独列明当地交通与导游是否包含，查询时以最终确认资料为准。",
+        "旅游意外保险的适用年龄与保障条款以最终确认资料为准。",
+        "行程顺序可能按船班、交通与景点营业情况调整。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "超值优惠配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-amazing-promo-499/brochure/2026-10-03/76bd3541-6c96-4214-bef1-c2572c42f2d4-3d2n.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "超值优惠配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-amazing-promo-499/gallery/2026-10-04/65062bc3-c17a-4cf7-9402-df798099503d-sunset-bridge-over-tropical-paradise.png",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【RM499 超值经典配套】。\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n来源：JNQ-BATAM-AMAZINGPROMO499",
+      "source_code": "JNQ-BATAM-AMAZINGPROMO",
+      "featured": true,
+      "sort_order": 10,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:06:17.03206+00:00"
+    },
+    {
+      "id": 5,
+      "package_id": 1,
+      "slug": "new-version-599",
+      "name_zh": "按摩轻享配套",
+      "name_en": "Relax Package",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel",
+      "accommodation_type": "4星酒店",
+      "village_name": null,
+      "short_description": "适合想在经典景点之外直接包含 30 分钟按摩的方案，行程有 Dino's Gate、Miniature House、Infinite Beach Club、Blue Fire Beach Club 与 Grand Batam Mall。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "RM599起",
+        "30分钟按摩",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+        "Infinity Beach Club 蓝色沙滩俱乐部",
+        "Blue Fire Beach Club 粉色沙滩俱乐部"
+      ],
+      "suitable_for": [
+        "想含按摩体验",
+        "4–10人小团",
+        "想去Dino's Gate与两种Beach Club体验"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "抵达巴淡岛",
+            "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+            "Miniature House 迷你文化村",
+            "午餐：印尼特色餐",
+            "千层糕（当地店家，非固定品牌）",
+            "30分钟按摩",
+            "晚餐：A2 Food Court / Nagoya Food Court 美食阁（自理，当天安排）",
+            "Grand Batam Mall 商场逛街"
+          ],
+          "title": "Dino's Gate 恐龙主题乐园 + 彩虹滑梯、按摩与购物",
+          "summary": "第一天景点较集中，并直接包含30分钟按摩体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "Maha Vihara Duta Maitreya 天恩弥勒佛院",
+            "Vihara Budhi Bhakti 大伯公庙",
+            "Infinity Beach Club 蓝色沙滩俱乐部",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Blue Fire Beach Club 粉色沙滩俱乐部"
+          ],
+          "title": "寺庙、Beach Club 与咖啡",
+          "summary": "第二天走寺庙、Beach Club与咖啡体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 599,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM599–635 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "4–5人",
+          "price": "RM599 / 人"
+        },
+        {
+          "label": "6–10人",
+          "price": "RM635 / 人"
+        },
+        {
+          "label": "20人以上",
+          "price": "RM599 / 人"
+        },
+        {
+          "label": "单人房差",
+          "price": "RM150 / 人"
+        },
+        {
+          "label": "公共假期附加费",
+          "price": "RM150 / 人"
+        }
+      ],
+      "included_items": [
+        "2晚4星 Golden View Hotel",
+        "2次酒店早餐 + 1次午餐",
+        "新山—巴淡岛来回船票 + 码头税",
+        "当地旅游车 + 中文司机兼导游",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯 门票",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票",
+        "30分钟按摩"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "酒店旺季附加费",
+        "未明确列在包含项目内的餐食与活动",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐（自理）"
+      ],
+      "notes": [
+        "费用包含列明 2次酒店早餐 + 1次午餐；按 3天2夜 2早+2午+2晚的比较口径，其余 1次午餐 + 2次晚餐列为自费。",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐为自理，不计入配套包含餐食。",
+        "原行程的圣托里尼 / De'Sand 已按最新安排更新为 Infinity Beach Club 蓝色沙滩俱乐部；下午茶是否继续包含，以最终确认资料为准。",
+        "行程顺序可能按船班、交通与景点营业情况调整。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "按摩轻享配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-new-version-599/brochure/2026-10-03/5adab48a-7df7-451b-91f9-82dd4ddbbde2-3d2n.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "按摩轻享配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-new-version-599/gallery/2026-10-04/5fe6ebfa-d420-44bf-ab33-676152cd9116-golden-hour-tropical-spa-retreat.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【RM599 按摩轻享配套】。\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n来源：JNQ-BATAM-NEWVERSION599",
+      "source_code": "JNQ-BATAM-NEWVERSION599",
+      "featured": false,
+      "sort_order": 20,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:06:17.03206+00:00"
+    },
+    {
+      "id": 6,
+      "package_id": 1,
+      "slug": "economy-island",
+      "name_zh": "双 Beach Club 轻松配套",
+      "name_en": "Island Economy Package",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel / The Hill Hotel / King Hotel",
+      "accommodation_type": "4星酒店",
+      "village_name": null,
+      "short_description": "主打轻松海岛节奏：Infinity Beach Club 含下午茶、Blue Fire Beach Club、Barelang Bridge、咖啡体验与购物，特别适合不想把行程排得太刺激的人。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "Infinity Beach Club 蓝色沙滩俱乐部下午茶",
+        "Blue Fire Beach Club 粉色沙滩俱乐部",
+        "Barelang Bridge 彩虹桥",
+        "Golden View / The Hill / King",
+        "20+1领队优惠"
+      ],
+      "suitable_for": [
+        "喜欢Beach Club",
+        "想要较慢节奏",
+        "4–10人",
+        "20人以上团体"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "抵达巴淡岛",
+            "Maha Vihara Duta Maitreya 天恩弥勒佛院",
+            "午餐：中式海鲜餐",
+            "千层糕（当地店家，非固定品牌）",
+            "Infinity Beach Club 蓝色沙滩俱乐部（含下午茶）",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "按摩（自理）",
+            "晚餐：A2 Food Court / Nagoya Food Court 美食阁（自理，当天安排）"
+          ],
+          "title": "Beach Club 与海岛休闲",
+          "summary": "第一天以海边与轻松体验为主"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "Vihara Budhi Bhakti 大伯公庙",
+            "燕窝馆（当天安排，非固定店家）",
+            "Barelang Bridge 彩虹桥",
+            "午餐：Kepri Seafood Restaurant 海盗主题网红餐厅（自理）",
+            "Masjid Cheng Hoo 郑和清真寺",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Grand Batam Mall 商场 逛街"
+          ],
+          "title": "Barelang Bridge 彩虹桥、咖啡与购物",
+          "summary": "第二天加入经典桥景与城市体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 600,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM600–649 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "4–10人",
+          "price": "RM649 / 人"
+        },
+        {
+          "label": "20人",
+          "price": "RM600 / 人"
+        },
+        {
+          "label": "30人",
+          "price": "RM600 / 人"
+        },
+        {
+          "label": "公共假期附加费",
+          "price": "RM150 / 人"
+        },
+        {
+          "label": "团体备注",
+          "price": "20+1 FOC 1位领队"
+        }
+      ],
+      "included_items": [
+        "2晚4星酒店（Golden View / The Hill / King，按最终安排）",
+        "2次酒店早餐 + 1次午餐",
+        "来回船票",
+        "当地旅游车 + 中文导游",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票 / 入场饮料",
+        "Infinity Beach Club 蓝色沙滩俱乐部 入场 / 下午茶"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "按摩",
+        "旅游保险",
+        "Kepri Seafood Restaurant 海盗主题网红餐厅 午餐（自理）",
+        "酒店旺季附加费",
+        "未明确列在包含项目内的餐食与活动",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐（自理）"
+      ],
+      "notes": [
+        "费用包含列明 2次酒店早餐 + 1次午餐；按 3天2夜 2早+2午+2晚的比较口径，其余 1次午餐 + 2次晚餐列为自费。",
+        "Day 2 Kepri Seafood Restaurant 海盗主题网红餐厅午餐为自理。",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐为自理，不计入配套包含餐食。",
+        "原行程的圣托里尼 / De'Sand 已按最新安排替换；Infinity Beach Club 蓝色沙滩俱乐部升级为下午茶体验，不重复安排第二次蓝色沙滩俱乐部。",
+        "旅游保险不包含。",
+        "行程顺序可能按船班、交通与景点营业情况调整。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "双 Beach Club 轻松配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-economy-island/brochure/2026-10-03/990a601a-f792-4979-9767-081ec4a5d396-3d2n-economy.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "双 Beach Club 轻松配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-economy-island/gallery/2026-10-04/185340eb-7913-4cf2-b7cc-c1e17ded0d3b-golden-sunset-at-the-tropical-infinity-pool.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【双 Beach Club 轻松配套】。\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n来源：JNQ-BATAM-ECONOMY",
+      "source_code": "JNQ-BATAM-ECONOMY",
+      "featured": false,
+      "sort_order": 30,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:06:17.03206+00:00"
+    },
+    {
+      "id": 7,
+      "package_id": 1,
+      "slug": "goa-cave",
+      "name_zh": "Goa Cave 海洞探秘配套",
+      "name_en": "Goa Cave Discovery Package",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel / Aston City Hotel",
+      "accommodation_type": "4星酒店可选",
+      "village_name": null,
+      "short_description": "把经典巴淡岛行程换成更有记忆点的 Goa Cave 海洞体验，并提供 Golden View 与 Aston City 两种住宿报价。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "Goa Cave 海洞探秘",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+        "Miniature House 迷你文化村",
+        "Blue Fire Beach Club 粉色沙滩俱乐部",
+        "两种酒店可选"
+      ],
+      "suitable_for": [
+        "喜欢特别自然体验",
+        "4–10人小团",
+        "想要Goa Cave与经典景点一起玩"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "抵达巴淡岛",
+            "Dino's Gate 恐龙主题乐园 + 彩虹滑梯",
+            "Miniature House 迷你文化村",
+            "午餐：中式海鲜",
+            "千层糕（当地店家，非固定品牌）",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "晚餐：A2 Food Court 美食阁（自理）"
+          ],
+          "title": "Dino's Gate 恐龙主题乐园 + 彩虹滑梯、迷你文化村与咖啡",
+          "summary": "第一天先走经典景点与城市体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "Masjid Cheng Hoo 郑和清真寺",
+            "Goa Cave 海洞探秘*",
+            "午餐：Kepri Seafood Restaurant 海盗主题网红餐厅（自理）",
+            "按摩（自费）",
+            "Grand Batam Mall 商场 逛街",
+            "* 参考：4–5人一船、约30分钟来回船程、洞区停留约1小时"
+          ],
+          "title": "Goa Cave 海洞探秘",
+          "summary": "第二天加入乘船海洞体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 649,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM649–850 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "Golden View｜4–5人",
+          "price": "RM649 / 人"
+        },
+        {
+          "label": "Golden View｜6–10人",
+          "price": "RM700 / 人"
+        },
+        {
+          "label": "Golden View｜单人房差",
+          "price": "RM150 / 人"
+        },
+        {
+          "label": "Aston City｜4–5人",
+          "price": "RM800 / 人"
+        },
+        {
+          "label": "Aston City｜6–10人",
+          "price": "RM850 / 人"
+        },
+        {
+          "label": "Aston City｜单人房差",
+          "price": "RM250 / 人"
+        }
+      ],
+      "included_items": [
+        "2晚4星酒店（按所选方案）",
+        "2次酒店早餐 + 1次中式海鲜午餐",
+        "新山—巴淡岛来回船票 + 码头税",
+        "当地旅游车 + 中文司机兼导游",
+        "旅游意外保险（60岁以上不适用）",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票 + 入场饮料",
+        "Dino's Gate 恐龙主题乐园 + 彩虹滑梯 门票",
+        "Miniature House 迷你文化村 门票"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "按摩",
+        "酒店旺季附加费",
+        "Kepri Seafood Restaurant 海盗主题网红餐厅 午餐（自理）",
+        "A2 Food Court 美食阁晚餐（自理）"
+      ],
+      "notes": [
+        "Goa Cave 海洞探秘参考安排：4–5人一船、约30分钟来回船程、洞区停留约1小时。",
+        "如因天气原因无法前往 Goa Cave 海洞探秘，原配套注明改为1小时全身按摩。",
+        "Goa Cave 海洞探秘有玩水，建议多带一套衣服。",
+        "原始包含清单没有单独列明 Goa Cave 船程／入洞费用，预订前会再确认当期安排。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "Goa Cave 海洞探秘配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-goa-cave/brochure/2026-10-05/ec1ce97d-c7cc-4486-accf-1ca2bf2e2b53-3d2n-goa-cave.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "Goa Cave 海洞探秘配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-goa-cave/gallery/2026-10-04/d56c08d5-81b8-48b0-8bbe-4616255d98bf-emerald-cave-lagoon-boat-journey.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【Goa Cave 海洞探秘配套】。\n酒店偏好：Golden View / Aston City\n预计日期：\n成人：\n儿童：\n出发地点／码头：\n来源：JNQ-BATAM-GOACAVE",
+      "source_code": "JNQ-BATAM-GOACAVE",
+      "featured": false,
+      "sort_order": 40,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:19:32.025528+00:00"
+    },
+    {
+      "id": 8,
+      "package_id": 1,
+      "slug": "ibis-relax-666",
+      "name_zh": "Ibis Styles 深度按摩配套",
+      "name_en": "Ibis Styles Relax Package",
+      "duration": null,
+      "accommodation_name": "Ibis Styles Batam",
+      "accommodation_type": "酒店",
+      "village_name": null,
+      "short_description": "现有 JnQ 巴淡岛经典方案，住宿 IBIS Styles Batam，并把 90 分钟全身按摩 + 30 分钟洗头按摩放进配套，适合把“休息与放松”放在行程优先的人。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "IBIS Styles Batam",
+        "90分钟全身按摩",
+        "30分钟洗头按摩",
+        "Barelang Bridge 彩虹桥",
+        "Blue Fire Beach Club 粉色沙滩俱乐部"
+      ],
+      "suitable_for": [
+        "情侣与夫妻",
+        "朋友小团",
+        "家庭",
+        "想把按摩直接包含在配套内"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "抵达巴淡岛",
+            "Maha Vihara Duta Maitreya 天恩弥勒佛院",
+            "Puncak Beliung 彩虹滑梯（自费）",
+            "午餐：当天安排（包含）",
+            "咖啡体验 + 千层糕（当地店家，非固定品牌）",
+            "当地市场",
+            "90分钟全身按摩",
+            "晚餐：自理",
+            "购物 / KTV（当天安排）",
+            "入住 IBIS Styles Batam"
+          ],
+          "title": "抵达巴淡岛",
+          "summary": "抵达后由中文司机／导游接待并开始当地行程"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "Vihara Budhi Bhakti 大伯公庙",
+            "30分钟洗头按摩",
+            "Barelang Bridge 彩虹桥",
+            "午餐：自理",
+            "Elite Seaport（是否收费 / 包含以最终确认）",
+            "Infinity Beach Club 蓝色沙滩俱乐部（是否收费 / 包含以最终确认）",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "晚餐：当天安排（包含）",
+            "自由活动"
+          ],
+          "title": "按摩、Barelang Bridge 彩虹桥与 Beach Club",
+          "summary": "第二天继续按摩、桥景、咖啡与海边休闲体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 666,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM666 起 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "星期日至星期四",
+          "price": "RM666 / 人"
+        },
+        {
+          "label": "星期五至星期六",
+          "price": "RM726 / 人"
+        },
+        {
+          "label": "Public Holiday",
+          "price": "RM786 / 人"
+        },
+        {
+          "label": "少于4人附加费",
+          "price": "+RM60 / 人"
+        },
+        {
+          "label": "单人房差｜2晚",
+          "price": "+RM180 / 人"
+        },
+        {
+          "label": "Puteri Harbour 出发",
+          "price": "+RM60 / 人"
+        }
+      ],
+      "included_items": [
+        "来回船票",
+        "2晚 IBIS Styles Batam",
+        "2次早餐",
+        "1次午餐",
+        "1次晚餐",
+        "90分钟全身按摩",
+        "30分钟洗头按摩",
+        "中文司机／导游",
+        "Barelang Bridge 彩虹桥行程",
+        "Blue Fire Beach Club 粉色沙滩俱乐部行程",
+        "咖啡体验",
+        "千层糕试吃"
+      ],
+      "excluded_items": [
+        "去程 Fuel Tax：RM17 / 人",
+        "回程 Fuel Tax：Rp65,000 / 人",
+        "旅游保险",
+        "个人消费",
+        "酒店旺季附加费（如有）",
+        "Day 1 晚餐（自理）",
+        "Day 2 午餐（自理）",
+        "自费景点和项目（以最终确认资料为准）"
+      ],
+      "notes": [
+        "RM666 为星期日至星期四成人价；星期五至星期六 RM726 / 人，Public Holiday RM786 / 人。",
+        "少于4人 +RM60 / 人；单人房差 +RM180 / 人 / 2晚；Puteri Harbour 出发 +RM60 / 人。",
+        "Day 1 晚餐与 Day 2 午餐为自理；配套包含 1次午餐 + 1次晚餐，但餐厅名称以当天安排为准。",
+        "原资料没有把 Day 2 自理午餐指定为 Kepri Seafood Restaurant，所以前台不会擅自写 Kepri。",
+        "Elite Seaport 与 Infinity Beach Club 蓝色沙滩俱乐部是否收费 / 包含，以最终行程确认。",
+        "按摩项目为 90分钟全身按摩 + 30分钟洗头按摩，实际预约时段按当地安排。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "Ibis Styles 深度按摩配套 照片 1",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-ibis-relax-666/gallery/2026-10-04/129dfbb2-c964-48e9-a4d0-d202e82156c3-sunset-spa-retreat-by-the-water.webp",
+        "caption": "",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "Ibis Styles 深度按摩配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-ibis-relax-666/gallery/2026-10-04/129dfbb2-c964-48e9-a4d0-d202e82156c3-sunset-spa-retreat-by-the-water.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【IBIS Styles 按摩放松配套】。\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n来源：JNQ-BATAM-IBISRELAX",
+      "source_code": "JNQ-BATAM-IBISRELAX",
+      "featured": false,
+      "sort_order": 50,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:06:17.03206+00:00"
+    },
+    {
+      "id": 9,
+      "package_id": 1,
+      "slug": "lobster-lunch",
+      "name_zh": "龙虾午餐配套",
+      "name_en": "Lobster Lunch Package",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel",
+      "accommodation_type": "4星酒店",
+      "village_name": null,
+      "short_description": "把第二天午餐升级成龙虾套餐，每人半只龙虾，同时保留 Blue Fire Beach Club、Barelang Bridge、咖啡体验与购物。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "每人半只龙虾",
+        "Blue Fire Beach Club 粉色沙滩俱乐部",
+        "Barelang Bridge 彩虹桥",
+        "Go Kart可自费",
+        "Airsoft可自费"
+      ],
+      "suitable_for": [
+        "重视餐食",
+        "想吃龙虾午餐",
+        "4–10人",
+        "20人以上团体"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "抵达巴淡岛",
+            "Vihara Budhi Bhakti 大伯公庙",
+            "千层糕（当地店家，非固定品牌）",
+            "Masjid Cheng Hoo 郑和清真寺",
+            "Go Kart（自费）",
+            "Airsoft Gun 25粒（自费）",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "晚餐：A2 Food Court / Nagoya Food Court 美食阁（自理，当天安排）"
+          ],
+          "title": "寺庙、活动与 Blue Fire Beach Club 粉色沙滩俱乐部",
+          "summary": "第一天可自费加入 Go Kart 与 Airsoft"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "Barelang Bridge 彩虹桥",
+            "午餐：龙虾套餐（每人半只）",
+            "SNL 大超市逛街",
+            "商场逛街"
+          ],
+          "title": "咖啡、Barelang Bridge 彩虹桥与龙虾午餐",
+          "summary": "第二天主打龙虾套餐"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 680,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM680–730 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "4–5人",
+          "price": "RM700 / 人"
+        },
+        {
+          "label": "6–10人",
+          "price": "RM730 / 人"
+        },
+        {
+          "label": "20人或以上",
+          "price": "RM680 / 人"
+        },
+        {
+          "label": "公共假期附加费",
+          "price": "RM150 / 人"
+        }
+      ],
+      "included_items": [
+        "2晚4星 Golden View Hotel",
+        "2次酒店早餐 + 1次龙虾午餐（每人半只）",
+        "新山—巴淡岛来回船票 + 码头税",
+        "当地旅游车 + 中文导游",
+        "旅游意外保险",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票 + 饮料"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "按摩",
+        "Go Kart（自费）",
+        "Airsoft Gun 25粒（自费）",
+        "酒店旺季附加费",
+        "未明确列在包含项目内的餐食与活动",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐（自理）"
+      ],
+      "notes": [
+        "当前费用包含列明 2次早餐 + 1次龙虾午餐；A2 Food Court / Nagoya Food Court 美食阁晚餐为自理。",
+        "住宿已向旅行社确认：2晚 Golden View Hotel。",
+        "旅游意外保险保障条款以最终确认资料为准。",
+        "行程顺序可能按船班、交通与景点营业情况调整。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "龙虾午餐配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-lobster-lunch/brochure/2026-10-03/462f4df8-bb38-4618-a5ed-5f0d659c1a5e-3d2n.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "龙虾午餐配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-lobster-lunch/gallery/2026-10-04/e652ac7f-6b74-4c7c-8be3-870d38237738-lobster-feast-by-the-sunset-sea.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【龙虾午餐配套】。\\n预计日期：\\n成人：\\n儿童：\\n出发地点／码头：\\n房间数量：\\n来源：JNQ-BATAM-LOBSTER",
+      "source_code": "JNQ-BATAM-LOBSTER",
+      "featured": false,
+      "sort_order": 60,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:30:16.193644+00:00"
+    },
+    {
+      "id": 10,
+      "package_id": 1,
+      "slug": "pirate-afternoon-tea",
+      "name_zh": "海盗船下午茶团体配套",
+      "name_en": "Pirate Ship Afternoon Tea Package",
+      "duration": null,
+      "accommodation_name": "Golden View Hotel / King Hotel",
+      "accommodation_type": "4星酒店",
+      "village_name": null,
+      "short_description": "专为较大团体设计，加入 45 分钟海盗船下午茶、Blue Fire Beach Club、Barelang Bridge 与 Puncak Beliung 彩虹滑梯，适合公司团、朋友团或 20 人以上出游。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "20人以上团体",
+        "45分钟海盗船下午茶（Blue Fire Beach Club 粉色沙滩俱乐部）",
+        "Blue Fire Beach Club 粉色沙滩俱乐部",
+        "Barelang Bridge 彩虹桥",
+        "Puncak Beliung 彩虹滑梯"
+      ],
+      "suitable_for": [
+        "20人以上公司团",
+        "朋友团",
+        "团建与包团",
+        "想要海盗船下午茶"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "新山—巴淡岛行程",
+            "Maha Vihara Duta Maitreya 天恩弥勒佛院",
+            "千层糕（当地店家，非固定品牌）",
+            "午餐：万隆特色餐",
+            "按摩（自费）",
+            "Blue Fire Beach Club 粉色沙滩俱乐部",
+            "海盗船下午茶 45分钟（Blue Fire Beach Club 粉色沙滩俱乐部）",
+            "晚餐：中式海鲜"
+          ],
+          "title": "经典市区 + 海盗船下午茶",
+          "summary": "第一天加入海盗船下午茶体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "Puncak Beliung 彩虹滑梯（门票自理）",
+            "Barelang Bridge 彩虹桥",
+            "午餐：海边风景海鲜餐",
+            "70 Fahrenheit Koffie 印尼咖啡文化",
+            "商场逛街",
+            "晚餐：A2 Food Court / Nagoya Food Court 美食阁（自理，当天安排）"
+          ],
+          "title": "彩虹滑梯、Barelang Bridge 彩虹桥与海鲜",
+          "summary": "第二天继续地标与海边体验"
+        },
+        {
+          "items": [
+            "早餐：酒店",
+            "酒店退房",
+            "送码头"
+          ],
+          "title": "返程",
+          "summary": "早餐后退房并送往码头"
+        }
+      ],
+      "price_from": 825,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "RM825–850 / 人",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "20人 + 1领队",
+          "price": "RM850 / 人"
+        },
+        {
+          "label": "30人 + 1领队",
+          "price": "RM825 / 人"
+        },
+        {
+          "label": "单人房差",
+          "price": "RM150 / 人"
+        }
+      ],
+      "included_items": [
+        "2晚4星 Golden View Hotel / King Hotel",
+        "2次早餐 + 2次午餐 + 1次下午茶 + 1次晚餐",
+        "当地交通（Day 1–3）",
+        "中文导游",
+        "Blue Fire Beach Club 粉色沙滩俱乐部 门票 + 饮料",
+        "海盗船下午茶 45分钟（Blue Fire Beach Club 粉色沙滩俱乐部）"
+      ],
+      "excluded_items": [
+        "个人消费",
+        "按摩",
+        "小费",
+        "Puncak Beliung 彩虹滑梯 门票",
+        "Day 2 A2 Food Court / Nagoya Food Court 美食阁晚餐（自理）",
+        "未明确列在包含项目内的活动"
+      ],
+      "notes": [
+        "此方案当前报价主要针对 20人以上团体。",
+        "20+1 与 30+1 的领队安排及收费方式会在正式报价时确认。",
+        "酒店为 Golden View Hotel / King Hotel 4星级安排，最终以房况确认。",
+        "Puncak Beliung 彩虹滑梯门票为自费项目。",
+        "A2 Food Court / Nagoya Food Court 美食阁晚餐为自理，不计入配套包含餐食。",
+        "原配套没有明确列出来回船票与码头税是否包含，查询时需另外确认。",
+        "海盗船下午茶 45分钟已确认安排在 Blue Fire Beach Club 粉色沙滩俱乐部。"
+      ],
+      "validity_label": "当前报价｜预订前重新确认",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "海盗船下午茶团体配套 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-pirate-afternoon-tea/brochure/2026-10-03/50cb1c39-de5f-45c7-9a68-668642b432ce-3d2n.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "海盗船下午茶团体配套 照片 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/indonesia/batam/batam-3d2n-pirate-afternoon-tea/gallery/2026-10-04/9b73b4b7-8f47-4b11-8cf4-9f6cea2865e9-golden-hour-pirate-yacht-tea-cruise.webp",
+          "caption": "",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 巴淡岛 3天2夜【海盗船下午茶团体配套】。\\n预计日期：\\n人数：\\n出发地点／码头：\\n是否公司／团体：\\n来源：JNQ-BATAM-PIRATE",
+      "source_code": "JNQ-BATAM-PIRATE",
+      "featured": false,
+      "sort_order": 70,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-09-29T12:18:39.479488+00:00",
+      "updated_at": "2026-10-05T07:06:17.03206+00:00"
+    },
+    {
+      "id": 1,
+      "package_id": 5,
+      "slug": "paya-beach-resort",
+      "name_zh": "Paya Beach Resort",
+      "name_en": "Paya Beach Resort",
+      "duration": null,
+      "accommodation_name": "Paya Beach Resort",
+      "accommodation_type": "resort",
+      "village_name": null,
+      "short_description": "适合预算型海岛小旅行、情侣、家庭和朋友小团体。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [],
+      "suitable_for": [
+        "预算型海岛小旅行",
+        "情侣、家庭和朋友小团体"
+      ],
+      "itinerary_days": [],
+      "price_from": 509,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "每人 RM509 起",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "2人1房",
+          "price": "RM649／成人"
+        },
+        {
+          "label": "3人1房",
+          "price": "RM559／成人"
+        },
+        {
+          "label": "4人1房",
+          "price": "RM509／成人"
+        },
+        {
+          "label": "儿童（2–11岁）",
+          "price": "RM350／人"
+        }
+      ],
+      "included_items": [
+        "Mersing 或 Tanjung Gemok 来回船票",
+        "2 晚冷气住宿",
+        "2 份早餐",
+        "2 份晚餐",
+        "1 份午餐",
+        "Renggis Island 与 Marine Park 浮潜",
+        "浮潜面镜 Mask",
+        "救生衣 Life Jacket",
+        "Yoga by the Sea（以 Resort 安排为准）",
+        "Eco Education & Survival Program（以 Resort 安排为准）"
+      ],
+      "excluded_items": [
+        "Marine Park Fee：马来西亚人 RM5／外国人 RM30",
+        "Tourism Tax：RM10／房／晚",
+        "Pahang Tax：RM3／房／晚",
+        "旅游保险不包括",
+        "外国人船票附加费：RM50／人",
+        "周末、学校假期或公共假期可能有附加费"
+      ],
+      "notes": [
+        "Yoga by the Sea 与 Eco Education & Survival Program 不保证每日安排。",
+        "活动是否进行会受 Resort、天气与海况影响。",
+        "原始竖版配套海报待上传至 R2 后才能通过发布检查。"
+      ],
+      "validity_label": "价格有效至 14 Nov 2026",
+      "valid_until": "2026-11-14",
+      "brochure_image": {
+        "alt": "Paya Beach Resort 2026 3D2N snorkeling package poster",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-paya-beach-resort-3d2n/gallery/2026-07-21/1ad603b1-9543-4f1a-85a0-f006c4771abe-pulau-tioman---paya-resort.png",
+        "caption": "Paya Beach Resort 2026 package poster",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "Paya Beach Resort 2026 3D2N snorkeling package poster",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-paya-beach-resort-3d2n/gallery/2026-07-21/1ad603b1-9543-4f1a-85a0-f006c4771abe-pulau-tioman---paya-resort.png",
+          "caption": "Paya Beach Resort 2026 package poster",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我从 JnQ Journey 看到 Paya Beach Resort 3天2夜浮潜配套，想查询最新价格和房况。\n\n预计日期：\n成人：\n儿童及年龄：\n出发码头：\n房间数量：\n其他要求：\n\n来源：JNQ-TIOMAN-PAYA",
+      "source_code": "JNQ-TIOMAN-PAYA",
+      "featured": false,
+      "sort_order": 10,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-07-21T09:27:53.086867+00:00",
+      "updated_at": "2026-07-21T09:27:53.086867+00:00"
+    },
+    {
+      "id": 3,
+      "package_id": 5,
+      "slug": "aman-tioman",
+      "name_zh": "Aman Tioman Resort",
+      "name_en": "Aman Tioman Resort",
+      "duration": null,
+      "accommodation_name": "Aman Tioman Resort",
+      "accommodation_type": "resort",
+      "village_name": null,
+      "short_description": "适合想住得更舒适一点，并希望把船票、住宿、餐食和一次浮潜安排好的旅客。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [],
+      "suitable_for": [
+        "想住得更舒适一点的旅客",
+        "希望船票、住宿、餐食和浮潜一次安排好的旅客"
+      ],
+      "itinerary_days": [],
+      "price_from": 690,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "每人 RM690 起",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "2人1房",
+          "price": "RM790／成人"
+        },
+        {
+          "label": "3人1房",
+          "price": "RM720／成人"
+        },
+        {
+          "label": "4人1房",
+          "price": "RM690／成人"
+        },
+        {
+          "label": "儿童（4–11岁）",
+          "price": "RM530／人"
+        },
+        {
+          "label": "儿童（2–4岁）",
+          "price": "RM120／人"
+        }
+      ],
+      "included_items": [
+        "Mersing 或 Tanjung Gemok 来回船票",
+        "2 晚冷气住宿",
+        "2 份早餐",
+        "2 份晚餐（Set、Buffet 或 BBQ 以最终安排为准）",
+        "1 份午餐",
+        "第 2 天出海浮潜",
+        "浮潜面镜 Mask",
+        "救生衣 Life Jacket"
+      ],
+      "excluded_items": [
+        "Marine Park Fee：马来西亚人 RM5／外国人 RM30",
+        "Tourism Tax：RM10／房／晚",
+        "Pahang Tax：RM3／房／晚",
+        "旅游保险不包括",
+        "外国人船票附加费：RM50／人",
+        "周末、学校假期或公共假期可能有附加费"
+      ],
+      "notes": [
+        "儿童年龄区间需要向旅行社确认：海报同时列出儿童 4–11 岁与 2–4 岁，4 岁存在重叠。",
+        "儿童年龄及收费以旅行社最终确认为准。",
+        "原始竖版配套海报待上传至 R2 后才能通过发布检查。"
+      ],
+      "validity_label": "价格有效至 15 Nov 2026",
+      "valid_until": "2026-11-15",
+      "brochure_image": {
+        "alt": "Aman Tioman Resort 2026 3D2N snorkeling package poster",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-aman-resort-3d2n/gallery/2026-07-21/b4e74ecd-3801-4c3a-abe4-a441f73081b2-pulau-tioman---aman.png",
+        "caption": "Aman Tioman Resort 2026 package poster",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "Aman Tioman Resort 2026 3D2N snorkeling package poster",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-aman-resort-3d2n/gallery/2026-07-21/b4e74ecd-3801-4c3a-abe4-a441f73081b2-pulau-tioman---aman.png",
+          "caption": "Aman Tioman Resort 2026 package poster",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我从 JnQ Journey 看到 Aman Tioman Resort 3天2夜浮潜配套，想查询最新价格和房况。\n\n预计日期：\n成人：\n儿童及年龄：\n出发码头：\n房间数量：\n其他要求：\n\n来源：JNQ-TIOMAN-AMAN",
+      "source_code": "JNQ-TIOMAN-AMAN",
+      "featured": false,
+      "sort_order": 20,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-07-21T09:27:53.086867+00:00",
+      "updated_at": "2026-07-21T09:27:53.086867+00:00"
+    },
+    {
+      "id": 2,
+      "package_id": 5,
+      "slug": "the-barat-tioman",
+      "name_zh": "The Barat Tioman",
+      "name_en": "The Barat Tioman",
+      "duration": null,
+      "accommodation_name": "The Barat Tioman",
+      "accommodation_type": "resort",
+      "village_name": null,
+      "short_description": "房型选择较多，适合情侣、家庭和朋友团体；报价单位为每房，不是每人。",
+      "full_description": null,
+      "cover_image": null,
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [],
+      "suitable_for": [
+        "情侣",
+        "家庭",
+        "朋友团体",
+        "希望选择不同房型的旅客"
+      ],
+      "itinerary_days": [],
+      "price_from": 1440,
+      "price_currency": "MYR",
+      "price_unit": "room",
+      "price_display": "双人房每房 RM1,440 起",
+      "price_note": null,
+      "price_rows": [
+        {
+          "label": "Standard Chalet Garden View（双人）",
+          "price": "RM1,440／房"
+        },
+        {
+          "label": "Standard Family Chalet Garden View（四人）",
+          "price": "RM2,290／房"
+        },
+        {
+          "label": "Deluxe Family Room Pool+Part Seaview（四人）",
+          "price": "RM2,470／房"
+        },
+        {
+          "label": "Seafront Room Seaview（双人）",
+          "price": "RM2,020／房"
+        }
+      ],
+      "included_items": [
+        "2 晚冷气住宿",
+        "2 份早餐",
+        "2 份晚餐券",
+        "1 份午餐券",
+        "1 次出海浮潜",
+        "Tekek Jetty 与 Resort 来回接送"
+      ],
+      "excluded_items": [
+        "6 岁及以上按成人计算",
+        "6 岁以下同床同餐免费",
+        "儿童浮潜可加购：RM120／人",
+        "Tourism Tax（非马来西亚人）：RM10／房／晚",
+        "Pahang Tax：RM3／房",
+        "Marine Park Fee：马来西亚人 RM5／外国人 RM30",
+        "船票另计：成人 RM125／儿童 RM115",
+        "外国人附加费：RM50／人"
+      ],
+      "notes": [
+        "价格单位为每房，不是每人。",
+        "海报列示 Pahang Tax 为 RM3／房，未注明每晚；税费计算方式与最新金额以旅行社或 Resort 最终确认为准。",
+        "原始竖版配套海报待上传至 R2 后才能通过发布检查。"
+      ],
+      "validity_label": "Peak Season 2026",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "The Barat Tioman 2026 3D2N snorkeling package poster",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-barat-resort-3d2n/gallery/2026-07-21/83cee8db-32e9-4cd1-b79c-4b252ee15b06-pulau-tioman---the-barat.png",
+        "caption": "The Barat Tioman 2026 package poster",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "The Barat Tioman 2026 3D2N snorkeling package poster",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/packages/malaysia/pulau-tioman/tioman-barat-resort-3d2n/gallery/2026-07-21/83cee8db-32e9-4cd1-b79c-4b252ee15b06-pulau-tioman---the-barat.png",
+          "caption": "The Barat Tioman 2026 package poster",
+          "sort_order": 0
+        }
+      ],
+      "whatsapp_message": "你好，我从 JnQ Journey 看到 The Barat Tioman 3天2夜浮潜配套，想查询最新房型和价格。\n\n预计日期：\n成人：\n儿童及年龄：\n想要房型：\n房间数量：\n是否需要船票：\n其他要求：\n\n来源：JNQ-TIOMAN-BARAT",
+      "source_code": "JNQ-TIOMAN-BARAT",
+      "featured": false,
+      "sort_order": 30,
+      "status": "active",
+      "seo_title": null,
+      "seo_description": null,
+      "canonical_url": null,
+      "related_location_ids": [],
+      "created_at": "2026-07-21T09:27:53.086867+00:00",
+      "updated_at": "2026-07-21T09:27:53.086867+00:00"
+    },
+    {
+      "id": 13,
+      "package_id": 9,
+      "slug": "4d3n-sea-land-air",
+      "name_zh": "海南 4天3夜｜海陆空三重体验",
+      "name_en": "Hainan 4D3N Sea, Land & Air Experience",
+      "duration": "4天3夜",
+      "accommodation_name": "琼海（兴隆）4星＋三亚美豪酒店或同级4星",
+      "accommodation_type": "4星",
+      "village_name": null,
+      "short_description": "吉隆坡直飞琼海，4天3夜串联琼海、三亚与海南东线，包含南山海上观音、天涯小镇、凤凰岛高空酒廊、槟榔谷、亚龙湾海底餐厅与三亚湾船游体验。",
+      "full_description": "海洋 × 美食 × 文化，邂逅不一样的海南风情。行程由吉隆坡直飞琼海，安排琼海、三亚、南山、天涯小镇、凤凰岛高空酒廊、槟榔谷、亚龙湾海底餐厅、三亚湾船游、万宁段环岛旅游公路与日月湾。\n\n原 1 公里直升机体验目前暂停，旅行社已确认改为凤凰岛高空酒廊，并包含每人一杯饮料／鸡尾酒＋点心。",
+      "cover_image": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/gallery/2026-10-06/c99e30a8-a51f-4245-92a1-8d469147f036-chatgpt-image-oct-6-2026-01_43_57-pm.webp",
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）",
+        "豪华船游三亚湾＋啤酒／饮料任饮",
+        "亚龙湾海底餐厅用餐体验",
+        "海南四大名菜、南山素斋、黎家宴、文昌鸡等特色餐",
+        "升级海陆丰盛自助晚餐＋酒水无限畅饮"
+      ],
+      "suitable_for": [],
+      "itinerary_days": [
+        {
+          "items": [
+            "航班：KUL-BAR HU498 12:15-15:25",
+            "抵达琼海博鳌国际机场",
+            "前往参观 博鳌乐城",
+            "博鳌·海的故事 / 海景酒吧打卡",
+            "入住琼海（兴隆）指定4星酒店或同级",
+            "餐食：飞机餐 / 晚餐"
+          ],
+          "title": "吉隆坡 → 琼海",
+          "summary": "抵达琼海后参观博鳌乐城，并到博鳌·海的故事 / 海景酒吧打卡。"
+        },
+        {
+          "items": [
+            "南山海上观音旅游区（含电瓶车）",
+            "三亚旅游铁路观光列车",
+            "天涯小镇",
+            "海里里咖啡（咖啡自理）",
+            "入住三亚美豪酒店或同级4星酒店",
+            "餐食：早餐 / 午餐"
+          ],
+          "title": "琼海 → 三亚",
+          "summary": "南山、观光列车与天涯小镇。"
+        },
+        {
+          "items": [
+            "凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）",
+            "槟榔谷黎苗文化旅游区（含电瓶车）",
+            "亚龙湾海底餐厅 豪华双人餐",
+            "豪华船游三亚湾 + 啤酒 / 饮料任饮",
+            "入住三亚美豪酒店或同级4星酒店",
+            "餐食：早餐 / 午餐 / 晚餐"
+          ],
+          "title": "三亚一地",
+          "summary": "凤凰岛高空酒廊、槟榔谷、亚龙湾海底餐厅与三亚湾船游体验。"
+        },
+        {
+          "items": [
+            "车览海南岛最美路段：万宁段环岛旅游公路",
+            "日月湾旅游区",
+            "前往琼海博鳌国际机场",
+            "航班：BAR-KUL HU497 16:40-20:10",
+            "购物站（2站）：海产品、健康生活馆或其他",
+            "餐食：早餐 / 午餐 / 飞机餐"
+          ],
+          "title": "三亚 → 琼海 → 吉隆坡",
+          "summary": "经万宁段环岛旅游公路与日月湾后返回琼海搭机回吉隆坡。"
+        }
+      ],
+      "price_from": 2088,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "约 RM2,088++ / 人起",
+      "price_note": "不同出发日期价格会有所不同。",
+      "price_rows": [],
+      "included_items": [
+        "往返机票 + 税费 + 23KG托运行李 + 飞机餐",
+        "全程入住四星酒店（双人标间）；三亚两晚为三亚美豪酒店或同级4星酒店",
+        "早午晚餐按行程安排",
+        "行程用车",
+        "中文导游服务 + 基本小费",
+        "景点门票"
+      ],
+      "excluded_items": [
+        "可选项目",
+        "行李小费",
+        "个人消费",
+        "其他未提及的旅游活动"
+      ],
+      "notes": [
+        "参考价格约 RM2,088++ / 人起，不同出发日期价格会有所不同。",
+        "海里里咖啡的咖啡费用自理。",
+        "原 1 公里直升机体验目前暂停，旅行社已确认改为凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）。",
+        "购物站（2站）：海产品、健康生活馆或其他。"
+      ],
+      "validity_label": "价格与出发日期以查询时最终确认为准",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "海南 4天3夜｜海陆空三重体验 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/brochure/2026-10-06/ccf0a33f-7ab0-4afc-903c-6580dd6fb543-chatgpt-image-oct-6-2026-06_03_39-pm-1.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "海南4天3夜方案实拍 1",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/gallery/2026-10-06/ac1bfdb2-1e46-435e-add0-40bb607d198a-10-6-17.webp",
+          "caption": "JnQ Journey 海南实拍",
+          "sort_order": 0
+        },
+        {
+          "alt": "海南4天3夜方案实拍 2",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/gallery/2026-10-06/8e1cbfa7-ed63-49fe-bf1e-337aebec3439-10-6-27.webp",
+          "caption": "JnQ Journey 海南实拍",
+          "sort_order": 1
+        },
+        {
+          "alt": "海南4天3夜方案实拍 3",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/gallery/2026-10-06/c9a84e6d-ac9c-4022-9811-2899a68d2128-img_6202.webp",
+          "caption": "JnQ Journey 海南实拍",
+          "sort_order": 2
+        },
+        {
+          "alt": "海南4天3夜方案实拍 4",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-4d3n-sea-land-air/gallery/2026-10-06/fd64173e-f767-47e7-87e9-580f4ddf6ad7-img_e5570.webp",
+          "caption": "JnQ Journey 海南实拍",
+          "sort_order": 3
+        }
+      ],
+      "whatsapp_message": "你好，我想查询 JnQ Journey 海南 4天3夜配套。\n预计日期：\n成人：\n儿童：\n房间数量：",
+      "source_code": "JNQ-HN-4D3N",
+      "featured": false,
+      "sort_order": 10,
+      "status": "active",
+      "seo_title": "海南4天3夜海陆空三重体验｜吉隆坡直飞琼海｜JnQ Journey",
+      "seo_description": "海南4天3夜旅游配套，吉隆坡直飞琼海，行程包含南山海上观音、天涯小镇、槟榔谷、亚龙湾海底餐厅、豪华船游三亚湾、万宁环岛旅游公路与日月湾，约 RM2,088++ / 人起。",
+      "canonical_url": "/packages/hainan/4d3n-sea-land-air",
+      "related_location_ids": [
+        461,
+        466,
+        471,
+        477
+      ],
+      "created_at": "2026-10-04T09:17:20.534363+00:00",
+      "updated_at": "2026-10-06T10:04:16.189+00:00"
+    },
+    {
+      "id": 14,
+      "package_id": 9,
+      "slug": "5d4n-sea-land-air",
+      "name_zh": "海南 5天4夜｜海陆空臻享之旅",
+      "name_en": "Hainan 5D4N Sea, Land & Air Experience",
+      "duration": "5天4夜",
+      "accommodation_name": "琼海（兴隆）4星＋三亚美豪酒店或同级4星＋海花岛指定酒店或同级5星",
+      "accommodation_type": "4星＋5星",
+      "village_name": null,
+      "short_description": "吉隆坡搭乘海南航空包机直飞琼海，5天4夜串联博鳌、三亚、海花岛与海口，安排南山海上观音、天涯小镇、凤凰岛高空酒廊、豪华船游三亚湾、海花岛及海口骑楼老街等体验。",
+      "full_description": "这条海南 5天4夜路线由吉隆坡搭乘海南航空包机直飞琼海，一路走访博鳌、三亚、海花岛与海口。\n\n除了南山海上观音、天涯小镇、槟榔谷黎苗文化旅游区，也安排凤凰岛高空酒廊、亚龙湾海底餐厅、豪华船游三亚湾，以及海花岛1号岛、童世界海洋乐园、明清风情美食街、婚礼庄园灯光秀和海口骑楼老街。\n\n参考价格约 RM2,388++／人起，不同出发日期的最终报价可能调整；查询时请提供预计日期、人数与儿童年龄。",
+      "cover_image": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/1dd1a71c-e530-407c-8b7b-c8072b865ba2-chatgpt-image-oct-6-2026-03_39_45-pm.webp",
+      "hero_image": null,
+      "hero_image_mobile": null,
+      "hero_image_contains_text": false,
+      "highlights": [
+        "凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）",
+        "豪华船游三亚湾＋啤酒／饮料任饮",
+        "亚龙湾海底餐厅用餐体验",
+        "海南四大名菜、南山素斋、黎家宴、鲍鱼鸡煲、椰子鸡等特色餐",
+        "升级海陆丰盛自助晚餐＋酒水无限畅饮",
+        "海花岛 1 号岛＋童世界海洋乐园＋婚礼庄园灯光秀"
+      ],
+      "suitable_for": [
+        "情侣出游",
+        "家庭旅行",
+        "朋友团体",
+        "想一次体验海南观光、美食与特色项目的旅客",
+        "希望机票、酒店、交通和主要行程一次安排好的旅客"
+      ],
+      "itinerary_days": [
+        {
+          "items": [
+            "航班：KUL-BAR HU498 12:15-15:25",
+            "抵达琼海博鳌国际机场",
+            "前往参观博鳌乐城",
+            "博鳌·海的故事 / 海景酒吧打卡",
+            "入住琼海（兴隆）指定酒店或同级4星酒店",
+            "餐食：飞机餐 / 晚餐"
+          ],
+          "title": "吉隆坡 → 琼海",
+          "summary": "搭乘 HU498 直飞琼海博鳌国际机场，抵达后前往博鳌乐城，并到博鳌·海的故事感受海边慢生活。"
+        },
+        {
+          "items": [
+            "南山海上观音旅游区（含电瓶车）",
+            "三亚旅游铁路观光列车",
+            "天涯小镇",
+            "海里里咖啡（咖啡自理）",
+            "入住三亚美豪酒店或同级4星酒店",
+            "餐食：早餐 / 午餐"
+          ],
+          "title": "琼海 → 三亚",
+          "summary": "南山海上观音、三亚旅游铁路观光列车、天涯小镇与海里里咖啡。"
+        },
+        {
+          "items": [
+            "凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）",
+            "亚龙湾海底餐厅享用午餐",
+            "豪华船游三亚湾+啤酒/饮料任饮",
+            "鲜芒夜市",
+            "入住三亚美豪酒店或同级4星酒店",
+            "餐食：早餐 / 午餐"
+          ],
+          "title": "三亚一地",
+          "summary": "凤凰岛高空酒廊、亚龙湾海底餐厅、豪华船游三亚湾与鲜芒夜市。"
+        },
+        {
+          "items": [
+            "槟榔谷黎苗文化旅游区（含电瓶车）",
+            "海花岛1号岛",
+            "童世界海洋乐园＋表演",
+            "海花岛明清风情美食街",
+            "婚礼庄园＆海花岛灯光秀",
+            "入住海花岛指定酒店或同级5星酒店",
+            "餐食：早餐 / 午餐 / 晚餐"
+          ],
+          "title": "三亚 → 海花岛",
+          "summary": "体验槟榔谷黎苗文化后前往海花岛，游览1号岛、童世界海洋乐园、明清风情美食街及婚礼庄园灯光秀。"
+        },
+        {
+          "items": [
+            "海口骑楼老街",
+            "前往琼海博鳌国际机场",
+            "航班：BAR-KUL HU497 16:40-20:10",
+            "购物站（2站）：海产品、健康生活馆或其他",
+            "餐食：早餐 / 午餐 / 飞机餐"
+          ],
+          "title": "海花岛 → 海口 → 琼海 → 吉隆坡",
+          "summary": "游览海口骑楼老街后前往琼海博鳌国际机场，搭乘 HU497 返回吉隆坡。"
+        }
+      ],
+      "price_from": 2388,
+      "price_currency": "MYR",
+      "price_unit": "person",
+      "price_display": "约 RM2,388++ / 人起",
+      "price_note": "不同出发日期价格会有所不同；机位、酒店、房型及 ++ 附加费用以查询时的最新报价与最终确认为准。",
+      "price_rows": [],
+      "included_items": [
+        "往返机票＋税费＋23KG托运行李＋飞机餐",
+        "4晚酒店住宿（双人标准间）含早餐：琼海（兴隆）1晚4星＋三亚美豪酒店或同级2晚4星＋海花岛1晚5星",
+        "行程所列午餐及晚餐",
+        "行程用车",
+        "中文导游服务＋基本小费",
+        "行程所列景点门票"
+      ],
+      "excluded_items": [
+        "可选项目",
+        "行李小费",
+        "个人消费",
+        "其他未提及的旅游活动或费用"
+      ],
+      "notes": [
+        "海南航空包机航班：去程 KUL-BAR HU498 12:15-15:25；回程 BAR-KUL HU497 16:40-20:10。",
+        "景点顺序、酒店、餐食及体验项目可能因天气、当地运营及实际安排调整，最终以出发前确认资料为准。",
+        "原直升机低空飞行项目目前暂停，旅行社已确认改为凤凰岛高空酒廊（每人一杯饮料／鸡尾酒＋点心）。",
+        "参考价格中的 ++ 所涉及附加费用，请以最终报价明细为准。",
+        "购物站（2站）：海产品、健康生活馆或其他。"
+      ],
+      "validity_label": "价格与出发日期以查询时最终确认为准",
+      "valid_until": null,
+      "brochure_image": {
+        "alt": "海南 5天4夜｜海陆空臻享之旅 配套详情图",
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/brochure/2026-10-06/2decffbd-68b9-4c80-af4e-ae1df36bce02-chatgpt-image-oct-6-2026-06_03_40-pm-2.webp",
+        "caption": "JnQ Journey 重新整理配套详情图",
+        "sort_order": 0
+      },
+      "gallery": [
+        {
+          "alt": "槟榔谷黎苗文化旅游区",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/1e484a73-defc-4a56-bad3-8e05908f3473-img_6117.webp",
+          "caption": "",
+          "sort_order": 0
+        },
+        {
+          "alt": "海花岛灯光秀",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/9cbab537-658f-479f-a68d-ccd51c0b0c5a-img_5750.webp",
+          "caption": "",
+          "sort_order": 1
+        },
+        {
+          "alt": "海花岛欧堡酒店大厅",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/ba3daba8-38a4-4363-88aa-c6efddca5204-img_5711.webp",
+          "caption": "",
+          "sort_order": 2
+        },
+        {
+          "alt": "天涯小镇实拍",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/d3bad346-e3c8-4406-aa4a-9d4b2fb884f9-retouch_2025110318395055.webp",
+          "caption": "",
+          "sort_order": 3
+        },
+        {
+          "alt": "海南 5天4夜｜海陆空臻享之旅 照片 5",
+          "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hainan/hainan-5d4n-sea-land-air/gallery/2026-10-06/1296ba20-dffa-4b32-8f9e-b2517512fd03-img_5928.webp",
+          "caption": "",
+          "sort_order": 4
+        }
+      ],
+      "whatsapp_message": "你好，我从 JnQ Journey 看到「海南 5天4夜｜海陆空臻享之旅」，想查询最新出发日期和价格。\n\n预计日期：\n成人：\n儿童及年龄：\n房间数量：\n其他要求：\n\n来源：JNQ-HAINAN-5D4N",
+      "source_code": "JNQ-HAINAN-5D4N",
+      "featured": false,
+      "sort_order": 20,
+      "status": "active",
+      "seo_title": "海南5天4夜旅游配套｜吉隆坡直飞琼海・三亚海陆空体验｜JnQ Journey",
+      "seo_description": "海南5天4夜旅游配套，吉隆坡直飞琼海，行程覆盖博鳌、三亚、海花岛与海口，并安排凤凰岛高空酒廊、豪华船游三亚湾、海底餐厅、南山海上观音与槟榔谷等体验。约 RM2,388++／人起。",
+      "canonical_url": "/packages/hainan/5d4n-sea-land-air",
+      "related_location_ids": [
+        461,
+        466,
+        471,
+        477
+      ],
+      "created_at": "2026-09-30T01:18:22.368741+00:00",
+      "updated_at": "2026-10-06T10:07:14.798+00:00"
+    }
+  ]
+}
