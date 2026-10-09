@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { readPublishedPackage } from '@/lib/server/travel-packages'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -9,27 +9,16 @@ const NO_STORE_HEADERS = {
   'X-Robots-Tag': 'noindex, nofollow',
 }
 
+// Use the same live-first published snapshot fallback as the package pages.
+// During a Supabase quota outage, known published pages must not be rejected
+// by the middleware while the page renderer correctly recovers from the outage.
 export async function GET(_: Request, { params }: { params: { slug: string } }) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) {
-    console.error('[package-visibility] Supabase configuration is missing')
+  try {
+    const published = await readPublishedPackage(params.slug)
+    if (!published) return new NextResponse('Not Found', { status: 404, headers: NO_STORE_HEADERS })
+    return new NextResponse(null, { status: 204, headers: NO_STORE_HEADERS })
+  } catch (error) {
+    console.error('[package-visibility]', error)
     return NextResponse.json({ error: 'Visibility check unavailable' }, { status: 503, headers: NO_STORE_HEADERS })
   }
-
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  const { data, error } = await supabase
-    .from('travel_packages')
-    .select('id')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .limit(1)
-
-  if (error) {
-    console.error('[package-visibility]', error.message)
-    return NextResponse.json({ error: 'Visibility check failed' }, { status: 502, headers: NO_STORE_HEADERS })
-  }
-
-  if (!data?.length) return new NextResponse('Not Found', { status: 404, headers: NO_STORE_HEADERS })
-  return new NextResponse(null, { status: 204, headers: NO_STORE_HEADERS })
 }
