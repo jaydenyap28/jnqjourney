@@ -35,6 +35,22 @@ const GOLDEN_VIEW_2026_SURCHARGE_DATES = [
   { month: '12月', occasion: 'Christmas & New Year', dates: '25、26、27、31 December 2026' },
 ] as const
 
+// Golden View Hotel's supplied 2027 surcharge dates; no amounts were supplied.
+const GOLDEN_VIEW_2027_SURCHARGE_DATES = [
+  { month: '1月', occasion: '新年 · New Year', dates: '2027年1月1–2日' },
+  { month: '2月', occasion: '春节 · CNY', dates: '2027年2月4–10日' },
+  { month: '3月', occasion: '开斋节 · Idul Fitri', dates: '2027年3月9–13日' },
+  { month: '3月', occasion: '耶稣受难日 · Good Friday', dates: '2027年3月26–27日' },
+  { month: '4月', occasion: '劳动节 · Hari Buruh', dates: '2027年4月30日' },
+  { month: '5月', occasion: '劳动节 · Hari Buruh', dates: '2027年5月1–2日' },
+  { month: '5月', occasion: '卫塞节 · Waisak', dates: '2027年5月20–22日' },
+  { month: '8月', occasion: '新加坡国庆日 · SG Independence Day', dates: '2027年8月7–9日' },
+  { month: '8月', occasion: '马来西亚国庆日 · Malay Independence Day', dates: '2027年8月29–31日' },
+  { month: '10月', occasion: '屠妖节 · Deepavali', dates: '2027年10月28–30日' },
+  { month: '12月', occasion: '圣诞节 · Christmas', dates: '2027年12月24–26日' },
+  { month: '12月', occasion: '跨年 · New Year', dates: '2027年12月30–31日、2028年1月1日' },
+] as const
+
 const BATAM_SMALL_GROUP_SURCHARGES: Record<string, { packageLabel: string; rows: Array<{ people: string; surcharge: string }> }> = {
   'amazing-promo-499': {
     packageLabel: 'Batam 非常优惠',
@@ -187,20 +203,38 @@ export default function BatamPackageOptionDetail({ item, option }: { item: Trave
             <div className="flex gap-3">
               <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-amber-200" />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-100/60">Golden View Hotel · 2026 Surcharge Dates</p>
-                <h2 className="mt-2 text-xl font-semibold">Golden View Hotel 2026 旺季附加费日期</h2>
-                <p className="mt-3 max-w-4xl text-sm leading-6 text-white/62">若此方案最终安排入住 Golden View Hotel，以下住宿日期将另外收取酒店旺季附加费。附加费金额以查询时酒店及配套最终确认为准。</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-amber-100/60">Golden View Hotel · Surcharge Calendar</p>
+                <h2 className="mt-2 text-xl font-semibold">Golden View Hotel 旺季附加费日期</h2>
+                <p className="mt-3 max-w-4xl text-sm leading-6 text-white/62">
+                  仅在本方案最终确认入住 Golden View Hotel，且实际住宿日期落在以下区间时适用。酒店已提供加价日期，但尚未提供具体附加费金额；请在预订时按日期、房型和晚数确认最终费用。
+                </p>
               </div>
             </div>
-            <div className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {GOLDEN_VIEW_2026_SURCHARGE_DATES.map((entry) => (
-                <div key={`${entry.month}-${entry.occasion}`} className="rounded-lg border border-white/10 bg-black/15 px-4 py-3">
+
+            <h3 className="mt-6 text-base font-semibold text-amber-100">2027 年旺季附加费日期</h3>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+              {GOLDEN_VIEW_2027_SURCHARGE_DATES.map((entry) => (
+                <div key={'2027-' + entry.month + '-' + entry.occasion} className="rounded-lg border border-white/10 bg-black/15 px-4 py-3">
                   <p className="text-sm font-semibold text-amber-100">{entry.month}｜{entry.occasion}</p>
-                  <p className="mt-1 text-sm leading-6 text-white/66">{entry.dates}</p>
+                  <p className="mt-1 text-sm leading-6 text-white/70">{entry.dates}</p>
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-xs leading-5 text-white/42">仅在实际入住 Golden View Hotel 且住宿日期落在上述日期时适用。</p>
+
+            <details className="mt-6 rounded-lg border border-white/10 bg-black/10 p-4">
+              <summary className="cursor-pointer text-sm font-semibold text-white/75">查看 2026 年旺季附加费日期</summary>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {GOLDEN_VIEW_2026_SURCHARGE_DATES.map((entry) => (
+                  <div key={'2026-' + entry.month + '-' + entry.occasion} className="rounded-lg border border-white/10 bg-black/15 px-4 py-3">
+                    <p className="text-sm font-semibold text-amber-100">{entry.month}｜{entry.occasion}</p>
+                    <p className="mt-1 text-sm leading-6 text-white/66">{entry.dates}</p>
+                  </div>
+                ))}
+              </div>
+            </details>
+            <p className="mt-4 text-xs leading-5 text-white/45">
+              2027 年日期按 Golden View Hotel 提供的加价表列出，包括 2028 年 1 月 1 日。以上为加价适用日期，不代表酒店房间或配套已确认可订；最终收费以正式报价为准。
+            </p>
           </section>
         ) : null}
 
