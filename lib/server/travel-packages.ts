@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
+import publicPackageSnapshot from '@/data/travel-packages-snapshot.json'
 
 const PACKAGE_SELECT = 'id,slug,title_zh,title_en,destination,region_id,duration,short_description,full_description,cover_image,hero_image,hero_image_mobile,hero_image_contains_text,gallery,video_url,highlights,suitable_for,itinerary_days,included_items,excluded_items,notes,price_display,price_note,whatsapp_message,source_code,status,featured,sort_order,seo_title,seo_description,canonical_url,related_location_ids,related_guide_slugs,related_note_slugs,affiliate_link_ids,created_at,updated_at,published_at'
 const PACKAGE_OPTION_SELECT = 'id,package_id,slug,name_zh,name_en,duration,accommodation_name,accommodation_type,village_name,short_description,full_description,cover_image,hero_image,hero_image_mobile,hero_image_contains_text,highlights,suitable_for,itinerary_days,price_from,price_currency,price_unit,price_display,price_note,price_rows,included_items,excluded_items,notes,validity_label,valid_until,brochure_image,gallery,whatsapp_message,source_code,featured,sort_order,status,seo_title,seo_description,canonical_url,related_location_ids,created_at,updated_at'
@@ -142,6 +143,26 @@ export interface TravelPackage {
   published_at?: string | null
 }
 
+// Public-only fallback snapshot. Supabase may respond 402 when the organization is over
+// its storage quota; a transient upstream outage must never masquerade as unpublished data.
+// Successful live database responses (including an actual not-found) always take priority.
+const fallbackPackages = publicPackageSnapshot.packages as unknown as TravelPackage[]
+const fallbackOptions = publicPackageSnapshot.options as unknown as TravelPackageOption[]
+
+function fallbackPackageBySlug(slug: string) {
+  return fallbackPackages.find((item) => item.slug === slug) || null
+}
+
+function fallbackActiveOptions(packageId: number) {
+  return fallbackOptions
+    .filter((item) => item.package_id === packageId)
+    .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+}
+
+function logPackageOutage(scope: string, error: unknown) {
+  console.error(scope, error instanceof Error ? error.message : String(error), '[using published backup]')
+}
+
 function createServerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -152,18 +173,23 @@ function createServerClient() {
 // Pages Router build/ISR uses this query directly; App Router keeps the cache below.
 export async function readPublishedPackagesUncached() {
   const supabase = createServerClient()
-  if (!supabase) return []
-  const { data, error } = await supabase
-    .from('travel_packages')
-    .select(PACKAGE_SELECT)
-    .eq('status', 'published')
-    .order('featured', { ascending: false })
-    .order('sort_order', { ascending: true })
-  if (error) {
-    if (!error.message.includes('travel_packages')) console.error('[travel-packages]', error.message)
-    return []
+  if (!supabase) return fallbackPackages
+  try {
+    const { data, error } = await supabase
+      .from('travel_packages')
+      .select(PACKAGE_SELECT)
+      .eq('status', 'published')
+      .order('featured', { ascending: false })
+      .order('sort_order', { ascending: true })
+    if (error) {
+      logPackageOutage('[travel-packages]', error.message)
+      return fallbackPackages
+    }
+    return (data || []) as TravelPackage[]
+  } catch (error) {
+    logPackageOutage('[travel-packages]', error)
+    return fallbackPackages
   }
-  return (data || []) as TravelPackage[]
 }
 
 export const readPublishedPackages = unstable_cache(readPublishedPackagesUncached, ['published-travel-packages'], {
@@ -173,50 +199,67 @@ export const readPublishedPackages = unstable_cache(readPublishedPackagesUncache
 
 export async function readPublishedPackage(slug: string) {
   const supabase = createServerClient()
-  if (!supabase) return null
-  const { data, error } = await supabase
-    .from('travel_packages')
-    .select(PACKAGE_SELECT)
-    .eq('slug', slug)
-    .eq('status', 'published')
-    .maybeSingle()
-  if (error) {
-    if (!error.message.includes('travel_packages')) console.error('[travel-package]', error.message)
-    return null
+  if (!supabase) return fallbackPackageBySlug(slug)
+  try {
+    const { data, error } = await supabase
+      .from('travel_packages')
+      .select(PACKAGE_SELECT)
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .maybeSingle()
+    if (error) {
+      logPackageOutage('[travel-package]', error.message)
+      return fallbackPackageBySlug(slug)
+    }
+    return data as TravelPackage | null
+  } catch (error) {
+    logPackageOutage('[travel-package]', error)
+    return fallbackPackageBySlug(slug)
   }
-  return data as TravelPackage | null
 }
 
 export async function readPublishedPackageOptions(packageId: number) {
+  if (!Number.isInteger(packageId) || packageId <= 0) return []
   const supabase = createServerClient()
-  if (!supabase || !Number.isInteger(packageId) || packageId <= 0) return []
-  const { data, error } = await supabase
-    .from('travel_package_options')
-    .select(PACKAGE_OPTION_SELECT)
-    .eq('package_id', packageId)
-    .eq('status', 'active')
-    .order('sort_order', { ascending: true })
-  if (error) {
-    if (!error.message.includes('travel_package_options')) console.error('[travel-package-options]', error.message)
-    return []
+  if (!supabase) return fallbackActiveOptions(packageId)
+  try {
+    const { data, error } = await supabase
+      .from('travel_package_options')
+      .select(PACKAGE_OPTION_SELECT)
+      .eq('package_id', packageId)
+      .eq('status', 'active')
+      .order('sort_order', { ascending: true })
+    if (error) {
+      logPackageOutage('[travel-package-options]', error.message)
+      return fallbackActiveOptions(packageId)
+    }
+    return (data || []) as TravelPackageOption[]
+  } catch (error) {
+    logPackageOutage('[travel-package-options]', error)
+    return fallbackActiveOptions(packageId)
   }
-  return (data || []) as TravelPackageOption[]
 }
 
-
 export async function readPublishedPackageOption(packageId: number, optionSlug: string) {
+  if (!Number.isInteger(packageId) || packageId <= 0 || !optionSlug) return null
+  const fallbackOption = fallbackActiveOptions(packageId).find((item) => item.slug === optionSlug) || null
   const supabase = createServerClient()
-  if (!supabase || !Number.isInteger(packageId) || packageId <= 0 || !optionSlug) return null
-  const { data, error } = await supabase
-    .from('travel_package_options')
-    .select(PACKAGE_OPTION_SELECT)
-    .eq('package_id', packageId)
-    .eq('slug', optionSlug)
-    .eq('status', 'active')
-    .maybeSingle()
-  if (error) {
-    if (!error.message.includes('travel_package_options')) console.error('[travel-package-option]', error.message)
-    return null
+  if (!supabase) return fallbackOption
+  try {
+    const { data, error } = await supabase
+      .from('travel_package_options')
+      .select(PACKAGE_OPTION_SELECT)
+      .eq('package_id', packageId)
+      .eq('slug', optionSlug)
+      .eq('status', 'active')
+      .maybeSingle()
+    if (error) {
+      logPackageOutage('[travel-package-option]', error.message)
+      return fallbackOption
+    }
+    return data as TravelPackageOption | null
+  } catch (error) {
+    logPackageOutage('[travel-package-option]', error)
+    return fallbackOption
   }
-  return data as TravelPackageOption | null
 }
