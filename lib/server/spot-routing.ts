@@ -7,7 +7,7 @@ const PUBLISHED_IDS = new Set<number>(routingSnapshot.publishedSpotIds)
 const UNPUBLISHED_IDS = new Set<number>(routingSnapshot.unpublishedSpotIds)
 const ROUTING_REDIRECTS = routingSnapshot.redirects as SpotRoutingRecord[]
 
-function readSnapshotSpotRouting(id: number): Promise<ReturnType<typeof resolveSpotRouting> extends Promise<infer T> ? T : never> {
+function readSnapshotSpotRouting(id: number) {
   return resolveSpotRouting(id, async spotId => {
     const redirect = ROUTING_REDIRECTS.find(item => item.id === spotId)
     if (redirect) return redirect
