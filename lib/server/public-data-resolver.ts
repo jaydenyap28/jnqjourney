@@ -121,7 +121,7 @@ async function readCdnSnapshot(): Promise<ResolvedPublicData | null> {
   if (!base) return null
   try {
     const [locationsResponse, regionsResponse] = await withTimeout(Promise.all([
-      fetch(`${base}/public-data/locations.json`, { next: { revalidate: 3600, tags: ['public-locations'] } }),
+      fetch(`${base}/public-data/locations.json`, { headers: { 'Cache-Control': 'no-cache' }, next: { revalidate: 3600, tags: ['public-locations'] } }),
       // The Region snapshot is overwritten at a fixed R2 key. Ask the CDN to
       // revalidate that object when Next has precisely invalidated this tag.
       fetch(`${base}/public-data/regions.json`, {
@@ -171,7 +171,9 @@ async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) return null
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
+  })
   try {
     let [locationsResult, regionsResult] = await withTimeout(Promise.all([
       supabase.from('locations').select(SNAPSHOT_LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>(),

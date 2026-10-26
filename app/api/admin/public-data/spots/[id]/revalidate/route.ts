@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { createClient } from '@supabase/supabase-js'
@@ -14,6 +15,8 @@ const HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
 // upload or rebuild data. Supabase Storage is read only for the canonical alias
 // map used by the public page. The exact published snapshot hash is required.
 export async function POST(request: Request, { params }: { params: { id: string } }) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return blocked
   let payload: ReturnType<typeof verifySpotRevalidation>
   try {
     const body = await request.text()

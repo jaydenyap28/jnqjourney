@@ -8,7 +8,15 @@ test('supports a complete journey timeline with confirmed city segments', () => 
   const segments = jiangnanGuideDraft.itinerarySegments || []
   assert.equal(segments.length, 6)
   assert.deepEqual(segments.map((item) => item.city), ['上海', '苏州', '乌镇', '杭州', '宏村／黟县', '南京'])
-  assert.deepEqual(segments.map((item) => [item.dayStart, item.dayEnd]), [[1, 3], [4, 5], [6, 6], [7, 8], [9, 11], [12, 15]])
+  assert.deepEqual(segments.map((item) => [item.dayStart, item.dayEnd]), [[0, 2], [3, 4], [5, 5], [6, 7], [8, 10], [11, 14]])
+  const start = Date.parse(`${jiangnanGuideDraft.tripStartDate}T00:00:00Z`)
+  const offset = (date: string | undefined) => (Date.parse(`${date}T00:00:00Z`) - start) / 86400000
+  for (const segment of segments) {
+    assert.equal(segment.dayStart, offset(segment.dateStart))
+    assert.equal(segment.dayEnd, offset(segment.dateEnd))
+  }
+  assert.equal(offset(jiangnanGuideDraft.tripEndDate) + 1, 15)
+  assert.equal(jiangnanGuideDraft.duration, '15天14夜')
   assert.equal(segments[5].globalDayMappingStatus, 'pending')
 })
 

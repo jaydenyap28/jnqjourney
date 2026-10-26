@@ -99,7 +99,7 @@ export function readPublicGuideTripCost(guide: Pick<TravelGuide, 'slug' | 'budge
   return unstable_cache(
     () => readPublicGuideTripCostUncached(guide),
     ['public-guide-trip-cost-v1', guide.slug],
-    { revalidate: 3600, tags: ['guide-trip-costs', `guide-trip-cost:${guide.slug}`] },
+    { revalidate: 3600, tags: [`guide-trip-cost:${guide.slug}`] },
   )()
 }
 

@@ -64,6 +64,7 @@ async function readCdnSpot(slug: string): Promise<PublicSpotLookup> {
   try {
     const indexResponse = await withTimeout(
       fetch(`${base}/public-data/spots/index.json`, {
+        headers: { 'Cache-Control': 'no-cache' },
         next: { revalidate: 3600, tags: ['public-spots'] },
       }),
       'Public spot CDN index'
@@ -83,7 +84,8 @@ async function readCdnSpot(slug: string): Promise<PublicSpotLookup> {
     }
     const response = await withTimeout(
       fetch(`${base}/public-data/spots/${encodeURIComponent(slug)}.json`, {
-        next: { revalidate: 3600, tags: ['public-spots', `public-spot:${slug}`] },
+        headers: { 'Cache-Control': 'no-cache' },
+        next: { revalidate: 3600, tags: [`public-spot:${slug}`] },
       }),
       'Public spot CDN'
     )
@@ -158,21 +160,32 @@ async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | n
 }
 
 function resolveCached(slug: string) {
+  const id = extractLocationIdFromSlug(slug)
+  if (!id || !Number.isSafeInteger(id) || id <= 0) return Promise.resolve(null)
+  // All aliases of one Spot share one payload entry and its invalidation tag.
+  // Arbitrary slug prefixes cannot multiply Data Cache writes for the same ID.
+  const identity = `spot-${id}`
   return unstable_cache(
-    () => resolveSpotUncached(slug),
-    ['public-spot-v1', slug],
-    { revalidate: 3600, tags: ['public-spots', `public-spot:${slug}`] }
+    () => resolveSpotUncached(identity),
+    ['public-spot-v2', identity],
+    { revalidate: 3600, tags: [`public-spot:${identity}`] }
   )()
 }
 
-export const getPublicSpotBySlug = cache(async (slug: string) => resolveCached(String(slug || '').trim()))
+const readPublicSpot = async (slug: string) => resolveCached(String(slug || '').trim())
+// React 18 exposes cache in the App Router server condition, but not in Pages
+// API bundles that also import the authoritative publication reader below.
+// Keep request memoization where supported; the persistent ID cache is shared.
+export const getPublicSpotBySlug = typeof cache === 'function' ? cache(readPublicSpot) : readPublicSpot
 
 export async function readAuthoritativePublicSpotById(id: number) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
   if (!Number.isInteger(id) || id <= 0) throw new Error('Invalid Spot id.')
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
+  })
   let result = await withTimeout(
     supabase
       .from('locations')

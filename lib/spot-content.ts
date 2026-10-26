@@ -43,8 +43,10 @@ export function spotImageText(spot: SpotContentFields & { name: string; name_cn?
 export function spotSeo(spot: SpotContentFields & { name: string; name_cn?: string | null; title?: string; description?: string | null; review?: string | null }, locale: 'zh' | 'en') {
   const clean = (value?: string | null) => String(value || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
   const name = locale === 'zh' ? spot.name_cn || spot.name : spot.title || spot.name
+  const excerpt = spotDescriptionExcerpt(spot.description) || spotDescriptionExcerpt(spot.review) || spotDescriptionExcerpt(locale === 'zh' ? spot.experience_zh : spot.experience_en)
+  const untranslated = locale === 'en' && (excerpt.match(/[\u3400-\u9fff]/g) || []).length > 20 && (excerpt.match(/\b[a-zA-Z]{3,}\b/g) || []).length < 10
   return {
     title: clean(spot[`seo_title_${locale}`]) || `${name} | JnQ Journey`,
-    description: (clean(spot[`seo_description_${locale}`]) || spotDescriptionExcerpt(spot.description || spot.review) || (locale === 'zh' ? `探索${name}：照片、地址和旅行资讯。JnQ Journey。` : `Explore ${name}: photos, address and travel information from JnQ Journey.`)).slice(0, 160),
+    description: (clean(spot[`seo_description_${locale}`]) || (!untranslated && excerpt) || (locale === 'zh' ? `探索${name}：照片、地址和旅行资讯。JnQ Journey。` : `Explore ${name}: photos, address and travel information from JnQ Journey.`)).slice(0, 160),
   }
 }

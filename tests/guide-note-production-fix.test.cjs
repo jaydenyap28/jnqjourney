@@ -12,6 +12,7 @@ function loader(mocks = {}, globals = {}) {
     const source = ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true } }).outputText
     const req = name => {
       if (name in mocks) return mocks[name]
+      if (name === '@/lib/server/publication') return require('./helpers/publication-mock.cjs').publicationMock()
       if (name === 'server-only') return {}
       if (name.startsWith('@/') || name.startsWith('.')) {
         let next = name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(file), name)

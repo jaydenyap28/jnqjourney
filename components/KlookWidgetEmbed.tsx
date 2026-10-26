@@ -55,7 +55,7 @@ export default function KlookWidgetEmbed({
   const isBanner = variant === 'banner'
 
   return (
-    <section className={className}>
+    <section className={className} data-jnq-widget-code={widgetCode}>
       <div
         className={`overflow-hidden border border-emerald-300/18 bg-[linear-gradient(145deg,rgba(16,185,129,0.12),rgba(255,255,255,0.04))] shadow-[0_24px_80px_rgba(0,0,0,0.2)] ${
           isBanner ? 'rounded-[22px] p-3 md:rounded-[26px] md:p-4' : 'rounded-[24px] p-4 md:rounded-[28px] md:p-5'

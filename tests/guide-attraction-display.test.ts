@@ -27,8 +27,14 @@ test('daily and segmented renderers use the shared precedence for card title and
   const daily = fs.readFileSync(new URL('../components/GuidePageView.tsx', import.meta.url), 'utf8')
   const segment = fs.readFileSync(new URL('../components/GuideSegmentItinerarySection.tsx', import.meta.url), 'utf8')
   assert.match(daily, /attractionDisplayName: attraction\.displayName/)
-  assert.equal(daily.split('guideAttractionDisplayName({ displayName: spot.attractionDisplayName }, spot)').length - 1, 2)
-  assert.equal(segment.split('guideAttractionDisplayName(attraction, spot)').length - 1, 1)
+  // Image alt uses the helper; titles use EntityName, which delegates to the
+  // same resolver. Counting two helper calls encodes the old title renderer.
+  assert.match(daily, /alt=\{`\$\{guideAttractionDisplayName\(\{ displayName: spot.attractionDisplayName \}, spot\)/)
+  assert.match(segment, /alt=\{`\$\{guideAttractionDisplayName\(attraction, spot\)/)
+  const entity = fs.readFileSync(new URL('../components/EntityName.tsx', import.meta.url), 'utf8')
+  const helper = fs.readFileSync(new URL('../lib/guide-attraction-display.ts', import.meta.url), 'utf8')
+  assert.match(entity, /resolveEntityDisplayName/)
+  assert.match(helper, /resolveEntityDisplayName\(\{ \.\.\.spot, displayName: attraction\?\.displayName \}\)/)
   assert.match(daily, /<EntityName entity=\{\{ \.\.\.spot, displayName: spot.attractionDisplayName \}\} \/>/)
   assert.match(segment, /<EntityName entity=\{\{ \.\.\.spot, displayName: attraction.displayName \}\} \/>/)
   for (const source of [daily, segment]) {

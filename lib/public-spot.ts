@@ -168,6 +168,9 @@ export async function resolvePublicSpotSources(
     supabase = { status: 'failure', error }
   }
   if (supabase.status === 'found') return { ...supabase, source: 'supabase' }
+  // A confirmed hidden/deleted record must never be resurrected by an older
+  // bundled detail snapshot. Transient failures still retain the fallback below.
+  if (supabase.status === 'not-found' && supabase.authoritative) return { status: 'not-found' }
 
   try {
     const fallback = await sources.fallback()

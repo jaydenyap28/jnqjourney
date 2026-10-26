@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-rc13/
 /out/
 
 # production

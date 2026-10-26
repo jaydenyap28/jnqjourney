@@ -20,7 +20,7 @@ export function normalizeLocationSlug(value: string) {
     .replace(/^-+|-+$/g, '')
 }
 
-function getAdminSupabaseClient() {
+function getAdminSupabaseClient(fresh = false) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -28,6 +28,7 @@ function getAdminSupabaseClient() {
 
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    ...(fresh ? { global: { fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, { ...init, cache: 'no-store' }) } } : {}),
   })
 }
 
@@ -57,8 +58,8 @@ async function writeLocalLocationSlugMap(slugMap: LocationSlugMap) {
   }
 }
 
-async function readStorageLocationSlugMap(): Promise<LocationSlugMap | null> {
-  const supabase = getAdminSupabaseClient()
+async function readStorageLocationSlugMap(fresh = false): Promise<LocationSlugMap | null> {
+  const supabase = getAdminSupabaseClient(fresh)
   if (!supabase) return null
 
   try {
@@ -99,8 +100,8 @@ async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
   }
 }
 
-export async function readLocationSlugMap(): Promise<LocationSlugMap> {
-  const storageMap = await readStorageLocationSlugMap()
+export async function readLocationSlugMap(fresh = false): Promise<LocationSlugMap> {
+  const storageMap = await readStorageLocationSlugMap(fresh)
   if (storageMap) {
     try {
       await writeLocalLocationSlugMap(storageMap)
@@ -117,7 +118,7 @@ export async function readLocationSlugForId(id: number | string) {
 }
 
 export async function saveLocationSlugForId(id: number | string, slug: string) {
-  const slugMap = await readLocationSlugMap()
+  const slugMap = await readLocationSlugMap(true)
   const normalized = normalizeLocationSlug(slug)
   const key = String(id)
 
@@ -132,8 +133,9 @@ export async function saveLocationSlugForId(id: number | string, slug: string) {
   return normalized
 }
 
-export async function buildCanonicalLocationPath(name: string, id: number | string) {
-  const customSlug = await readLocationSlugForId(id)
+export async function buildCanonicalLocationPath(name: string, id: number | string, slugMap?: LocationSlugMap) {
+  // Bulk callers supply one authoritative map rather than download it per row.
+  const customSlug = slugMap ? slugMap[String(id)] || '' : await readLocationSlugForId(id)
   const base = customSlug || slugifyLocationName(name) || 'spot'
   return `/spot/${base}-${id}`
 }

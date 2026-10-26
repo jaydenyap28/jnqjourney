@@ -15,6 +15,7 @@ function loader(mocks = {}, globals = {}) {
     } }).outputText
     const req = name => {
       if (name in mocks) return mocks[name]
+      if (name === '@/lib/server/publication') return require('./helpers/publication-mock.cjs').publicationMock()
       if (name.startsWith('@/') || name.startsWith('.')) {
         let next = name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(file), name)
         if (!path.extname(next)) next += fs.existsSync(next + '.ts') ? '.ts' : '.tsx'
@@ -35,7 +36,7 @@ const note = (slug = 'a', version = '2026-09-20T00:00:00.000Z') => ({ ...EMPTY_N
 function cloudHarness() {
   const objects = new Map()
   const pointer = '_system/notes-latest.webp'
-  let serial = 0, options, blockRead, failRead = false
+  let serial = 0, options, blockRead, failRead = false, failPublish = false
   function seed(notes) { const key = `_system/notes/seed-${serial++}.webp`; objects.set(key, JSON.stringify(notes)); objects.set(pointer, key) }
   seed([note()])
   const bucket = {
@@ -53,7 +54,7 @@ function cloudHarness() {
   const load = loader({
     'fs/promises': { readFile: async () => JSON.stringify([note('stale-local')]), writeFile: async () => {} },
     '@supabase/supabase-js': { createClient: (_url, _key, opts) => { options = opts; return { storage: { from: () => bucket } } } },
-    '@/lib/server/r2': { uploadPublicNotesSnapshot: async () => {} },
+    '@/lib/server/r2': { uploadPublicNotesSnapshot: async () => { if (failPublish) throw new Error('Synthetic R2 outage') } },
     '@/lib/server/admin-auth': { requireAdminRequest: async () => ({ ok: true }) },
     'next/server': { NextResponse: { json: (body, init) => new Response(JSON.stringify(body), init) } },
     'next/cache': { revalidateTag() {}, revalidatePath() {} },
@@ -62,8 +63,20 @@ function cloudHarness() {
     fetch: async (url, init) => ({ url, init }),
   })
   return { store: load('lib/server/notes-store.ts'), route: load('app/api/admin/notes/route.ts'), seed, objects,
-    fail: () => { failRead = true }, block: promise => { blockRead = promise }, options: () => options }
+    fail: () => { failRead = true }, failPublish: () => { failPublish = true }, block: promise => { blockRead = promise }, options: () => options }
 }
+
+test('Note R2 publication failure is reported after preserving the authoritative save and releasing the lock', async () => {
+  const h = cloudHarness()
+  h.failPublish()
+  const response = await h.route.POST(new Request('https://test', { method:'POST', body:JSON.stringify({
+    ...note(), title:'saved before publication outage', previousSlug:'a', expectedUpdatedAt:note().updatedAt,
+  }) }))
+  assert.equal(response.status, 500)
+  assert.match((await response.json()).error, /saved to authoritative Storage.*publication failed/)
+  assert.equal((await h.store.readAuthoritativeNotes())[0].title, 'saved before publication outage')
+  assert.equal(h.objects.has('_system/notes-write-lock.webp'), false)
+})
 
 test('admin bypasses warmed memory; saves merge fresh unrelated Notes and generate server versions', async () => {
   const h = cloudHarness()

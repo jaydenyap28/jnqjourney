@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { packagePublicationResponse } from '@/lib/server/package-publication'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -45,18 +46,20 @@ export async function POST(request: Request) {
   const priceUnit = ['person', 'room', 'package', 'group'].includes(body.price_unit) ? body.price_unit : ''
   const status = ['active', 'inactive', 'archived'].includes(body.status) ? body.status : 'inactive'
   const gallery = images(body.gallery)
+  const rawPrice = body.price_from == null || String(body.price_from).trim() === '' ? null : Number(body.price_from)
+  if (rawPrice != null && (!Number.isFinite(rawPrice) || rawPrice < 0)) return NextResponse.json({error:'价格须为空或非负数字。'},{status:400})
   const payload = {
     package_id: packageId,
     slug: text(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''),
     name_zh: text(body.name_zh, 240), name_en: text(body.name_en, 240) || null,
     accommodation_name: text(body.accommodation_name, 240), accommodation_type: text(body.accommodation_type, 120) || null,
     village_name: text(body.village_name, 120) || null, short_description: text(body.short_description, 1000) || null,
-    suitable_for: strings(body.suitable_for), price_from: Number.isFinite(Number(body.price_from)) ? Number(body.price_from) : null,
-    price_currency: text(body.price_currency, 12) || 'MYR', price_unit: priceUnit,
+    suitable_for: strings(body.suitable_for), price_from: rawPrice,
+    price_currency: text(body.price_currency, 12).toUpperCase() || 'MYR', price_unit: priceUnit,
     price_display: text(body.price_display, 240), price_rows: priceRows(body.price_rows),
     included_items: strings(body.included_items), excluded_items: strings(body.excluded_items), notes: strings(body.notes),
     validity_label: text(body.validity_label, 240) || null, valid_until: text(body.valid_until, 20) || null,
-    brochure_image: gallery[0] || null, gallery, whatsapp_message: text(body.whatsapp_message, 2000) || null,
+    brochure_image: body.brochure_image?.url ? images([body.brochure_image])[0] : gallery[0] || null, gallery, whatsapp_message: text(body.whatsapp_message, 2000) || null,
     source_code: text(body.source_code, 160) || null, featured: Boolean(body.featured),
     sort_order: Number.isFinite(Number(body.sort_order)) ? Number(body.sort_order) : 0, status,
     updated_at: new Date().toISOString(),
@@ -70,14 +73,17 @@ export async function POST(request: Request) {
   // The public Tioman detail page always displays the final-confirmation notice.
   // Option notes must be present, but existing supplier wording must not block edits.
   if (!payload.notes.length) missing.push('option notes')
-  if (payload.status === 'active' && !gallery[0]?.url) missing.push('brochure image')
+  if (payload.status === 'active' && !payload.brochure_image?.url) missing.push('brochure image')
+  if (!/^[A-Z]{3}$/.test(payload.price_currency)) missing.push('three-letter currency code')
   if (payload.slug === 'the-barat-tioman' && payload.price_unit !== 'room') missing.push('The Barat room unit')
   if (payload.slug === 'aman-tioman' && !payload.notes.some((note) => note.includes('年龄区间'))) missing.push('Aman child age overlap warning')
   if (missing.length) return NextResponse.json({ error: `Cannot save option: ${missing.join(', ')}` }, { status: 400 })
+  const {data:parent,error:parentError} = await supabase.from('travel_packages').select('id,slug').eq('id',packageId).maybeSingle()
+  if (parentError || !parent) return NextResponse.json({error:'主配套不存在或无法读取。'},{status:parentError?500:404})
   const query = Number.isInteger(id) && id > 0 ? supabase.from('travel_package_options').update(payload).eq('id', id).eq('package_id', packageId) : supabase.from('travel_package_options').insert(payload)
   const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ option: data })
+  return packagePublicationResponse({option:data},packageId,parent.slug,undefined,false)
 }
 
 export async function DELETE(request: Request) {
@@ -85,8 +91,13 @@ export async function DELETE(request: Request) {
   if (!auth.ok) return auth.response
   const supabase = getAdminClient()
   const body = await request.json()
-  if (!supabase || !Number.isInteger(Number(body.id))) return NextResponse.json({ error: 'Invalid option.' }, { status: 400 })
-  const { error } = await supabase.from('travel_package_options').delete().eq('id', Number(body.id))
+  if (!supabase || !Number.isSafeInteger(Number(body.id)) || Number(body.id)<=0) return NextResponse.json({ error: 'Invalid option.' }, { status: 400 })
+  const {data:option,error:readError} = await supabase.from('travel_package_options').select('id,package_id').eq('id',Number(body.id)).maybeSingle()
+  if (readError || !option) return NextResponse.json({error:'Option unavailable.'},{status:readError?500:404})
+  const {data:parent,error:parentError} = await supabase.from('travel_packages').select('id,slug').eq('id',option.package_id).maybeSingle()
+  if (parentError || !parent) return NextResponse.json({error:'Parent unavailable.'},{status:parentError?500:404})
+  const { data:deleted,error } = await supabase.from('travel_package_options').delete().eq('id', Number(body.id)).eq('package_id',option.package_id).select('id')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ ok: true })
+  if (!deleted?.some(row=>row.id===Number(body.id))) return NextResponse.json({error:'没有确认删除任何选项，请重新加载。'},{status:409})
+  return packagePublicationResponse({ok:true},parent.id,parent.slug,undefined,false)
 }

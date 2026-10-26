@@ -1,5 +1,6 @@
 ﻿import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 function getAdminEmails() {
   return String(process.env.ADMIN_EMAILS || '')
@@ -9,6 +10,12 @@ function getAdminEmails() {
 }
 
 export async function requireAdminRequest(request: Request) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return { ok: false as const, response: blocked }
+  const adminEmails = getAdminEmails()
+  if (!adminEmails.length) {
+    return { ok: false as const, response: NextResponse.json({ error: '管理员白名单未配置。' }, { status: 503, headers: { 'Cache-Control': 'private, no-store' } }) }
+  }
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -41,10 +48,9 @@ export async function requireAdminRequest(request: Request) {
     }
   }
 
-  const adminEmails = getAdminEmails()
   const email = String(data.user.email || '').trim().toLowerCase()
 
-  if (adminEmails.length && (!email || !adminEmails.includes(email))) {
+  if (!email || !adminEmails.includes(email)) {
     return {
       ok: false as const,
       response: NextResponse.json({ error: '这个账号没有后台权限。' }, { status: 403 }),

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -20,6 +21,8 @@ function normalizeText(value: unknown, maxLength: number) {
 }
 
 export async function POST(request: Request) {
+  const skipped = previewReadOnlyResponse(true)
+  if (skipped) return skipped
   const supabase = getSupabaseAdminClient()
   if (!supabase) {
     return NextResponse.json({ ok: false, error: 'Missing Supabase configuration.' }, { status: 500 })

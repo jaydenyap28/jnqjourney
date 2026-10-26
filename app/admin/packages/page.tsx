@@ -9,6 +9,7 @@ import TiomanOptionsEditor from '@/components/TiomanOptionsEditor'
 import { adminFetch } from '@/lib/admin-fetch'
 import { buildWhatsAppUrl } from '@/lib/whatsapp'
 import { isTiomanPackage } from '@/lib/tioman-packages'
+import { packageUploadCountry } from '@/lib/package-presentation'
 
 type PackageStatus = 'draft' | 'published' | 'archived'
 type GalleryImage = { url: string; alt: string; caption: string; sort_order: number }
@@ -52,6 +53,7 @@ export default function AdminPackagesPage() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState<'cover' | 'gallery' | ''>('')
   const [message, setMessage] = useState('')
+  const [publicationRetry, setPublicationRetry] = useState<Record<string,unknown> | null>(null)
   const [coverUrlDraft, setCoverUrlDraft] = useState('')
   const [itineraryJson, setItineraryJson] = useState('[]')
   const [search, setSearch] = useState('')
@@ -71,6 +73,7 @@ export default function AdminPackagesPage() {
     }), [destinationFilter, rows, search, sortDirection, statusFilter])
 
   const selectRow = useCallback((row: PackageRow) => {
+    setPublicationRetry(null)
     const next: PackageRow = { ...emptyForm, ...row, gallery: normalizeGallery(row.gallery) }
     setForm(next)
     setCoverUrlDraft(next.cover_image || '')
@@ -90,8 +93,10 @@ export default function AdminPackagesPage() {
       const editId = Number(new URLSearchParams(window.location.search).get('edit') || 0)
       const selected = nextRows.find((row: PackageRow) => row.id === editId)
       if (selected) selectRow(selected)
+      return true
     } catch (error) {
       setMessage(error instanceof Error ? error.message : '无法读取旅游配套。')
+      return false
     } finally { setLoading(false) }
   }, [selectRow])
 
@@ -132,7 +137,7 @@ export default function AdminPackagesPage() {
       Array.from(files).forEach((file) => data.append('files', file))
       data.append('category', 'packages')
       const isTioman = isTiomanPackage(form.slug)
-      data.append('country', isTioman ? 'Malaysia' : 'Indonesia')
+      data.append('country', packageUploadCountry(form.destination || '',form.slug,regions.find(r=>r.id===Number(form.region_id))?.country))
       data.append('city', isTioman ? 'Pulau Tioman' : form.destination || 'travel-package')
       data.append('locationSlug', form.slug || 'travel-package')
       data.append('field', target)
@@ -161,10 +166,11 @@ export default function AdminPackagesPage() {
     try {
       const response = await adminFetch('/api/admin/travel-packages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(packagePayload()) })
       const payload = await response.json()
-      if (!response.ok) throw new Error(payload.error || '保存失败。')
+      if (!response.ok) { if (payload.persisted) { if(payload.package) selectRow({...payload.package,gallery:normalizeGallery(payload.package.gallery)});setPublicationRetry(payload.publication?.retry?.body || null) }; throw new Error(payload.error || '保存失败。') }
       const saved = { ...payload.package, gallery: normalizeGallery(payload.package.gallery) }
-      setMessage('已保存。公开页面只会显示 published 状态。')
-      await loadRows(); selectRow(saved)
+      const reloaded = await loadRows(); selectRow(saved)
+      setPublicationRetry(null)
+      setMessage(reloaded ? '资料已保存，已请求公开页刷新。请打开公开页核对。' : '资料已保存，但列表重新读取失败；请重新加载列表，不要重复新增。')
     } catch (error) { setMessage(error instanceof Error ? error.message : '保存失败。') }
     finally { setSaving(false) }
   }
@@ -176,6 +182,15 @@ export default function AdminPackagesPage() {
       const result = await response.json()
       setMessage(response.ok ? result.message || '发布检查通过。' : result.error || '发布检查未通过。')
     } catch (error) { setMessage(error instanceof Error ? error.message : '发布检查失败。') }
+  }
+  const retryPublication = async () => {
+    if (!publicationRetry) return
+    try {
+      const response = await adminFetch('/api/admin/travel-packages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(publicationRetry)})
+      const result = await response.json()
+      if (!response.ok) throw Error(result.error || '缓存刷新失败。')
+      setPublicationRetry(null);setMessage('已重新执行缓存失效，未重复保存资料。尚未独立读回。')
+    } catch(error) {setMessage(error instanceof Error ? error.message : '缓存刷新失败。')}
   }
 
   const copyWhatsApp = async (row: PackageRow) => {
@@ -227,8 +242,9 @@ export default function AdminPackagesPage() {
           <div className="mt-8 border-t border-white/10 pt-6"><h3 className="text-lg font-semibold">图片</h3><div className="mt-4 grid gap-5 md:grid-cols-[14rem_1fr]"><div><p className="text-xs text-white/55">封面图</p><div className="relative mt-2 aspect-[4/3] overflow-hidden rounded-lg border border-white/10 bg-black/25">{form.cover_image ? <FallbackImage src={form.cover_image} alt={form.title_zh || '旅游配套封面'} fill className="object-cover" /> : <div className="flex h-full items-center justify-center text-white/30"><ImagePlus className="h-8 w-8" /></div>}</div><label className="mt-3 inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><Upload className="h-4 w-4" />{uploading === 'cover' ? '上传中' : '上传封面'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'cover')} disabled={Boolean(uploading)} /></label><input value={coverUrlDraft} onChange={(event) => setCoverUrlDraft(event.target.value)} onBlur={() => setCoverImage(coverUrlDraft)} placeholder="或输入封面 URL" className="mt-3 h-10 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div><div className="flex items-center justify-between gap-3"><p className="text-xs text-white/55">实拍图集</p><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-lg border border-white/15 px-3 text-sm"><ImagePlus className="h-4 w-4" />{uploading === 'gallery' ? '上传中' : '添加图片'}<input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" className="sr-only" onChange={(event) => void uploadImages(event.target.files, 'gallery')} disabled={Boolean(uploading)} /></label></div><div className="mt-3 space-y-3">{form.gallery.map((image, index) => <div key={`${image.url}-${index}`} className="grid gap-3 rounded-lg border border-white/10 bg-black/20 p-3 sm:grid-cols-[7rem_1fr_auto]"><div className="relative aspect-square overflow-hidden rounded-lg bg-black/30"><FallbackImage src={image.url} alt={image.alt || `图集照片 ${index + 1}`} fill className="object-cover" /></div><div className="space-y-2"><input value={image.url} onChange={(event) => updateGallery(index, { url: event.target.value })} aria-label={`图片 ${index + 1} URL`} className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.alt} onChange={(event) => updateGallery(index, { alt: event.target.value })} placeholder="Alt text" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /><input value={image.caption} onChange={(event) => updateGallery(index, { caption: event.target.value })} placeholder="图片说明" className="h-9 w-full rounded-lg border border-white/10 bg-black/25 px-3 text-xs" /></div><div className="flex gap-1 sm:flex-col"><button type="button" title="设为封面" aria-label={`将图集照片 ${index + 1} 设为封面`} onClick={() => setCoverImage(image.url)} className="rounded-lg border border-emerald-300/30 p-2 text-emerald-100"><ImageUp className="h-4 w-4" /></button><button type="button" title="向前移动" onClick={() => moveGallery(index, -1)} className="rounded-lg border border-white/10 p-2" disabled={index === 0}><ArrowUp className="h-4 w-4" /></button><button type="button" title="向后移动" onClick={() => moveGallery(index, 1)} className="rounded-lg border border-white/10 p-2" disabled={index === form.gallery.length - 1}><ArrowDown className="h-4 w-4" /></button><button type="button" title="删除图片" onClick={() => set('gallery', form.gallery.filter((_, itemIndex) => itemIndex !== index).map((item, sort_order) => ({ ...item, sort_order })))} className="rounded-lg border border-rose-300/20 p-2 text-rose-200"><Trash2 className="h-4 w-4" /></button></div></div>)}{!form.gallery.length ? <p className="rounded-lg border border-dashed border-white/15 p-5 text-sm text-white/40">尚未上传实拍图。</p> : null}</div></div></div></div>
 
           <div className="mt-8 grid gap-4 border-t border-white/10 pt-6 md:grid-cols-2">{arrayFields.map(([key, label]) => <label key={key}><span className="mb-1 block text-xs text-white/55">{label}（每行一项）</span><textarea value={lines(form[key])} onChange={(event) => set(key,parseLines(event.target.value))} rows={5} className="w-full rounded-lg border border-white/10 bg-black/25 p-3 text-sm" /></label>)}<label className="md:col-span-2"><span className="mb-1 block text-xs text-white/55">Day 1 / Day 2 / Day 3 行程 JSON：title、summary、items[]</span><textarea value={itineraryJson} onChange={(event) => setItineraryJson(event.target.value)} rows={12} spellCheck={false} className="w-full rounded-lg border border-white/10 bg-black/25 p-3 font-mono text-xs" /></label><label><span className="mb-1 block text-xs text-white/55">状态</span><select value={form.status} onChange={(event) => set('status',event.target.value)} className="h-11 w-full rounded-lg border border-white/10 bg-[#111827] px-3"><option value="draft">draft</option><option value="published">published</option><option value="archived">archived</option></select></label><label><span className="mb-1 block text-xs text-white/55">排序</span><input type="number" value={form.sort_order || 0} onChange={(event) => set('sort_order',Number(event.target.value))} className="h-11 w-full rounded-lg border border-white/10 bg-black/25 px-3" /></label><label className="flex items-center gap-3 text-sm"><input type="checkbox" checked={Boolean(form.featured)} onChange={(event) => set('featured',event.target.checked)} />首页推荐</label></div>
-          {form.slug === 'tioman-3d2n' && form.id ? <TiomanOptionsEditor packageId={Number(form.id)} /> : null}
+          {form.id ? <TiomanOptionsEditor key={form.id} packageId={Number(form.id)} packageName={form.title_zh} /> : <p className="mt-4 text-sm">先保存主配套草稿，再维护已有选项。</p>}
           {message ? <p className="mt-5 rounded-lg border border-white/10 bg-black/20 p-3 text-sm text-white/70">{message}</p> : null}
+          {publicationRetry ? <button type="button" className="mt-3 min-h-11 rounded border border-amber-200/30 px-4" onClick={()=>void retryPublication()}>仅重试公开缓存刷新</button> : null}
           <div className="mt-6 flex flex-wrap gap-2"><button type="button" onClick={save} disabled={saving} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-white px-5 text-sm font-semibold text-black disabled:opacity-60"><Save className="h-4 w-4" />{saving ? '保存中' : '保存配套'}</button><button type="button" onClick={() => void runPublishCheck()} className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/15 px-4 text-sm"><ClipboardCheck className="h-4 w-4" />发布检查</button></div>
         </section>
       </div>

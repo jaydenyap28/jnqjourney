@@ -11,6 +11,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { getDeviceType, trackEvent } from '@/lib/analytics'
 
 interface AffiliateCardProps {
+  initialLinks?: AffiliateLink[]
   linkIds?: number[]
   locationId?: number
   regionId?: number
@@ -182,6 +183,7 @@ function looksLikeWeakPreviewImage(url?: string | null) {
 }
 
 export default function AffiliateCard({
+  initialLinks,
   linkIds,
   locationId,
   regionId,
@@ -202,8 +204,8 @@ export default function AffiliateCard({
   ctaPosition,
   actionLabel,
 }: AffiliateCardProps) {
-  const [links, setLinks] = useState<AffiliateLink[]>([])
-  const [loading, setLoading] = useState(true)
+  const [links, setLinks] = useState<AffiliateLink[]>(initialLinks || [])
+  const [loading, setLoading] = useState(initialLinks === undefined)
   const [previews, setPreviews] = useState<Record<number, AffiliatePreview>>({})
 
   const fetchLinks = useCallback(async () => {
@@ -408,7 +410,7 @@ export default function AffiliateCard({
                     <Badge className="border border-white/10 bg-white/10 px-2 py-0 text-[10px] text-white">{providerName}</Badge>
                     <span className="text-xs text-white/48"><PublicCopy text={"第三方价格与房况会随时变动"}/></span>
                   </div>
-                  <p className="mt-2 line-clamp-1 text-sm text-white/72">{previewTitle}</p>
+                  <p data-jnq-affiliate-title={link.url} className="mt-2 line-clamp-1 text-sm text-white/72">{previewTitle}</p>
                 </div>
                 <Button
                   size="sm"
@@ -449,7 +451,7 @@ export default function AffiliateCard({
                         <Badge className="border border-white/10 bg-white/10 px-2 py-0 text-[10px] text-white">{providerName}</Badge>
                         <Badge className="border border-white/10 bg-black/30 px-2 py-0 text-[10px] text-white/80">{linkTypeName}</Badge>
                       </div>
-                      <h4 className="line-clamp-2 text-sm font-semibold leading-5 text-white">{previewTitle}</h4>
+                      <h4 data-jnq-affiliate-title={link.url} className="line-clamp-2 text-sm font-semibold leading-5 text-white">{previewTitle}</h4>
                       {link.description ? <p className="mt-1 line-clamp-2 text-[11px] leading-5 text-white/62">{link.description}</p> : null}
                     </div>
 
@@ -493,7 +495,7 @@ export default function AffiliateCard({
                     </div>
                   </div>
 
-                  <h4 className="line-clamp-2 text-lg font-semibold leading-snug text-white">{previewTitle}</h4>
+                  <h4 data-jnq-affiliate-title={link.url} className="line-clamp-2 text-lg font-semibold leading-snug text-white">{previewTitle}</h4>
 
                   {link.description ? <p className="mt-3 max-w-xl line-clamp-3 text-sm leading-6 text-white/72">{link.description}</p> : null}
                 </div>

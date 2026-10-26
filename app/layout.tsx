@@ -39,6 +39,7 @@ import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '
 
 const siteUrl = getSiteUrl()
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
+const previewReadOnly = process.env.VERCEL_ENV === 'preview'
 
 const defaultTitle = 'JnQ Journey | Jayden & Qing'
 const defaultDesc = buildMetaDescription('JnQ Journey by Jayden & Qing. Explore spots, food, stays, maps, and full travel guides built for both Chinese and English-speaking travelers.')
@@ -91,14 +92,14 @@ export default function RootLayout({
         className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
         <SiteStructuredData />
-        <Suspense fallback={null}>
+        {!previewReadOnly && <Suspense fallback={null}>
           <GoogleAnalytics measurementId={googleAnalyticsId} />
-        </Suspense>
-        <PageViewTracker />
+        </Suspense>}
+        {!previewReadOnly && <PageViewTracker />}
         <PublicLanguageControl />
         {children}
-        <Analytics />
-        <SpeedInsights />
+        {!previewReadOnly && <Analytics />}
+        {!previewReadOnly && <SpeedInsights />}
       </body>
     </html>
   )

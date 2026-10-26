@@ -3,12 +3,13 @@ import { useEffect, useState } from 'react'
 import { adminFetch } from '@/lib/admin-fetch'
 import type { SpotContentFields } from '@/lib/spot-content'
 import { imageTextKey, spotContentChineseSource } from '@/lib/spot-content'
+import { spotSeo } from '@/lib/spot-content'
 import OrderedRelationPicker from './OrderedRelationPicker'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 
-export default function SpotContentEditor({ value, onChange, images, spotId }: {
-  value: SpotContentFields; onChange: (value: SpotContentFields) => void; images: string[]; spotId?: number
+export default function SpotContentEditor({ value, onChange, images, spotId, name = '', nameCn = '', description = '' }: {
+  value: SpotContentFields; onChange: (value: SpotContentFields) => void; images: string[]; spotId?: number; name?: string; nameCn?: string; description?: string
 }) {
   const [notes, setNotes] = useState<Array<{ slug: string; title: string; published: boolean }>>([])
   const [error, setError] = useState('')
@@ -46,6 +47,7 @@ export default function SpotContentEditor({ value, onChange, images, spotId }: {
       {(['zh', 'en'] as const).map(lang => <div key={lang} className="space-y-3">
         <label className="block space-y-2 text-sm">SEO Title ({lang})<Input value={value[`seo_title_${lang}`] || ''} onChange={e => patch({ [`seo_title_${lang}`]: e.target.value })} placeholder="留空使用景点名称 + JnQ Journey" /></label>
         <label className="block space-y-2 text-sm">Meta Description ({lang})<Textarea rows={3} value={value[`seo_description_${lang}`] || ''} onChange={e => patch({ [`seo_description_${lang}`]: e.target.value })} placeholder="留空使用景点介绍" /></label>
+        <div className="min-w-0 rounded border bg-slate-50 p-3 text-slate-900"><p className="text-xs text-slate-500">搜索结果内容预览 · {value[`seo_title_${lang}`]?.trim() && value[`seo_description_${lang}`]?.trim() ? '独立字段' : '含现有 fallback'}</p><p className="mt-2 break-words text-lg text-blue-800">{spotSeo({ ...value, name, name_cn: nameCn, description }, lang).title}</p><p className="mt-1 break-words text-sm leading-6">{spotSeo({ ...value, name, name_cn: nameCn, description }, lang).description}</p><p className="mt-2 text-xs text-slate-500">仅预览文案；搜索引擎可能自行改写摘要，不会自动生成或保存。</p></div>
       </div>)}
     </div></details>
     <details className="rounded-xl border p-4"><summary className="cursor-pointer font-medium">Relationships / 内容关联</summary><div className="mt-4">

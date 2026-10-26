@@ -1,4 +1,5 @@
 import EntityName from '@/components/EntityName'
+import { publicationVersion } from '@/lib/publication-version'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -42,7 +43,10 @@ import { selectGuideRouteNoteCards } from '@/lib/content-relations'
 
 import GuidePageView from '@/components/GuidePageView'
 import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-export const revalidate=600
+export const revalidate = 3600
+// Enable ISR for paths first visited after the build without enumerating live DB
+// content during builds. Admin publication already revalidates the target path.
+export function generateStaticParams() { return [] }
 interface PageProps {
   params: {
     slug: string
@@ -50,14 +54,12 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const [storedGuide, { locations }] = await Promise.all([readPublicGuideBySlug(params.slug), resolvePublicData()])
-  const guide = storedGuide ? resolveGuidePublicMedia(storedGuide, locations) : null
-
-  if (!guide) {
-    return {
-      title: buildPageTitle('Guide not found'),
-    }
-  }
+  // Next 14 awaits metadata before streaming the loading boundary. Reject a
+  // removed Guide here so a streamed not-found body cannot become HTTP 200.
+  const storedGuide = await readPublicGuideBySlug(params.slug)
+  if (!storedGuide) notFound()
+  const { locations } = await resolvePublicData()
+  const guide = resolveGuidePublicMedia(storedGuide, locations)
 
   const daysText = guide.duration ? `${guide.duration}` : ''
   const hasBudgetOrStay = guide.budget || guide.days.some(d => d.stay)
@@ -72,6 +74,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: baseTitle,
+    other: { 'jnq-content-version': publicationVersion(storedGuide) },
     description,
     alternates: await chineseLocalizedAlternates(`/guide/${guide.slug}`, 'guide', guide.slug, guide),
     openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guideMedia.coverImage, 'article'),

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath, revalidateTag } from 'next/cache'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 import {
@@ -6,6 +7,7 @@ import {
   replaceGuidePriceHighlights,
 } from '@/lib/server/guide-price-highlights-store'
 import { readGuideBySlug } from '@/lib/server/guides-store'
+import { invalidatePublication, publicationResponse, publicationFailure } from '@/lib/server/publication'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -56,7 +58,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Unknown guideSlug.' }, { status: 404, headers: privateHeaders })
     }
     const records = await replaceGuidePriceHighlights(guideSlug, body.records)
-    return NextResponse.json({ records }, { headers: privateHeaders })
+    revalidateTag('guide-price-highlights')
+    revalidatePath(`/guide/${guideSlug}`)
+    try { return publicationResponse({ records }, await invalidatePublication(request, { kind: 'price', priceSource:'highlights', slugs: [guideSlug, ...(guide.aliases || [])] })) }
+    catch (error) { return publicationFailure(error, { kind: 'price',priceSource:'highlights', slugs: [guideSlug] }) }
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || 'Unable to save price highlights.' },

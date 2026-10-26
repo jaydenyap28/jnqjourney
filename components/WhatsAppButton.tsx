@@ -65,6 +65,7 @@ export default function WhatsAppButton({
     spotName,
     guideTitle,
     packageName,
+    optionName,
     source,
     message: pageType === 'contact' ? undefined : message,
   })

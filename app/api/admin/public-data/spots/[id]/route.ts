@@ -3,9 +3,9 @@ import { revalidatePath, revalidateTag } from 'next/cache'
 
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { resolvePublicSnapshotBundleUncached } from '@/lib/server/public-data-resolver'
 import { readAuthoritativePublicSpotById } from '@/lib/server/public-spot-resolver'
-import { uploadPublicDataSnapshot, uploadPublicSpotIndex, uploadPublicSpotSnapshot } from '@/lib/server/r2'
+import { publishLocationBatch } from '@/lib/server/publish-location-batch'
+import { invalidatePublication, publicationResponse, publicationFailure } from '@/lib/server/publication'
 
 export const runtime = 'nodejs'
 const HEADERS = { 'Cache-Control': PRIVATE_NO_STORE }
@@ -19,41 +19,26 @@ export async function POST(request: Request, { params }: { params: { id: string 
   }
 
   try {
-    const spot = await readAuthoritativePublicSpotById(id)
-    const generatedAt = new Date().toISOString()
-    const source = { type: 'supabase-admin-spot-refresh', generatedAt }
-    // The global collection is used by Guide and public collection readers.
-    // Read it directly from Supabase so this edit cannot republish a cached
-    // locations.json with a stale visit_date (or any other lightweight field).
-    const { data } = await resolvePublicSnapshotBundleUncached()
-    const { locations } = data
-    const slugs = locations.map((location) => location.slug).filter((slug) => !slug.endsWith(`-${id}`))
-    let spotUrl: string | null = null
-    if (spot) {
-      spotUrl = await uploadPublicSpotSnapshot(
-        spot.slug,
-        Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, spot })}\n`)
-      )
-      slugs.push(spot.slug)
+    const body = request.body ? await request.json() : null
+    if (body?.action === 'revalidate-public') {
+      const current = await readAuthoritativePublicSpotById(id)
+      revalidateTag('public-spots') // manual refresh may follow an index hide/republish
+      revalidateTag(`public-spot:spot-${id}`)
+      revalidatePath(`/spot/spot-${id}`)
+      revalidatePath(`/api/spots/spot-${id}`)
+      if (current) {
+        revalidateTag(`public-spot:${current.slug}`)
+        revalidatePath(`/spot/${current.slug}`)
+        revalidatePath(`/api/spots/${current.slug}`)
+      }
+      return publicationResponse({ ok: true, id, refreshed: true }, await invalidatePublication(request, { kind: 'spot', ids: [id], slugs: current ? [current.slug] : [] }))
     }
-    const uniqueSlugs = Array.from(new Set(slugs)).sort()
-    const [locationsUrl, indexUrl] = await Promise.all([
-      uploadPublicDataSnapshot('locations.json', Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, locations })}\n`)),
-      uploadPublicSpotIndex(Buffer.from(`${JSON.stringify({ schemaVersion: 1, source, slugs: uniqueSlugs })}\n`)),
-    ])
-    revalidateTag('public-data')
-    revalidateTag('public-locations')
-    revalidateTag('public-spots')
-    if (spot) {
-      revalidateTag(`public-spot:${spot.slug}`)
-      revalidatePath(`/spot/${spot.slug}`)
-      revalidatePath(`/api/spots/${spot.slug}`)
-    }
-    return NextResponse.json({ ok: true, generatedAt, spot: spot ? { id: spot.id, slug: spot.slug, url: spotUrl } : null, locationsUrl, indexUrl }, { headers: HEADERS })
+    // Single and batch publications share the same ordered recovery contract.
+    const published = await publishLocationBatch([id])
+    const spot = published.spots.find(value=>value.id===id) || null
+    return publicationResponse({ ok: true, generatedAt:published.generatedAt, spot, locationsUrl:published.locationsUrl,indexUrl:published.indexUrl },
+      await invalidatePublication(request, { kind: 'spot', ids: [id], slugs: spot ? [spot.slug] : [], previousSlugs: body?.previousSlugs || [],...published.recovery }, { previousLocations:published.previousLocations }))
   } catch (error: any) {
-    return NextResponse.json(
-      { ok: false, error: error?.message || 'Spot snapshot refresh failed; the previous snapshot remains active.' },
-      { status: 503, headers: HEADERS }
-    )
+    return publicationFailure(error, { kind: 'spot', ids: [id] })
   }
 }

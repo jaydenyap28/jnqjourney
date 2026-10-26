@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 import {
   BudgetContractError,
@@ -21,6 +22,8 @@ function unauthorized() {
 }
 
 export async function POST(request: Request) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return blocked
   const secret = process.env.JNQ_BUDGET_SYNC_SECRET
   if (!secret) return NextResponse.json({ error: 'Budget sync is not configured.' }, { status: 503 })
 

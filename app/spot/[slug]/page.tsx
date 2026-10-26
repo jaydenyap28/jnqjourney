@@ -1,7 +1,8 @@
 import { spotSeo } from '@/lib/spot-content'
+import { spotPublicationVersion } from '@/lib/publication-version'
 import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
 import { spotDescriptionExcerpt } from '@/lib/spot-description'
-import { selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
+import { packageMatchesSpot, selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
@@ -16,7 +17,7 @@ import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
-export const revalidate = 600
+export const revalidate = 3600
 export const dynamic = 'force-static'
 
 interface PageProps {
@@ -50,6 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: { absolute: seoTitle },
+    other: { 'jnq-content-version': spotPublicationVersion(location as unknown as Record<string, unknown>) },
     description,
     alternates: await chineseLocalizedAlternates(canonicalPath, 'spot', location.id, {...location,title:location.name}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, coverImage, 'article'),
@@ -77,7 +79,7 @@ export default async function SpotPage({ params }: PageProps) {
     readPublicNotes(),
   ])
   const relatedPackages = allPackages.filter((item) =>
-    item.region_id === location.region_id || item.related_location_ids?.includes(location.id)
+    packageMatchesSpot(item, location)
   )
 
   const locationNames = new Set([
@@ -123,11 +125,11 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   if (location.address) structuredData.address = location.address
-  if (location.latitude && location.longitude) {
+  if (location.latitude != null && location.longitude != null && Number.isFinite(Number(location.latitude)) && Number.isFinite(Number(location.longitude)) && Math.abs(Number(location.latitude)) <= 90 && Math.abs(Number(location.longitude)) <= 180) {
     structuredData.geo = {
       '@type': 'GeoCoordinates',
-      latitude: location.latitude,
-      longitude: location.longitude,
+      latitude: Number(location.latitude),
+      longitude: Number(location.longitude),
     }
   }
 

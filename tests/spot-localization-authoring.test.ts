@@ -26,7 +26,10 @@ function publicPageData(published:LocalizationSnapshot, canonical:typeof spot) {
   }
   const modules:Record<string,unknown>={
     '@/lib/content-relations':{selectRelatedNotes},
-    '@/data/guide-price-highlights.json':[],
+    '@/lib/publication-version': { publicationVersion: () => 'fixture-version', spotPublicationVersion: () => 'fixture-version' },
+    '@/lib/server/guides-store': { normalizeGuidePayload: (v: any) => v },
+    '@/lib/server/notes-store': { normalizeNotePayload: (v: any) => v },
+    '@/lib/server/guide-price-highlights-store':{},
     '@/lib/server/travel-packages':{readPublishedPackagesUncached:async()=>[]},
     '@/lib/guide-price-highlights':{}, '@/lib/guide-budget':{},
     '@/lib/localization':{applyLocalization,localizationRecord},
@@ -111,7 +114,7 @@ test('Admin uses authentication; canonical form remains separate; Pages ISR refr
   const form=fs.readFileSync('components/AdminLocationForm.tsx','utf8')
   assert.match(form,/<form hidden=\{editingLanguage==='en'\} onSubmit=\{handleSubmit\}/)
   const route=fs.readFileSync('pages/en/[[...path]].tsx','utf8')
-  assert.match(route,/revalidateReason === 'on-demand'/)
+  assert.match(route,/revalidateReason !== 'build'/)
   assert.match(fs.readFileSync('lib/server/english-page-data.ts','utf8'),/applyLocalization\(source,localizationRecord\(localization,'spot',source.id\)\)/)
 })
 

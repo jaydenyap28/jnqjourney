@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { NextResponse } from 'next/server'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { verifySpotRevalidation } from '@/lib/spot-media-revalidation'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
@@ -10,6 +11,8 @@ export const runtime = 'nodejs'
 // Uses the existing maintenance signature protocol and verifies the exact R2
 // collection before invalidating. No content writes or arbitrary paths accepted.
 export async function POST(request: Request, { params }: { params: { slug: string } }) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return blocked
   let payload: ReturnType<typeof verifySpotRevalidation>
   try {
     const body = await request.text()

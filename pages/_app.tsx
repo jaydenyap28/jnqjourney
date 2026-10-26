@@ -9,5 +9,5 @@ const cjk = Noto_Sans_SC({subsets:['latin'],weight:['300','400','500','700'],var
 const serif = Cormorant_Garamond({subsets:['latin'],weight:['400','500','600','700'],variable:'--font-cormorant-garamond'})
 const cjkSerif = Noto_Serif_SC({subsets:['latin'],weight:['400','500','600','700'],variable:'--font-noto-serif-sc'})
 export default function App({Component,pageProps}:AppProps) {
-  return <div className={`${sans.variable} ${cjk.variable} ${serif.variable} ${cjkSerif.variable} font-sans antialiased`}><Component {...pageProps}/><Analytics/><SpeedInsights/></div>
+  return <div className={`${sans.variable} ${cjk.variable} ${serif.variable} ${cjkSerif.variable} font-sans antialiased`}><Component {...pageProps}/>{process.env.JNQ_PREVIEW_READ_ONLY !== '1' && <><Analytics/><SpeedInsights/></>}</div>
 }

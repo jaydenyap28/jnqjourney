@@ -23,8 +23,8 @@ function load(file: string, mocks: Record<string, any> = {}): any {
     if (id in mocks) return mocks[id]
     if (id === 'next/dynamic') return () => () => null
     if (id === 'next/navigation') return { usePathname: () => '/spot/example-1', useRouter: () => ({}) }
-    if (id === 'next/link') return ({ children, href, ...props }: any) => React.createElement('a', { ...props, href }, children)
-    if (id === 'next/image') return ({ fill, priority, unoptimized, ...props }: any) => React.createElement('img', props)
+    if (id === 'next/link') return function MockLink({ children, href, ...props }: any) { return React.createElement('a', { ...props, href }, children) }
+    if (id === 'next/image') return function MockImage({ fill, priority, unoptimized, ...props }: any) { return React.createElement('img', props) }
     if (id.startsWith('@/') || id.startsWith('.')) {
       const target = id.startsWith('@/') ? id.slice(2) : path.join(path.dirname(file), id)
       const resolved = ['', '.ts', '.tsx', '.json'].map(ext => target + ext).find(existsSync)
@@ -100,7 +100,7 @@ test('real middleware produces HTTP 301 and Location for both locale paths and o
   const { middleware } = load('middleware.ts', {})
   // Reload with an isolated fetch transport; Node HTTP receives the actual NextResponse.
   const source = ts.transpileModule(readFileSync('middleware.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText
-  const context = {exports:{} as any, require, console, URL, fetch: async () => Response.json({ destination:'/notes/shanghai-ferry', status:301 })}
+  const context = {exports:{} as any, require:(id:string)=>id==='@/lib/internal-http'?require('../lib/internal-http.ts'):require(id), process, console, URL, AbortSignal, fetch: async () => Response.json({ destination:'/notes/shanghai-ferry', status:301 })}
   vm.runInNewContext(source, context)
   const server = http.createServer(async (req, res) => {
     const response = await context.exports.middleware(new NextRequest(`http://localhost${req.url}`))

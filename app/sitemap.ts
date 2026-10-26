@@ -2,12 +2,11 @@
 
 import { buildRegionPath } from '@/lib/region-routing'
 import { absoluteUrl } from '@/lib/site'
-import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
+import { buildCanonicalLocationPath, readLocationSlugMap } from '@/lib/server/location-slugs-store'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
-import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
-import { englishPageData } from '@/lib/server/english-page-data'
+import { englishPageData, readEnglishCollections } from '@/lib/server/english-page-data'
 
 export const revalidate = 3600
 
@@ -18,12 +17,14 @@ function validDateOrUndefined(value?: string | null) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [locations, regions, guides, notes, packages] = await Promise.all([
+  const [locations, regions, guides, notes, packages, slugMap, englishCollections] = await Promise.all([
     fetchAllLocationsForSitemap(),
     fetchAllRegionsForSitemap(),
     readPublicGuides(),
     readPublicNotes(),
     readPublishedPackages(),
+    readLocationSlugMap(),
+    readEnglishCollections(),
   ])
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -42,8 +43,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
     locations.map(async (location) => ({
-      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id)),
-      lastModified: location.updated_at || undefined,
+      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id, slugMap)),
+      lastModified: validDateOrUndefined(location.updated_at),
       changeFrequency: 'weekly',
       priority: 0.7,
     }))
@@ -51,7 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const regionRoutes: MetadataRoute.Sitemap = regions.map((region) => ({
     url: absoluteUrl(buildRegionPath(region.name, region.id)),
-    lastModified: region.updated_at || undefined,
+    lastModified: validDateOrUndefined(region.updated_at),
     changeFrequency: 'weekly',
     priority: 0.6,
   }))
@@ -78,10 +79,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }))
 
   const chineseRoutes=[...staticRoutes, ...spotRoutes, ...regionRoutes, ...guideRoutes, ...noteRoutes, ...packageRoutes]
-  const localization=await readLocalizationSnapshot('en')
+  const localization=englishCollections.localization
   const englishRoutes:MetadataRoute.Sitemap=[]
   for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
-    const page=await englishPageData(record.canonicalPath.split('/').filter(Boolean))
+    // Verify actual translation completeness while reusing this generation's
+    // collections. Related packages do not affect translation eligibility.
+    const page=await englishPageData(record.canonicalPath.split('/').filter(Boolean), false, { collection: englishCollections, includePackages: false })
     if(!page || !('data' in page) || page.data.status!=='complete') {
       console.info('[i18n sitemap] omitted incomplete page',record.canonicalPath,page && 'data' in page ? page.data.status : 'unavailable')
       continue
@@ -92,5 +95,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     else chineseRoutes.push({url:languages.zh,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
     englishRoutes.push({url:languages.en,changeFrequency:'weekly',priority:0.6,alternates:{languages}})
   }
-  return [...chineseRoutes,...englishRoutes]
+  const unique = new Map<string,MetadataRoute.Sitemap[number]>()
+  for (const route of [...chineseRoutes,...englishRoutes]) {
+    const previous = unique.get(route.url)
+    unique.set(route.url,{...previous,...route,alternates:route.alternates || previous?.alternates})
+  }
+  return [...unique.values()]
 }

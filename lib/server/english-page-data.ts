@@ -1,7 +1,8 @@
-import priceHighlights from '@/data/guide-price-highlights.json'
+import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
+import { publicationVersion, spotPublicationVersion } from '@/lib/publication-version'
 import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
-import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
+import { toPublicGuidePriceHighlight } from '@/lib/guide-price-highlights'
 import type { LongformNote } from '@/lib/notes'
 import type { TravelPackage } from '@/lib/server/travel-packages'
 import type { PublicLocation, PublicRegion } from '@/lib/public-data'
@@ -17,6 +18,7 @@ import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
 
 export interface EnglishPageData {
+  sourceVersion?: string
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
   fullGuides?:TravelGuide[]
   notes?:LongformNote[]
@@ -47,14 +49,17 @@ export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
 export async function readEnglishCollections(freshLocalization = false) {
   const [locationData, regionData, guideData, localization, slugMap] = await Promise.all([
     readBilingualSnapshot<{locations:PublicLocation[]}>('locations.json', () => readBundledJson('public-data/locations.json'), x => Array.isArray((x as any)?.locations), freshLocalization),
-    readBilingualSnapshot<{regions:PublicRegion[]}>('regions.json', () => readBundledJson('public-data/regions.json'), x => Array.isArray((x as any)?.regions)),
-    readBilingualSnapshot<{guides:TravelGuide[]}>('guides.json', async () => { const raw = await readBundledJson<any>('data/guides.json'); return {guides:Array.isArray(raw)?raw:raw.guides} }, x => Array.isArray((x as any)?.guides)),
+    readBilingualSnapshot<{regions:PublicRegion[]}>('regions.json', () => readBundledJson('public-data/regions.json'), x => Array.isArray((x as any)?.regions), freshLocalization),
+    readBilingualSnapshot<{guides:TravelGuide[]}>('guides.json', async () => { const raw = await readBundledJson<any>('data/guides.json'); return {guides:Array.isArray(raw)?raw:raw.guides} }, x => Array.isArray((x as any)?.guides), freshLocalization),
     readLocalizationSnapshot('en',freshLocalization),
     readBundledJson<Record<string,string>>('data/location-slugs.json'),
   ])
   const snapshotSlugs=Object.fromEntries(locationData.locations.map(location=>[location.id,location.slug]))
-  const locations=locationData.locations.map(location=>slugMap[String(location.id)]?{...location,slug:`${slugMap[String(location.id)]}-${location.id}`}:location)
-  return { locations, snapshotSlugs, regions: resolvePublicRegionMedia(regionData.regions,locations), guides: guideData.guides.map(guide=>resolveGuidePublicMedia(guide,locations)), localization }
+  // Published snapshot identities win after an alias edit; a bundled slug map
+  // belongs to the build and cannot override a newer runtime publication.
+  const locations=locationData.locations.map(location=>!location.slug && slugMap[String(location.id)]?{...location,slug:`${slugMap[String(location.id)]}-${location.id}`}:location)
+  const guideVersions=Object.fromEntries(guideData.guides.map(guide=>[guide.slug,publicationVersion(guide)]))
+  return { locations, snapshotSlugs, guideVersions, regions: resolvePublicRegionMedia(regionData.regions,locations), guides: guideData.guides.map(guide=>resolveGuidePublicMedia(guide,locations)), localization }
 }
 function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot) {
   const result = applyLocalization(guide, localizationRecord(snapshot,'guide',guide.slug))
@@ -62,23 +67,35 @@ function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot) {
   return {slug,title,duration,tagline,coverImage,translationStatus:result.status}
 }
 
-export async function englishPageData(parts: string[] = [], freshLocalization = false): Promise<{data:EnglishPageData} | {redirect:string} | null> {
+export async function englishPageData(parts: string[] = [], freshLocalization = false, options: {
+  collection?: Awaited<ReturnType<typeof readEnglishCollections>>
+  includePackages?: boolean
+} = {}): Promise<{data:EnglishPageData} | {redirect:string} | null> {
   if (parts[0] === 'regions') return {redirect:`/en/region${parts.length > 1 ? `/${parts.slice(1).join('/')}` : ''}`}
-  const collection = await readEnglishCollections(freshLocalization)
+  const collection = options.collection || await readEnglishCollections(freshLocalization)
   const { locations, regions, guides, localization } = collection
   const path = `/${parts.join('/')}`
   const data: EnglishPageData = {kind:'home',path,status:'partial', title:'See the world together', description:'Travel maps, places, routes and stories, collected along the way by Jayden & Qing.', locations, regions, guides:guides.map(g=>localizedGuide(g,localization))}
-  if (!parts.length || ['region','guide','spot'].includes(parts[0])) data.packages=await readPublishedPackagesUncached()
+  if (!parts.length || ['region','guide','spot'].includes(parts[0])) {
+    if (options.includePackages === false) data.packages=[]
+    else data.packages=await readPublishedPackagesUncached()
+  }
   if (!parts.length || ['guide','region'].includes(parts[0])) data.fullGuides=guides.map(g=>applyLocalization(g,localizationRecord(localization,'guide',g.slug)).value)
   if (!parts.length) {
     data.packages=data.packages!.map(item=>localizeHomepagePackage(item,localization))
     data.fullGuides=data.fullGuides!.slice(0,6)
     data.regions=regions.map(region=>applyLocalization(region,localizationRecord(localization,'region',region.id)).value)
-    const notes=await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
+    const notes=await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes),freshLocalization)
     data.notes=notes.notes.filter(note=>note.published && note.slug && note.title).map(note=>localizeHomepageNote(resolveNotePublicMedia(note,locations),localization))
     return {data}
   }
   if((parts.length===1 && ['contact','privacy','editorial-policy','affiliate-disclosure','copyright'].includes(parts[0])) || (parts.length<=2 && ['notes','packages'].includes(parts[0]))) {
+    if (parts[0] === 'notes' && parts.length === 2) {
+      const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes),freshLocalization)
+      const note = notes.notes.find(note=>note.published && note.slug===parts[1]) || notes.notes.find(note=>note.published && note.aliases?.includes(parts[1]))
+      if (!note) return null
+      data.sourceVersion=publicationVersion(note)
+    }
     data.kind='fallback';data.status='missing';data.title='English translation in progress';data.description='This page is available in its original Chinese version.'
     return {data}
   }
@@ -113,11 +130,12 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     const snapshot = await readBilingualSnapshot<{spot:PublicSpotRecord}>(`spots/${snapshotSlug}.json`,()=>readBundledJson(`public-data/spots/${snapshotSlug}.json`),x => (x as any)?.spot?.id===summary.id, freshLocalization)
     if (snapshot.spot.publication_status && snapshot.spot.publication_status !== 'published') return null
     const source = {...snapshot.spot,title:snapshot.spot.name}
+    data.sourceVersion=spotPublicationVersion(snapshot.spot as unknown as Record<string, unknown>)
     const result = applyLocalization(source,localizationRecord(localization,'spot',source.id))
     data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
     data.description=result.value.description || result.value.review || ''
     if (source.related_note_slugs?.length) {
-      const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
+      const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes),freshLocalization)
       data.relatedNotes = selectRelatedNotes(source.related_note_slugs, notes.notes).map(toRelatedNoteCard)
     }
     data.locations=locations.filter(l=>l.id!==source.id && l.region?.id===source.region_id).slice(0,6)
@@ -131,12 +149,13 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     if (source.slug!==slug) return {redirect:`/en/guide/${source.slug}`}
     const result=applyLocalization(source,localizationRecord(localization,'guide',source.slug))
     data.kind='guide'; data.guide=result.value; data.status=result.status; data.title=result.value.title; data.description=result.value.summary || result.value.tagline
-    data.priceHighlights=(priceHighlights as GuidePriceHighlight[]).filter(item=>item.guideSlug===source.slug).sort((a,b)=>a.displayPriority-b.displayPriority).map(toPublicGuidePriceHighlight).filter((item):item is NonNullable<typeof item>=>Boolean(item))
+    data.sourceVersion=collection.guideVersions?.[source.slug] || publicationVersion(source)
+    data.priceHighlights=options.includePackages === false ? [] : await readApprovedGuidePriceHighlights(source.slug)
     const refs = [...(source.attractions||[]),...source.days.flatMap(d=>d.attractions||[]),...(source.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))]
     const ids=new Set([...refs.map(r=>r.spotId),...(source.accommodationStays||[]).map(s=>s.accommodationId),...(source.itinerarySegments||[]).flatMap(s=>(s.accommodationStays||[]).map(a=>a.accommodationId))])
     const legacyNames=new Set([...source.days.map(d=>d.stay),...(source.featuredSpotNames||[]),...source.days.flatMap(d=>d.linkedSpots||[])].filter(Boolean))
     data.locations=locations.filter(l=>ids.has(l.id)||legacyNames.has(resolveEntityDisplayName(l,'en').primary)||legacyNames.has(resolveEntityDisplayName(l,'zh').primary))
-    const costs=await readBilingualSnapshot<{tripCosts:Array<{slug:string;tripCost:PublicGuideTripCost}>}>('guide-trip-costs.json',()=>readBundledJson('public-data/guide-trip-costs.json'),x=>Array.isArray((x as any)?.tripCosts))
+    const costs=await readBilingualSnapshot<{tripCosts:Array<{slug:string;tripCost:PublicGuideTripCost}>}>('guide-trip-costs.json',()=>readBundledJson('public-data/guide-trip-costs.json'),x=>Array.isArray((x as any)?.tripCosts),freshLocalization)
     data.tripCost=costs.tripCosts.find(c=>c.slug===source.slug)?.tripCost || resolvePublicGuideTripCost(null,source.budgetItems)
     return {data}
   }

@@ -238,12 +238,6 @@ export async function POST(request: Request) {
         continue
       }
 
-      console.info('[admin:import-remote-images] uploaded remote image to R2', {
-        sourceUrl,
-        key: uploaded.key,
-        url: uploaded.url,
-      })
-
       files.push({
         sourceUrl,
         resolvedSourceUrl,

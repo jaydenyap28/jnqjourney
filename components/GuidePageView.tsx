@@ -557,9 +557,9 @@ export default function GuidePageView({guide,publicData,publicTripCost,approvedP
   }
 
   return (
-    <main className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.10),transparent_20%),linear-gradient(180deg,#0a101b_0%,#050912_48%,#020409_100%)] text-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
+    <main data-jnq-prices={JSON.stringify(approvedPriceHighlights)} data-jnq-trip-cost={JSON.stringify(publicTripCost)} className="min-h-screen overflow-x-clip bg-[radial-gradient(circle_at_top,rgba(125,211,252,0.10),transparent_20%),linear-gradient(180deg,#0a101b_0%,#050912_48%,#020409_100%)] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData).replace(/</g, '\\u003c') }} />
 
       <header className="border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-8">

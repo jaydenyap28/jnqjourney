@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Check, Loader2, Pencil, Plus, Search, Trash2, UploadCloud } from 'lucide-react'
 
@@ -110,22 +110,22 @@ export default function RegionsPage() {
   const [formData, setFormData] = useState(EMPTY_FORM)
   const uploadRef = useRef<HTMLInputElement | null>(null)
 
-  async function fetchRegions() {
+  const fetchRegions = useCallback(async () => {
     const { data, error } = await supabase.from('regions').select('*').order('country').order('name')
     if (error) throw error
     setRegions((data || []) as Region[])
-  }
+  }, [])
 
-  async function fetchLocations() {
+  const fetchLocations = useCallback(async () => {
     const { data, error } = await supabase
       .from('locations')
       .select('id, name, name_cn, image_url, images, address, region_id')
       .order('id', { ascending: false })
     if (error) throw error
     setLocations((data || []) as LocationOption[])
-  }
+  }, [])
 
-  async function loadAll() {
+  const loadAll = useCallback(async () => {
     setLoading(true)
     setErrorMsg(null)
     try {
@@ -135,11 +135,11 @@ export default function RegionsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [fetchLocations, fetchRegions])
 
   useEffect(() => {
     loadAll()
-  }, [])
+  }, [loadAll])
 
   const countries = useMemo(
     () => ['All', ...Array.from(new Set(regions.map((region) => region.country).filter(Boolean) as string[])).sort()],
@@ -303,7 +303,6 @@ export default function RegionsPage() {
       if (!response.ok) throw new Error(result.error || 'Failed to upload region cover.')
       const url = result.url || result.items?.[0]?.url || result.files?.[0]?.url
       if (!url) throw new Error('Upload succeeded but no image URL was returned.')
-      console.log('[admin-region-upload] R2 upload response', { url, result })
       if (String(url).includes('/storage/v1/object/public/location-images/')) {
         throw new Error(`Upload returned a Supabase Storage URL instead of an R2 URL: ${url}`)
       }

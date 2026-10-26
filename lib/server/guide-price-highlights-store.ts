@@ -18,12 +18,17 @@ const localFilePath = path.join(process.cwd(), 'data', 'guide-price-highlights.j
 const storageBucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
 const storagePath = '_system/guide-price-highlights.json'
 
-function getAdminSupabaseClient() {
+function getAdminSupabaseClient(fresh = false) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceRoleKey) return null
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => {
+      const headers=new Headers(init?.headers)
+      if(fresh)headers.set('X-JNQ-Publication-Read','authoritative')
+      return fetch(input,{...init,headers,...(fresh?{cache:'no-store' as const}:{next:{revalidate:3600,tags:['guide-price-highlights']}})})
+    } },
   })
 }
 
@@ -146,8 +151,8 @@ async function readLocalRecords() {
   return parsed.map(normalizeGuidePriceHighlight)
 }
 
-async function readStorageRecords() {
-  const supabase = getAdminSupabaseClient()
+async function readStorageRecords(fresh = false) {
+  const supabase = getAdminSupabaseClient(fresh)
   if (!supabase) return null
   try {
     const { data, error } = await supabase.storage.from(storageBucket).download(storagePath)
@@ -159,21 +164,29 @@ async function readStorageRecords() {
   }
 }
 
-export async function readGuidePriceHighlights() {
-  const storage = await readStorageRecords()
+export async function readGuidePriceHighlights(fresh = false) {
+  const storage = await readStorageRecords(fresh)
   const records = storage ?? (await readLocalRecords())
   validateGuidePriceHighlights(records)
   return records
 }
 
-export async function readGuidePriceHighlightsForAdmin(guideSlug: string) {
-  return (await readGuidePriceHighlights())
+export async function readPublicationPriceHighlights(guideSlug: string) {
+  const records = await readStorageRecords(true)
+  if (!records) throw new Error('Authoritative price read-back unavailable')
+  validateGuidePriceHighlights(records)
+  return records.filter(record=>record.guideSlug===guideSlug).sort((a,b)=>a.displayPriority-b.displayPriority)
+    .map(toPublicGuidePriceHighlight).filter((record): record is NonNullable<typeof record>=>Boolean(record))
+}
+
+export async function readGuidePriceHighlightsForAdmin(guideSlug: string, fresh = true) {
+  return (await readGuidePriceHighlights(fresh))
     .filter((record) => record.guideSlug === guideSlug)
     .sort((left, right) => left.displayPriority - right.displayPriority)
 }
 
 export async function readApprovedGuidePriceHighlights(guideSlug: string) {
-  return (await readGuidePriceHighlightsForAdmin(guideSlug))
+  return (await readGuidePriceHighlightsForAdmin(guideSlug, false))
     .map(toPublicGuidePriceHighlight)
     .filter((record): record is NonNullable<typeof record> => Boolean(record))
 }
@@ -200,7 +213,7 @@ export async function replaceGuidePriceHighlights(
   }
   validateGuidePriceHighlights(normalized)
 
-  const current = await readGuidePriceHighlights()
+  const current = await readGuidePriceHighlights(true)
   const merged = [
     ...current.filter((record) => record.guideSlug !== guideSlug),
     ...normalized,
@@ -214,7 +227,7 @@ export async function replaceGuidePriceHighlights(
     if (error?.code !== 'EROFS' && error?.code !== 'EPERM') throw error
   }
 
-  const supabase = getAdminSupabaseClient()
+  const supabase = getAdminSupabaseClient(true)
   if (supabase) {
     const { error } = await supabase.storage.from(storageBucket).upload(
       storagePath,

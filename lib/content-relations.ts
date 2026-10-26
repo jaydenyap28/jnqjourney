@@ -1,6 +1,11 @@
 import type { LongformNote } from './notes.ts'
 import type { PublicLocation, PublicRegion } from './public-data.ts'
 
+export function packageMatchesSpot(item: { region_id?: number | null; related_location_ids?: number[] | null }, spot: { id: number; region_id?: number | null }) {
+  return Boolean(item.related_location_ids?.includes(spot.id) ||
+    (spot.region_id != null && item.region_id === spot.region_id))
+}
+
 export type RelatedNoteCard = Pick<LongformNote, 'slug' | 'title' | 'summary' | 'coverImage'>
 export function toRelatedNoteCard({ slug, title, summary, coverImage }: LongformNote): RelatedNoteCard {
   return { slug, title, summary, ...(coverImage ? { coverImage } : {}) }
@@ -12,8 +17,8 @@ export function selectGuideRouteNoteCards(slugs: string[], notes: LongformNote[]
   const seen = new Set<string>()
   return slugs.flatMap((routeItemSlug) => {
     const note = notes.find((item) => item.published && (item.slug === routeItemSlug || item.aliases?.includes(routeItemSlug)))
-    if (!note || seen.has(routeItemSlug)) return []
-    seen.add(routeItemSlug)
+    if (!note || seen.has(note.slug)) return []
+    seen.add(note.slug)
     return [{ ...toRelatedNoteCard(note), routeItemSlug }]
   })
 }

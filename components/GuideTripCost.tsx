@@ -174,7 +174,7 @@ function VisibleGuideTripCost({ tripCost }: { tripCost: PublicGuideTripCost }) {
                 </p>
               </div>
               <p className="mt-3 break-words text-[clamp(2rem,5vw,3.7rem)] font-semibold leading-none tabular-nums text-white">
-                {originalAmount(tripCost.totalCents)}
+                <span data-jnq-trip-total={tripCost.totalCents}>{originalAmount(tripCost.totalCents)}</span>
               </p>
               {convertedAmount(tripCost.totalCents) ? <p className="mt-2 text-sm tabular-nums text-amber-100/68">≈ {convertedAmount(tripCost.totalCents)}</p> : null}
             </div>

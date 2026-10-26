@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_cache } from 'next/cache'
 
 export interface KlookWidgetRecord {
   id: string
@@ -22,12 +23,7 @@ const STORAGE_PATH = '_system/klook-widgets.webp'
 const VERSIONED_STORAGE_DIR = '_system/klook-widgets'
 const STORAGE_LATEST_POINTER_PATH = '_system/klook-widgets-latest.webp'
 
-// In-memory cache to reduce Supabase Storage egress
-let cachedWidgets: KlookWidgetRecord[] | null = null
-let lastFetchTime = 0
-const CACHE_TTL = 60 * 1000 // 1 minute cache in memory
-
-function getAdminSupabaseClient() {
+function getAdminSupabaseClient(fresh = false) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
@@ -35,6 +31,11 @@ function getAdminSupabaseClient() {
 
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => {
+      const headers=new Headers(init?.headers)
+      headers.set(fresh?'X-JNQ-Publication-Read':'Cache-Control',fresh?'authoritative':'no-cache')
+      return fetch(input,{...init,headers,...(fresh?{cache:'no-store' as const}:{})})
+    } },
   })
 }
 
@@ -85,8 +86,8 @@ async function writeLocalWidgets(widgets: KlookWidgetRecord[]) {
   }
 }
 
-async function readStorageWidgets() {
-  const supabase = getAdminSupabaseClient()
+async function readStorageWidgets(fresh = false) {
+  const supabase = getAdminSupabaseClient(fresh)
   if (!supabase) return null
 
   try {
@@ -94,7 +95,14 @@ async function readStorageWidgets() {
     const { data: latestPointer } = await supabase.storage.from(STORAGE_BUCKET).download(STORAGE_LATEST_POINTER_PATH)
     if (latestPointer) {
       const latestPath = String(await latestPointer.text()).trim()
-      if (latestPath) candidatePaths.push(latestPath)
+      if (latestPath.startsWith(`${VERSIONED_STORAGE_DIR}/`)) {
+        const {data,error} = await supabase.storage.from(STORAGE_BUCKET).download(latestPath)
+        if (!error && data) {
+          const parsed = JSON.parse(await data.text())
+          if (Array.isArray(parsed)) return parsed.map(normalizeKlookWidgetPayload).filter(item=>item.title && item.htmlCode)
+        }
+        candidatePaths.push(latestPath)
+      }
     }
 
     const { data: versions } = await supabase.storage.from(STORAGE_BUCKET).list(VERSIONED_STORAGE_DIR, {
@@ -125,7 +133,7 @@ async function readStorageWidgets() {
 }
 
 async function writeStorageWidgets(widgets: KlookWidgetRecord[]) {
-  const supabase = getAdminSupabaseClient()
+  const supabase = getAdminSupabaseClient(true)
   if (!supabase) return
 
   const payload = Buffer.from(`${JSON.stringify(widgets, null, 2)}\n`, 'utf8')
@@ -163,28 +171,27 @@ function sortWidgets(widgets: KlookWidgetRecord[]) {
   })
 }
 
-export async function readKlookWidgets() {
-  const now = Date.now()
-  if (cachedWidgets && now - lastFetchTime < CACHE_TTL) {
-    return sortWidgets(cachedWidgets)
-  }
-
-  const storageWidgets = await readStorageWidgets()
+async function readWidgetsUncached(fresh = false) {
+  const storageWidgets = await readStorageWidgets(fresh)
   if (storageWidgets) {
-    cachedWidgets = storageWidgets
-    lastFetchTime = now
-    try {
-      await writeLocalWidgets(storageWidgets)
-    } catch {}
     return sortWidgets(storageWidgets)
   }
 
   const localWidgets = await readLocalWidgets()
-  if (localWidgets.length) {
-    cachedWidgets = localWidgets
-    lastFetchTime = now
-  }
   return sortWidgets(localWidgets)
+}
+
+// Replace the uninvalidatable per-process 60s Map with the existing Next Data
+// Cache. Public ISR shares a tag; Admin always reads the authoritative version.
+const readWidgetsCached = unstable_cache(readWidgetsUncached, ['klook-widgets-v1'], { revalidate: 3600, tags: ['klook-widgets'] })
+export async function readKlookWidgets(fresh = false) {
+  return fresh ? readWidgetsUncached(true) : readWidgetsCached()
+}
+
+export async function readPublicationWidgets() {
+  const records = await readStorageWidgets(true)
+  if (!records) throw new Error('Authoritative widget read-back unavailable')
+  return sortWidgets(records)
 }
 
 export async function saveKlookWidgets(widgets: KlookWidgetRecord[]) {
@@ -193,9 +200,6 @@ export async function saveKlookWidgets(widgets: KlookWidgetRecord[]) {
     await writeLocalWidgets(normalized)
   } catch {}
   await writeStorageWidgets(normalized)
-  // Clear cache after save
-  cachedWidgets = null
-  lastFetchTime = 0
   return normalized
 }
 

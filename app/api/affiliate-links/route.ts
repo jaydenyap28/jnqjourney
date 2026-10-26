@@ -3,7 +3,7 @@ import { getRenderableNoteBlocks } from '@/lib/notes'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
+import { PRIVATE_NO_STORE } from '@/lib/public-data'
 
 export const runtime = 'nodejs'
 export const revalidate = 3600
@@ -17,6 +17,7 @@ function getSupabaseServerClient() {
 
   return createClient(supabaseUrl, serviceRoleKey || anonKey || '', {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, next: { revalidate: 3600, tags: ['affiliate-links'] } }) },
   })
 }
 
@@ -92,5 +93,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ links: [], error: error.message }, { status: 500, headers: { 'Cache-Control': PRIVATE_NO_STORE } })
   }
 
-  return NextResponse.json({ links: (data || []).map(normalizeJoinedRecord) }, { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } })
+  // Query variants otherwise remain fresh in the outer CDN after a tagged DB
+  // cache was invalidated. Keep the 3600s tagged Data Cache, not a second CDN TTL.
+  return NextResponse.json({ links: (data || []).map(normalizeJoinedRecord) }, { headers: { 'Cache-Control': PRIVATE_NO_STORE } })
 }

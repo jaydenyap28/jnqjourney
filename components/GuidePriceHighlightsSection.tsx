@@ -34,7 +34,7 @@ function PriceLine({ item, compact = false }: { item: PublicGuidePriceHighlight;
     <div className="min-w-0">
       <p className="break-words text-xs leading-5 text-white/56">{item.optionLabelZh || item.titleZh}</p>
       <p className={`${compact ? 'mt-0.5 text-sm' : 'mt-1 text-xl'} break-words font-semibold leading-tight tabular-nums text-white`}>
-        {formatPriceHighlightAmount(item.currency, item.amountMinor)}
+        <span data-jnq-price-amount={`${item.currency}:${item.amountMinor}`}>{formatPriceHighlightAmount(item.currency, item.amountMinor)}</span>
         <span className="ml-1 text-sm font-medium text-amber-100/72">{guidePriceUnitLabel(item.unit)}</span>
       </p>
     </div>
@@ -145,7 +145,7 @@ export function GuideDayCostNote({
               <div key={item.id} className="min-w-0">
                 <span className="text-xs text-white/58">{item.optionLabelZh || item.titleZh}</span>
                 <span className="ml-2 text-base font-semibold tabular-nums text-white">
-                  {formatPriceHighlightAmount(item.currency, item.amountMinor)}
+                  <span data-jnq-price-amount={`${item.currency}:${item.amountMinor}`}>{formatPriceHighlightAmount(item.currency, item.amountMinor)}</span>
                   <span className="ml-1 text-sm font-medium text-sky-100/72">{guidePriceUnitLabel(item.unit)}</span>
                 </span>
               </div>

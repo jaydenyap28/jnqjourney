@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 export async function GET(request: Request) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return blocked
   const { searchParams } = new URL(request.url)
   const url = searchParams.get('url')
 

@@ -31,7 +31,7 @@ export async function mutateAdminAffiliateLinks(
           : { message: result.error || 'Affiliate link mutation failed.' },
       }
     }
-    return result
+    return { data: result.data, error: result.error }
   } catch (error) {
     return { data: null, error: { message: error instanceof Error ? error.message : 'Affiliate link mutation failed.' } }
   }

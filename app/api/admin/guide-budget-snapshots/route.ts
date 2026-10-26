@@ -10,6 +10,7 @@ import {
 import { readGuideBySlug } from '@/lib/server/guides-store'
 import { publishActualGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
+import { invalidatePublication, publicationResponse, publicationFailure } from '@/lib/server/publication'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -60,6 +61,13 @@ export async function PATCH(request: Request) {
         publicSnapshotUpdated = false
         publicSnapshotWarning = error?.message || 'Published Actual was saved, but the public snapshot was not updated.'
       }
+    }
+    if (publicSnapshotUpdated === false) return NextResponse.json({ snapshot, publicSnapshotUpdated, publicSnapshotWarning,
+      error: 'Budget saved, but public publication failed. Reload before retrying publication.',
+    }, { status: 503, headers: HEADERS })
+    if (publicSnapshotUpdated) {
+      try { return publicationResponse({ snapshot, publicSnapshotUpdated, publicSnapshotWarning }, await invalidatePublication(request, { kind: 'price',priceSource:'trip-cost', slugs: [snapshot.guide_slug] })) }
+      catch (error) { return publicationFailure(error, { kind: 'price',priceSource:'trip-cost', slugs: [snapshot.guide_slug] }) }
     }
     return NextResponse.json({ snapshot, publicSnapshotUpdated, publicSnapshotWarning }, { headers: HEADERS })
   } catch (error: any) {

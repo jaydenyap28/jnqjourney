@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { assessSpotContent, type SpotQualityInput } from '@/lib/spot-content-quality'
 import { mutateAdminLocations } from '@/lib/admin-locations'
 import {
   AlertDialog,
@@ -178,6 +179,24 @@ export default function AdminDashboard() {
   const [sortOption, setSortOption] = useState<SortOption>('needs_attention')
   const [filterRegion, setFilterRegion] = useState('all')
   const [focusFilter, setFocusFilter] = useState<FocusFilter>('all')
+  const [qualityRows, setQualityRows] = useState<Record<number, ReturnType<typeof assessSpotContent>>>({})
+  const [qualityFilter, setQualityFilter] = useState('all')
+  const [qualityLoading, setQualityLoading] = useState(false)
+  const [qualityMessage, setQualityMessage] = useState('')
+
+  async function inspectContent() {
+    setQualityLoading(true)
+    setQualityMessage('')
+    try {
+      const { data, error } = await supabase.from('locations').select('id,name,name_cn,tags,category,description,seo_title_zh,seo_description_zh').order('id').range(0, 9999)
+      if (error) throw error
+      const rows = (data || []) as Array<SpotQualityInput & { id: number }>
+      setQualityRows(Object.fromEntries(rows.map(row => [row.id, assessSpotContent(row)])))
+      setQualityMessage(`已读取 ${rows.length} 项并在本机检查；没有写入。短文与 SEO 缺失属于建议，须逐项打开编辑确认。数据库返回数量若少于列表总数，未返回项标记为未检查。`)
+    } catch {
+      setQualityMessage('无法读取内容或 SEO 字段，现有列表保留；请检查登录权限与字段兼容性后重试，未执行写入。')
+    } finally { setQualityLoading(false) }
+  }
 
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedIds, setSelectedIds] = useState<number[]>([])
@@ -238,7 +257,7 @@ export default function AdminDashboard() {
           setAffiliateCounts({})
         }
       } catch (error) {
-        console.error('Error fetching admin dashboard data:', error)
+      console.error('Error fetching admin dashboard data:', error)
       } finally {
         setLoading(false)
       }
@@ -279,12 +298,21 @@ export default function AdminDashboard() {
     let result = [...locations]
 
     if (deferredSearchQuery.trim()) {
-      result = fuse.search(deferredSearchQuery.trim()).map((res) => res.item)
+      const idSearch = deferredSearchQuery.trim().replace(/^#/, '')
+      result = /^\d+$/.test(idSearch) ? result.filter(loc => loc.id === Number(idSearch)) : fuse.search(deferredSearchQuery.trim()).map((res) => res.item)
     }
 
     if (filterRegion !== 'all') {
       result = result.filter((loc) => getRegionLabel(loc.regions) === filterRegion)
     }
+
+    if (qualityFilter !== 'all') result = result.filter(loc => {
+      const quality = qualityRows[loc.id]
+      if (qualityFilter === 'unchecked') return !quality
+      if (!quality) return false
+      if (qualityFilter === 'missing' || qualityFilter === 'review' || qualityFilter === 'ready') return quality.grade === qualityFilter
+      return quality.issues.some(issue => issue.code === qualityFilter)
+    })
 
     if (focusFilter !== 'all') {
       result = result.filter((loc) => {
@@ -311,7 +339,7 @@ export default function AdminDashboard() {
     })
 
     return result
-  }, [affiliateCounts, deferredSearchQuery, filterRegion, focusFilter, fuse, locations, sortOption])
+  }, [affiliateCounts, deferredSearchQuery, filterRegion, focusFilter, fuse, locations, sortOption, qualityFilter, qualityRows])
 
   const summary = useMemo(
     () =>
@@ -335,7 +363,10 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchQuery, sortOption, filterRegion, focusFilter])
+  }, [searchQuery, sortOption, filterRegion, focusFilter, qualityFilter])
+
+  // Never carry a hidden selection into a different bulk-operation scope.
+  useEffect(() => { setSelectedIds([]) }, [searchQuery, filterRegion, focusFilter, qualityFilter])
 
   const handleSelectAll = (checked: boolean) => {
     const currentIds = paginatedLocations.map((loc) => loc.id)
@@ -500,7 +531,7 @@ export default function AdminDashboard() {
             <div className="grid gap-4 md:grid-cols-[1.4fr_220px_220px_220px]">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                <Input className="h-11 pl-9" placeholder="搜索景点、地区..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                <Input className="h-11 pl-9" placeholder="搜索景点、地区或 #ID..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
               </div>
               <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
                   <SelectTrigger className="h-11"><ArrowUpDown className="mr-2 h-4 w-4 text-slate-400" /><SelectValue placeholder="排序方式" /></SelectTrigger>
@@ -529,6 +560,13 @@ export default function AdminDashboard() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
+              <Button type="button" variant="outline" className="min-h-11" disabled={qualityLoading} onClick={inspectContent}>{qualityLoading ? '读取检查中…' : '检查内容与 SEO（只读）'}</Button>
+              <label className="flex flex-wrap items-center gap-2 text-sm text-slate-700">内容筛选<select aria-label="内容质量筛选" className="min-h-11 max-w-full rounded border bg-white px-3" value={qualityFilter} onChange={event => setQualityFilter(event.target.value)}>
+                <option value="all">全部内容</option><option value="missing">缺少正文</option><option value="review">需要人工核对</option><option value="short">短文建议</option><option value="duplicate">重复段落 / 章节</option><option value="ai">AI 对话残留</option><option value="language">语言混用</option><option value="link">疑似无效链接</option><option value="seo">中文 SEO 未齐</option><option value="ready">未发现规则问题</option><option value="unchecked">尚未检查</option>
+              </select></label>
+            </div>
+            {qualityMessage && <p role="status" className="text-sm leading-6 text-slate-600">{qualityMessage}</p>}
             <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
@@ -595,6 +633,7 @@ export default function AdminDashboard() {
                             <div className="space-y-1">
                               <div className="font-semibold text-slate-900">{location.name}</div>
                               {location.name_cn ? <div className="text-xs text-slate-500">{location.name_cn}</div> : null}
+                              {Object.keys(qualityRows).length > 0 && <div className="max-w-xs text-xs leading-5 text-slate-600">{qualityRows[location.id] ? <><span className="font-medium">{qualityRows[location.id].category.label} · {({ missing: '缺正文', review: '待核对', suggestion: '可优化', ready: '未发现规则问题' })[qualityRows[location.id].grade]}</span>{qualityRows[location.id].issues.map(issue => <p key={issue.message}>{issue.message}</p>)}</> : '尚未检查'}</div>}
                               {checklist.ready ? <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50">较完整</Badge> : null}
                             </div>
                           </TableCell>

@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server'
-import { revalidateTag } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { isTiomanMainPackageSlug, isTiomanPackage, isTiomanRegion } from '@/lib/tioman-packages'
+import { isTiomanPackage, isTiomanRegion } from '@/lib/tioman-packages'
+import { packagePublicationResponse, invalidatePackagePages } from '@/lib/server/package-publication'
+import { packageUsesOptions, isHainanPackage } from '@/lib/package-presentation'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -63,7 +64,7 @@ export async function GET(request: Request) {
   }
   const selectedPackage = id > 0 ? packagesResult.data?.[0] || null : null
   let options: unknown[] = []
-  if (selectedPackage && isTiomanMainPackageSlug(selectedPackage.slug)) {
+  if (selectedPackage) {
     const { data, error: comparisonError } = await supabase
       .from('travel_package_options')
       .select('*')
@@ -88,6 +89,18 @@ export async function POST(request: Request) {
   if (!supabase) return NextResponse.json({ error: 'Missing server database configuration.' }, { status: 500 })
 
   const body = await request.json()
+  if (body.action === 'revalidate-public') {
+    const id = Number(body.id)
+    if (!Number.isSafeInteger(id) || id <= 0) return NextResponse.json({error:'Invalid package.'},{status:400})
+    const {data:item,error} = await supabase.from('travel_packages').select('id,slug').eq('id',id).maybeSingle()
+    const deletedSlug = !item && typeof body.deletedSlug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.deletedSlug) ? body.deletedSlug : undefined
+    if (error || (!item && !deletedSlug)) return NextResponse.json({error:'Package unavailable.'},{status:error?500:404})
+    try {
+      const previousSlug = typeof body.previousSlug === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.previousSlug) ? body.previousSlug : undefined
+      invalidatePackagePages(item?.slug || deletedSlug!,previousSlug,body.scope !== 'detail')
+      return NextResponse.json({ok:true,publication:{state:'invalidated',verified:false}},{headers:{'Cache-Control':'private, no-store'}})
+    } catch { return NextResponse.json({ok:false,error:'公开缓存刷新失败，请稍后仅重试刷新。'},{status:503}) }
+  }
   const status = ['draft', 'published', 'archived'].includes(body.status) ? body.status : 'draft'
   const id = Number.isInteger(Number(body.id)) && Number(body.id) > 0 ? Number(body.id) : null
   const slug = cleanString(body.slug, 160).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
@@ -145,7 +158,7 @@ export async function POST(request: Request) {
 
   if (status === 'published' || body.action === 'validate') {
     const missing: string[] = []
-    const isTiomanMainPackage = isTiomanMainPackageSlug(payload.slug)
+    const optionPackage = packageUsesOptions(payload)
     let validRegion = false
     if (payload.region_id) {
       const { data: region } = await supabase.from('regions').select('name,name_cn,country').eq('id', payload.region_id).maybeSingle()
@@ -158,26 +171,27 @@ export async function POST(request: Request) {
     if (!validRegion) missing.push('正确地区')
     if (!payload.title_zh) missing.push('标题')
     if (!payload.short_description) missing.push('简短介绍')
-    if (!isTiomanMainPackage && !payload.included_items.length) missing.push('配套包含')
-    if (!isTiomanMainPackage && !payload.excluded_items.length) missing.push('不包含项目')
+    if (!optionPackage && !payload.included_items.length) missing.push('配套包含')
+    if (!optionPackage && !payload.excluded_items.length) missing.push('不包含项目')
     if (!payload.whatsapp_message || !payload.source_code) missing.push('WhatsApp CTA')
     if (!payload.cover_image) missing.push('封面图')
-    if (!isTiomanMainPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
+    if (!optionPackage && payload.gallery.length < 3) missing.push('至少 3 张实拍图')
     if (!payload.itinerary_days.length) missing.push('行程概览')
-    if (isTiomanMainPackage) {
-      if (!payload.price_display?.includes('RM509') || !payload.price_display.includes('每人')) missing.push('主配套最低每人价格')
-      if (!payload.price_note?.includes('最终') || !payload.price_note.includes('确认')) missing.push('最终确认说明')
+    if (optionPackage) {
+      if (payload.slug === 'tioman-3d2n' && !payload.price_display) missing.push('主配套价格说明')
+      if (payload.slug === 'tioman-3d2n' && (!payload.price_note?.includes('最终') || !payload.price_note.includes('确认'))) missing.push('最终确认说明')
       const { data: activeOptions, error: optionsError } = await supabase
         .from('travel_package_options')
-        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,slug')
+        .select('name_zh,price_unit,price_display,included_items,excluded_items,notes,source_code,whatsapp_message,validity_label,gallery,brochure_image,slug')
         .eq('package_id', id || 0)
         .eq('status', 'active')
       if (optionsError) return NextResponse.json({ error: optionsError.message }, { status: 500 })
       if (!(activeOptions || []).length) missing.push('至少一个 active option')
+      if (isHainanPackage(payload) && activeOptions?.length !== 2) missing.push('海南主配套需要两个启用选项')
       for (const option of activeOptions || []) {
         // Final-confirmation language is rendered consistently on the public detail page.
         // Do not reject an otherwise complete option because a supplier uses different wording.
-        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.length || !option.gallery?.[0]?.url) missing.push(`完整 option：${option.name_zh || option.slug}`)
+        if (!option.name_zh || !option.price_unit || !option.price_display || !option.source_code || !option.whatsapp_message || !option.validity_label || !option.included_items?.length || !option.excluded_items?.length || !option.notes?.length || (!option.gallery?.[0]?.url && !option.brochure_image?.url)) missing.push(`完整 option：${option.name_zh || option.slug}`)
         if (option.slug === 'the-barat-tioman' && option.price_unit !== 'room') missing.push('The Barat 每房价格单位')
         if (option.slug === 'aman-tioman' && !option.notes?.some((note: string) => note.includes('年龄区间'))) missing.push('Aman 儿童年龄区间提醒')
       }
@@ -191,13 +205,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, message: '发布检查通过。' })
   }
 
+  let previousSlug: string | undefined
+  if (id) {
+    const {data:previous,error:previousError} = await supabase.from('travel_packages').select('slug').eq('id',id).maybeSingle()
+    if (previousError || !previous) return NextResponse.json({error:'配套不存在或无法读取，请重新加载。'},{status:previousError?500:404})
+    previousSlug = previous.slug
+  }
   const query = id
     ? supabase.from('travel_packages').update(payload).eq('id', id)
     : supabase.from('travel_packages').insert(payload)
   const { data, error } = await query.select('*').single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  revalidateTag('travel-packages')
-  return NextResponse.json({ package: data })
+  return packagePublicationResponse({package:data},data.id,data.slug,previousSlug)
 }
 
 export async function DELETE(request: Request) {
@@ -222,8 +241,8 @@ export async function DELETE(request: Request) {
   if (!existing) return NextResponse.json({ error: '找不到这项旅游配套。' }, { status: 404 })
   if (existing.slug !== confirmSlug) return NextResponse.json({ error: '删除确认不匹配。' }, { status: 409 })
 
-  const { error } = await supabase.from('travel_packages').delete().eq('id', id).eq('slug', confirmSlug)
+  const { data:deleted,error } = await supabase.from('travel_packages').delete().eq('id', id).eq('slug', confirmSlug).select('id')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  revalidateTag('travel-packages')
-  return NextResponse.json({ ok: true })
+  if (!deleted?.some(row => row.id === id)) return NextResponse.json({error:'没有确认删除任何记录，请重新加载。'},{status:409})
+  return packagePublicationResponse({ok:true,deleted:true},id,confirmSlug)
 }

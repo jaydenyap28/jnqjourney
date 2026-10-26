@@ -90,14 +90,6 @@ export async function POST(request: Request) {
         throw new Error(`R2 upload returned a Supabase URL: ${item.url}`)
       }
 
-      console.info('[upload:r2] response url:', item.url)
-      console.info('[upload:r2] uploaded image', {
-        fileName: item.fileName,
-        key: item.key,
-        url: item.url,
-        provider: item.provider,
-      })
-
       items.push(item)
     } catch (error: any) {
       return NextResponse.json(

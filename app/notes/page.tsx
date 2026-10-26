@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 3600 // Cache for 1 hour
 
 export default async function NotesIndexPage() {
   const [storedNotes, { locations }] = await Promise.all([readPublicNotes(), resolvePublicData()])

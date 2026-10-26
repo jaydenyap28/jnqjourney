@@ -1,4 +1,5 @@
 import RelatedNoteCards from '@/components/RelatedNoteCards'
+import { publicationVersion } from '@/lib/publication-version'
 import { selectNoteSpotIds, relatedNotesForNote } from '@/lib/content-relations'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { notFound } from 'next/navigation'
@@ -61,7 +62,7 @@ interface AffiliateData {
   image_url?: string | null
 }
 
-function createPublicSupabaseClient() {
+function createPublicSupabaseClient(ids: number[]) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -69,12 +70,14 @@ function createPublicSupabaseClient() {
     throw new Error('Missing Supabase public environment variables')
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false } })
+  return createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, next: { revalidate: 3600, tags: ids.map(id=>`affiliate-link:${id}`) } }) },
+  })
 }
 
 async function fetchAffiliateLinksByIds(ids: number[]) {
   if (!ids.length) return []
-  const supabase = createPublicSupabaseClient()
+  const supabase = createPublicSupabaseClient(ids)
   const { data, error } = await supabase
     .from('affiliate_links')
     .select('id,title,description,provider,link_type,url,preview_image_url,image_url')
@@ -148,11 +151,11 @@ function CoverVideoEmbed({ url, title }: { url?: string | null; title: string })
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const [storedNote, { locations }] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
-  const note = storedNote ? resolveNotePublicMedia(storedNote, locations) : null
-  if (!note) {
-    return { title: 'Note not found' }
-  }
+  // Validate before the shared loading boundary starts the HTML response.
+  const storedNote = await readPublicNoteBySlug(params.slug)
+  if (!storedNote || !storedNote.published) notFound()
+  const { locations } = await resolvePublicData()
+  const note = resolveNotePublicMedia(storedNote, locations)
 
   const description = buildMetaDescription(getTextExcerpt(note), `Read this travel note about ${note.title}.`)
   const title = note.title
@@ -161,6 +164,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title,
+    other: { 'jnq-content-version': publicationVersion(storedNote) },
     description,
     alternates: { canonical: path },
     openGraph: buildOpenGraphData(title, description, path, image, 'article'),
@@ -168,7 +172,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export const revalidate = 600
+export const revalidate = 3600
+// Generate public notes on first visit, then reuse the route cache. Publication
+// and unpublishing retain the existing per-note revalidatePath calls.
+export function generateStaticParams() { return [] }
 
 function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
   if (block.type === 'heading') {
@@ -412,8 +419,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
   }
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#101418_0%,#05070a_52%,#000000_100%)] text-white">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+    <main data-jnq-affiliate-values={JSON.stringify([...affiliateLinks].sort((a,b)=>a.id-b.id))} data-jnq-widget-values={JSON.stringify([...new Map([...allKlookWidgets.filter(w=>w.isActive && klookWidgetIds.includes(w.id)),...noteKlookWidgets].map(w=>[w.id,w])).values()].sort((a,b)=>a.id.localeCompare(b.id)))} className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(20,184,166,0.14),transparent_24%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.12),transparent_22%),linear-gradient(180deg,#101418_0%,#05070a_52%,#000000_100%)] text-white">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       {/* Dynamic reading progress bar; body images own the shared Lightbox trigger. */}
       <NoteInteractiveReader headings={headings} />
 
@@ -487,6 +494,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
                   {block.content ? <p className="mt-3 text-sm leading-7 text-white/60">{block.content}</p> : null}
                   <div className="mt-4 space-y-3">
                     <AffiliateCard
+                      initialLinks={links}
                       linkIds={links.map((link) => link.id)}
                       compact
                       singleColumn

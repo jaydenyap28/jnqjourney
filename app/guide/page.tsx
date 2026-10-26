@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 3600 // Cache for 1 hour
 
 import GuideIndexView from '@/components/GuideIndexView'
 export default async function Page(){ const [storedGuides,{locations}]=await Promise.all([readPublicGuides(),resolvePublicData()]); const guides=storedGuides.map(g=>resolveGuidePublicMedia(g,locations)); return <GuideIndexView guides={guides}/> }

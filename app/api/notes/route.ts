@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { publicationVersion } from '@/lib/publication-version'
 import { readPublicNoteBySlug, readPublicNotes } from '@/lib/server/public-content-store'
 import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
@@ -17,7 +18,7 @@ export async function GET(request: Request) {
     }
     return NextResponse.json(
       { note: resolveNotePublicMedia(storedNote, locations) },
-      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } }
+      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL, 'X-JNQ-Content-Version': publicationVersion(storedNote) } }
     )
   }
   const notes = (await readPublicNotes()).map((storedNote) => {

@@ -20,6 +20,7 @@ function fixture() {
   const writes = []
   let token = 'test-admin-token'
   let databaseError = null
+  let databaseStatus = 409
   const dbFetch = async (input, init = {}) => {
     const request = new Request(input, init)
     const url = new URL(request.url)
@@ -31,22 +32,24 @@ function fixture() {
     assert.equal(url.pathname, '/rest/v1/affiliate_links')
     assert.equal(request.headers.get('apikey'), env.SUPABASE_SERVICE_ROLE_KEY)
     assert.equal(request.headers.get('authorization'), `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`)
-    assert.equal(url.searchParams.has('select'), false)
-    assert.ok(!request.headers.get('prefer')?.includes('return=representation'))
+    assert.equal(url.searchParams.get('select'), 'id')
+    assert.ok(request.headers.get('prefer')?.includes('return=representation'))
     const data = request.method === 'DELETE' ? null : await request.json()
     writes.push({ method: request.method, data, url })
-    if (databaseError) return Response.json(databaseError, { status: 409 })
+    if (databaseError) return Response.json(databaseError, { status: databaseStatus })
+    const affected = []
     if (request.method === 'POST') {
       for (const fields of Array.isArray(data) ? data : [data]) {
         const id = 901 + rows.size
         rows.set(id, { ...fields, id })
+        affected.push({id})
       }
     } else {
       const id = Number(url.searchParams.get('id').replace('eq.', ''))
-      if (request.method === 'DELETE') rows.delete(id)
-      else rows.set(id, { ...rows.get(id), ...data, id })
+      if (rows.has(id)) { if (request.method === 'DELETE') rows.delete(id)
+      else rows.set(id, { ...rows.get(id), ...data, id }); affected.push({id}) }
     }
-    return new Response(null, { status: request.method === 'POST' ? 201 : 204 })
+    return Response.json(affected, { status: request.method === 'POST' ? 201 : 200 })
   }
   const cache = new Map()
   let route
@@ -63,6 +66,8 @@ function fixture() {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
     }).outputText
     const req = name => {
+      if (name === '@/lib/server/publication') return require('./helpers/publication-mock.cjs').publicationMock()
+      if (name === 'next/cache') return { revalidateTag() {}, revalidatePath() {} }
       if (name === '@/lib/supabase') return { supabase: { auth: { getSession: async () => ({ data: { session: token ? { access_token: token } : null } }) } } }
       if (name === '@supabase/supabase-js') return { createClient: (url, key, options) => createClient(url, key, { ...options, global: { fetch: dbFetch } }) }
       if (name.startsWith('@/')) return load(`${name.slice(2)}.ts`)
@@ -77,6 +82,7 @@ function fixture() {
     rows, writes,
     setToken(value) { token = value },
     setDatabaseError(value) { databaseError = value },
+    setDatabaseStatus(value) { databaseStatus = value },
     restore() {
       for (const [key, value] of Object.entries(previous)) {
         if (value === undefined) delete process.env[key]
@@ -91,6 +97,26 @@ const allFields = {
   title: '测试链接', description: 'Booking description', commission_rate: 4.25,
   is_active: true, location_id: 808, region_id: null,
 }
+
+test('zero-row affiliate updates are failures and a corrected explicit retry can succeed', async t=>{
+  const f=fixture(); t.after(()=>f.restore())
+  const missing=await f.mutate('PATCH',{id:999,data:{is_active:false}})
+  assert.equal(missing.error.code,'WRITE_NOT_CONFIRMED'); assert.match(missing.error.message,/0\/1/)
+  assert.equal(f.rows.has(999),false)
+  f.rows.set(999,{...allFields,id:999})
+  assert.equal((await f.mutate('PATCH',{id:999,data:{is_active:false}})).error,null)
+  assert.equal(f.rows.get(999).is_active,false); assert.equal(f.writes.length,2)
+})
+
+test('ambiguous affiliate write failures stay unknown until explicit reload/retry',async t=>{
+  const f=fixture();t.after(()=>f.restore());f.rows.set(999,{...allFields,id:999})
+  f.setDatabaseError({message:'Synthetic server failure'});f.setDatabaseStatus(500)
+  assert.match((await f.mutate('PATCH',{id:999,data:{is_active:false}})).error.message,/outcome unknown; reload/)
+  assert.equal(f.writes.length,1)
+  f.setDatabaseError(null)
+  assert.equal((await f.mutate('PATCH',{id:999,data:{is_active:false}})).error,null)
+  assert.equal(f.writes.length,2)
+})
 
 test('create affiliate link through shared API preserves single and batch association payloads', async (t) => {
   const f = fixture(); t.after(() => f.restore())

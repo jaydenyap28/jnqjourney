@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { spotPublicationVersion } from '@/lib/publication-version'
 
 import { PUBLIC_CACHE_CONTROL } from '@/lib/public-data'
 import { PublicSpotUnavailableError, getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
@@ -16,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: { slug: strin
     }
     return NextResponse.json(
       { spot: resolved.spot },
-      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL, 'X-JNQ-Data-Source': resolved.source } }
+      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL, 'X-JNQ-Data-Source': resolved.source, 'X-JNQ-Content-Version': spotPublicationVersion(resolved.spot as unknown as Record<string, unknown>) } }
     )
   } catch (error) {
     const message = error instanceof PublicSpotUnavailableError ? 'Spot data is temporarily unavailable.' : 'Unable to load spot data.'

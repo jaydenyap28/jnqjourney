@@ -1,4 +1,6 @@
 'use client'
+import SpotContentQualityPanel from '@/components/SpotContentQualityPanel'
+import { spotEditorialCategory } from '@/lib/spot-content-quality'
 
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -120,6 +122,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   const router = useRouter()
   const galleryFileInputRef = useRef<HTMLInputElement | null>(null)
   const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null)
+  const savingRef = useRef(false)
+  const savedNeedsReloadRef = useRef(false)
+  const [savedNeedsReload, setSavedNeedsReload] = useState(false)
+  const [persistedId, setPersistedId] = useState<number | null>(null)
   const [formData, setFormData] = useState<LocationFormData>({
     name: '',
     name_cn: '',
@@ -824,7 +830,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       const image = await new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new window.Image()
         img.onload = () => resolve(img)
-        img.onerror = () => reject(new Error('鏃犳硶璇诲彇鍥剧墖鏂囦欢'))
+        img.onerror = () => reject(new Error('\u65e0\u6cd5\u8bfb\u53d6\u56fe\u7247\u6587\u4ef6'))
         img.src = objectUrl
       })
 
@@ -865,8 +871,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     const endpoint = '/api/upload/r2'
     const uploadedItems: Array<{ url: string }> = []
 
-    console.log(`[${target}-upload] endpoint:`, endpoint)
-
     for (const file of optimizedFiles) {
       const payload = new FormData()
       payload.append('category', 'locations')
@@ -903,15 +907,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       if (target === 'gallery') {
         setGalleryUploadStatus(`Uploaded ${uploadedItems.length} / ${optimizedFiles.length} images to Cloudflare R2...`)
       }
-    }
-
-    console.log('[admin-location-upload] R2 upload response', {
-      target,
-      urls: uploadedItems.map((item) => item.url),
-    })
-    if (target === 'gallery') {
-      console.log('[gallery-upload] endpoint:', endpoint)
-      console.log('[gallery-upload] uploaded items:', uploadedItems)
     }
 
     const supabaseStorageUrl = uploadedItems.find((item) =>
@@ -968,9 +963,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
   }
 
   const handleGalleryUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('[gallery-upload] file input changed', {
-      fileCount: event.target.files?.length || 0,
-    })
     const files = Array.from(event.target.files || [])
     if (!files.length) {
       setGalleryUploadStatus('没有选择图片。')
@@ -1000,7 +992,6 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       }
 
       urls.forEach((uploadedUrl) => {
-        console.log('[gallery-upload] url used:', uploadedUrl)
         assertR2ImageUrl(uploadedUrl)
       })
 
@@ -1386,16 +1377,17 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (savingRef.current || savedNeedsReloadRef.current) return
+    savingRef.current = true
     setLoading(true)
     setMessage('')
 
-    console.log('[save-location] image_url:', formData.image_url)
-    console.log('[save-location] images:', formData.images)
     try {
       const target = normalizeSpotRedirect(contentFields.redirect_url)
       if (target && /\/spot\//.test(target) && Number(target.match(/-(\d+)$/)?.[1]) === Number(initialData?.id)) throw new Error('不能重定向到此景点自身或其别名。')
       assertStoredImageUrlsAreR2(formData.image_url, formData.images)
     } catch (error: any) {
+      savingRef.current = false
       setLoading(false)
       setMessage(`Error: ${error.message}`)
       return
@@ -1432,7 +1424,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     // Keep the database result shape for safe-save fallback and publishing.
     const executeSave = async (data: any) => {
       if (mode === 'edit' && initialData?.id) {
-        return mutateAdminLocations('PATCH', { id: initialData.id, data, returning: true })
+        return mutateAdminLocations('PATCH', { id: initialData.id, data, returning: true, expectedUpdatedAt: lastUpdatedAt })
       } else {
         return mutateAdminLocations('POST', { data })
       }
@@ -1442,7 +1434,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       let { data: savedRecord, error } = await executeSave(submissionData)
 
       // --- Safe Save Fallback ---
-      if (error && (error.message.includes('images') || error.message.includes('facebook_video_url') || error.message.includes('price_info') || error.message.includes('Column not found'))) {
+      if (error && ['42703', 'PGRST204'].includes(error.code || '') && (error.message.includes('images') || error.message.includes('facebook_video_url') || error.message.includes('price_info') || error.message.includes('Column not found'))) {
         console.warn('New columns not found, retrying without them...')
         const safeData = { ...submissionData }
         const missingFields: string[] = []
@@ -1476,20 +1468,30 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
         if (!error) {
           const fieldLabel = missingFields.length ? missingFields.join('、') : '新增字段'
           setMessage(`基础信息保存成功，但“${fieldLabel}”还没写入数据库。请先运行 SQL 脚本启用对应字段。`)
-          router.refresh()
-          setTimeout(() => router.push('/admin'), 3000)
-          return
+          // The compatible save still changed public fields. Continue through
+          // slug/publication/refresh instead of leaving the old cached page.
         }
       }
       // --------------------------
 
-      if (error) throw error
+      if (error) {
+        if (error.code === 'WRITE_OUTCOME_UNKNOWN') {
+          savedNeedsReloadRef.current = true
+          setSavedNeedsReload(true)
+        }
+        throw error
+      }
 
       if (savedRecord?.id) {
+        // DB already committed; never replay it if slug/snapshot publishing fails.
+        savedNeedsReloadRef.current = true
+        setSavedNeedsReload(true)
+        setPersistedId(savedRecord.id)
+        setLastUpdatedAt(savedRecord.updated_at || null)
         const slugResponse = await adminFetch('/api/admin/location-slugs', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: savedRecord.id, slug: formData.custom_slug }),
+          body: JSON.stringify({ id: savedRecord.id, slug: formData.custom_slug, deferPublication: true }),
         })
 
         if (!slugResponse.ok) {
@@ -1497,20 +1499,20 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           throw new Error(slugPayload?.error || '保存自定义 slug 失败')
         }
 
+        const identity = await slugResponse.json()
         const snapshotResponse = await adminFetch(`/api/admin/public-data/spots/${savedRecord.id}`, {
-          method: 'POST',
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ previousSlugs: identity.previousSlugs || [] }),
         })
         if (!snapshotResponse.ok) {
           const snapshotPayload = await snapshotResponse.json().catch(() => ({}))
           console.warn('Spot snapshot refresh failed after database save:', snapshotPayload?.error || snapshotResponse.status)
-          setMessage(`${mode === 'edit' ? '更新' : '发布'}成功，但公开 fallback 快照刷新失败；上一份有效快照会继续使用。`)
-        } else {
-          const englishResponse = await adminFetch(`/api/admin/spot-content-revalidate/${savedRecord.id}`, { method: 'POST' })
-          if (!englishResponse.ok) setMessage('内容已保存并发布，但英文页面刷新失败；稍后可重新保存以重试。')
+          throw new Error('资料已保存，但公开快照发布失败；请重新载入后重试发布，不要重复提交数据库修改。')
         }
       }
 
       setLastUpdatedAt(savedRecord?.updated_at || new Date().toISOString())
+      savedNeedsReloadRef.current = false
+      setSavedNeedsReload(false)
       setMessage((current) => current || (mode === 'edit' ? '更新成功！' : '发布成功！'))
       
       // Force a router refresh to ensure data is up-to-date across the app
@@ -1559,6 +1561,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
       console.error('Error saving location:', error)
       setMessage(`Error: ${error.message}`)
     } finally {
+      savingRef.current = false
       setLoading(false)
     }
   }
@@ -2521,10 +2524,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
                     <Button
                       type="button"
                       variant="outline"
-                      onClick={() => {
-                        console.log('[gallery-upload] choose button clicked')
-                        galleryFileInputRef.current?.click()
-                      }}
+                      onClick={() => galleryFileInputRef.current?.click()}
                       disabled={uploadingGallery}
                     >
                       {uploadingGallery ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ImagePlus className="mr-2 h-4 w-4" />}
@@ -2785,9 +2785,10 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               value={formData.review}
               onChange={(review) => setFormData((previous) => ({ ...previous, review }))}
             />
+            <SpotContentQualityPanel value={formData.review} category={spotEditorialCategory({ category: formData.category, name: formData.name, name_cn: formData.name_cn, tags: formData.tags.split(/[,，、]/) })} original={initialData?.description ?? initialData?.review ?? ''} onApply={review => setFormData(previous => ({...previous,review}))} />
           </div>
 
-          <SpotContentEditor spotId={initialData?.id} value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} />
+          <SpotContentEditor spotId={initialData?.id} value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} name={formData.name} nameCn={formData.name_cn} description={formData.review} />
 
           {mode === 'edit' && initialData?.id ? (
             <AdminAffiliateLinksPanel
@@ -2803,8 +2804,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
           ) : null}
 
           {message ? (
-            <div className="rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            <div role="status" className="rounded-md border border-blue-200 bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-900">
               {message}
+              {savedNeedsReload && <p className="mt-2">请先保留当前草稿。{persistedId ? <a className="underline underline-offset-4" href={`/admin/edit/${persistedId}`} target="_blank" rel="noreferrer">在新窗口检查已保存的 #{persistedId}</a> : '保存结果未知，请先在列表核对是否已有记录。'}；此表单已暂停重复提交。</p>}
             </div>
           ) : null}
 
@@ -2812,9 +2814,9 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
             <Button type="button" variant="outline" onClick={() => router.push('/admin')}>
               返回列表
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading || savedNeedsReload}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-              {mode === 'edit' ? '保存更新' : '发布景点'}
+              {savedNeedsReload ? '保存已暂停，请重新载入核对' : mode === 'edit' ? '保存更新' : '发布景点'}
             </Button>
           </div>
         </form>
@@ -2830,4 +2832,3 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
     </Card>
   )
 }
-

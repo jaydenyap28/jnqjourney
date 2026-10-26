@@ -1,5 +1,762 @@
 [
   {
+    "slug": "china-jiangnan-autumn-15d14n",
+    "aliases": [],
+    "tripStartDate": "2025-11-04",
+    "tripEndDate": "2025-11-18",
+    "title": "上海·苏州·乌镇·杭州·黟县·南京",
+    "shortTitle": "中国江南秋季游",
+    "tagline": "15 天 14 夜，上海、苏州、乌镇、杭州、黟县与南京",
+    "summary": "从上海一路南下，经苏州、乌镇、杭州与皖南，最后在南京收尾的秋季旅程。",
+    "duration": "15天14夜",
+    "budget": "",
+    "budgetScope": "unspecified",
+    "travelStyle": "自由行",
+    "route": [
+      {
+        "stopLabel": "Day 1–3",
+        "name": "上海",
+        "summary": "抵达后的三天以上海市区步行与夜景为主。"
+      },
+      {
+        "stopLabel": "Day 4–5",
+        "name": "苏州",
+        "summary": "由上海转入苏州，园林、古镇与山塘夜景分别安排在两天。"
+      },
+      {
+        "stopLabel": "Day 6",
+        "name": "乌镇",
+        "summary": "Day 6 在乌镇西栅办理入住、沿水乡步行，并安排清晨水乡体验。"
+      },
+      {
+        "stopLabel": "Day 7–8",
+        "name": "杭州",
+        "summary": "两条已证实城市路线涵盖满觉陇、西湖周边、河坊街与钱江新城夜景。"
+      },
+      {
+        "stopLabel": "Day 9–11",
+        "name": "宏村／黟县",
+        "summary": "已证实到访宏村、卢村观景点与塔川入口一带；付费景区未进入。部分附近地点仅作顺路参考，不计入主行程。"
+      },
+      {
+        "stopLabel": "Day 12–15",
+        "name": "南京",
+        "summary": "由黟县转入南京后，依次完成牛首山、秋色与明孝陵周边三条城市路线。"
+      }
+    ],
+    "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.34),transparent_22%),radial-gradient(circle_at_top_right,rgba(56,189,248,0.2),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.03))]",
+    "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f7830-b1be-4c33-9dc7-da04f8757a2b-img_5709.webp",
+    "highlightTags": [
+      "秋季",
+      "城市漫步",
+      "古镇",
+      "江南"
+    ],
+    "heroBullets": [
+      "2025年11月4日－11月18日",
+      "6 个已证实城市区间"
+    ],
+    "budgetItems": [],
+    "days": [],
+    "itineraryMode": "segment",
+    "itinerarySegments": [
+      {
+        "id": "shanghai",
+        "dayStart": 1,
+        "dayEnd": 3,
+        "dateStart": "2025-11-04",
+        "dateEnd": "2025-11-06",
+        "city": "上海",
+        "title": "上海｜City Walk 与夜景",
+        "summary": "抵达后的三天以上海市区步行与夜景为主。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 1,
+            "title": "抵达上海",
+            "summary": "抵达浦东后进入市区，安顿住宿。",
+            "attractions": [],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 2,
+            "title": "上海 City Walk",
+            "summary": "新天地、南京路步行街、外滩与陆家嘴一带。",
+            "attractions": [
+              {
+                "spotId": 446,
+                "spotSlug": "spot-446",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "新天地"
+              },
+              {
+                "spotId": 447,
+                "spotSlug": "spot-447",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "南京路步行街"
+              },
+              {
+                "spotId": 449,
+                "spotSlug": "spot-449",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "外滩"
+              },
+              {
+                "spotId": 452,
+                "spotSlug": "spot-452",
+                "displayOrder": 3,
+                "enabled": true,
+                "displayName": "陆家嘴"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 3,
+            "title": "梧桐街区与夜景",
+            "summary": "武康路、安福路、苏州河、北外滩与豫园。",
+            "attractions": [
+              {
+                "spotId": 453,
+                "spotSlug": "spot-453",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "武康路"
+              },
+              {
+                "spotId": 454,
+                "spotSlug": "spot-454",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "安福路"
+              },
+              {
+                "spotId": 458,
+                "spotSlug": "spot-458",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "北外滩"
+              },
+              {
+                "spotId": 459,
+                "spotSlug": "spot-459",
+                "displayOrder": 3,
+                "enabled": true,
+                "displayName": "豫园"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [],
+        "accommodationStays": [
+          {
+            "dayStart": 1,
+            "dayEnd": 3,
+            "accommodationId": 609
+          }
+        ],
+        "transport": "抵达浦东后进入市区；具体接驳安排保留在原始路线记录中。",
+        "media": [
+          {
+            "label": "上海 2 天游影片",
+            "url": "https://youtu.be/jJhW7qUQFi4"
+          }
+        ],
+        "practicalTips": [
+          "凌晨抵达时地铁与磁悬浮已停运；先查守航夜宵线，再决定是否叫车。",
+          "秋冬约 5–6 点转暗；下雨时可改为室内咖啡馆与北外滩。"
+        ],
+        "actualExperiences": [
+          "金陵东路渡口二楼露台适合看浦江两岸。",
+          "武康路秋季梧桐与桂花适合慢走；北外滩与豫园夜景为不同视角。"
+        ],
+        "pendingItems": [
+          "浦东美术馆与部分店铺的精确到访顺序尚待影像时间轴核对。"
+        ],
+        "priceCandidateIds": [
+          "jiangnan-night-airport-bus-2025",
+          "jiangnan-huangpu-ferry-2025"
+        ],
+        "imageMatches": [
+          {
+            "level": "route",
+            "label": "上海 City Walk 影片素材",
+            "note": "可用于城市区间，不作为单一景点主图。"
+          }
+        ]
+      },
+      {
+        "id": "suzhou",
+        "dayStart": 4,
+        "dayEnd": 5,
+        "dateStart": "2025-11-07",
+        "dateEnd": "2025-11-08",
+        "city": "苏州",
+        "title": "苏州｜园林、古镇与山塘夜景",
+        "summary": "由上海转入苏州，园林、古镇与山塘夜景分别安排在两天。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 4,
+            "title": "上海→苏州与山塘夜景",
+            "summary": "西园寺、寒山寺与枫桥、虎丘、山塘街夜景。",
+            "attractions": [
+              {
+                "spotId": 436,
+                "spotSlug": "spot-436",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "西园寺"
+              },
+              {
+                "spotId": 437,
+                "spotSlug": "spot-437",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "寒山寺"
+              },
+              {
+                "spotId": 438,
+                "spotSlug": "spot-438",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "虎丘"
+              },
+              {
+                "spotId": 439,
+                "spotSlug": "spot-439",
+                "displayOrder": 3,
+                "enabled": true,
+                "displayName": "山塘街"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 5,
+            "title": "园林与同里古镇",
+            "summary": "拙政园、平江路与同里古镇。",
+            "attractions": [
+              {
+                "spotId": 440,
+                "spotSlug": "spot-440",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "拙政园"
+              },
+              {
+                "spotId": 441,
+                "spotSlug": "spot-441",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "平江路"
+              },
+              {
+                "spotId": 445,
+                "spotSlug": "spot-445",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "同里古镇"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [],
+        "accommodationStays": [
+          {
+            "dayStart": 4,
+            "dayEnd": 4,
+            "accommodationId": 615
+          },
+          {
+            "dayStart": 5,
+            "dayEnd": 5,
+            "accommodationId": 442
+          }
+        ],
+        "media": [
+          {
+            "label": "苏州 2 天游影片",
+            "url": "https://youtu.be/GSe6a93xPTE"
+          }
+        ],
+        "practicalTips": [
+          "拙政园宜 07:30 入园避开旅行团。",
+          "山塘街夜间沿河通道窄，人多时容易拥挤；同里免票进街区时段不含内部园林。"
+        ],
+        "actualExperiences": [
+          "上海站至苏州站高铁约 30 分钟，出站南广场可见平门。",
+          "李鸿章码头画舫连接虎丘与山塘夜景路线。"
+        ],
+        "pendingItems": [
+          "退思园属于同里隔天早晨路线，尚未映射为全程精确 Day。"
+        ],
+        "priceCandidateIds": [
+          "jiangnan-suzhou-hsr-2025",
+          "jiangnan-xiyuan-admission-2025",
+          "jiangnan-shantang-boat-2025",
+          "jiangnan-tongli-pass-2025"
+        ],
+        "imageMatches": [
+          {
+            "level": "route",
+            "label": "苏州园林与山塘影片素材"
+          }
+        ]
+      },
+      {
+        "id": "wuzhen",
+        "dayStart": 6,
+        "dayEnd": 6,
+        "dateStart": "2025-11-09",
+        "dateEnd": "2025-11-09",
+        "city": "乌镇",
+        "title": "乌镇｜西栅水乡",
+        "summary": "Day 6 在乌镇西栅办理入住、沿水乡步行，并安排清晨水乡体验。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 6,
+            "title": "乌镇西栅",
+            "summary": "进入西栅、办理住客流程，沿水乡夜景步行；清晨继续水乡与摇橹船路线。",
+            "attractions": [
+              {
+                "spotId": 432,
+                "spotSlug": "spot-432",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "乌镇西栅"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [],
+        "accommodationStays": [
+          {
+            "dayStart": 6,
+            "dayEnd": 6,
+            "accommodationId": 433
+          }
+        ],
+        "media": [],
+        "practicalTips": [
+          "住客应提前一天预约早茶客；名额有限，9 点前适合拍无人古镇。",
+          "夜景整体偏暗，摇橹船无灯，拍摄需预留夜拍能力。"
+        ],
+        "actualExperiences": [
+          "景区统一办理入住、行李托运与住客观光车衔接。",
+          "灵水居水幕秀约每 10 分钟循环；退房前先寄行李可继续游览。"
+        ],
+        "pendingItems": [
+          "住宿、门票与同里至乌镇交通金额未找到可靠实际记录。"
+        ],
+        "priceCandidateIds": [
+          "jiangnan-wuzhen-early-tea-credit-2025",
+          "jiangnan-wuzhen-rowboat-2025",
+          "jiangnan-wuzhen-tea-snacks-2025"
+        ],
+        "imageMatches": [
+          {
+            "level": "route",
+            "label": "乌镇古镇、摇橹船与早茶客素材"
+          }
+        ]
+      },
+      {
+        "id": "hangzhou",
+        "dayStart": 7,
+        "dayEnd": 8,
+        "dateStart": "2025-11-10",
+        "dateEnd": "2025-11-11",
+        "city": "杭州",
+        "title": "杭州｜西湖漫步与城市夜景",
+        "summary": "两条已证实城市路线涵盖满觉陇、西湖周边、河坊街与钱江新城夜景。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 7,
+            "title": "满觉陇与西湖夜景",
+            "summary": "满觉陇、城市街区与西湖夜景。",
+            "attractions": [
+              {
+                "spotId": 420,
+                "spotSlug": "spot-420",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "满觉陇"
+              },
+              {
+                "spotId": 427,
+                "spotSlug": "spot-427",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "西湖"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 8,
+            "title": "西湖西线与钱江新城",
+            "summary": "太子湾、花港观鱼、曲院风荷、河坊街与钱江新城。",
+            "attractions": [
+              {
+                "spotId": 422,
+                "spotSlug": "spot-422",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "太子湾公园"
+              },
+              {
+                "spotId": 423,
+                "spotSlug": "spot-423",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "花港观鱼"
+              },
+              {
+                "spotId": 426,
+                "spotSlug": "spot-426",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "曲院风荷"
+              },
+              {
+                "spotId": 640,
+                "spotSlug": "spot-640",
+                "displayOrder": 3,
+                "enabled": true,
+                "displayName": "河坊街"
+              },
+              {
+                "spotId": 429,
+                "spotSlug": "spot-429",
+                "displayOrder": 4,
+                "enabled": true,
+                "displayName": "钱江新城"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [],
+        "accommodationStays": [
+          {
+            "dayStart": 7,
+            "dayEnd": 8,
+            "accommodationId": 419
+          }
+        ],
+        "media": [
+          {
+            "label": "杭州 2天1晚影片",
+            "url": "https://youtu.be/j9HJpuuYovg"
+          }
+        ],
+        "practicalTips": [
+          "桂花花期影响满觉陇体验；本次到访时大部分桂花已落。",
+          "断桥人多时可在孤山公园乘 1314 路离开；不虚构票价。",
+          "灯光秀和无人机属于当晚／时效活动，公开前需要复查。"
+        ],
+        "actualExperiences": [
+          "西湖西线相对安静，包含太子湾、花港观鱼、浴鹄湾与乌龟潭。",
+          "钱江新城当晚确有灯光秀与无人机表演，但不可写成每日固定节目。"
+        ],
+        "pendingItems": [],
+        "priceCandidateIds": [
+          "jiangnan-hangzhou-cat-cafe-2025",
+          "jiangnan-hangzhou-dinner-2025"
+        ],
+        "imageMatches": [
+          {
+            "level": "route",
+            "label": "杭州西湖与城市夜景影片素材"
+          }
+        ]
+      },
+      {
+        "id": "yixian",
+        "dayStart": 9,
+        "dayEnd": 11,
+        "dateStart": "2025-11-12",
+        "dateEnd": "2025-11-14",
+        "city": "宏村／黟县",
+        "title": "宏村／黟县｜古村与秋色",
+        "summary": "已证实到访宏村、卢村观景点、塔川入口、碧山村与秀里水镇一带；付费景区未进入。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 9,
+            "title": "杭州→黟县与宏村",
+            "summary": "转往黟县并办理入住，游览宏村、南湖与周边步行。",
+            "attractions": [
+              {
+                "spotId": 785,
+                "spotSlug": "hongcun-scenic-area-785",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "宏村"
+              },
+              {
+                "spotId": 804,
+                "spotSlug": "nanhu-academy-804",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "南湖"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 10,
+            "title": "碧山村与卢村观景点",
+            "summary": "碧山村与卢村观景点慢行。",
+            "attractions": [
+              {
+                "spotId": 789,
+                "spotSlug": "bishan-village-789",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "碧山村"
+              },
+              {
+                "spotId": 787,
+                "spotSlug": "lucun-viewing-platform-787",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "卢村"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 11,
+            "title": "秀里水镇与塔川入口",
+            "summary": "秀里水镇、塔川入口与周边慢行。",
+            "attractions": [
+              {
+                "spotId": 790,
+                "spotSlug": "xiuli-water-town-790",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "秀里水镇"
+              },
+              {
+                "spotId": 788,
+                "spotSlug": "tachuan-788",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "塔川"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [
+          {
+            "title": "附近延伸选择",
+            "summary": "奇墅湖等资料中出现的地点，未确认实际到访，不进入路线地图。",
+            "attractions": [],
+            "linkedSpots": [],
+            "status": "reference"
+          }
+        ],
+        "accommodationStays": [
+          {
+            "dayStart": 9,
+            "dayEnd": 11,
+            "accommodationId": 807
+          }
+        ],
+        "media": [],
+        "practicalTips": [
+          "宏村入口每次进村需重新检票；提前联系客栈接送。",
+          "卢村观景台需早起，但上山会拥堵；不保证晨雾。",
+          "塔川本次只到入口与外围，未进入收费景区。"
+        ],
+        "actualExperiences": [
+          "宏村外围稻田、南湖与月沼夜景是主要拍摄内容。",
+          "秀里游船河道较小、绕一圈返回，体验较单一；当晚鱼灯表演未观看。"
+        ],
+        "pendingItems": [
+          "奇墅湖为晨雾推荐而非已确认到访；秀里各票种的实际购买状态待核对。"
+        ],
+        "priceCandidateIds": [
+          "jiangnan-yixian-hsr-2025",
+          "jiangnan-hongcun-bus-2025",
+          "jiangnan-xiuli-ticket-2025",
+          "jiangnan-xiuli-boat-2025"
+        ],
+        "imageMatches": [
+          {
+            "level": "route",
+            "label": "宏村、塔川、卢村、碧山与秀里影片素材"
+          }
+        ]
+      },
+      {
+        "id": "nanjing",
+        "dayStart": 12,
+        "dayEnd": 15,
+        "dateStart": "2025-11-15",
+        "dateEnd": "2025-11-18",
+        "city": "南京",
+        "title": "南京｜秋季城市路线",
+        "summary": "由黟县转入南京后，依次完成牛首山、秋色与明孝陵周边三条城市路线。",
+        "verifiedRoutes": [
+          {
+            "dayNumber": 12,
+            "title": "黟县→南京",
+            "summary": "由黟县东前往南京南，入住新街口一带。",
+            "attractions": [],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 13,
+            "title": "牛首山与金陵小城",
+            "summary": "牛首山与金陵小城。",
+            "attractions": [
+              {
+                "spotId": 792,
+                "spotSlug": "niushou-mountain-cultural-tourism-zone-792",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "牛首山"
+              },
+              {
+                "spotId": 794,
+                "spotSlug": "jinling-xiaocheng-794",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "金陵小城"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 14,
+            "title": "栖霞山与秦淮夜游",
+            "summary": "栖霞山、中华门、夫子庙秦淮河与德基广场。",
+            "attractions": [
+              {
+                "spotId": 795,
+                "spotSlug": "qixia-mountain-795",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "栖霞山"
+              },
+              {
+                "spotId": 797,
+                "spotSlug": "zhonghua-gate-797",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "中华门"
+              },
+              {
+                "spotId": 798,
+                "spotSlug": "confucius-temple-qinhuai-scenic-area-798",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "夫子庙秦淮河"
+              },
+              {
+                "spotId": 802,
+                "spotSlug": "deji-plaza-802",
+                "displayOrder": 3,
+                "enabled": true,
+                "displayName": "德基广场"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          },
+          {
+            "dayNumber": 15,
+            "title": "明孝陵周边秋色",
+            "summary": "明孝陵周边、燕雀湖、石象路与陵园路银杏大道；明孝陵未确认进入。",
+            "attractions": [
+              {
+                "spotId": 800,
+                "spotSlug": "yanque-lake-800",
+                "displayOrder": 0,
+                "enabled": true,
+                "displayName": "燕雀湖"
+              },
+              {
+                "spotId": 801,
+                "spotSlug": "shixiang-road-801",
+                "displayOrder": 1,
+                "enabled": true,
+                "displayName": "石象路"
+              },
+              {
+                "spotId": 803,
+                "spotSlug": "wutong-avenue-803",
+                "displayOrder": 2,
+                "enabled": true,
+                "displayName": "陵园路"
+              }
+            ],
+            "linkedSpots": [],
+            "status": "visited"
+          }
+        ],
+        "referenceRoutes": [],
+        "accommodationStays": [
+          {
+            "dayStart": 12,
+            "dayEnd": 15,
+            "accommodationId": 791
+          }
+        ],
+        "media": [],
+        "practicalTips": [
+          "栖霞山秋色受花期影响；字幕记录 11 月中旬尚未全红。",
+          "明孝陵当天接近 0 度且风大，未继续进入游览。",
+          "门票与夜游场次均为时效信息，公开前必须复查。"
+        ],
+        "actualExperiences": [
+          "牛首山接驳车约 10 分钟；金陵小城的演出场次按当天安排。",
+          "南京路线三仅记录明孝陵周边、燕雀湖与陵园路，不代表完整游览明孝陵。"
+        ],
+        "pendingItems": [
+          "三条影片路线的全程 Day 映射、住宿正式名称与价格、秦淮游船体验状态仍待确认。"
+        ],
+        "priceCandidateIds": [
+          "jiangnan-nanjing-hsr-2025",
+          "jiangnan-jinling-town-2025",
+          "jiangnan-qixia-admission-2025",
+          "jiangnan-zhonghua-gate-night-2025"
+        ],
+        "imageMatches": [],
+        "globalDayMappingStatus": "pending"
+      }
+    ],
+    "bestFor": [
+      "希望按真实城市区间规划江南路线的旅客"
+    ],
+    "notes": [
+      "秋季天气、花期与景区活动会影响当天体验。"
+    ],
+    "featuredSpotNames": [],
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": []
+  },
+  {
     "slug": "malaysia-east-coast-route3-10d9n",
     "aliases": [
       "malaysia-east-coast-route3-9d8n",
@@ -44,44 +801,44 @@
       }
     ],
     "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.26),transparent_22%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
-    "coverImage": "https://i.ibb.co/KzyN4Vnw/661033664-1467871461643949-7446680497407672969-n.jpg",
+    "coverImage": "https://i.ibb.co/ch3VMw07/Pulau-Kapas.webp",
     "highlightTags": [],
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "住宿 Accommodation",
+        "label": "Accommodation",
         "amount": "718",
         "note": "关丹、登嘉楼、吉兰丹住宿酒店人均花费。"
       },
       {
-        "label": "饮食 Food & Dining",
+        "label": "Food & Dining",
         "amount": "367",
         "currency": "RM",
         "note": "正餐、甜点、小吃和沿路餐饮人均花费。"
       },
       {
-        "label": "活动 Activities",
+        "label": "Activities",
         "amount": "190",
         "note": "参与海龟放生、观察海龟妈妈产卵、徒步彩虹瀑布活动花费。"
       },
       {
-        "label": "交通 Transportation",
+        "label": "Transportation",
         "amount": "170",
         "note": "车油、过路费、停车人均花费。"
       },
       {
-        "label": "购物 Shopping",
+        "label": "Shopping",
         "amount": "41",
         "note": "个人购物消费。"
       },
       {
-        "label": "门票 Tickets / Entrance Fees",
+        "label": "Tickets & Entrance Fees",
         "amount": "15",
         "currency": "RM",
         "note": "博物馆、海洋公园门票花费。"
       },
       {
-        "label": "其他花费 Others",
+        "label": "Other",
         "amount": "11",
         "currency": "RM",
         "note": "上厕所与其他杂费。"
@@ -93,185 +850,620 @@
         "title": "柔佛沿海公路自驾到关丹",
         "summary": "从柔佛出发，沿东海岸方向一路前往关丹。路线先经过兴楼云冰大桥与 Pantai Hiburan，在天乐茶室停留后，继续串联 Pantai Saujana Biru、Pantai Lagenda 和 Jambatan Cherok Paloh 等沿海地点。进入关丹市区后，以 888 Food Court 和关丹艺术街收尾，让第一天从长途移动自然过渡到城市散步。",
         "highlights": [],
-        "linkedSpots": [
-          "兴楼云冰大桥",
-          "Pantai Hiburan",
-          "Pantai Saujana Biru",
-          "天乐咖啡店",
-          "Pantai Lagenda",
-          "Jambatan Cherok Paloh",
-          "888 Food Court",
-          "关丹艺术街"
+        "attractions": [
+          {
+            "spotId": 133,
+            "spotSlug": "jambatan-endau-rompin-133",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "兴楼云冰大桥"
+          },
+          {
+            "spotId": 134,
+            "spotSlug": "pantai-hiburan-134",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Pantai Hiburan"
+          },
+          {
+            "spotId": 138,
+            "spotSlug": "tien-lock-coffee-shop-138",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "天乐茶室"
+          },
+          {
+            "spotId": 137,
+            "spotSlug": "pantai-saujana-biru-137",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "Pantai Saujana Biru"
+          },
+          {
+            "spotId": 136,
+            "spotSlug": "pantai-lagenda-136",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Pantai Lagenda"
+          },
+          {
+            "spotId": 135,
+            "spotSlug": "jambatan-cherok-paloh-135",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "Jambatan Cherok Paloh"
+          },
+          {
+            "spotId": 141,
+            "spotSlug": "888-food-court-141",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "888 Food Court"
+          },
+          {
+            "spotId": 142,
+            "spotSlug": "kuantan-art-street-142",
+            "displayOrder": 7,
+            "enabled": true,
+            "displayName": "关丹艺术街"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/FsqHMUQNiGg",
         "stay": "Imperium Residence Kuantan",
         "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "stayRangeEnd": 2,
+        "gallery": []
       },
       {
         "dayLabel": "Day 2",
         "title": "关丹瀑布与海边",
         "summary": "这一天以关丹的自然景观和市区休闲为主，先到 Sungai Pandan Waterfall，再经 Mohd Chan Restaurant 前往 Pantai Teluk Cempedak。接着沿海边依序走访 Loteng Cafe、Pantai Pelindung 与 Ms Elliot at Hock Bee，最后回到关丹河畔公园，为瀑布、海滩与市区散步留出完整段落。",
         "highlights": [],
-        "linkedSpots": [
-          "Sungai Pandan Waterfall",
-          "Mohd Chan Restaurant",
-          "Pantai Teluk Cempedak",
-          "Loteng Cafe Telok Cempedak",
-          "Pantai Pelindung",
-          "Ms Elliot at Hock Bee",
-          "关丹河畔公园"
+        "attractions": [
+          {
+            "spotId": 145,
+            "spotSlug": "sungai-pandan-waterfall-145",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Sungai Pandan Waterfall"
+          },
+          {
+            "spotId": 146,
+            "spotSlug": "mohd-chan-restaurant-146",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Mohd Chan Restaurant"
+          },
+          {
+            "spotId": 148,
+            "spotSlug": "pantai-teluk-cempedak-148",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Pantai Teluk Cempedak"
+          },
+          {
+            "spotId": 415,
+            "spotSlug": "loteng-cafe-telok-cempedak-415",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "Loteng Cafe Telok Cempedak"
+          },
+          {
+            "spotId": 149,
+            "spotSlug": "pantai-pelindung-149",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Pantai Pelindung"
+          },
+          {
+            "spotId": 150,
+            "spotSlug": "ms-elliot-at-hock-bee-150",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "Ms Elliot at Hock Bee"
+          },
+          {
+            "spotId": 151,
+            "spotSlug": "esplanade-kuantan-151",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "关丹河畔公园"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/FsqHMUQNiGg",
         "stay": "Imperium Residence Kuantan",
         "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "stayRangeEnd": 2,
+        "gallery": []
       },
       {
         "dayLabel": "Day 3",
         "title": "林明与洞窟路线",
         "summary": "从联兴海南茶室开始林明一日路线，之后前往 Gua Charas，再以家传食谱林明面衔接小镇行程。下午依序走过彩虹吊桥、林明吊桥、林明博物馆、Kolong Pahat 3 与 Pasir Puteri，并把林明天后宫和顺风饭店放在后段。这一天的重点，是从洞窟走入林明的桥梁、街区与地方记忆。",
         "highlights": [],
-        "linkedSpots": [
-          "联兴海南茶室",
-          "Gua Charas",
-          "家传食谱林明面",
-          "彩虹吊桥",
-          "林明吊桥",
-          "林明博物馆",
-          "Kolong Pahat 3",
-          "Pasir Puteri",
-          "林明天后宫",
-          "顺风饭店"
+        "attractions": [
+          {
+            "spotId": 144,
+            "spotSlug": "lian-heng-kopitiam-144",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "联兴海南茶室"
+          },
+          {
+            "spotId": 157,
+            "spotSlug": "gua-charas-157",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Gua Charas"
+          },
+          {
+            "spotId": 158,
+            "spotSlug": "jia-chuan-ser-pu-158",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "家传食谱林明面"
+          },
+          {
+            "spotId": 160,
+            "spotSlug": "kampung-seberang-hanging-bridge-rainbow-bridge-160",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "彩虹吊桥"
+          },
+          {
+            "spotId": 161,
+            "spotSlug": "kolong-pahat-hanging-bridge-161",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "林明吊桥"
+          },
+          {
+            "spotId": 196,
+            "spotSlug": "muzium-sungai-lembing-196",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "林明博物馆"
+          },
+          {
+            "spotId": 165,
+            "spotSlug": "kolong-pahat-3-165",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "Kolong Pahat 3"
+          },
+          {
+            "spotId": 166,
+            "spotSlug": "pasir-puteri-166",
+            "displayOrder": 7,
+            "enabled": true,
+            "displayName": "Pasir Puteri"
+          },
+          {
+            "spotId": 163,
+            "spotSlug": "thean-hou-temple-163",
+            "displayOrder": 8,
+            "enabled": true,
+            "displayName": "林明天后宫"
+          },
+          {
+            "spotId": 617,
+            "spotSlug": "spot-617",
+            "displayOrder": 9,
+            "enabled": true,
+            "displayName": "顺风饭店"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/YNIlX31VnLk",
         "stay": "Riverside Palm Inn",
         "stayRangeStart": 3,
-        "stayRangeEnd": 3
+        "stayRangeEnd": 3,
+        "gallery": []
       },
       {
         "dayLabel": "Day 4",
         "title": "彩虹瀑布转登嘉楼",
         "summary": "早段从 Sunrise Hill 与林明彩虹瀑布展开，完成林明的山林路线后继续向北。离开林明后，依序经过 Ombok Cherating Surf Cafe、Pantai Teluk Mak Nik（Monica Bay）和 Steven’s Coffee House，再前往登嘉楼住宿。当天从山林转入海岸，也正式衔接下一段登嘉楼行程。",
         "highlights": [],
-        "linkedSpots": [
-          "Sunrise Hill",
-          "林明彩虹瀑布",
-          "Ombok Cherating Surf Cafe",
-          "Pantai Teluk Mak Nik (Monica Bay)",
-          "Steven’s Coffee House"
+        "attractions": [
+          {
+            "spotId": 167,
+            "spotSlug": "sunrise-hill-167",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Sunrise Hill"
+          },
+          {
+            "spotId": 168,
+            "spotSlug": "rainbow-waterfall-168",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "林明彩虹瀑布"
+          },
+          {
+            "spotId": 215,
+            "spotSlug": "ombok-cherating-surf-cafe-215",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Ombok Cherating Surf Cafe"
+          },
+          {
+            "spotId": 217,
+            "spotSlug": "pantai-teluk-mak-nik-monica-bay-217",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "Pantai Teluk Mak Nik (Monica Bay)"
+          },
+          {
+            "spotId": 218,
+            "spotSlug": "steven-s-coffee-house-218",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Steven’s Coffee House"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/YNIlX31VnLk",
         "stay": "Riverine Garden Hotel",
         "stayRangeStart": 4,
-        "stayRangeEnd": 4
+        "stayRangeEnd": 4,
+        "gallery": []
       },
       {
         "dayLabel": "Day 5",
         "title": "登嘉楼最美沿海公路",
         "summary": "从文荣茶餐室出发后，路线沿登嘉楼海岸向北，先走过 Teluk Kalong、Penunjuk Kijal、Old Cruise Ship Jetty 与 Kemasik 一带，再经 Bukit Tebuk 前往 Teluk Bidara、Batu Pelanduk 和 Jambu Bongkok。之后由 Tengku Tengah Zaharah Mosque 进入瓜拉登嘉楼，傍晚以唐人街、海龟巷和炭烧瓦煲鸡收尾。",
         "highlights": [],
-        "linkedSpots": [
-          "文荣茶餐室",
-          "Pantai Teluk Kalong",
-          "Pantai Penunjuk Kijal",
-          "Old Cruise Ship Jetty Kijal",
-          "Pantai Kemasik",
-          "Terowong Bukit Tebuk",
-          "Pantai Teluk Bidara",
-          "Pantai Batu Pelanduk",
-          "Pantai Jambu Bongkok",
-          "Tengku Tengah Zaharah Mosque",
-          "登嘉楼唐人街",
-          "海龟巷",
-          "炭烧瓦煲鸡"
+        "attractions": [
+          {
+            "spotId": 618,
+            "spotSlug": "restoran-weng-yong-618",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "文荣茶餐室"
+          },
+          {
+            "spotId": 219,
+            "spotSlug": "pantai-teluk-kalong-219",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Pantai Teluk Kalong"
+          },
+          {
+            "spotId": 220,
+            "spotSlug": "pantai-penunjuk-kijal-220",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Pantai Penunjuk Kijal"
+          },
+          {
+            "spotId": 221,
+            "spotSlug": "old-cruise-ship-jetty-kijal-221",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "Old Cruise Ship Jetty Kijal"
+          },
+          {
+            "spotId": 222,
+            "spotSlug": "pantai-kemasik-222",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Pantai Kemasik"
+          },
+          {
+            "spotId": 226,
+            "spotSlug": "terowong-bukit-tebuk-226",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "Terowong Bukit Tebuk"
+          },
+          {
+            "spotId": 227,
+            "spotSlug": "pantai-teluk-bidara-227",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "Pantai Teluk Bidara"
+          },
+          {
+            "spotId": 228,
+            "spotSlug": "pantai-batu-pelanduk-228",
+            "displayOrder": 7,
+            "enabled": true,
+            "displayName": "Pantai Batu Pelanduk"
+          },
+          {
+            "spotId": 230,
+            "spotSlug": "pantai-jambu-bongkok-230",
+            "displayOrder": 8,
+            "enabled": true,
+            "displayName": "Pantai Jambu Bongkok"
+          },
+          {
+            "spotId": 621,
+            "spotSlug": "tengku-tengah-zaharah-mosque-621",
+            "displayOrder": 9,
+            "enabled": true,
+            "displayName": "Tengku Tengah Zaharah Mosque"
+          },
+          {
+            "spotId": 628,
+            "spotSlug": "spot-628",
+            "displayOrder": 10,
+            "enabled": true,
+            "displayName": "登嘉楼唐人街"
+          },
+          {
+            "spotId": 636,
+            "spotSlug": "turtle-alley-636",
+            "displayOrder": 11,
+            "enabled": true,
+            "displayName": "海龟巷"
+          },
+          {
+            "spotId": 629,
+            "spotSlug": "restoran-one-warisan-629",
+            "displayOrder": 12,
+            "enabled": true,
+            "displayName": "炭烧瓦煲鸡"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/o1fSGXwgYE4",
         "stay": "DJ Citi Plaza Hotel & Suites",
         "stayRangeStart": 5,
-        "stayRangeEnd": 7
+        "stayRangeEnd": 7,
+        "gallery": []
       },
       {
         "dayLabel": "Day 6",
         "title": "登嘉楼市区景点",
         "summary": "这一天把重点留给瓜拉登嘉楼市区，先从水晶清真寺与 Zahon Cafe 开始，再到 Terengganu State Museum 梳理地方文化。后段转往 Mayang Mall、Pesisir Payang 一带，并以 Kuala Terengganu Drawbridge 结束当天路线。景点类型从宗教建筑、博物馆到商场与河岸，适合作为连续沿海自驾后的城市段落。",
         "highlights": [],
-        "linkedSpots": [
-          "水晶清真寺",
-          "Zahon Cafe",
-          "Terengganu State Museum",
-          "Mayang Mall",
-          "Pesisir Payang",
-          "Jambatan Angkat Kuala Terengganu"
+        "attractions": [
+          {
+            "spotId": 631,
+            "spotSlug": "masjid-kristal-631",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "水晶清真寺"
+          },
+          {
+            "spotId": 633,
+            "spotSlug": "zahon-cafe-633",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Zahon Cafe"
+          },
+          {
+            "spotId": 632,
+            "spotSlug": "terengganu-state-museum-632",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Terengganu State Museum"
+          },
+          {
+            "spotId": 630,
+            "spotSlug": "mayang-mall-630",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "Mayang Mall"
+          },
+          {
+            "spotId": 634,
+            "spotSlug": "pesisir-payang-634",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Pesisir Payang"
+          },
+          {
+            "spotId": 635,
+            "spotSlug": "jambatan-angkat-kuala-terengganu-635",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "Jambatan Angkat Kuala Terengganu"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/o1fSGXwgYE4",
         "stay": "DJ Citi Plaza Hotel & Suites",
         "stayRangeStart": 5,
-        "stayRangeEnd": 6
+        "stayRangeEnd": 6,
+        "gallery": []
       },
       {
         "dayLabel": "Day 7",
         "title": "Pulau Kapas 棉花岛一日游",
         "summary": "当天集中安排 Pulau Kapas 棉花岛路线，以岛屿本身为主要停留，再连接 Bukit Singa 与 Marang Wave Breaker。行程围绕岛屿、步行地点和 Marang 一带展开，三处地点组成相对集中的一日路线。海况、浮潜条件和现场活动会受当天情况影响，因此这里不预设未记录的体验。",
         "highlights": [],
-        "linkedSpots": [
-          "Pulau Kapas",
-          "Bukit Singa",
-          "Marang Wave Breaker"
+        "attractions": [
+          {
+            "spotId": 232,
+            "spotSlug": "pulau-kapas-232",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Pulau Kapas"
+          },
+          {
+            "spotId": 414,
+            "spotSlug": "bukit-singa-414",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Bukit Singa"
+          },
+          {
+            "spotId": 233,
+            "spotSlug": "marang-wave-breaker-233",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Marang Wave Breaker"
+          }
         ],
-        "videoUrl": "https://youtu.be/o1fSGXwgYE4"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/o1fSGXwgYE4",
+        "gallery": []
       },
       {
         "dayLabel": "Day 8",
         "title": "吉兰丹乡野景点",
         "summary": "从登嘉楼方向进入吉兰丹后，先到 SRZ Ternak 农场与 Jeram Mengaji，再沿路线前往 KTMB Guillemard Bridge。接着依序走访北京清真寺、Selera Tepi Sungai、Wat Uttamaram 与 Senok Beach，最后在 Hattori Coffee 结束当天安排并进入哥打巴鲁。这一天把乡野地点、宗教建筑与海边串在同一条北上路线中。",
         "highlights": [],
-        "linkedSpots": [
-          "SRZ Ternak (Ladang Tenusu Jeram Mengaji)",
-          "Jeram Mengaji",
-          "KTMB Guillemard Bridge",
-          "北京清真寺",
-          "Selera Tepi Sungai",
-          "Wat Uttamaram",
-          "Senok Beach",
-          "Hattori Coffee"
+        "attractions": [
+          {
+            "spotId": 251,
+            "spotSlug": "srz-ternak-ladang-tenusu-jeram-mengaji-251",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "SRZ Ternak (Ladang Tenusu Jeram Mengaji)"
+          },
+          {
+            "spotId": 252,
+            "spotSlug": "jeram-mengaji-252",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Jeram Mengaji"
+          },
+          {
+            "spotId": 249,
+            "spotSlug": "ktmb-guillemard-bridge-249",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "KTMB Guillemard Bridge"
+          },
+          {
+            "spotId": 244,
+            "spotSlug": "masjid-beijing-rantau-panjang-244",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "北京清真寺"
+          },
+          {
+            "spotId": 250,
+            "spotSlug": "selera-tepi-sungai-250",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "Selera Tepi Sungai"
+          },
+          {
+            "spotId": 245,
+            "spotSlug": "wat-uttamaram-245",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "Wat Uttamaram"
+          },
+          {
+            "spotId": 246,
+            "spotSlug": "senok-beach-246",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "Senok Beach"
+          },
+          {
+            "spotId": 235,
+            "spotSlug": "hattori-coffee-235",
+            "displayOrder": 7,
+            "enabled": true,
+            "displayName": "Hattori Coffee"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/-XuE9aRPBvo",
         "stay": "Renai Hotel Kota Bharu",
         "stayRangeStart": 8,
-        "stayRangeEnd": 9
+        "stayRangeEnd": 9,
+        "gallery": []
       },
       {
         "dayLabel": "Day 9",
         "title": "吉兰丹佛寺路线",
         "summary": "从 Bukit Keluang 与 Masjid Lapan Kubah 开始后，当天路线转向吉兰丹一带的宗教建筑。行程依序连接 Wat Phothivihan、坐佛寺、立佛寺和龙船寺，再前往 Pantai Mek Mas 与郑和坊。不同形式的寺院与当地文化地点集中在同一天，路线顺序也保持与现有地点资料一致。",
         "highlights": [],
-        "linkedSpots": [
-          "Bukit Keluang",
-          "Masjid Lapan Kubah",
-          "Wat Phothivihan",
-          "坐佛寺",
-          "立佛寺",
-          "龙船寺",
-          "Pantai Mek Mas",
-          "郑和坊"
+        "attractions": [
+          {
+            "spotId": 637,
+            "spotSlug": "bukit-keluang-637",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Bukit Keluang"
+          },
+          {
+            "spotId": 272,
+            "spotSlug": "masjid-lapan-kubah-272",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Masjid Lapan Kubah"
+          },
+          {
+            "spotId": 240,
+            "spotSlug": "wat-phothivihan-240",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Wat Phothivihan"
+          },
+          {
+            "spotId": 241,
+            "spotSlug": "wat-machimmaram-241",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "坐佛寺"
+          },
+          {
+            "spotId": 242,
+            "spotSlug": "wat-phikulthong-242",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "立佛寺"
+          },
+          {
+            "spotId": 243,
+            "spotSlug": "wat-maisuwankiri-243",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "龙船寺"
+          },
+          {
+            "spotId": 236,
+            "spotSlug": "pantai-mek-mas-236",
+            "displayOrder": 6,
+            "enabled": true,
+            "displayName": "Pantai Mek Mas"
+          },
+          {
+            "spotId": 237,
+            "spotSlug": "dataran-cheng-ho-237",
+            "displayOrder": 7,
+            "enabled": true,
+            "displayName": "郑和坊"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/-XuE9aRPBvo",
         "stay": "Renai Hotel Kota Bharu",
         "stayRangeStart": 8,
-        "stayRangeEnd": 9
+        "stayRangeEnd": 9,
+        "gallery": []
       },
       {
         "dayLabel": "Day 10",
         "title": "哥打巴鲁收尾",
         "summary": "东海岸路线最后一天保留给哥打巴鲁的双龙寺。相较前几天密集的沿海、公路与宗教建筑路线，这一天的已记录地点较少，行程也更集中。现有资料没有保存返程方式、出发时间或其他安排，因此以双龙寺作为这趟路线最后一个确认过的地点。",
         "highlights": [],
-        "linkedSpots": [
-          "双龙寺"
+        "attractions": [
+          {
+            "spotId": 247,
+            "spotSlug": "wat-phothikyan-phutthaktham-247",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "双龙寺"
+          }
         ],
-        "videoUrl": "https://youtu.be/-XuE9aRPBvo"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/-XuE9aRPBvo",
+        "gallery": []
       }
     ],
+    "itinerarySegments": [],
     "bestFor": [],
     "notes": [],
     "featuredSpotNames": [
@@ -305,6 +1497,7 @@
     "summary": "",
     "duration": "11 Days / 10 Nights",
     "budget": "RM 6,452",
+    "budgetScope": "unspecified",
     "travelStyle": "自由行",
     "route": [
       {
@@ -341,7 +1534,7 @@
       }
     ],
     "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(125,211,252,0.28),transparent_20%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.22),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
-    "coverImage": "https://scontent.fmkz1-2.fna.fbcdn.net/v/t39.30808-6/597774876_1385342259896870_433196229323751546_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=dd6889&_nc_ohc=xNhBJrR08vkQ7kNvwE7FArt&_nc_oc=Adr5CHg_X8BmO5qwpEpegOaSTkWmWBfiX2GQ5C50czzO0XyrHivYC80fmmM_8JHMoe4&_nc_zt=23&_nc_ht=scontent.fmkz1-2.fna&_nc_gid=jr4Dh78greP04kkkz08SAg&_nc_ss=7a3a8&oh=00_Af14vc3bo9M3mlYRoiQkFXCnZ0QV9kgwdzA9AiQ-VEWXQw&oe=69E110C4",
+    "coverImage": "https://i.ibb.co/5gBmGqJV/597774876-1385342259896870-433196229323751546-n-watermarked.webp",
     "highlightTags": [
       "雪景",
       "城市散步",
@@ -353,37 +1546,37 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "机票 International Flight",
+        "label": "Flights",
         "amount": "1,334",
         "note": "国际航班来回飞行费用。"
       },
       {
-        "label": "交通 Transportation",
+        "label": "Transportation",
         "amount": "1,310",
         "note": "机场接送、包车、打车、跨城交通与雪地接驳。"
       },
       {
-        "label": "门票 / 体验 Tickets / Entrance Fees",
+        "label": "Tickets & Entrance Fees",
         "amount": "1,191",
         "note": "冰雪大世界、长白山与雪地活动。"
       },
       {
-        "label": "住宿 Accommodation",
+        "label": "Accommodation",
         "amount": "999",
         "note": "哈尔滨、雪谷、长白山、北京住宿。"
       },
       {
-        "label": "吃喝 Food & Dining",
+        "label": "Food & Dining",
         "amount": "957",
         "note": "东北烧烤、早市和景区餐饮。"
       },
       {
-        "label": "其他 Others",
+        "label": "Other",
         "amount": "484",
         "note": "个人购物、其他消费。"
       },
       {
-        "label": "通讯 Internet & Communication",
+        "label": "Internet & Communication",
         "amount": "177",
         "note": "电话卡、上网费。"
       }
@@ -392,149 +1585,336 @@
       {
         "dayLabel": "Day 1",
         "title": "哈尔滨老城",
-        "summary": "",
+        "summary": "从哈尔滨太平国际机场出发，一路前往汉庭酒店安顿，随后依次打卡中华巴洛克风情街、黑皮肘子锅包肉、松花江铁路大桥、防洪纪念塔、中央大街、大漠烤巴、圣索菲亚教堂。中华巴洛克风情街满是中西合璧的复古建筑，氛围感十足；中途可以打卡地道东北菜馆黑皮肘子锅包肉，招牌菜品分量足、性价比高；百年松花江铁路大桥既能体验江上玩乐项目，也是绝佳日落观赏点；防洪纪念塔是城市地标，承载着抗洪历史记忆；欧式风情满满的中央大街集购物、美食、休闲于一体；大漠烤吧特色烧烤适合小酌放松，不太适合当作正餐；最后逛 1907 年建成的圣索菲亚教堂，拜占庭式建筑典雅大气，是哈尔滨极具代表性的历史打卡地。",
         "highlights": [],
-        "linkedSpots": [
-          "中华巴洛克",
-          "松花江铁路大桥",
-          "防洪纪念塔",
-          "中央大街",
-          "圣索菲亚教堂"
+        "attractions": [
+          {
+            "spotId": 502,
+            "spotSlug": "spot-502",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "中华巴洛克"
+          },
+          {
+            "spotId": 504,
+            "spotSlug": "spot-504",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "松花江铁路大桥"
+          },
+          {
+            "spotId": 505,
+            "spotSlug": "spot-505",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "防洪纪念塔"
+          },
+          {
+            "spotId": 506,
+            "spotSlug": "spot-506",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "中央大街"
+          },
+          {
+            "spotId": 508,
+            "spotSlug": "spot-508",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "圣索菲亚教堂"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
         "stay": "汉庭酒店(哈尔滨景阳街中华巴洛克店)",
         "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "stayRangeEnd": 2,
+        "gallery": []
       },
       {
         "dayLabel": "Day 2",
         "title": "哈尔滨冰雪线",
-        "summary": "",
+        "summary": "早上先逛充满市井烟火气的红专街早市，一路品尝各式地道小吃；接着前往冬日绝美打卡地沙滩部落，欣赏如同星辰散落般的钻石海冰块景观；随后奔赴世界最大冰雪艺术乐园冰雪大世界，沉浸式感受壮观冰雕、璀璨灯光与各类冰雪玩乐项目；再到松花江畔的音乐长廊，打卡欧式建筑和巨型雪人地标；晚上落脚民谣集烧烤酒馆，酒水品类丰富可自行选购，驻唱歌手唱功在线，不喝酒也能安静听歌放松氛围感拉满。",
         "highlights": [],
-        "linkedSpots": [
-          "红专街早市",
-          "冰雪大世界",
-          "音乐长廊",
-          "民谣集烧烤酒馆"
+        "attractions": [
+          {
+            "spotId": 509,
+            "spotSlug": "spot-509",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "红专街早市"
+          },
+          {
+            "spotId": 511,
+            "spotSlug": "spot-511",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "冰雪大世界"
+          },
+          {
+            "spotId": 513,
+            "spotSlug": "spot-513",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "音乐长廊"
+          },
+          {
+            "spotId": 514,
+            "spotSlug": "spot-514",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "民谣集烧烤酒馆"
+          }
         ],
-        "videoUrl": "https://youtu.be/C4FwuoTwu-Y"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/C4FwuoTwu-Y",
+        "gallery": []
       },
       {
         "dayLabel": "Day 3",
         "title": "雪谷",
-        "summary": "",
+        "summary": "哈尔滨出发前往雪谷，入住谷丁子涵时尚家庭旅馆。雪谷是冬日赏雪的高性价比之选，相比雪乡物价更亲民，保留着东北原始村落的静谧与淳朴，很适合沉浸式体验林海雪景和地道东北乡村生活。",
         "highlights": [],
-        "linkedSpots": [
-          "雪谷"
+        "attractions": [
+          {
+            "spotId": 497,
+            "spotSlug": "spot-497",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "雪谷"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/LEC8GSvQu2o",
         "stay": "雪谷丁子涵时尚家庭旅馆",
         "stayRangeStart": 3,
-        "stayRangeEnd": 4
+        "stayRangeEnd": 4,
+        "gallery": []
       },
       {
         "dayLabel": "Day 4",
         "title": "羊草山穿越",
-        "summary": "",
+        "summary": "早餐后出发前往羊草山，这里是从雪谷穿越到雪乡的必经之地，可选择徒步、马拉爬犁或雪地摩托出行，沿途尽览冬日林海的梦幻雪景；随后抵达雪乡，这座冰雪童话小镇以厚厚的积雪、可爱的蘑菇屋和氛围感十足的梦幻夜景出圈，是冬日赏雪拍照、沉浸式体验东北冬日风情的绝佳去处。",
         "highlights": [],
-        "linkedSpots": [
-          "羊草山",
-          "中国雪乡"
+        "attractions": [
+          {
+            "spotId": 498,
+            "spotSlug": "spot-498",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "羊草山"
+          },
+          {
+            "spotId": 500,
+            "spotSlug": "spot-500",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "中国雪乡"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/LEC8GSvQu2o",
         "stay": "雪谷丁子涵时尚家庭旅馆",
         "stayRangeStart": 3,
-        "stayRangeEnd": 4
+        "stayRangeEnd": 4,
+        "gallery": []
       },
       {
         "dayLabel": "Day 5",
         "title": "长白山镇上",
-        "summary": "",
+        "summary": "从雪谷出发前往二道白河，入住长白山喜来客宾馆，随后打卡山顺炭火烤肉朝鲜族家，店里主打炭火烤肉和地道朝鲜族风味，口味正宗性价比很高；傍晚漫步恩都里梦幻商业街，超多网红打卡点位，还能免费打卡盗墓笔记同款云顶天宫场景。",
         "highlights": [],
-        "linkedSpots": [
-          "山顺烤肉",
-          "恩都里",
-          "云顶天宫"
+        "attractions": [
+          {
+            "spotId": 487,
+            "spotSlug": "spot-487",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "山顺烤肉"
+          },
+          {
+            "spotId": 488,
+            "spotSlug": "spot-488",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "恩都里"
+          },
+          {
+            "spotId": 489,
+            "spotSlug": "spot-489",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "云顶天宫"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/703jrkOwtb0",
         "stay": "栖溪小院",
         "stayRangeStart": 5,
-        "stayRangeEnd": 7
+        "stayRangeEnd": 7,
+        "gallery": []
       },
       {
         "dayLabel": "Day 6",
         "title": "长白山北坡",
-        "summary": "",
+        "summary": "从长白山北坡游客中心开启行程，依次游玩长白瀑布、绿渊潭和谷底森林。长白瀑布从天池飞泻而下，是长白山风光精髓，可徒步也能坐雪地摩托上山；绿渊潭瀑布落差 26 米，冬日冰挂晶莹剔透，仿若人间仙境；谷底森林古树林立，冬日银装素裹，满是原始林海的童话氛围感。中途打卡蓝景酒店里的丰茂烤串，自动烤串体验感十足，吃饱再前往聚龙火山温泉，感受冬日户外温泉冰火两重天的独特体验，结束后再去莲钰汤饭暖心收尾。",
         "highlights": [],
-        "linkedSpots": [
-          "长白山北坡景区",
-          "蓝景聚龙温泉"
+        "attractions": [
+          {
+            "spotId": 490,
+            "spotSlug": "spot-490",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "长白山北坡景区"
+          },
+          {
+            "spotId": 491,
+            "spotSlug": "spot-491",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "蓝景聚龙温泉"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/703jrkOwtb0",
         "stay": "栖溪小院",
         "stayRangeStart": 5,
-        "stayRangeEnd": 7
+        "stayRangeEnd": 7,
+        "gallery": []
       },
       {
         "dayLabel": "Day 7",
         "title": "长白山体验线",
-        "summary": "",
+        "summary": "从酒店出发，开启一天的行程，先前往西坡原生态漂流，全程约40分钟，人少景美、水流平缓，超适合慢慢拍照出片；接着打卡二道白河镇的雪绒花，网红冰封玫瑰氛围感拉满，还有雪人大军、驯鹿园等趣味项目可以游玩；中途到溪边雪地的拾乐咖啡小坐，点一杯季节限定饮品搭配小甜点，惬意放松身心；随后逛满是东北年味的云顶集市，老式木屋配上红灯笼与皑皑积雪，吃喝玩乐一应俱全；晚餐就在集市里选择韩顺拌饭，正宗韩式餐食，性价比高又好吃。",
         "highlights": [],
-        "linkedSpots": [
-          "西坡雾凇漂流",
-          "雪绒花雪乐园"
+        "attractions": [
+          {
+            "spotId": 492,
+            "spotSlug": "spot-492",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "西坡雾凇漂流"
+          },
+          {
+            "spotId": 493,
+            "spotSlug": "spot-493",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "雪绒花雪乐园"
+          },
+          {
+            "spotId": 494,
+            "spotSlug": "spot-494",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "拾乐咖啡"
+          },
+          {
+            "spotId": 495,
+            "spotSlug": "spot-495",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "云顶集市"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/703jrkOwtb0",
         "stay": "栖溪小院",
         "stayRangeStart": 5,
-        "stayRangeEnd": 7
+        "stayRangeEnd": 7,
+        "gallery": []
       },
       {
         "dayLabel": "Day 8",
         "title": "北京经典线",
-        "summary": "",
+        "summary": "从长白山搭乘动车前往北京，抵达后入住潮漫酒店，随后前往中华老字号全聚德品尝正宗北京烤鸭，古色古香的环境满满京韵风情；饭后漫步前门大街，这里云集各类老字号、特色小吃与传统手工艺品，还可顺路打卡周边大栅栏、鲜鱼口胡同，沉浸式感受地道老北京韵味。",
         "highlights": [],
-        "linkedSpots": [
-          "前门大街"
+        "attractions": [
+          {
+            "spotId": 478,
+            "spotSlug": "spot-478",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "前门大街"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/RsxorBCejcU",
         "stay": "潮漫酒店(北京国贸大望路站店)",
         "stayRangeStart": 8,
-        "stayRangeEnd": 10
+        "stayRangeEnd": 10,
+        "gallery": []
       },
       {
         "dayLabel": "Day 9",
         "title": "北京环球",
-        "summary": "",
+        "summary": "一大早出发前往北京环球影城，园区汇聚哈利波特、侏罗纪世界、功夫熊猫、变形金刚、小黄人等七大主题园区，可以体验沉浸式游乐项目、品尝主题美食、逛特色文创购物，仿佛一秒闯入奇幻电影世界。",
         "highlights": [],
-        "linkedSpots": [
-          "北京环球"
+        "attractions": [
+          {
+            "spotId": 479,
+            "spotSlug": "spot-479",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "北京环球"
+          }
         ],
-        "videoUrl": "https://youtu.be/RsxorBCejcU"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/RsxorBCejcU",
+        "gallery": []
       },
       {
         "dayLabel": "Day 10",
         "title": "老街与城景",
-        "summary": "",
+        "summary": "Day 1️⃣0️⃣ 北京\n依次游览故宫、什刹海、东华门、鼓楼、烟袋斜街，最后前往北京CBD国贸。故宫是明清两代皇家宫殿，古建筑群规模宏大，馆藏珍宝无数，也是世界上现存规模最大、保存最完整的木结构宫殿群落。什刹海由前海、后海、西海组成，胡同、茶馆与特色小店错落分布，满满老北京风情。东华门汇集超多地道北京小吃，性价比高，靠窗位置还能欣赏什刹海胡同街景。鼓楼矗立在古都之中，红墙灰瓦沉淀着千年历史，和钟楼遥遥相望，见证京城岁月变迁。烟袋斜街古色古香，遍布特色文创小店与传统美食，氛围感十足。傍晚来到北京CBD国贸，高楼林立繁华热闹，也是打卡城市地标大裤衩的绝佳位置。",
         "highlights": [],
-        "linkedSpots": [
-          "故宫博物院",
-          "烟袋斜街",
-          "中国中央电视台总部大楼"
+        "attractions": [
+          {
+            "spotId": 480,
+            "spotSlug": "spot-480",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "故宫博物院"
+          },
+          {
+            "spotId": 481,
+            "spotSlug": "spot-481",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "烟袋斜街"
+          },
+          {
+            "spotId": 483,
+            "spotSlug": "spot-483",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "中国中央电视台总部大楼"
+          }
         ],
-        "videoUrl": "https://youtu.be/RsxorBCejcU"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/RsxorBCejcU",
+        "gallery": []
       },
       {
         "dayLabel": "Day 11",
         "title": "慕田峪长城",
-        "summary": "",
+        "summary": "第一站出发前往慕田峪长城，作为长城的精华路段之一，好汉坡与英雄台坐落于最高的 20 号敌楼，登高便能俯瞰壮阔山河美景。之后去到悠唐广场内煮茶小憩，店内茶水甜点齐全，座位充足环境舒适，很适合悠闲享受下午茶时光。晚餐打卡费大厨辣椒炒肉，招牌辣椒炒肉风味地道，心心念念特地前来回味美味。",
         "highlights": [],
-        "linkedSpots": [
-          "慕田峪长城"
+        "attractions": [
+          {
+            "spotId": 484,
+            "spotSlug": "spot-484",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "慕田峪长城"
+          }
         ],
-        "videoUrl": "https://youtu.be/RsxorBCejcU"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/RsxorBCejcU",
+        "gallery": []
       }
     ],
+    "itinerarySegments": [],
     "bestFor": [],
     "notes": [],
     "featuredSpotNames": [
@@ -560,6 +1940,7 @@
     "summary": "",
     "duration": "11 Days / 10 Nights",
     "budget": "RM 4,326",
+    "budgetScope": "unspecified",
     "travelStyle": "自由行",
     "route": [
       {
@@ -597,32 +1978,32 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "交通",
+        "label": "Transportation",
         "amount": "1,027",
         "note": "机场接送、同城交通、跨城交通。"
       },
       {
-        "label": "机票",
+        "label": "Flights",
         "amount": "987",
         "note": "国际航班来回飞行费用。"
       },
       {
-        "label": "住宿",
+        "label": "Accommodation",
         "amount": "972",
         "note": "大理、香格里拉、丽江住宿花费。"
       },
       {
-        "label": "饮食",
+        "label": "Food & Dining",
         "amount": "764",
         "note": "旅游吃喝花费。"
       },
       {
-        "label": "门票 & 套票",
+        "label": "Tickets & Entrance Fees",
         "amount": "458",
         "note": "玉龙雪山、巴拉格宗、虎跳峡等等景点门票和套票。"
       },
       {
-        "label": "通讯",
+        "label": "Internet & Communication",
         "amount": "118",
         "note": "电话卡、上网费。"
       }
@@ -633,156 +2014,401 @@
         "title": "大理古城周边",
         "summary": "从昆明长水机场出发，前往《去有风的地方》取景地、保留着淳朴生活气息与原生态建筑的小众村落凤阳邑村，再到坐落于山腰、拥有可俯瞰整片洱海的户外观景台 “凤凰之眼”、还能体验非遗三道茶的凤阳茶室，最后抵达兼具深厚历史文化底蕴、美食与好物云集的大理古城，一路行程惬意又充满大理特色。",
         "highlights": [],
-        "linkedSpots": [
-          "凤阳茶室",
-          "凤阳邑",
-          "大理古城",
-          "南诏十二时辰"
+        "attractions": [
+          {
+            "spotId": 548,
+            "spotSlug": "spot-548",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "凤阳茶室"
+          },
+          {
+            "spotId": 547,
+            "spotSlug": "spot-547",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "凤阳邑"
+          },
+          {
+            "spotId": 542,
+            "spotSlug": "spot-542",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "大理古城"
+          },
+          {
+            "spotId": 541,
+            "spotSlug": "spot-541",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "南诏十二时辰"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/dLzPWits1_A",
         "stay": "大理极浦水景花园别墅别漾店",
         "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "stayRangeEnd": 2,
+        "gallery": []
       },
       {
         "dayLabel": "Day 2",
         "title": "洱海西线",
         "summary": "从生态廊道内观赏洱海日出的绝佳地龙龛码头出发，前往洱海边藏着地道小美食、可租装饰单车的才村，顺路去才村码头附近价格合理、味道地道的蒙诏源大理白族民俗餐厅享用早餐，接着打卡网红磻溪S湾，买上气球骑单车拍照出片，再去S湾与才村之间面朝洱海的望田咖啡歇脚发呆，午后前往藏着明清建筑与白族风情、转角楼和麦田必打卡的喜洲古镇，最后以用餐环境舒适、主打野生菌火锅配火塘烧烤且抖音团购划算的菇千味野生菌火锅收尾，全程不赶时间，沉浸式感受洱海的温柔与大理的烟火气。",
         "highlights": [],
-        "linkedSpots": [
-          "龙龛码头",
-          "才村",
-          "磻溪村S湾",
-          "望田咖啡",
-          "喜洲古镇"
+        "attractions": [
+          {
+            "spotId": 534,
+            "spotSlug": "spot-534",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "龙龛码头"
+          },
+          {
+            "spotId": 535,
+            "spotSlug": "spot-535",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "才村"
+          },
+          {
+            "spotId": 537,
+            "spotSlug": "s-537",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "磻溪村S湾"
+          },
+          {
+            "spotId": 538,
+            "spotSlug": "spot-538",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "望田咖啡"
+          },
+          {
+            "spotId": 539,
+            "spotSlug": "spot-539",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "喜洲古镇"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/-X8Z96Fperw",
         "stay": "大理极浦水景花园别墅别漾店",
         "stayRangeStart": 1,
-        "stayRangeEnd": 2
+        "stayRangeEnd": 2,
+        "gallery": []
       },
       {
         "dayLabel": "Day 3",
         "title": "洱海东线",
         "summary": "从大理古城出发，前往靠近洱海、是临海海景房理想之选且保存着明清建筑和南诏风情岛等文化景观的双廊古镇，接着前往曾是杨丽萍老师居所、临海而建且与植物完美融合、网上预约可免费参观的杨丽萍太阳宫艺术空间，再去10元任拍所有网红打卡设施、可租衣服且有网红秋千、天空之境、玻璃球等设施的海地拍照，最后以双廊古镇内高分、能体验白族石板烧魅力且用餐区域大还能观赏院景的市井繁巷白族石板烧作为收尾。",
         "highlights": [],
-        "linkedSpots": [
-          "双廊古镇",
-          "杨丽萍太阳宫",
-          "海地拍照"
+        "attractions": [
+          {
+            "spotId": 543,
+            "spotSlug": "spot-543",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "双廊古镇"
+          },
+          {
+            "spotId": 544,
+            "spotSlug": "spot-544",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "杨丽萍太阳宫"
+          },
+          {
+            "spotId": 574,
+            "spotSlug": "spot-574",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "海地拍照"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/moFmzVvZOxI",
         "stay": "大理心悦·雅集海景客栈",
         "stayRangeStart": 3,
-        "stayRangeEnd": 3
+        "stayRangeEnd": 3,
+        "gallery": []
       },
       {
         "dayLabel": "Day 4",
         "title": "独克宗古城",
         "summary": "从大理前往香格里拉后，前往历史悠久的藏传佛教文化重镇、茶马古道上古老的城堡且是藏族人心中月光城的独克宗古城，再前往位于古城制高点、公园内矗立着世界上最大的转经筒且登顶可俯瞰全城壮丽景色的龟山公园，沉浸式感受独克宗古城的藏地风情与人文底蕴。",
         "highlights": [],
-        "linkedSpots": [
-          "独克宗古城",
-          "龟山公园",
-          "月光广场"
+        "attractions": [
+          {
+            "spotId": 567,
+            "spotSlug": "spot-567",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "独克宗古城"
+          },
+          {
+            "spotId": 569,
+            "spotSlug": "spot-569",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "龟山公园"
+          },
+          {
+            "spotId": 570,
+            "spotSlug": "spot-570",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "月光广场"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/_2ffIRevFnY",
         "stay": "香格里拉爱慕唯色客栈",
         "stayRangeStart": 4,
-        "stayRangeEnd": 6
+        "stayRangeEnd": 6,
+        "gallery": []
       },
       {
         "dayLabel": "Day 5",
         "title": "普达措国家公园",
         "summary": "从独克宗古城出发，先去普达措国家公园——作为中国首个国家公园、国家5A景区，这里的高原湖泊、雪山与丰富的生物多样性，藏着香格里拉最纯粹的自然之美；随后前往属都湖，这座海拔约3850米的湿地瑰宝，被壮丽雪山与原生态森林紧紧环抱，静谧又治愈；最后打卡海拔约3700米的“高原明珠”碧塔海，幽蓝清澈的湖水映着环绕的雪山，感受每一处景色都藏着高原独有的宁静与优美。",
         "highlights": [],
-        "linkedSpots": [
-          "普达措国家公园"
+        "attractions": [
+          {
+            "spotId": 565,
+            "spotSlug": "spot-565",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "普达措国家公园"
+          }
         ],
-        "videoUrl": "https://youtu.be/mJUwSP6M36g"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/mJUwSP6M36g",
+        "gallery": []
       },
       {
         "dayLabel": "Day 6",
         "title": "巴拉格宗",
         "summary": "从独克宗古城出发，奔赴隐世秘境巴拉格宗，沉浸式邂逅险峻深邃的峡谷与鬼斧神工的地质奇观；走进承载千年信仰的巴拉卓玛拉康，探访藏韵十足的巴拉古村，打卡天然形成、神圣壮观的香巴拉佛塔，在回音壁聆听峡谷回响，驻足通天峡入口的千年菩提树，感受自然与信仰的交融；傍晚返回独克宗古城，享用老字号喜鹊阁特色藏餐，地道藏味搭配扎实分量，性价比拉满；夜幕降临，走进四方酒吧，藏式装潢搭配柔和曲风，在静谧氛围中享受独属于香格里拉的松弛夜晚。",
         "highlights": [],
-        "linkedSpots": [
-          "香巴拉佛塔",
-          "回音壁"
+        "attractions": [
+          {
+            "spotId": 558,
+            "spotSlug": "spot-558",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "香巴拉佛塔"
+          },
+          {
+            "spotId": 559,
+            "spotSlug": "spot-559",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "回音壁"
+          }
         ],
-        "videoUrl": "https://youtu.be/gwl99_Mw3GU"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/gwl99_Mw3GU",
+        "gallery": []
       },
       {
         "dayLabel": "Day 7",
         "title": "白水台与虎跳峡",
         "summary": "离开独克宗古城，奔赴被誉为“仙人遗田”的白水台，梦幻浅蓝色湖水清澈见底，人少景美，宛如云南版棉花堡；接着打卡中国最深峡谷虎跳峡，亲眼见证急流奔涌的磅礴气势，感受大自然的震撼；随后前往静谧治愈的束河古镇，这里商业化较低，小桥流水的景致沁人心脾，青龙桥与九鼎龙潭更是必打卡点位；最后走进当地人强推的汤佳米云味土鸡米线，餐品选择丰富、价格合理，一口解锁地道云南风味。",
         "highlights": [],
-        "linkedSpots": [
-          "白水台",
-          "虎跳峡",
-          "束河古镇",
-          "汤佳米云味土鸡米线"
+        "attractions": [
+          {
+            "spotId": 561,
+            "spotSlug": "spot-561",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "白水台"
+          },
+          {
+            "spotId": 563,
+            "spotSlug": "spot-563",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "虎跳峡"
+          },
+          {
+            "spotId": 529,
+            "spotSlug": "spot-529",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "束河古镇"
+          },
+          {
+            "spotId": 528,
+            "spotSlug": "spot-528",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "汤佳米云味土鸡米线"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/gwl99_Mw3GU",
         "stay": "柠檬客栈",
         "stayRangeStart": 7,
-        "stayRangeEnd": 8
+        "stayRangeEnd": 8,
+        "gallery": []
       },
       {
         "dayLabel": "Day 8",
         "title": "束河与听花谷",
         "summary": "第一站奔赴听花谷，这片小众又浪漫的花花世界，种满各类缤纷花卉，藏着霍比特城堡等超多出片打卡点，还有软萌羊驼可合影，工作室里还能亲手体验鲜花饼制作，满是少女心；接着走进藏在雪山脚下的荒野之国，上百栋造型各异的小房子错落分布，宛如走进宫崎骏的童话世界，既是小孩的欢乐天地，也是大人安放幻想的治愈角落；之后返回静谧的束河古镇，傍晚前往太古里民族食府，现代与古城文化交融的装潢氛围感拉满，主打地道云南民族菜，还有驻场歌手现场演绎，边品美食边赏旋律，解锁惬意时光。",
         "highlights": [],
-        "linkedSpots": [
-          "听花谷",
-          "荒野之国",
-          "汤佳米云味土鸡米线",
-          "束河古镇"
+        "attractions": [
+          {
+            "spotId": 525,
+            "spotSlug": "spot-525",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "听花谷"
+          },
+          {
+            "spotId": 526,
+            "spotSlug": "spot-526",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "荒野之国"
+          },
+          {
+            "spotId": 528,
+            "spotSlug": "spot-528",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "汤佳米云味土鸡米线"
+          },
+          {
+            "spotId": 529,
+            "spotSlug": "spot-529",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "束河古镇"
+          }
         ],
-        "videoUrl": "https://youtu.be/9PxFRfuwnak"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/9PxFRfuwnak",
+        "gallery": []
       },
       {
         "dayLabel": "Day 9",
         "title": "白沙与丽江古城",
         "summary": "一早出发奔赴玉湖村，这座玉龙雪山脚下的首个村落，保留着原始民族建筑风貌，全村以独具特色的石头建筑闻名，被誉为“石头村”，藏着最纯粹的纳西韵味；接着探访玉柱擎天，这片藏在玉湖村上的小众秘境，深潭、瀑布、密林、古道错落交织，还有玉龙书院、雪松庵等人文景致，一步一景皆是惊喜；随后前往龙女湖，广阔草原与澄澈湖泊相依相伴，在这里可以体验骑马、抱小羊的乐趣，宛如置身云南版纽西兰，治愈又惬意；中午打卡玉景楼雪山观景餐厅，绝佳位置可边享美食边赏雪山盛景，茶水免费、价格亲民，体验感拉满；之后前往白沙古镇，这里保留着宋代建筑风貌，抬头可见雪山巍峨，还浸润着浓厚的白族文化底蕴；傍晚前往丽江古城，沉浸式感受这座以纳西风情闻名、被列入世界文化遗产的古城韵味；最后前往一品香木氏土家音乐餐厅享受地道民族特色菜搭配雅致用餐环境，解锁丽江夜晚的烟火与诗意。",
         "highlights": [],
-        "linkedSpots": [
-          "玉湖村",
-          "玉柱擎天",
-          "龙女湖",
-          "白沙古镇",
-          "丽江古城"
+        "attractions": [
+          {
+            "spotId": 523,
+            "spotSlug": "spot-523",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "玉湖村"
+          },
+          {
+            "spotId": 521,
+            "spotSlug": "spot-521",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "玉柱擎天"
+          },
+          {
+            "spotId": 522,
+            "spotSlug": "spot-522",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "龙女湖"
+          },
+          {
+            "spotId": 524,
+            "spotSlug": "spot-524",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "白沙古镇"
+          },
+          {
+            "spotId": 532,
+            "spotSlug": "spot-532",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "丽江古城"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/V1f3qUVdPiE",
         "stay": "丽江真美狮子观景客栈",
         "stayRangeStart": 9,
-        "stayRangeEnd": 11
+        "stayRangeEnd": 11,
+        "gallery": []
       },
       {
         "dayLabel": "Day 10",
         "title": "沙溪古镇",
         "summary": "一早出发前往《去有风的地方》拍摄地沙溪古镇，这里古巷古朴、烟火氤氲，保留着最纯粹的慢生活气息，是体验松弛感的绝佳去处；先打卡鳌头客栈，老板现做的早餐小吃亲民可口，传统古朴的装潢让人倍感温馨；接着走进沙溪薄荷咖啡馆，这里还原了剧中“有风小馆”的模样，装饰摆放与剧中原景几乎一致，静坐品一杯咖啡，惬意又治愈；随后前往树屋Coffee，这座藏在沙溪粮食管理所内的小店，依树而建，两层用餐区各有韵味，二楼阳台可俯瞰古镇街景，底层室内装饰极具格调；漫步至百年古桥玉津桥，触摸沉淀的岁月痕迹，感受古镇的标志性魅力；再探访由粮仓改造而成的先锋沙溪白族书局，这里也是李现同款打卡点，旁边的咖啡厅可让人慢悠悠消磨时光；之后前往半山咖啡，坐在窗边就能望见辽阔稻田与田间劳作的身影，打卡李现同款治愈风景；傍晚返回丽江古城，前往霍比特城堡旅拍过桥米线店，这里藏着霍比特风装潢，部分套餐含免费旅拍。",
         "highlights": [],
-        "linkedSpots": [
-          "沙溪古镇",
-          "玉津桥",
-          "先锋书院",
-          "半山咖啡"
+        "attractions": [
+          {
+            "spotId": 683,
+            "spotSlug": "spot-683",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "沙溪古镇"
+          },
+          {
+            "spotId": 551,
+            "spotSlug": "spot-551",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "玉津桥"
+          },
+          {
+            "spotId": 552,
+            "spotSlug": "spot-552",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "先锋书院"
+          },
+          {
+            "spotId": 554,
+            "spotSlug": "spot-554",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "半山咖啡"
+          }
         ],
-        "videoUrl": "https://youtu.be/dLzPWits1_A"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/dLzPWits1_A",
+        "gallery": []
       },
       {
         "dayLabel": "Day 11",
         "title": "玉龙雪山",
         "summary": "一早奔赴丽江标志性景点玉龙雪山，这里峰峦叠嶂、雄伟壮丽，景区入山费每人100元，站在山巅便能感受雪山的磅礴气势；随后前往牦牛坪，这片高海拔草甸牧场景色辽阔壮丽，清爽的天气搭配舒适徒步体验，是近距离欣赏玉龙雪山全貌的绝佳去处；接着打卡有“云南版九寨沟”之称的蓝月谷，湛蓝清澈的湖水蜿蜒在月牙形山谷间，天气晴朗时，湖水倒映着玉龙雪山的倩影，美得让人沉醉；游玩之后回到丽江古城，前往幺哥土鸡米线，顶楼户外区视野绝佳，可边享用美食边观赏古城全景，亲民的价格、地道的味道，让旅途的疲惫在舌尖得到治愈。",
         "highlights": [],
-        "linkedSpots": [
-          "牦牛坪",
-          "蓝月谷"
+        "attractions": [
+          {
+            "spotId": 515,
+            "spotSlug": "spot-515",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "牦牛坪"
+          },
+          {
+            "spotId": 516,
+            "spotSlug": "spot-516",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "蓝月谷"
+          }
         ],
-        "videoUrl": "https://youtu.be/Y6y7htaT9kM"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/Y6y7htaT9kM",
+        "gallery": []
       }
     ],
+    "itinerarySegments": [],
     "bestFor": [
       "第一次去云南，想要一条不太赶、但景色与内容都够完整的自由行路线。",
       "喜欢古镇、雪山、湖泊和拍照景点的人。",
@@ -821,7 +2447,8 @@
     "tagline": "从北海道一路玩到山形，再接东京与富士山周边，把雪景、温泉、老街、美食和城市夜景串成一趟完整的冬季自由行",
     "summary": "",
     "duration": "10 Days / 9 Nights",
-    "budget": "",
+    "budget": "RM 7,715",
+    "budgetScope": "unspecified",
     "travelStyle": "自由行",
     "route": [
       {
@@ -855,27 +2482,51 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "住宿",
+        "label": "Accommodation",
         "amount": "2,061",
         "note": "美瑛、札幌、登别、函馆、银山温泉与东京住宿人均花费"
       },
       {
-        "label": "机票",
+        "label": "Flights",
         "amount": "1,713",
         "currency": "RM",
         "note": "往返国际航班人均花费。"
       },
       {
-        "label": "交通",
+        "label": "Transportation",
         "amount": "1,450",
         "currency": "RM",
         "note": "JR、巴士、地铁与景区接驳人均花费。"
       },
       {
-        "label": "饮食",
+        "label": "Food & Dining",
         "amount": "1,137",
         "currency": "RM",
         "note": "正餐、甜点、小吃和沿路餐饮人均花费。"
+      },
+      {
+        "label": "Shopping",
+        "amount": "662",
+        "currency": "RM",
+        "note": "日本药妆店、土产店、伴手礼等个人消费。"
+      },
+      {
+        "label": "Tickets & Entrance Fees",
+        "amount": "331",
+        "currency": "RM",
+        "note": "东京迪士尼海洋、Shibuya Sky 门票。"
+      },
+      {
+        "label": "Other",
+        "amount": "311",
+        "currency": "RM",
+        "note": "行李寄存、旅游保险等个人费用。"
+      },
+      {
+        "label": "Internet & Communication",
+        "amount": "50",
+        "currency": "RM",
+        "note": "上网卡费用。"
       }
     ],
     "days": [
@@ -884,154 +2535,367 @@
         "title": "富良野与美瑛",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "Ningle Terrace",
-          "Cafe Mori no Tokei"
+        "attractions": [
+          {
+            "spotId": 374,
+            "spotSlug": "ningle-terrace-374",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Ningle Terrace"
+          },
+          {
+            "spotId": 375,
+            "spotSlug": "cafe-mori-no-tokei-375",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Cafe Mori no Tokei"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/Ytl3kZ7jAbk",
         "stay": "Hotel Lavenir Biei",
         "stayRangeStart": 1,
-        "stayRangeEnd": 1
+        "stayRangeEnd": 1,
+        "gallery": []
       },
       {
         "dayLabel": "Day 2",
         "title": "美瑛转札幌",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "Biei Shrine",
-          "Shirahige Falls",
-          "伝説のすた丼屋 札幌駅前店",
-          "薄野",
-          "狸小路"
+        "attractions": [
+          {
+            "spotId": 379,
+            "spotSlug": "biei-shrine-379",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Biei Shrine"
+          },
+          {
+            "spotId": 376,
+            "spotSlug": "shirahige-falls-376",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Shirahige Falls"
+          },
+          {
+            "spotId": 377,
+            "spotSlug": "densetsu-no-sutadonya-sapporo-ekimae-377",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "伝説のすた丼屋 札幌駅前店"
+          },
+          {
+            "spotId": 410,
+            "spotSlug": "susukino-410",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "薄野"
+          },
+          {
+            "spotId": 378,
+            "spotSlug": "tanukikoji-shopping-street-378",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "狸小路"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/cq3dP8tYxpk",
         "stay": "Hotel Forza Sapporo Station",
         "stayRangeStart": 2,
-        "stayRangeEnd": 3
+        "stayRangeEnd": 3,
+        "gallery": []
       },
       {
         "dayLabel": "Day 3",
         "title": "小樽老街与运河",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "住吉神社",
-          "一番拉面",
-          "八音盒博物馆",
-          "LeTao小樽洋菓子铺",
-          "小樽堺町通商店街",
-          "小樽运河"
+        "attractions": [
+          {
+            "spotId": 334,
+            "spotSlug": "sumiyoshi-shrine-334",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "住吉神社"
+          },
+          {
+            "spotId": 335,
+            "spotSlug": "ichiban-ramen-335",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "一番拉面"
+          },
+          {
+            "spotId": 336,
+            "spotSlug": "otaru-music-box-museum-336",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "八音盒博物馆"
+          },
+          {
+            "spotId": 337,
+            "spotSlug": "letao-pathos-337",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "LeTao小樽洋菓子铺"
+          },
+          {
+            "spotId": 338,
+            "spotSlug": "otaru-sakaimachi-street-338",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "小樽堺町通商店街"
+          },
+          {
+            "spotId": 339,
+            "spotSlug": "otaru-canal-339",
+            "displayOrder": 5,
+            "enabled": true,
+            "displayName": "小樽运河"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/e3q5MVEF-yk",
         "stay": "Hotel Forza Sapporo Station",
         "stayRangeStart": 2,
-        "stayRangeEnd": 3
+        "stayRangeEnd": 3,
+        "gallery": []
       },
       {
         "dayLabel": "Day 4",
         "title": "登别温泉路线",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "大汤沼川天然足汤",
-          "泉源公园",
-          "阎魔殿",
-          "登别地狱谷"
+        "attractions": [
+          {
+            "spotId": 349,
+            "spotSlug": "oyunuma-river-natural-footbath-349",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "大汤沼川天然足汤"
+          },
+          {
+            "spotId": 350,
+            "spotSlug": "sengen-park-350",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "泉源公园"
+          },
+          {
+            "spotId": 352,
+            "spotSlug": "enma-do-352",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "阎魔殿"
+          },
+          {
+            "spotId": 354,
+            "spotSlug": "noboribetsu-jigokudani-354",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "登别地狱谷"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/VBECrngYvIc",
         "stay": "Noboribetsu Sekisuitei",
         "stayRangeStart": 4,
-        "stayRangeEnd": 4
+        "stayRangeEnd": 4,
+        "gallery": []
       },
       {
         "dayLabel": "Day 5",
         "title": "函馆港口与夜景",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "幸运小丑汉堡",
-          "八幡坂",
-          "函馆山夜景",
-          "金森红砖仓库"
+        "attractions": [
+          {
+            "spotId": 340,
+            "spotSlug": "lucky-pierrot-340",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "幸运小丑汉堡"
+          },
+          {
+            "spotId": 341,
+            "spotSlug": "hachiman-zaka-slope-341",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "八幡坂"
+          },
+          {
+            "spotId": 343,
+            "spotSlug": "mount-hakodate-night-view-343",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "函馆山夜景"
+          },
+          {
+            "spotId": 342,
+            "spotSlug": "kanemori-red-brick-warehouse-342",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "金森红砖仓库"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/kSIb2dv0UAQ",
         "stay": "FlexStay Inn Hotel",
         "stayRangeStart": 5,
-        "stayRangeEnd": 5
+        "stayRangeEnd": 5,
+        "gallery": []
       },
       {
         "dayLabel": "Day 6",
         "title": "银山温泉",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "和乐足汤",
-          "银山温泉街"
+        "attractions": [
+          {
+            "spotId": 413,
+            "spotSlug": "warashiyu-footbath-413",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "和乐足汤"
+          },
+          {
+            "spotId": 347,
+            "spotSlug": "ginzan-onsen-street-347",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "银山温泉街"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/X373Zu9ac3U",
         "stay": "Takimikan",
         "stayRangeStart": 6,
-        "stayRangeEnd": 6
+        "stayRangeEnd": 6,
+        "gallery": []
       },
       {
         "dayLabel": "Day 7",
         "title": "藏王树冰",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "藏王树冰"
+        "attractions": [
+          {
+            "spotId": 370,
+            "spotSlug": "zao-tree-ice-370",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "藏王树冰"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/gMlH0QVRZMM",
         "stay": "Henn na Hotel Tokyo Nishikasai",
         "stayRangeStart": 7,
-        "stayRangeEnd": 10
+        "stayRangeEnd": 10,
+        "gallery": []
       },
       {
         "dayLabel": "Day 8",
         "title": "东京迪士尼海洋",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "东京迪士尼海洋"
+        "attractions": [
+          {
+            "spotId": 363,
+            "spotSlug": "tokyo-disneysea-363",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "东京迪士尼海洋"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/vScTGJzFrPI",
         "stay": "Henn na Hotel Tokyo Nishikasai",
         "stayRangeStart": 7,
-        "stayRangeEnd": 10
+        "stayRangeEnd": 10,
+        "gallery": []
       },
       {
         "dayLabel": "Day 9",
         "title": "富士山周边一日",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "Arakurayama Sengen Park",
-          "金鸟居",
-          "Oshino Hakkai",
-          "山中湖平野の浜",
-          "歌舞伎町"
+        "attractions": [
+          {
+            "spotId": 364,
+            "spotSlug": "arakurayama-sengen-park-364",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "Arakurayama Sengen Park"
+          },
+          {
+            "spotId": 365,
+            "spotSlug": "kanadorii-365",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "金鸟居"
+          },
+          {
+            "spotId": 366,
+            "spotSlug": "oshino-hakkai-366",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "Oshino Hakkai"
+          },
+          {
+            "spotId": 367,
+            "spotSlug": "hirano-no-hama-367",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "山中湖平野の浜"
+          },
+          {
+            "spotId": 389,
+            "spotSlug": "kabukicho-389",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "歌舞伎町"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/r8-ezkj1Eks",
         "stay": "Henn na Hotel Tokyo Nishikasai",
         "stayRangeStart": 7,
-        "stayRangeEnd": 10
+        "stayRangeEnd": 10,
+        "gallery": []
       },
       {
         "dayLabel": "Day 10",
         "title": "东京市区收尾",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "浅草寺",
-          "Shibuya Sky"
+        "attractions": [
+          {
+            "spotId": 357,
+            "spotSlug": "senso-ji-temple-357",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "浅草寺"
+          },
+          {
+            "spotId": 359,
+            "spotSlug": "shibuya-sky-359",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "Shibuya Sky"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/unb-o4oxBlg",
         "stay": "Henn na Hotel Tokyo Nishikasai",
         "stayRangeStart": 7,
-        "stayRangeEnd": 10
+        "stayRangeEnd": 10,
+        "gallery": []
       }
     ],
+    "itinerarySegments": [],
     "bestFor": [],
     "notes": [],
     "featuredSpotNames": [
@@ -1058,6 +2922,7 @@
     "summary": "这篇广州游记按你最新的打卡日期整理成 8 天版本，适合继续补每天的影片、交通和预算。",
     "duration": "8 Days / 7 Nights",
     "budget": "",
+    "budgetScope": "unspecified",
     "travelStyle": "自由行",
     "route": [
       {
@@ -1099,19 +2964,19 @@
     "heroBullets": [],
     "budgetItems": [
       {
-        "label": "住宿",
+        "label": "Accommodation",
         "amount": "TBC"
       },
       {
-        "label": "交通",
+        "label": "Transportation",
         "amount": "TBC"
       },
       {
-        "label": "吃喝",
+        "label": "Food & Dining",
         "amount": "TBC"
       },
       {
-        "label": "门票 / 体验",
+        "label": "Tickets & Entrance Fees",
         "amount": "TBC"
       }
     ],
@@ -1121,103 +2986,525 @@
         "title": "广州经典老城",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "西华路美食街",
-          "流花湖公园",
-          "农讲所",
-          "北京路步行街",
-          "大佛古寺"
+        "attractions": [
+          {
+            "spotId": 303,
+            "spotSlug": "spot-303",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "西华路美食街"
+          },
+          {
+            "spotId": 304,
+            "spotSlug": "spot-304",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "流花湖公园"
+          },
+          {
+            "spotId": 305,
+            "spotSlug": "spot-305",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "农讲所"
+          },
+          {
+            "spotId": 306,
+            "spotSlug": "spot-306",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "北京路步行街"
+          },
+          {
+            "spotId": 307,
+            "spotSlug": "spot-307",
+            "displayOrder": 4,
+            "enabled": true,
+            "displayName": "大佛古寺"
+          }
         ],
+        "linkedSpots": [],
         "videoUrl": "https://youtu.be/JNaL0hms4Zw",
         "stay": "甜屋酒店(西华路彩虹桥地铁站店)",
         "stayRangeStart": 1,
-        "stayRangeEnd": 3
+        "stayRangeEnd": 3,
+        "gallery": []
       },
       {
         "dayLabel": "Day 2",
         "title": "东山口与太古仓",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "东山口",
-          "太古仓码头"
+        "attractions": [
+          {
+            "spotId": 308,
+            "spotSlug": "spot-308",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "东山口"
+          },
+          {
+            "spotId": 311,
+            "spotSlug": "spot-311",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "太古仓码头"
+          }
         ],
-        "videoUrl": "https://youtu.be/ei9zk5x7qQ0"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/ei9zk5x7qQ0",
+        "gallery": []
       },
       {
         "dayLabel": "Day 3",
         "title": "文化馆与永庆坊",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "广州市文化馆新馆",
-          "永庆坊"
+        "attractions": [
+          {
+            "spotId": 313,
+            "spotSlug": "spot-313",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "广州市文化馆新馆"
+          },
+          {
+            "spotId": 314,
+            "spotSlug": "spot-314",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "永庆坊"
+          }
         ],
-        "videoUrl": "https://youtu.be/yK8qCpUivRU"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/yK8qCpUivRU",
+        "gallery": []
       },
       {
         "dayLabel": "Day 4",
         "title": "上下九与西坊大院",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "上下九步行街",
-          "西坊大院"
+        "attractions": [
+          {
+            "spotId": 315,
+            "spotSlug": "spot-315",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "上下九步行街"
+          },
+          {
+            "spotId": 316,
+            "spotSlug": "spot-316",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "西坊大院"
+          }
         ],
-        "videoUrl": "https://youtu.be/U-d88E4OTAI"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/U-d88E4OTAI",
+        "gallery": []
       },
       {
         "dayLabel": "Day 5",
         "title": "番禺园林线",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "宝墨园",
-          "沙湾古镇"
+        "attractions": [
+          {
+            "spotId": 317,
+            "spotSlug": "spot-317",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "宝墨园"
+          },
+          {
+            "spotId": 318,
+            "spotSlug": "spot-318",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "沙湾古镇"
+          }
         ],
-        "videoUrl": "https://youtu.be/juSFFJ1fPN0"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/juSFFJ1fPN0",
+        "gallery": []
       },
       {
         "dayLabel": "Day 6",
         "title": "白云与商圈",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "云台花园",
-          "时尚天河"
+        "attractions": [
+          {
+            "spotId": 319,
+            "spotSlug": "spot-319",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "云台花园"
+          },
+          {
+            "spotId": 320,
+            "spotSlug": "spot-320",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "时尚天河"
+          }
         ],
-        "videoUrl": "https://youtu.be/B3Oi7soMBZc"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/B3Oi7soMBZc",
+        "gallery": []
       },
       {
         "dayLabel": "Day 7",
         "title": "广州塔与珠江边",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "广州塔",
-          "黄埔古港",
-          "海心沙"
+        "attractions": [
+          {
+            "spotId": 322,
+            "spotSlug": "spot-322",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "广州塔"
+          },
+          {
+            "spotId": 323,
+            "spotSlug": "spot-323",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "黄埔古港"
+          },
+          {
+            "spotId": 325,
+            "spotSlug": "spot-325",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "海心沙"
+          }
         ],
-        "videoUrl": "https://youtu.be/R3XKl4dBb1s"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/R3XKl4dBb1s",
+        "gallery": []
       },
       {
         "dayLabel": "Day 8",
         "title": "天河商圈收尾",
         "summary": "",
         "highlights": [],
-        "linkedSpots": [
-          "太古汇",
-          "正佳广场",
-          "天环广场",
-          "佳兆业广场"
+        "attractions": [
+          {
+            "spotId": 326,
+            "spotSlug": "spot-326",
+            "displayOrder": 0,
+            "enabled": true,
+            "displayName": "太古汇"
+          },
+          {
+            "spotId": 327,
+            "spotSlug": "spot-327",
+            "displayOrder": 1,
+            "enabled": true,
+            "displayName": "正佳广场"
+          },
+          {
+            "spotId": 328,
+            "spotSlug": "spot-328",
+            "displayOrder": 2,
+            "enabled": true,
+            "displayName": "天环广场"
+          },
+          {
+            "spotId": 330,
+            "spotSlug": "spot-330",
+            "displayOrder": 3,
+            "enabled": true,
+            "displayName": "佳兆业广场"
+          }
         ],
-        "videoUrl": "https://youtu.be/9y95b-kvh3A"
+        "linkedSpots": [],
+        "videoUrl": "https://youtu.be/9y95b-kvh3A",
+        "gallery": []
       }
     ],
+    "itinerarySegments": [],
     "bestFor": [],
     "notes": [],
     "featuredSpotNames": [],
     "featuredAffiliateLinkIds": [],
     "sidebarAffiliateLinkIds": []
+  },
+  {
+    "slug": "malaysia-langkawi-5d4n",
+    "attractions": [
+      {
+        "spotId": 810,
+        "spotSlug": "langkawi-sky-bridge-810",
+        "displayOrder": 0,
+        "enabled": true,
+        "displayName": "兰卡威天空之桥",
+        "guideSummary": "天空之桥架在 Machinchang 山区，弧形桥面把山谷、森林与远海放在同一条视线上。它适合与 SkyCab 缆车一起安排，重点是上山后的步行与观景。"
+      },
+      {
+        "spotId": 811,
+        "spotSlug": "perdana-quay-light-house-811",
+        "displayOrder": 1,
+        "enabled": true,
+        "displayName": "Perdana Quay 灯塔",
+        "guideSummary": "Perdana Quay 灯塔位于 Telaga Harbour 港口入口，适合在 Pantai Kok 一带顺路停留，看灯塔与港湾的组合。"
+      },
+      {
+        "spotId": 812,
+        "spotSlug": "gunung-raya-812",
+        "displayOrder": 2,
+        "enabled": true,
+        "displayName": "拉雅山",
+        "guideSummary": "Gunung Raya 是兰卡威的高山观景地，山路沿途的森林与高处视野，是这站比单一打卡点更值得慢慢看的部分。"
+      },
+      {
+        "spotId": 813,
+        "spotSlug": "dream-forest-langkawi-813",
+        "displayOrder": 3,
+        "enabled": true,
+        "displayName": "Dream Forest Langkawi",
+        "guideSummary": "Dream Forest 把兰卡威传说放进夜间森林步道，以灯光、声音与投影串起约 1.2 公里的户外体验。适合想在海滩与白天景点之外安排一晚散步的旅客。"
+      },
+      {
+        "spotId": 814,
+        "spotSlug": "temurun-waterfall-814",
+        "displayOrder": 4,
+        "enabled": true,
+        "displayName": "特姆伦瀑布",
+        "guideSummary": "Temurun 是兰卡威西北部的森林瀑布，可以把海岸公路与短段步行放在同一趟行程里。沿步道看水流与岩壁，比只在入口拍一张照片更能感受这里的环境。"
+      },
+      {
+        "spotId": 815,
+        "spotSlug": "pantai-cenang-815",
+        "displayOrder": 5,
+        "enabled": true,
+        "displayName": "珍南海滩",
+        "guideSummary": "珍南海滩把沙滩散步、餐饮与热闹街区集中在一起，适合留一段弹性时间慢慢逛。白天看海、之后到沿街找吃的，安排上很直观。"
+      },
+      {
+        "spotId": 816,
+        "spotSlug": "teluk-yu-816",
+        "displayOrder": 6,
+        "enabled": true,
+        "displayName": "鲨鱼湾海滩",
+        "guideSummary": "Teluk Yu 是兰卡威北岸的一段海湾，适合作为自驾途中看海、沿海边走走的停留点。这里与 Tanjung Rhu 是不同地点，不要把两者合成一个地图标记。"
+      },
+      {
+        "spotId": 817,
+        "spotSlug": "tanjung-rhu-beach-817",
+        "displayOrder": 7,
+        "enabled": true,
+        "displayName": "丹绒鲁海滩",
+        "guideSummary": "丹绒鲁位于兰卡威北部，海岸与近岸小岛构成开阔的看海画面，适合从繁忙商圈换到另一种海滩节奏。"
+      },
+      {
+        "spotId": 818,
+        "spotSlug": "underwater-world-langkawi-818",
+        "displayOrder": 8,
+        "enabled": true,
+        "displayName": "兰卡威海底世界",
+        "guideSummary": "兰卡威海底世界位于珍南一带，以水族展示、海底隧道与企鹅等动物展区为主要看点，适合想安排室内参观的旅客。"
+      },
+      {
+        "spotId": 819,
+        "spotSlug": "jalan-bukit-malut-scenic-drive-819",
+        "displayOrder": 9,
+        "enabled": true,
+        "displayName": "Bukit Malut 沿海公路",
+        "guideSummary": "Jalan Bukit Malut 是兰卡威南部的自驾道路，重点在沿路山坡、海岸与行驶视野，是一段路线而非独立景区。"
+      },
+      {
+        "spotId": 820,
+        "spotSlug": "dataran-lang-820",
+        "displayOrder": 10,
+        "enabled": true,
+        "displayName": "老鹰广场",
+        "guideSummary": "老鹰广场是 Kuah 海滨的代表性地标，展翅鹰像与码头海景可以一起看，适合留作市区路线中的步行停留。"
+      },
+      {
+        "spotId": 821,
+        "spotSlug": "maha-tower-821",
+        "displayOrder": 11,
+        "enabled": true,
+        "displayName": "MAHA Tower",
+        "guideSummary": "MAHA Tower 是 Kuah 海滨的高塔地标，外部建筑与楼上的观景空间属于两种不同参观方式。可以按预算与天气，决定只在周边看建筑还是购票登塔。"
+      },
+      {
+        "spotId": 822,
+        "spotSlug": "wat-koh-wanararm-822",
+        "displayOrder": 12,
+        "enabled": true,
+        "displayName": "Wat Koh Wanararm 泰佛寺",
+        "guideSummary": "Wat Koh Wanararm 位于 Kuah 外围，寺院建筑、佛塔与依岩而立的观音像是参观重点。适合想在海岛行程中加入宗教文化的一站。"
+      },
+      {
+        "spotId": 823,
+        "spotSlug": "wat-tham-kisap-823",
+        "displayOrder": 13,
+        "enabled": true,
+        "displayName": "Kisap 山洞泰佛寺",
+        "guideSummary": "Wat Tham Kisap 是 Kisap 一带的泰国佛教寺院，在本次影片中以山洞泰佛寺介绍。它与附近的印度庙及 Wat Koh Wanararm 是不同地点。"
+      },
+      {
+        "spotId": 824,
+        "spotSlug": "langkawi-thean-hou-temple-824",
+        "displayOrder": 14,
+        "enabled": true,
+        "displayName": "兰卡威天后宫",
+        "guideSummary": "兰卡威天后宫位于 Jalan Padang Gaong 一带，是岛上华人信仰文化的一处参访点。适合对庙宇建筑和地方生活有兴趣的旅客。"
+      },
+      {
+        "spotId": 825,
+        "spotSlug": "gm-farm-seafood-restaurant-825",
+        "displayOrder": 15,
+        "enabled": true,
+        "displayName": "Gua MAHA & GM Farm Seafood Restaurant",
+        "guideSummary": "Gua MAHA & GM Farm Seafood Restaurant 是这次旅程实际到访的同一地点；Gua MAHA 与 GM Farm Seafood Restaurant 在本篇记录中共同指向这间餐厅。"
+      },
+      {
+        "spotId": 826,
+        "spotSlug": "fb-cafe-napolitan-pizza-826",
+        "displayOrder": 16,
+        "enabled": true,
+        "displayName": "FB Cafe - Napolitan Pizza",
+        "guideSummary": "FB Cafe 主打拿坡里风格披萨，位于 Padang Gaong 一带，适合在海鲜与本地饭食之外换一种用餐选择。"
+      },
+      {
+        "spotId": 827,
+        "spotSlug": "che-ta-chicken-rice-store-827",
+        "displayOrder": 17,
+        "enabled": true,
+        "displayName": "Che Ta Chicken Rice Store",
+        "guideSummary": "Che Ta 是 Ayer Hangat 一带的鸡饭店，公开商家介绍也列有泰式与本地饭面选择。适合在北部自驾途中安排一餐较简单的饭食。"
+      },
+      {
+        "spotId": 828,
+        "spotSlug": "chuan-bar-izakaya-japanese-fusion-828",
+        "displayOrder": 18,
+        "enabled": true,
+        "displayName": "Chuan Bar Izakaya - Japanese Fusion",
+        "guideSummary": "串吧位于 Kuah 的 Jalan Pandak Mayah 5，以日式融合料理和居酒屋风格为主，适合想在市区换个餐饮口味时考虑。"
+      },
+      {
+        "spotId": 829,
+        "spotSlug": "golden-bamboo-cafe-829",
+        "displayOrder": 19,
+        "enabled": true,
+        "displayName": "Golden Bamboo Cafe",
+        "guideSummary": "Golden Bamboo Cafe 在珍南一带，以竹构空间和白天餐饮为特色，适合把早餐、午餐或咖啡时间放进海滩行程。"
+      },
+      {
+        "spotId": 830,
+        "spotSlug": "temonyong-night-market-830",
+        "displayOrder": 20,
+        "enabled": true,
+        "displayName": "Temonyong 夜市",
+        "guideSummary": "Temonyong 夜市是本次影片记录的夜市一站，适合用小份量尝试不同摊位，把晚餐变成边走边选的体验。"
+      },
+      {
+        "spotId": 831,
+        "spotSlug": "tanjung-rhu-mangrove-jetty-831",
+        "displayOrder": 21,
+        "enabled": true,
+        "displayName": "Tanjung Rhu Mangrove Jetty",
+        "guideSummary": "Tanjung Rhu Mangrove Jetty 是这次红树林船游实际出发的码头，位于兰卡威北部 Ayer Hangat。导航请使用这个码头的完整名称。"
+      },
+      {
+        "spotId": 832,
+        "spotSlug": "crab-langkawi-farm-and-restaurant-832",
+        "displayOrder": 22,
+        "enabled": true,
+        "displayName": "Crab Langkawi Farm and Restaurant",
+        "guideSummary": "Crab Langkawi Farm and Restaurant 是这次旅程实际用餐的餐厅，位于 Jalan Teluk Yu 的 Kampung Kelubi。"
+      },
+      {
+        "spotId": 833,
+        "spotSlug": "eagle-s-nest-skywalk-833",
+        "displayOrder": 23,
+        "enabled": true,
+        "displayName": "Eagle's Nest SkyWalk",
+        "guideSummary": "Eagle's Nest SkyWalk 位于 Langkawi SkyCab 的 Middle Station，是这次实际到访的玻璃观景平台。"
+      },
+      {
+        "spotId": 834,
+        "spotSlug": "langkawi-skydome-834",
+        "displayOrder": 24,
+        "enabled": true,
+        "displayName": "Langkawi SkyDome",
+        "guideSummary": "Langkawi SkyDome 是 Oriental Village 的穹幕观影设施，也是这次旅程实际体验的项目。"
+      },
+      {
+        "spotId": 835,
+        "spotSlug": "3d-art-in-paradise-langkawi-835",
+        "displayOrder": 25,
+        "enabled": true,
+        "displayName": "3D Art in Paradise Langkawi",
+        "guideSummary": "3D Art in Paradise Langkawi 位于 Oriental Village，是这次实际到访的立体艺术展馆，运营方也使用 3D Art Langkawi 名称。"
+      }
+    ],
+    "accommodationStays": [
+      {
+        "accommodationId": 808,
+        "displayName": "Villa Paddy",
+        "note": "本次旅程实际入住；具体入住日与晚数待补充。"
+      },
+      {
+        "accommodationId": 809,
+        "displayName": "Airis Sanctuary Resort Langkawi",
+        "note": "本次旅程实际入住；具体入住日与晚数待补充。"
+      }
+    ],
+    "aliases": [],
+    "title": "Langkawi 5D4N 自驾游",
+    "shortTitle": "兰卡威 5天4夜",
+    "tagline": "天空之桥、森林夜游、海滩与岛上餐桌",
+    "summary": "从士乃直飞兰卡威，机场取车开启五天四夜自驾。这篇游记整理影片中实际到访的地点、两间住宿及交通提醒；每日行程分组仍待补充。",
+    "duration": "5 Days / 4 Nights",
+    "budget": "",
+    "budgetScope": "unspecified",
+    "travelStyle": "Self-drive / 自驾",
+    "route": [
+      {
+        "name": "Langkawi",
+        "summary": "吉打州兰卡威；影片地点总览，具体分日待补充。"
+      }
+    ],
+    "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.34),transparent_22%),linear-gradient(135deg,rgba(255,255,255,0.16),rgba(255,255,255,0.03))]",
+    "highlightTags": [
+      "Langkawi",
+      "Kedah",
+      "自驾",
+      "5天4夜"
+    ],
+    "heroBullets": [
+      "士乃直飞兰卡威，机场取车",
+      "Villa Paddy 与 Airis Sanctuary 两间住宿",
+      "影片中的实际到访地点"
+    ],
+    "budgetItems": [],
+    "days": [],
+    "itineraryMode": "unassigned",
+    "itinerarySegments": [],
+    "bestFor": [
+      "自驾自由行",
+      "海滩与森林体验",
+      "想结合影片查地点的旅客"
+    ],
+    "notes": [
+      "交通：影片说明记载从 Senai International Airport 直飞 Langkawi International Airport，抵达机场取车。5 天租车实际支付 RM290，属于本次历史消费，不是当前报价或整趟旅行总预算。",
+      "红树林：本次船游实际从 Tanjung Rhu Mangrove Jetty 出发；具体产品与费用请向预订方确认。",
+      "免税购物：影片包含免税购物记录，但具体店铺尚未确认。可作为购物安排参考，不列出未证实到访的商店。",
+      "Crab Langkawi Farm and Restaurant：本次实际用餐的餐厅，精确地点已核实，可由地点卡片查看导航。",
+      "Gua MAHA 与 GM Farm Seafood Restaurant 为本次到访的同一地点，统一记录为 Gua MAHA & GM Farm Seafood Restaurant。",
+      "以下为实际到访地点总览；每日分组尚待确认。"
+    ],
+    "featuredSpotNames": [],
+    "featuredAffiliateLinkIds": [],
+    "sidebarAffiliateLinkIds": [],
+    "videoUrl": "https://youtu.be/KLnxZ6kwgf4"
   }
 ]

@@ -32,6 +32,7 @@ export type AnalyticsEventName =
 export type AnalyticsEventParams = Record<string, string | number | boolean | null | undefined>
 
 export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParams = {}) {
+  if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return
   if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
 
   const safeParams = Object.fromEntries(

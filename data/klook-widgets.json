@@ -1,5 +1,52 @@
 [
   {
+    "id": "widget-1775786613358",
+    "title": "Terengganu Tour",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253577\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"2\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      23
+    ],
+    "noteSlugs": [
+      "malaysia-turtle-night-terengganu"
+    ],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-05-29T02:47:46.212Z",
+    "updatedAt": "2026-05-29T02:47:46.212Z"
+  },
+  {
+    "id": "widget-1776655939835",
+    "title": "Genting Highland Activities",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1259745\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      86
+    ],
+    "noteSlugs": [],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-20T03:32:19.835Z",
+    "updatedAt": "2026-04-20T03:32:19.835Z"
+  },
+  {
+    "id": "widget-1776580721327",
+    "title": "Cameron Highland Activities",
+    "description": "",
+    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1259318\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"5\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
+    "locationIds": [],
+    "regionIds": [
+      87
+    ],
+    "noteSlugs": [],
+    "isActive": true,
+    "sortOrder": 0,
+    "createdAt": "2026-04-19T06:38:41.327Z",
+    "updatedAt": "2026-04-19T06:38:43.699Z"
+  },
+  {
     "id": "widget-1775869981264",
     "title": "Desaru Activities",
     "description": "",
@@ -8,6 +55,7 @@
     "regionIds": [
       84
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-11T01:13:01.264Z",
@@ -22,6 +70,7 @@
       273
     ],
     "regionIds": [],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-11T01:09:56.024Z",
@@ -36,6 +85,7 @@
     "regionIds": [
       68
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T10:24:01.893Z",
@@ -51,6 +101,7 @@
       19,
       9
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T08:39:14.274Z",
@@ -65,6 +116,7 @@
     "regionIds": [
       69
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T07:08:47.654Z",
@@ -79,6 +131,7 @@
     "regionIds": [
       79
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T06:28:09.620Z",
@@ -93,24 +146,11 @@
     "regionIds": [
       66
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T03:43:55.346Z",
     "updatedAt": "2026-04-10T03:43:56.107Z"
-  },
-  {
-    "id": "widget-1775786613358",
-    "title": "Terengganu Tour",
-    "description": "",
-    "htmlCode": "<ins class=\"klk-aff-widget\"  data-adid=\"1253577\" data-lang=\"\" data-currency=\"\" data-cardH=\"126\" data-padding=\"92\" data-lgH=\"470\" data-edgeValue=\"655\" data-prod=\"static_widget\" data-amount=\"2\"><a href=\"//www.klook.com/\">Klook.com</a></ins>\n<script type=\"text/javascript\">\n  (function (d, sc, u) {\n    var s = d.createElement(sc),\n      p = d.getElementsByTagName(sc)[0];\n    s.type = \"text/javascript\";\n    s.async = true;\n    s.src = u;\n    p.parentNode.insertBefore(s, p);\n  })(\n    document,\n    \"script\",\n    \"https://affiliate.klook.com/widget/fetch-iframe-init.js\"\n  );\n</script>",
-    "locationIds": [],
-    "regionIds": [
-      23
-    ],
-    "isActive": true,
-    "sortOrder": 0,
-    "createdAt": "2026-04-10T03:25:08.121Z",
-    "updatedAt": "2026-04-10T03:25:09.145Z"
   },
   {
     "id": "widget-1775789656760",
@@ -121,6 +161,7 @@
     "regionIds": [
       44
     ],
+    "noteSlugs": [],
     "isActive": true,
     "sortOrder": 0,
     "createdAt": "2026-04-10T03:04:42.973Z",

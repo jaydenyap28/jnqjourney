@@ -1,0 +1,32 @@
+import { spawn } from 'node:child_process'
+import { readFile, writeFile } from 'node:fs/promises'
+import path from 'node:path'
+import assert from 'node:assert/strict'
+
+if(!process.env.NODE_OPTIONS?.includes('offline-network-guard'))throw Error('Run through offline validator')
+const out=process.env.JNQ_OFFLINE_OUTPUT,fixture=path.resolve(out,'package-fixture.json')
+const makePackage=(id,slug,title)=>({id,slug,title_zh:title,destination:title,status:'published',region_id:null,short_description:'Synthetic package acceptance only',full_description:'Synthetic itinerary only',gallery:[],included_items:[],excluded_items:[],notes:[],itinerary_days:[{title:'Fixture day',items:['Fixture activity']}],source_code:`RC12-${id}`,whatsapp_message:`RC12_MESSAGE_${id}`,price_display:'请查询方案报价'})
+const makeOption=(id,package_id,price_unit,price_display,price_from)=>({id,package_id,slug:`option-${id}`,name_zh:`RC12_OPTION_${id}`,accommodation_name:'Synthetic accommodation',status:'active',price_unit,price_display,price_from,price_currency:'MYR',sort_order:id,validity_label:'Synthetic validity',short_description:'Fixture option',included_items:['Fixture inclusion'],excluded_items:['Fixture exclusion'],notes:['Fixture notice'],gallery:[],source_code:`RC12-OPTION-${id}`,whatsapp_message:'Fixture question'})
+const state={spots:[],packages:[makePackage(10,'hainan-test','RC12_HAINAN'),makePackage(20,'tioman-3d2n','RC12_TIOMAN'),makePackage(30,'batam-test','RC12_BATAM')],packageOptions:[makeOption(1,10,'person','RC12_PRICE_A',999),makeOption(2,10,'room','RC12_PRICE_ROOM',500),makeOption(3,20,'person','RC12_TIOMAN_777',777),makeOption(4,20,'room','RC12_TIOMAN_ROOM',5)]}
+await writeFile(fixture,JSON.stringify(state));await writeFile(`${fixture}.requests.jsonl`,'')
+const env={...process.env,JNQ_OFFLINE_RUNTIME_FIXTURE:fixture,SUPABASE_SERVICE_ROLE_KEY:'offline-runtime-fixture',ADMIN_EMAILS:'offline-admin@example.test'}
+const checks=[],responses=[];let base,log=''
+const server=spawn(process.execPath,['node_modules/next/dist/bin/next','start','--hostname','127.0.0.1','--port','0'],{env,stdio:['ignore','pipe','pipe']})
+await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('Local start timeout')),45000);const collect=b=>{log+=b;const match=log.match(/http:\/\/127\.0\.0\.1:(\d+)/);if(match)base=`http://127.0.0.1:${match[1]}`;if(log.includes('Ready in')){clearTimeout(timer);resolve()}};server.stdout.on('data',collect);server.stderr.on('data',collect);server.once('error',reject)})
+async function get(url){const r=await fetch(base+url,{redirect:'manual',signal:AbortSignal.timeout(30000)});const html=await r.text();responses.push({url,status:r.status,cache:r.headers.get('x-nextjs-cache'),cacheControl:r.headers.get('cache-control'),robots:r.headers.get('x-robots-tag'),bytes:Buffer.byteLength(html)});return{status:r.status,html,visible:html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'')}}
+async function refresh(id){const r=await fetch(base+'/api/admin/travel-packages',{method:'POST',headers:{authorization:'Bearer offline-runtime-token','Content-Type':'application/json'},body:JSON.stringify({id,action:'revalidate-public',scope:'detail'})});assert.equal(r.status,200);assert.equal((await r.json()).publication.state,'invalidated')}
+async function check(name,fn){try{await fn();checks.push({name,passed:true})}catch(error){checks.push({name,passed:false,error:error.message})}}
+try{
+  await check('Hainan renders its two existing options and units',async()=>{const r=await get('/packages/hainan-test');assert.equal(r.status,200);assert.ok(r.visible.includes('RC12_PRICE_A'));assert.ok(r.visible.includes('RC12_PRICE_ROOM'));assert.ok(r.visible.includes('每人'));assert.ok(r.visible.includes('每房'))})
+  await check('Repeated Hainan request retains correct content',async()=>{assert.ok((await get('/packages/hainan-test')).visible.includes('RC12_PRICE_A'))})
+  await check('Explicit package invalidation exposes new visible prices without waiting 3600 seconds',async()=>{state.packageOptions[0].price_display='RC12_PRICE_UPDATED';await writeFile(fixture,JSON.stringify(state));await refresh(10);const r=await get('/packages/hainan-test');assert.ok(r.visible.includes('RC12_PRICE_UPDATED'));assert.ok(!r.visible.includes('RC12_PRICE_A'))})
+  await check('Inactive option disappears without changing the one-parent/two-option data model',async()=>{state.packageOptions[1].status='inactive';await writeFile(fixture,JSON.stringify(state));await refresh(10);const r=await get('/packages/hainan-test');assert.ok(!r.visible.includes('RC12_PRICE_ROOM'));assert.equal(state.packages.filter(p=>p.id===10).length,1);assert.equal(state.packageOptions.filter(o=>o.package_id===10).length,2)})
+  await check('Tioman visible hero uses current per-person price instead of fixed RM509',async()=>{const r=await get('/packages/tioman-3d2n');assert.equal(r.status,200);assert.ok(r.visible.includes('RC12_TIOMAN_777'));assert.ok(!r.visible.includes('RM509'))})
+  await check('Batam keeps itinerary and a contextual WhatsApp URL',async()=>{const r=await get('/packages/batam-test');assert.equal(r.status,200);assert.ok(r.visible.includes('Fixture activity'));const urls=[...r.html.matchAll(/href="(https:\/\/wa\.me\/[^\"]+)"/g)].map(m=>new URL(m[1].replaceAll('&amp;','&')).searchParams.get('text'));assert.ok(urls.some(text=>text.includes('RC12_MESSAGE_30')&&text.includes('RC12-30')))})
+  await check('Hidden parent returns real 404 before any warmed detail',async()=>{state.packages[0].status='draft';await writeFile(fixture,JSON.stringify(state));assert.equal((await get('/packages/hainan-test')).status,404)})
+  await check('Package read-back never issued a provider mutation',async()=>{const rows=(await readFile(`${fixture}.requests.jsonl`,'utf8')).trim().split('\n').filter(Boolean).map(s=>JSON.parse(s));assert.ok(rows.length);assert.ok(rows.every(r=>r.method==='GET'))})
+}finally{
+  await new Promise(resolve=>{server.once('exit',resolve);server.kill()})
+  await writeFile(`${out}/package-http.json`,JSON.stringify({checks,responses,passed:checks.filter(c=>c.passed).length,total:checks.length,scope:'Loopback Next plus synthetic PostgREST/Auth only. No browser or cloud verification.'},null,2));await writeFile(`${out}/package-server.log`,log)
+  console.log(JSON.stringify({passed:checks.filter(c=>c.passed).length,total:checks.length,failures:checks.filter(c=>!c.passed)},null,2));if(checks.some(c=>!c.passed))process.exitCode=1
+}

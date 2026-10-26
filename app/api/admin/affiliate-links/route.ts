@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { invalidatePublication, publicationResponse, publicationFailure } from '@/lib/server/publication'
+import { mutationOutcome } from '@/lib/mutation-outcome'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
 
@@ -48,12 +50,22 @@ async function mutate(request: Request, method: 'POST' | 'PATCH' | 'DELETE') {
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const table = supabase.from('affiliate_links')
   // Keep single/batch inserts and partial updates exactly as supplied by the editors.
-  const { data, error } = method === 'POST'
-    ? await table.insert(body.data)
+  const { data: written, error, status: writeStatus } = method === 'POST'
+    ? await table.insert(body.data).select('id')
     : method === 'PATCH'
-      ? await table.update(body.data).eq('id', body.id)
-      : await table.delete().eq('id', body.id)
-  return NextResponse.json({ data, error }, { status: error ? 400 : 200 })
+      ? await table.update(body.data).eq('id', body.id).select('id')
+      : await table.delete().eq('id', body.id).select('id')
+  if (error) {
+    const uncertain=!(writeStatus>=400 && writeStatus<500)
+    return NextResponse.json({data:null,error:uncertain?{...error,message:`${error.message} Write outcome unknown; reload before retrying.`}:error,mutation:{state:uncertain?'unknown':'failed'}},{status:uncertain?503:400})
+  }
+  const outcome = mutationOutcome(method === 'POST' ? Array.isArray(body.data) ? body.data.length : 1 : [body.id], written)
+  if (outcome.state !== 'complete') return NextResponse.json({ data: null, error: { message: `Affiliate write ${outcome.state}: ${outcome.affected}/${outcome.expected}; reload before retrying.`, code: 'WRITE_NOT_CONFIRMED' }, mutation: outcome }, { status: 409 })
+  try {
+    return publicationResponse({ data: null, error: null, mutation: outcome }, await invalidatePublication(request, { kind: 'affiliate', ids: outcome.affectedIds }))
+  } catch (error) {
+    return publicationFailure(error, { kind: 'affiliate', ids: outcome.affectedIds },true,outcome)
+  }
 }
 
 export async function POST(request: Request) { return mutate(request, 'POST') }

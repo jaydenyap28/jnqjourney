@@ -73,13 +73,6 @@ export async function POST(request: Request) {
         throw new Error(`R2 upload returned a forbidden Supabase Storage URL: ${uploaded.url}`)
       }
 
-      console.info('[admin:upload-image] uploaded image through R2 compatibility route', {
-        fileName: uploaded.fileName,
-        key: uploaded.key,
-        url: uploaded.url,
-        provider: uploaded.provider,
-      })
-
       uploadedFiles.push({
         name: file.name,
         path: uploaded.key,

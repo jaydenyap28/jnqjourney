@@ -329,12 +329,14 @@ export async function saveNotes(notes: LongformNote[]) {
     await writeLocalNotes(normalized)
   } catch {}
   await writeStorageNotes(normalized)
-  try {
-    const { uploadPublicNotesSnapshot } = await import('@/lib/server/r2')
-    await uploadPublicNotesSnapshot(Buffer.from(JSON.stringify({ schemaVersion: 1, generatedAt: new Date().toISOString(), notes: normalized.filter((note) => note.published) }), 'utf8'))
-  } catch {}
   // Clear cache after save
   cachedNotes = null
   lastFetchTime = 0
+  try {
+    const { uploadPublicNotesSnapshot } = await import('@/lib/server/r2')
+    await uploadPublicNotesSnapshot(Buffer.from(JSON.stringify({ schemaVersion: 1, generatedAt: new Date().toISOString(), notes: normalized.filter((note) => note.published) }), 'utf8'))
+  } catch {
+    throw new Error('Notes saved to authoritative Storage, but public snapshot publication failed. Reload the saved version before retrying publication.')
+  }
   return normalized
 }

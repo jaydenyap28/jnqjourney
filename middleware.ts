@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { internalPreviewHeaders } from '@/lib/internal-http'
+
+const BLOCKED_SEO = { 'Cache-Control': 'private, no-store, max-age=0', 'X-Robots-Tag': 'noindex, nofollow', 'X-JNQ-SEO-Indexable': 'false' }
 
 async function guardSpot(request: NextRequest) {
   const slug = request.nextUrl.pathname.split('/').filter(Boolean).at(-1)
@@ -6,39 +9,32 @@ async function guardSpot(request: NextRequest) {
   // This uncached routing decision precedes static page/alias resolution, so
   // hidden source pages and every old alias return an actual HTTP 301/302.
   try {
-    const routingResponse = await fetch(new URL(`/api/spot-routing/${encodeURIComponent(slug)}`, request.url), { cache: 'no-store' })
+    const endpoint = new URL(`/api/spot-routing/${encodeURIComponent(slug)}`, request.url)
+    if (request.nextUrl.pathname.startsWith('/en/')) endpoint.searchParams.set('locale', 'en')
+    const routingResponse = await fetch(endpoint, { cache: 'no-store', redirect: 'manual', headers: internalPreviewHeaders(request, endpoint), signal: AbortSignal.timeout(10000) })
+    if (routingResponse.status === 404) return new NextResponse('Not Found', { status: 404, headers: BLOCKED_SEO })
     if (!routingResponse.ok) throw new Error('Spot routing unavailable')
     const routing = await routingResponse.json()
-    if (routing.destination) return NextResponse.redirect(new URL(routing.destination, request.url), routing.status === 302 ? 302 : 301)
-    if (!routing.visible) return new NextResponse('Not Found', { status: 404, headers: { 'X-Robots-Tag': 'noindex, nofollow' } })
+    if (routing.destination) {
+      if (typeof routing.destination !== 'string' || !/^\/(?:en\/)?(?:spot|notes)\/[\p{L}\p{N}_-]+$/u.test(routing.destination)) throw new Error('Invalid routing destination')
+      const response = NextResponse.redirect(new URL(routing.destination, request.url), routing.status === 302 ? 302 : 301)
+      for (const [key, value] of Object.entries(BLOCKED_SEO)) response.headers.set(key, value)
+      return response
+    }
+    if (routing.visible === false) return new NextResponse('Not Found', { status: 404, headers: BLOCKED_SEO })
+    if (routing.visible !== true) throw new Error('Invalid routing visibility')
+    const nextResponse = NextResponse.next()
+    const source = routingResponse.headers.get('X-JNQ-Data-Source')
+    if (source) nextResponse.headers.set('X-JNQ-Data-Source', source)
+    // This header never overrides the page's robots metadata. English pages
+    // require an explicit, complete translation decision from the routing API.
+    const indexable = routingResponse.headers.get('X-JNQ-SEO-Indexable') === 'true'
+    nextResponse.headers.set('X-JNQ-SEO-Indexable', String(indexable))
+    if (!indexable) nextResponse.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    return nextResponse
   } catch {
-    return new NextResponse('Spot temporarily unavailable.', { status: 503, headers: { 'Retry-After': '30', 'X-Robots-Tag': 'noindex' } })
+    return new NextResponse('Spot temporarily unavailable.', { status: 503, headers: { ...BLOCKED_SEO, 'Retry-After': '30' } })
   }
-  const endpoint = new URL(`/api/spots/${encodeURIComponent(slug)}`, request.url)
-  try {
-    const response = await fetch(endpoint, { cache: 'force-cache' })
-    if (response.ok) {
-      const nextResponse = NextResponse.next()
-      const source = response.headers.get('X-JNQ-Data-Source')
-      if (source) nextResponse.headers.set('X-JNQ-Data-Source', source)
-      return nextResponse
-    }
-    if (response.status === 404) {
-      return new NextResponse('Not Found', {
-        status: 404,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow' },
-      })
-    }
-    if (response.status === 503) {
-      return new NextResponse('This spot is temporarily unavailable. Please try again shortly.', {
-        status: 503,
-        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Retry-After': '30', 'X-Robots-Tag': 'noindex' },
-      })
-    }
-  } catch (error) {
-    console.error('[spot-visibility]', error)
-  }
-  return NextResponse.next()
 }
 
 async function guardPackage(request: NextRequest) {
@@ -55,7 +51,7 @@ async function guardPackage(request: NextRequest) {
   const endpoint = new URL(`/api/package-visibility/${encodeURIComponent(slug)}`, request.url)
 
   try {
-    const response = await fetch(endpoint, { cache: 'no-store' })
+    const response = await fetch(endpoint, { cache: 'no-store', redirect: 'manual', headers: internalPreviewHeaders(request, endpoint) })
     if (response.status === 204) {
       const nextResponse = NextResponse.next()
       nextResponse.headers.set('X-JnQ-Package-Guard', 'published')
@@ -74,9 +70,11 @@ async function guardPackage(request: NextRequest) {
     }
 
     console.error('[package-visibility]', response.status, await response.text())
+    if (process.env.VERCEL_ENV === 'preview') return new NextResponse('Package temporarily unavailable.', { status: 503, headers: BLOCKED_SEO })
     return NextResponse.next()
   } catch (error) {
     console.error('[package-visibility]', error)
+    if (process.env.VERCEL_ENV === 'preview') return new NextResponse('Package temporarily unavailable.', { status: 503, headers: BLOCKED_SEO })
     return NextResponse.next()
   }
 }
