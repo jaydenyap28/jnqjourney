@@ -2,6 +2,7 @@ import type { Locale } from './locale'
 
 // Interface copy only. Entity content is supplied by the existing reviewed overlay.
 export const englishPublicCopy:Record<string,string> = {
+  '查看地点介绍、照片与地图位置。': 'Open this place for its description, photos and map location.',
   '地区目录':'Regions','旅游景点':'Travel places','完整攻略':'Travel guides','长文笔记':'Travel stories','旅游配套':'Travel packages','内容与编辑原则':'Editorial policy','联盟链接说明':'Affiliate disclosure','WhatsApp 联系我们':'Contact us on WhatsApp',
   '旅客人数':'Travellers','平均每人':'Per person','记录数量':'Records','最后同步':'Last synced','实际花费':'Actual spending','预算':'Budget','旅程花费':'Trip cost','路线':'Route','花费':'Cost',
   '我们的编辑原则':'Our editorial principles','商业内容与联盟链接':'Commercial content & affiliate links',

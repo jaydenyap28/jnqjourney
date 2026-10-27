@@ -1,4 +1,5 @@
 import EntityName from '@/components/EntityName'
+import { guideSearchTitle } from '@/lib/public-editorial'
 import { publicationVersion } from '@/lib/publication-version'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import Link from 'next/link'
@@ -61,12 +62,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { locations } = await resolvePublicData()
   const guide = resolveGuidePublicMedia(storedGuide, locations)
 
-  const daysText = guide.duration ? `${guide.duration}` : ''
   const hasBudgetOrStay = guide.budget || guide.days.some(d => d.stay)
-  const baseTitle = `${guide.title}${daysText ? ` (${daysText})` : ''} Travel Guide`
+  const baseTitle = guide.seoTitle?.trim() || guideSearchTitle(guide)
 
   const description = buildMetaDescription(
-    guide.summary || guide.tagline || guide.title, 
+    guide.seoDescription || guide.summary || guide.tagline || guide.title,
     `Plan ${guide.title} with a day-by-day route, linked spots, transport notes${hasBudgetOrStay ? ', stays, budget references' : ''}, photos, and practical travel details from JnQ Journey.`
   )
   const canonicalUrl = buildCanonicalUrl(`/guide/${guide.slug}`)
@@ -77,7 +77,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     other: { 'jnq-content-version': publicationVersion(storedGuide) },
     description,
     alternates: await chineseLocalizedAlternates(`/guide/${guide.slug}`, 'guide', guide.slug, guide),
-    openGraph: buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guideMedia.coverImage, 'article'),
+    openGraph: { ...buildOpenGraphData(baseTitle, description, `/guide/${guide.slug}`, guideMedia.coverImage, 'article'), locale: 'zh_CN' },
     twitter: buildTwitterCardData(baseTitle, description, guideMedia.coverImage),
   }
 }

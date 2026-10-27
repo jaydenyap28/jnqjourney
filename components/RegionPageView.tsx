@@ -1,6 +1,7 @@
 
 import {PublicCopy} from '@/components/PublicLocale'
-import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
+import { regionEditorial } from '@/lib/public-editorial'
+import { guideContentSpotIds } from '@/lib/guide-route-spot-ids'
 import RelatedNoteCards from '@/components/RelatedNoteCards'
 import type { RelatedNoteCard } from '@/lib/content-relations'
 import type {TravelGuide} from '@/lib/guides'
@@ -69,7 +70,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
 
   const relatedGuides = allGuides
     .filter((guide) => {
-      const canonicalIds = guideRouteSpotIds(guide)
+      const canonicalIds = guideContentSpotIds(guide)
       if (relatedGuideSpotIds.some(id => canonicalIds.has(id))) return true
       const titleLower = guide.title.toLowerCase()
       if (titleLower.includes(region.name.toLowerCase()) || (region.name_cn && titleLower.includes(region.name_cn.toLowerCase()))) return true
@@ -138,7 +139,8 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
   }) : []
 
   // JSON-LD
-  const description = `这篇整理${readableName}自由行攻略，包括热门景点、美食打卡、亲子景点、路线安排、交通位置和 JnQ Journey 实际旅行资料，适合第一次规划${readableName}旅行的人参考。`
+  const editorial = regionEditorial({ name: readableName, description: region.description }, locations.map(location => location.name_cn || location.name), locale)
+  const description = editorial.description
   const canonicalPath = buildRegionPath(region.name, region.id)
   
   const structuredData = {
@@ -165,8 +167,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
     ]
   }
 
-  const spotNames = locations.slice(0, 5).map(l => l.name_cn || l.name).join('、')
-  const regionIntro = region.description || `${readableName} 是一个非常适合自由行的地方。这里不仅有丰富的景点，如 ${spotNames}，还有各种特色美食等待探索。无论你是想计划周末短暂放松，还是带全家人一起亲子出游，这里都能找到适合的路线。我们在本页面整理了 JnQ Journey 实地走访和收录的打卡点资料，帮助你轻松规划专属的${readableName}之旅。`
+  const regionIntro = editorial.introduction
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
@@ -193,7 +194,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
               {region.country && <Badge className="bg-white/10 text-white border-white/20">{region.country}</Badge>}
             </div>
             <h1 className="text-3xl md:text-5xl font-bold leading-tight text-white"><EntityName entity={region} /></h1>
-            <p className="text-lg text-gray-300 leading-relaxed max-w-3xl"><PublicCopy text={"\n              这里整理 JnQ Journey 已收录的 "}/>{readableName}<PublicCopy text={" 景点、美食、路线和旅行参考，适合规划自由行、周末游或亲子行程。\n            "}/></p>
+            <p className="text-lg text-gray-300 leading-relaxed max-w-3xl">{locale === 'en' ? `Explore the places collected in ${readableName}, with maps and related trip notes.` : `查看${readableName}已收录地点、地图与相关旅行记录。`}</p>
           </div>
           
           {region.image_url && (

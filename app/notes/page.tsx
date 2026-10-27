@@ -10,8 +10,8 @@ import { resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { stripSummaryTokens } from '@/lib/notes'
 
 export const metadata: Metadata = {
-  title: '长文笔记 | JnQ Journey',
-  description: '旅行长文笔记、灵感故事、景点延伸内容与预订推荐。',
+  title: '长文笔记',
+  description: '阅读 Jayden & Qing 的旅行故事、目的地见闻与吃住行记录，继续探索文中的地点和地图。',
   alternates: {
     canonical: '/notes',
   },
@@ -30,7 +30,7 @@ export default async function NotesIndexPage() {
           <p className="section-kicker text-xs text-amber-300/80">Longform Notes</p>
           <h1 className="font-display mt-4 text-5xl leading-none text-white md:text-6xl">长文笔记</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-300 md:text-base">
-            这里会收录更适合慢慢读的旅行长文、吃住行心得、景点延伸故事，以及可以直接连到现有景点页与联盟推荐的深度内容。
+            慢慢读一段旅行故事，从目的地见闻到吃住行记录；遇到感兴趣的地点，可以继续查看相关介绍与地图。
           </p>
         </div>
 

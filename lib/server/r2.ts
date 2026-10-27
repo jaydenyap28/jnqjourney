@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { verifyGuidePublication } from '@/lib/guide-publication'
+import { verifyNotePublication } from '@/lib/note-publication'
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
@@ -228,6 +229,8 @@ export function uploadPublicGuideTripCostsSnapshot(body: Buffer | Uint8Array) {
   return uploadPublicJsonObject('public-data/guide-trip-costs.json', body)
 }
 
-export function uploadPublicNotesSnapshot(body: Buffer | Uint8Array) {
-  return uploadPublicJsonObject('public-data/notes.json', body)
+export async function uploadPublicNotesSnapshot(body: Buffer | Uint8Array) {
+  const url = await uploadPublicJsonObject('public-data/notes.json', body, 'no-store, max-age=0')
+  await verifyNotePublication(getR2PublicBaseUrl(), body)
+  return url
 }

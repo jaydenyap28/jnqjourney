@@ -125,6 +125,9 @@ export interface TravelGuide {
   shortTitle: string
   tagline: string
   summary: string
+  /** Optional authored Chinese search copy; no automatic translation. */
+  seoTitle?: string
+  seoDescription?: string
   duration: string
   budget: string
   budgetScope?: GuideBudgetScope

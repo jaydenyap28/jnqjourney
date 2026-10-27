@@ -19,10 +19,11 @@ import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-s
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
+import { spotCardExcerpt } from '@/lib/public-editorial'
 
-const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date'
+const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date,description'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
-const LEGACY_SNAPSHOT_SELECT = `${LOCATIONS_SELECT},images,description,tags,video_url,facebook_video_url,opening_hours,price_info,address`
+const LEGACY_SNAPSHOT_SELECT = `${LOCATIONS_SELECT},images,tags,video_url,facebook_video_url,opening_hours,price_info,address`
 const SNAPSHOT_LOCATIONS_SELECT: string = `${LEGACY_SNAPSHOT_SELECT},${SPOT_CONTENT_SELECT}`
 const SNAPSHOT_REGIONS_SELECT = `${REGIONS_SELECT},description`
 const TIMEOUT_MS = 4000
@@ -78,7 +79,7 @@ export function normalizeSupabasePublicData(locationRows: any[], regionRows: any
       latitude: Number(row.latitude),
       longitude: Number(row.longitude),
       thumbnail: thumbnail(row),
-      shortSummary: summarize(row.review || row.description),
+      shortSummary: spotCardExcerpt(row) || null,
       visitDate: usableVisitDate(row.visit_date),
     }
   })

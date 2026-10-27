@@ -114,6 +114,8 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
     publishedAt: String(value?.publishedAt || '').trim() || undefined,
     title: String(value?.title || '').trim(),
     shortTitle: String(value?.shortTitle || '').trim(),
+    ...(String(value?.seoTitle || '').trim() ? { seoTitle: String(value.seoTitle).trim() } : {}),
+    ...(String(value?.seoDescription || '').trim() ? { seoDescription: String(value.seoDescription).trim() } : {}),
     tagline: String(value?.tagline || '').trim(),
     summary: String(value?.summary || '').trim(),
     duration: String(value?.duration || '').trim(),

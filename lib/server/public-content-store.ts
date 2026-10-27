@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { freshGuideSnapshotUrl } from '@/lib/guide-publication'
+import { freshNoteSnapshotUrl } from '@/lib/note-publication'
 import { unstable_cache } from 'next/cache'
 
 import type { TravelGuide } from '@/lib/guides'
@@ -28,30 +29,25 @@ async function withTimeout<T>(promise: Promise<T>, label: string) {
   }
 }
 
-async function readCdnCollection<T>(fileName: string, key: 'guides' | 'notes', tags: string[]) {
+async function readCdnCollection(key: 'guides' | 'notes') {
   const base = cdnBase()
   if (!base) return null
-  try {
-    const response = await withTimeout(fetch(key === 'guides' ? freshGuideSnapshotUrl(base) : `${base}/public-data/${fileName}`, key === 'guides'
+  const response = await withTimeout(fetch(key === 'guides' ? freshGuideSnapshotUrl(base) : freshNoteSnapshotUrl(base),
       // The outer unstable_cache owns persistence. Next 14's ISR renderer
       // treats an explicit no-store init as a dynamic bailout even inside that
       // callback. A unique publication URL bypasses old CDN objects; no inner
       // force-cache entry is written while the callback runs force-no-store.
-      ? { headers: { 'Cache-Control': 'no-cache' } }
-      : { headers: { 'Cache-Control': 'no-cache' }, next: { revalidate: 3600, tags } }), `Public ${key} CDN`)
-    if (!response.ok) return null
-    const payload = await response.json() as Record<string, unknown>
-    return payload?.schemaVersion === 1 && Array.isArray(payload[key]) ? payload[key] as unknown[] : null
-  } catch (error) {
-    // Framework control flow is not an origin outage. Swallowing it would
-    // cache a bundled fallback as though a fresh public snapshot was read.
-    if (error && typeof error === 'object' && 'digest' in error && ['DYNAMIC_SERVER_USAGE', 'NEXT_STATIC_GEN_BAILOUT'].includes(String(error.digest))) throw error
-    return null
-  }
+      { headers: { 'Cache-Control': 'no-cache' } }), `Public ${key} CDN`)
+  if (!response.ok) throw new Error(`Published ${key} snapshot unavailable (${response.status})`)
+  const payload = await response.json() as Record<string, unknown>
+  if (payload?.schemaVersion !== 1 || !Array.isArray(payload[key])) throw new Error(`Invalid published ${key} snapshot`)
+  // Errors deliberately escape: ISR can retain a previously generated page;
+  // configured source failures must not cache an older bundled collection.
+  return payload[key] as unknown[]
 }
 
 async function readPublicGuidesUncached(): Promise<TravelGuide[]> {
-  const snapshot = await readCdnCollection('guides.json', 'guides', ['guides'])
+  const snapshot = await readCdnCollection('guides')
   if (snapshot) return snapshot.map((item) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
   return readGuides()
 }
@@ -62,7 +58,7 @@ async function readPublicGuideBySlugUncached(slug: string): Promise<TravelGuide 
 }
 
 async function readPublicNotesUncached(): Promise<LongformNote[]> {
-  const snapshot = await readCdnCollection('notes.json', 'notes', ['notes'])
+  const snapshot = await readCdnCollection('notes')
   if (snapshot) return snapshot.map((item) => normalizeNotePayload(item)).filter((note) => note.published && note.slug && note.title)
   return readPublishedNotes()
 }
@@ -73,11 +69,11 @@ async function readPublicNoteBySlugUncached(slug: string): Promise<LongformNote 
 }
 
 // Drop v3 entries that may contain a swallowed static-generation fallback.
-const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v4'], {
+const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v5'], {
   revalidate: 3600,
   tags: ['guides'],
 })
-const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v3'], {
+const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v4'], {
   revalidate: 3600,
   tags: ['notes'],
 })

@@ -3,6 +3,7 @@ import path from 'node:path'
 import bundled from '@/public-data/i18n/en/records.json'
 import type { LocalizationSnapshot } from '@/lib/localization'
 import type { Locale } from '@/lib/locale'
+import { freshNoteSnapshotUrl } from '@/lib/note-publication'
 
 const cache = new Map<string, { until: number; promise: Promise<unknown> }>()
 const base = () => String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
@@ -12,15 +13,14 @@ export async function readBilingualSnapshot<T>(key: string, fallback: () => Prom
   const entry = cache.get(key)
   if (!fresh && entry && entry.until > Date.now()) return entry.promise as Promise<T>
   const promise = (async () => {
-    try {
-      if (base()) {
-        const response = await fetch(`${base()}/public-data/${key}${fresh ? `?publication=${Date.now()}` : ''}`, {
-          signal: AbortSignal.timeout(4000), next: { revalidate: fresh ? 0 : 3600, tags: [`bilingual:${key}`] },
-        })
-        if (response.ok) { const value = await response.json(); if (validate(value)) return value as T }
-        if (fresh) throw new Error('Published snapshot unavailable during page refresh')
-      }
-    } catch (error) { if (fresh) throw error /* Keep the prior ISR page when publication cannot be verified. */ }
+    if (base()) {
+      const url = key === 'notes.json' ? freshNoteSnapshotUrl(base()) : `${base()}/public-data/${key}${fresh ? `?publication=${Date.now()}` : ''}`
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(4000), next: { revalidate: fresh ? 0 : 3600, tags: [`bilingual:${key}`] },
+      })
+      if (response.ok) { const value = await response.json(); if (validate(value)) return value as T }
+      throw new Error('Published snapshot unavailable during page refresh')
+    }
     return fallback()
   })()
   cache.set(key, { until: Date.now() + 60_000, promise })

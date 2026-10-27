@@ -1,4 +1,5 @@
 import { resolveEntityDisplayName } from '@/lib/entity-display-name'
+import { regionEditorial } from '@/lib/public-editorial'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import EntityName from '@/components/EntityName'
 import { notFound } from 'next/navigation'
@@ -42,8 +43,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const readableName = resolveEntityDisplayName(region).primary
-  const seoTitle = `${readableName} Travel Guide - Spots, Food, Stays and Routes`
-  const description = `Explore ${readableName} with JnQ Journey: travel spots, food finds, stays, route ideas, maps, photos, and practical notes for planning your trip.`
+  const locations = await fetchLocationsByRegion(region.id, 3)
+  const { title: seoTitle, description } = regionEditorial({ name: readableName, description: region.description }, locations.map(location => location.name))
   
   const canonicalPath = buildRegionPath(region.name, region.id)
   const canonicalUrl = buildCanonicalUrl(canonicalPath)
@@ -52,7 +53,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: seoTitle,
     description,
     alternates: await chineseLocalizedAlternates(canonicalPath, 'region', region.id, {shortSummary:region.description}),
-    openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, region.image_url, 'website'),
+    openGraph: { ...buildOpenGraphData(seoTitle, description, canonicalPath, region.image_url, 'website'), locale: 'zh_CN' },
     twitter: buildTwitterCardData(seoTitle, description, region.image_url),
   }
 }

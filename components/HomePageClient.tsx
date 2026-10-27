@@ -240,7 +240,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
         </div>
 
         <p className="line-clamp-2 text-[13px] leading-5 text-gray-300 md:line-clamp-3 md:text-sm md:leading-6">
-          {location.shortSummary || 'Open this spot page for photos, maps, videos, and travel notes.'}
+          {location.shortSummary || <PublicCopy text="查看地点介绍、照片与地图位置。" />}
         </p>
 
         <div className="flex justify-end">

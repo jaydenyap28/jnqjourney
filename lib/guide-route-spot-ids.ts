@@ -18,3 +18,12 @@ export function guideRouteSpotIds(guide: TravelGuide): Set<number> {
   }
   return ids
 }
+
+/** Published itinerary associations, including visits without an invented day. */
+export function guideContentSpotIds(guide: TravelGuide): Set<number> {
+  const ids = guideRouteSpotIds(guide)
+  for (const ref of guide.attractions || []) if (ref.enabled !== false && ref.spotId) ids.add(ref.spotId)
+  for (const stay of guide.accommodationStays || []) ids.add(stay.accommodationId)
+  for (const segment of guide.itinerarySegments || []) for (const stay of segment.accommodationStays || []) ids.add(stay.accommodationId)
+  return ids
+}

@@ -9,12 +9,13 @@ import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveGuidePublicMedia } from '@/lib/server/public-content-media'
 
 export const metadata: Metadata = {
-  title: '完整旅程攻略 | JnQ Journey',
+  title: '完整旅程攻略',
   description: '浏览 Jayden & Qing 一起看世界的完整旅程路线、预算拆解与自由行攻略。',
   alternates: {
     canonical: '/guide',
   },
   openGraph: {
+    locale: 'zh_CN',
     title: '完整旅程攻略 | JnQ Journey',
     description: '浏览 Jayden & Qing 一起看世界的完整旅程路线、预算拆解与自由行攻略。',
     url: '/guide',

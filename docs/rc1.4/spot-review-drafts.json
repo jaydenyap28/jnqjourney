@@ -1,0 +1,188 @@
+{
+  "captured": "2026-10-27",
+  "state": "REVIEW_ONLY_NOT_APPLIED",
+  "sourceScope": "Local lightweight snapshots dated 2026-08-09; not current 586-row Supabase. These files truncate content near 180 characters; 300-character metrics are not comparable.",
+  "drafts": [
+    {
+      "id": 379,
+      "name": "美瑛神社",
+      "slug": "biei-shrine-379",
+      "priorityBasis": "已有Guide明确关联/可证实编辑残留；没有流量数据，不声称高流量",
+      "linkedGuides": [
+        "japan-hokkaido-yamagata-tokyo-10d9n"
+      ],
+      "source": {
+        "path": "public-data/spots/biei-shrine-379.json",
+        "version": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "sha256": "1fe6b38722a3c0fb0e4290e869636766717b44fb2c630e615ef4e7c5f494cec2",
+        "descriptionSha256": "38fd67193048c5d5099d7647733e7ea1e8cc2f48f74791d51fb41280fc78e1c7",
+        "completeness": "LIGHTWEIGHT_TRUNCATED_HISTORICAL_SNAPSHOT",
+        "currentDatabaseVerified": false,
+        "seoPresence": "UNKNOWN_FIELDS_OMITTED"
+      },
+      "before": "美瑛一带的重要参拜景点之一，适合与美瑛市区和自然景点一起安排行程。这一条先建立成草稿，后续你可以再补实拍图、影片和更完整的介绍。",
+      "proposed": {
+        "description": "美瑛神社是美瑛一带的参拜地点，可结合美瑛市区的其他地点安排行程。",
+        "seo_title_zh": "美瑛神社｜美瑛市区参拜与行程参考",
+        "seo_description_zh": "美瑛神社位于美瑛一带，可结合市区与周边自然景点安排行程。查看已收录照片与地图位置，出发前另行确认参拜相关安排。"
+      },
+      "reason": "介绍中明确夹有建稿/待补素材说明；不补写设施、班次或参拜时段",
+      "state": "REVIEW_ONLY_NOT_APPLIED",
+      "requiredBeforeApply": [
+        "重新读取当前完整description、experience_zh、SEO字段及updated_at",
+        "逐段保留当前独有资料；不得用本短文替换更完整正文",
+        "SEO仅在当前确实缺失且人工接受文案时采用",
+        "体验仅为历史原文候选，须核实归属，现有体验非空时禁止自动写入",
+        "状态/身份与Guide关联确认后逐项审核，不自动批量应用"
+      ]
+    },
+    {
+      "id": 377,
+      "name": "伝説のすた丼屋 札幌駅前店",
+      "slug": "densetsu-no-sutadonya-sapporo-ekimae-377",
+      "priorityBasis": "已有Guide明确关联/可证实编辑残留；没有流量数据，不声称高流量",
+      "linkedGuides": [
+        "japan-hokkaido-yamagata-tokyo-10d9n"
+      ],
+      "source": {
+        "path": "public-data/spots/densetsu-no-sutadonya-sapporo-ekimae-377.json",
+        "version": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "sha256": "97809b5e34f45a18c1e6fd9c97ead55276334cd6f128eccc00f0b4d443f2db01",
+        "descriptionSha256": "7a9d6665983707eb1d84e9b3618192fff29a363094728abd5c29ee5abbb2b0ec",
+        "completeness": "LIGHTWEIGHT_TRUNCATED_HISTORICAL_SNAPSHOT",
+        "currentDatabaseVerified": false,
+        "seoPresence": "UNKNOWN_FIELDS_OMITTED"
+      },
+      "before": "札幌车站前一带的人气丼饭店，适合当作札幌市区觅食点。这一条先按视频章节建立成草稿，后面你可以再补你自己的实拍图和推荐吃法。",
+      "proposed": {
+        "description": "伝説のすた丼屋札幌站前店是札幌车站前一带的丼饭店，可作为札幌市区的用餐地点。",
+        "seo_title_zh": "伝説のすた丼屋札幌站前店｜札幌丼饭用餐参考",
+        "seo_description_zh": "札幌车站前一带的伝説のすた丼屋，以丼饭作为市区用餐选择。查看地点与已有资料，菜单、价格和营业安排以店家公布为准。"
+      },
+      "reason": "仅移除视频章节建稿说明与“你自己的实拍图”指令，不推测招牌菜、消费或营业时间",
+      "state": "REVIEW_ONLY_NOT_APPLIED",
+      "requiredBeforeApply": [
+        "重新读取当前完整description、experience_zh、SEO字段及updated_at",
+        "逐段保留当前独有资料；不得用本短文替换更完整正文",
+        "SEO仅在当前确实缺失且人工接受文案时采用",
+        "体验仅为历史原文候选，须核实归属，现有体验非空时禁止自动写入",
+        "状态/身份与Guide关联确认后逐项审核，不自动批量应用"
+      ]
+    },
+    {
+      "id": 341,
+      "name": "八幡坂",
+      "slug": "hachiman-zaka-slope-341",
+      "priorityBasis": "已有Guide明确关联/可证实编辑残留；没有流量数据，不声称高流量",
+      "linkedGuides": [
+        "japan-hokkaido-yamagata-tokyo-10d9n"
+      ],
+      "source": {
+        "path": "public-data/spots/hachiman-zaka-slope-341.json",
+        "version": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "sha256": "634f127001407e521c354d45ac11dc75dd659583975b04c076b5e7ded5a94656",
+        "descriptionSha256": "8dced14a583f8bb54515010440f29a8e1df7e713539cfc2439e1f91b0ccd963a",
+        "completeness": "LIGHTWEIGHT_TRUNCATED_HISTORICAL_SNAPSHOT",
+        "currentDatabaseVerified": false,
+        "seoPresence": "UNKNOWN_FIELDS_OMITTED"
+      },
+      "before": "路的尽头是海！拍日系大片就在这！",
+      "proposed": {
+        "description": "八幡坂的街道视线延伸至海面，可以将街道与海景一起构图拍照。",
+        "seo_title_zh": "八幡坂｜街道尽头的海景与拍照参考",
+        "seo_description_zh": "八幡坂的街道视线延伸至海面，适合以街道与海景构图。查看已收录地点和照片，按天气与现场通行情况安排停留。"
+      },
+      "reason": "小型拍照点保持简洁，将口号改为已有看点，不凑300字",
+      "state": "REVIEW_ONLY_NOT_APPLIED",
+      "requiredBeforeApply": [
+        "重新读取当前完整description、experience_zh、SEO字段及updated_at",
+        "逐段保留当前独有资料；不得用本短文替换更完整正文",
+        "SEO仅在当前确实缺失且人工接受文案时采用",
+        "体验仅为历史原文候选，须核实归属，现有体验非空时禁止自动写入",
+        "状态/身份与Guide关联确认后逐项审核，不自动批量应用"
+      ]
+    },
+    {
+      "id": 364,
+      "name": "新仓山浅间公园",
+      "slug": "arakurayama-sengen-park-364",
+      "priorityBasis": "已有Guide明确关联/可证实编辑残留；没有流量数据，不声称高流量",
+      "linkedGuides": [
+        "japan-hokkaido-yamagata-tokyo-10d9n"
+      ],
+      "source": {
+        "path": "public-data/spots/arakurayama-sengen-park-364.json",
+        "version": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "sha256": "f825b3d38b729eff3aa316cfff60a27c2294efed2cc06f943302929f6577f8b0",
+        "descriptionSha256": "58fae52d16ac24be52d522b66ab094d6934b04a27b956aafc541fecf0fe6f146",
+        "completeness": "LIGHTWEIGHT_TRUNCATED_HISTORICAL_SNAPSHOT",
+        "currentDatabaseVerified": false,
+        "seoPresence": "UNKNOWN_FIELDS_OMITTED"
+      },
+      "before": "闯进冬日限定的富士山明信片！五重塔+富士山同框的绝美机位！",
+      "proposed": {
+        "description": "新仓山浅间公园可拍摄五重塔与富士山同框的景观，是以两者组合构图为看点的拍照地点。",
+        "seo_title_zh": "新仓山浅间公园｜五重塔与富士山同框",
+        "seo_description_zh": "新仓山浅间公园的拍照看点是五重塔与富士山同框。查看已有地点与照片资料，拍摄能见度仍需结合实际天气判断。"
+      },
+      "reason": "保留原文明确的构图看点，删除“冬日限定”“绝美”等口号，不补写阶梯、交通和票价",
+      "state": "REVIEW_ONLY_NOT_APPLIED",
+      "requiredBeforeApply": [
+        "重新读取当前完整description、experience_zh、SEO字段及updated_at",
+        "逐段保留当前独有资料；不得用本短文替换更完整正文",
+        "SEO仅在当前确实缺失且人工接受文案时采用",
+        "体验仅为历史原文候选，须核实归属，现有体验非空时禁止自动写入",
+        "状态/身份与Guide关联确认后逐项审核，不自动批量应用"
+      ]
+    },
+    {
+      "id": 375,
+      "name": "珈琲 森の時計",
+      "slug": "cafe-mori-no-tokei-375",
+      "priorityBasis": "已有Guide明确关联/可证实编辑残留；没有流量数据，不声称高流量",
+      "linkedGuides": [
+        "japan-hokkaido-yamagata-tokyo-10d9n"
+      ],
+      "source": {
+        "path": "public-data/spots/cafe-mori-no-tokei-375.json",
+        "version": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "sha256": "ab81e32efb1ccf22f5120318bba180aa81cf06dc5d7ccd3eb7e517313c6e7ba1",
+        "descriptionSha256": "fea72ec01f81c7a2872d9744f6d8a7781891ded609e16c67eba71b5aa49779c7",
+        "completeness": "LIGHTWEIGHT_TRUNCATED_HISTORICAL_SNAPSHOT",
+        "currentDatabaseVerified": false,
+        "seoPresence": "UNKNOWN_FIELDS_OMITTED"
+      },
+      "before": "在精灵露台森林深处，藏着这家森之时计咖啡馆。推开门走进来，瞬间被温暖的咖啡香包围，窗外是无声飘落的雪花，特别治愈。坐在原木吧台，可以看着咖啡师精心研磨冲泡，时间仿佛在这里慢了下来。我们点了咖喱饭和雪饼蛋糕，味道都不错。 Deep in the forest of Ningle Terrace, hides this Mori no Tokei Café. P",
+      "proposed": {
+        "description": "森之时计咖啡馆以森林环境和原木吧台为特色，坐在吧台可观看咖啡研磨与冲泡。",
+        "seo_title_zh": "森之时计咖啡馆｜森林环境与原木吧台",
+        "seo_description_zh": "森之时计咖啡馆的已有记录包括森林环境、原木吧台和咖啡研磨冲泡。查看照片与用餐记录，菜单、价格及营业安排以店家公布为准。",
+        "experience_zh": "我们点了咖喱饭和雪饼蛋糕，味道都不错。"
+      },
+      "reason": "截短旧快照同时含中文体验和不完整英文译文；正文与已记录体验分别提供候选，绝不覆盖现有体验",
+      "state": "REVIEW_ONLY_NOT_APPLIED",
+      "requiredBeforeApply": [
+        "重新读取当前完整description、experience_zh、SEO字段及updated_at",
+        "逐段保留当前独有资料；不得用本短文替换更完整正文",
+        "SEO仅在当前确实缺失且人工接受文案时采用",
+        "体验仅为历史原文候选，须核实归属，现有体验非空时禁止自动写入",
+        "状态/身份与Guide关联确认后逐项审核，不自动批量应用"
+      ]
+    }
+  ]
+}
