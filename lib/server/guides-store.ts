@@ -23,6 +23,7 @@ let lastFetchTime = 0
 const CACHE_TTL = 60 * 1000 // 1 minute cache in memory
 
 function getAdminSupabaseClient() {
+  if (process.env.VERCEL_ENV === 'preview') return null
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 

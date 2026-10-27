@@ -1,4 +1,5 @@
 import 'server-only'
+import { supabaseReadKey } from './supabase-read-key'
 
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -170,7 +171,7 @@ interface PublicSnapshotBundle {
 
 async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const key = supabaseReadKey(true)
   if (!url || !key) return null
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false },
     global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },

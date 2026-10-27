@@ -19,6 +19,7 @@ const storageBucket = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'locati
 const storagePath = '_system/guide-price-highlights.json'
 
 function getAdminSupabaseClient(fresh = false) {
+  if (process.env.VERCEL_ENV === 'preview') return null
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!supabaseUrl || !serviceRoleKey) return null

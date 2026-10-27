@@ -3,6 +3,7 @@ import { getRenderableNoteBlocks } from '@/lib/notes'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { supabaseReadKey } from '@/lib/server/supabase-read-key'
 import { PRIVATE_NO_STORE } from '@/lib/public-data'
 
 export const runtime = 'nodejs'
@@ -10,12 +11,11 @@ export const revalidate = 3600
 
 function getSupabaseServerClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = supabaseReadKey()
 
-  if (!supabaseUrl || (!serviceRoleKey && !anonKey)) return null
+  if (!supabaseUrl || !key) return null
 
-  return createClient(supabaseUrl, serviceRoleKey || anonKey || '', {
+  return createClient(supabaseUrl, key, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { fetch: (input, init) => fetch(input, { ...init, next: { revalidate: 3600, tags: ['affiliate-links'] } }) },
   })

@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { supabaseReadKey } from '@/lib/server/supabase-read-key'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -11,7 +12,7 @@ const NO_STORE_HEADERS = {
 
 export async function GET(_: Request, { params }: { params: { slug: string } }) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = supabaseReadKey()
   if (!url || !key) {
     console.error('[package-visibility] Supabase configuration is missing')
     return NextResponse.json({ error: 'Visibility check unavailable' }, { status: 503, headers: NO_STORE_HEADERS })

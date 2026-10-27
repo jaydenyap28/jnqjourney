@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 function extractMetaContent(html: string, patterns: RegExp[]) {
   for (const pattern of patterns) {
@@ -31,6 +32,8 @@ function makeAbsoluteUrl(baseUrl: string, maybeRelative: string) {
 }
 
 export async function GET(request: NextRequest) {
+  const skipped = previewReadOnlyResponse(true)
+  if (skipped) return skipped
   const target = request.nextUrl.searchParams.get('url')
 
   if (!target) {

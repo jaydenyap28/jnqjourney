@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { supabaseReadKey } from './supabase-read-key'
 import { unstable_cache } from 'next/cache'
 
 const PACKAGE_SELECT = 'id,slug,title_zh,title_en,destination,region_id,duration,short_description,full_description,cover_image,gallery,video_url,highlights,suitable_for,itinerary_days,included_items,excluded_items,notes,price_display,price_note,whatsapp_message,source_code,status,featured,sort_order,seo_title,seo_description,canonical_url,related_location_ids,related_guide_slugs,related_note_slugs,affiliate_link_ids,created_at,updated_at,published_at'
@@ -91,7 +92,7 @@ export interface TravelPackage {
 
 function createServerClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = supabaseReadKey()
   if (!url || !key) return null
   return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
 }

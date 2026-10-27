@@ -46,6 +46,7 @@ export function getMissingR2EnvVars() {
 }
 
 export function assertR2Env() {
+  if (process.env.VERCEL_ENV === 'preview') throw new Error('Preview publication and storage writes are disabled.')
   const missing = getMissingR2EnvVars()
   if (missing.length) {
     throw new Error(`Missing Cloudflare R2 environment variables: ${missing.join(', ')}`)

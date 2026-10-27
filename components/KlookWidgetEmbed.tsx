@@ -25,6 +25,7 @@ export default function KlookWidgetEmbed({
   const widgetId = useId().replace(/:/g, '')
 
   useEffect(() => {
+    if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return
     if (!widgetCode) return
 
     const container = document.getElementById(widgetId)
@@ -51,6 +52,7 @@ export default function KlookWidgetEmbed({
   }, [widgetCode, widgetId])
 
   if (!widgetCode) return null
+  if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return <section className={className}><p>Preview: external booking widget disabled.</p></section>
 
   const isBanner = variant === 'banner'
 
