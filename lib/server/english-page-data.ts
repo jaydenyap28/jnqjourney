@@ -1,6 +1,6 @@
 import { readApprovedGuidePriceHighlights } from '@/lib/server/guide-price-highlights-store'
 import { publicationVersion, spotPublicationVersion } from '@/lib/publication-version'
-import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
+import { relatedNotesForSpot, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 import { toPublicGuidePriceHighlight } from '@/lib/guide-price-highlights'
 import type { LongformNote } from '@/lib/notes'
@@ -134,9 +134,9 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     const result = applyLocalization(source,localizationRecord(localization,'spot',source.id))
     data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
     data.description=result.value.description || result.value.review || ''
-    if (source.related_note_slugs?.length) {
+    {
       const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes),freshLocalization)
-      data.relatedNotes = selectRelatedNotes(source.related_note_slugs, notes.notes).map(toRelatedNoteCard)
+      data.relatedNotes = relatedNotesForSpot(source, notes.notes).map(toRelatedNoteCard)
     }
     data.locations=locations.filter(l=>l.id!==source.id && l.region?.id===source.region_id).slice(0,6)
     const matchingGuides=new Set(guides.filter(g=>[...(g.attractions||[]),...g.days.flatMap(d=>d.attractions||[]),...(g.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))].some(ref=>ref.enabled!==false && ref.spotId===source.id) || g.accommodationStays?.some(s=>s.accommodationId===source.id)).map(g=>g.slug))

@@ -2,7 +2,7 @@ import { spotSeo } from '@/lib/spot-content'
 import { spotPublicationVersion } from '@/lib/publication-version'
 import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
 import { spotDescriptionExcerpt } from '@/lib/spot-description'
-import { packageMatchesSpot, selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
+import { packageMatchesSpot, relatedNotesForSpot, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
@@ -173,7 +173,7 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   return (
-    <SpotPageView location={location} relatedNotes={selectRelatedNotes(location.related_note_slugs, allNotes).map(toRelatedNoteCard)} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
+    <SpotPageView location={location} relatedNotes={relatedNotesForSpot(location, allNotes).map(toRelatedNoteCard)} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData).replace(/</g, '\\u003c') }} />
 

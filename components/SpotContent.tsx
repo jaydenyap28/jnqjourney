@@ -4,6 +4,7 @@
 import { spotImageText, type SpotContentFields } from '@/lib/spot-content'
 import type { RelatedNoteCard } from '@/lib/content-relations'
 import RelatedNoteCards from './RelatedNoteCards'
+import { trackSpotNavigation } from '@/lib/analytics'
 import { usePublicLocale } from './PublicLocale'
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
@@ -675,6 +676,21 @@ export default function SpotContent({
             </div>
           </div>
 
+          {!isDrawer && (relatedGuides.length > 0 || relatedPackages.length > 0) ? (
+            <nav aria-label={locale === 'en' ? 'Plan your visit' : '继续规划旅程'} className="flex flex-col gap-2 border-l-2 border-amber-200/35 pl-3 text-sm sm:flex-row sm:flex-wrap sm:gap-x-5">
+              {relatedGuides[0] ? (
+                <Link href={`/guide/${relatedGuides[0].slug}`} onClick={() => trackSpotNavigation(location.id, 'guide', relatedGuides[0].slug, 'spot_reading_cue')} className="inline-flex min-h-11 items-center gap-2 py-2 text-amber-100 underline decoration-amber-200/25 underline-offset-4 hover:decoration-amber-200">
+                  <span>{locale === 'en' ? 'Full itinerary: ' : '完整路线：'}{relatedGuides[0].shortTitle || relatedGuides[0].title}</span><ExternalLink className="h-4 w-4 shrink-0" />
+                </Link>
+              ) : null}
+              {relatedPackages[0] ? (
+                <Link href={`/packages/${relatedPackages[0].slug}`} onClick={() => trackSpotNavigation(location.id, 'package', relatedPackages[0].slug, 'spot_reading_cue')} className="inline-flex min-h-11 items-center gap-2 py-2 text-emerald-100 underline decoration-emerald-200/25 underline-offset-4 hover:decoration-emerald-200">
+                  <span>{locale === 'en' ? 'Related trip: ' : '相关配套：'}{locale === 'en' && relatedPackages[0].title_en ? relatedPackages[0].title_en : relatedPackages[0].title_zh}</span><ExternalLink className="h-4 w-4 shrink-0" />
+                </Link>
+              ) : null}
+            </nav>
+          ) : null}
+
           <div className="flex flex-wrap gap-2 py-1">
             {socialLinks.map((link) => (
               <SocialLink key={link.label} {...link} />
@@ -1005,7 +1021,7 @@ export default function SpotContent({
               <h2 className="text-xl font-bold text-white">{locale === 'en' ? 'JnQ Experience' : 'JnQ Experience｜我们的体验'}</h2>
               <div className="whitespace-pre-line rounded-xl border border-amber-300/20 bg-amber-300/5 p-5 text-lg leading-relaxed text-gray-200">{experience}</div>
             </section> : null}
-            {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} /> : null}
+            {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关旅行笔记'} /> : null}
 
             {!isDrawer && relatedGuides.length > 0 ? (
               <section className="space-y-4">
@@ -1020,6 +1036,7 @@ export default function SpotContent({
                     <Link
                       key={guide.slug}
                       href={`/guide/${guide.slug}`}
+                      onClick={() => trackSpotNavigation(location.id, 'guide', guide.slug, 'spot_related_guide')}
                       className="group rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 transition hover:-translate-y-1 hover:bg-white/10"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -1043,7 +1060,7 @@ export default function SpotContent({
                   <h3 className="mt-2 text-2xl font-bold text-white"><PublicCopy text={"想把这个景点安排进完整行程？"}/></h3>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
+                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} sourceSpotId={location.id} detailLabel="查看相关配套" />)}
                 </div>
               </section>
             ) : null}

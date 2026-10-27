@@ -33,6 +33,22 @@ export function selectRelatedNotes(slugs: string[] | null | undefined, notes: Lo
   })
 }
 
+// Manual links retain their order. Also expose published travel notes that
+// explicitly reference this place; locality/tag similarity alone is insufficient.
+export function relatedNotesForSpot(spot: { id: number; related_note_slugs?: string[] | null }, notes: LongformNote[]) {
+  const selected = selectRelatedNotes(spot.related_note_slugs, notes)
+  if (selected.length >= 4) return selected
+  const seen = new Set(selected.map(note => note.slug))
+  for (const note of notes) {
+    if (!note.published || seen.has(note.slug)) continue
+    if (!note.relatedSpotIds?.includes(spot.id) && !note.blocks.some(block => block.spotId === spot.id)) continue
+    seen.add(note.slug)
+    selected.push(note)
+    if (selected.length === 4) break
+  }
+  return selected
+}
+
 // Only descend into explicitly selected geography. Never widen a city to its
 // country or use unverified title/tag guesses to select a destination.
 export function noteRegionIds(note: LongformNote, locations: PublicLocation[], regions: PublicRegion[]) {

@@ -39,7 +39,24 @@ export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParam
     Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
   )
 
-  window.gtag('event', name, safeParams)
+  try {
+    window.gtag('event', name, safeParams)
+  } catch {
+    // Analytics must never interrupt navigation or an enquiry.
+  }
+}
+
+// Deliberately use content identifiers, never destination URLs, query strings,
+// WhatsApp text or contact details. Delivery uses the existing GA configuration.
+export function trackSpotNavigation(spotId: number, target: 'guide' | 'package', slug: string, position: 'spot_reading_cue' | 'spot_related_guide' | 'spot_related_package') {
+  if (!Number.isSafeInteger(spotId) || spotId <= 0 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/i.test(slug)) return
+  trackEvent(target === 'guide' ? 'related_guide_click' : 'package_cta_click', {
+    page_type: 'spot',
+    spot_id: spotId,
+    destination_type: target,
+    destination_slug: slug,
+    cta_position: position,
+  })
 }
 
 export function getDeviceType() {

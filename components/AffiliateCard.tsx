@@ -325,6 +325,7 @@ export default function AffiliateCard({
       region_id: regionId,
       spot_id: locationId,
       affiliate_platform: link.provider,
+      affiliate_link_id: link.id,
       affiliate_product: link.title,
       cta_position: ctaPosition || (compact ? 'sidebar' : 'inline'),
       device_type: getDeviceType(),
@@ -347,8 +348,6 @@ export default function AffiliateCard({
     } catch {
       // Ignore tracking issues so bookings are not blocked.
     }
-
-    window.open(link.url, '_blank', 'noopener,noreferrer')
   }
 
   const gridClassName = useMemo(() => {
@@ -413,12 +412,14 @@ export default function AffiliateCard({
                   <p data-jnq-affiliate-title={link.url} className="mt-2 line-clamp-1 text-sm text-white/72">{previewTitle}</p>
                 </div>
                 <Button
+                  asChild
                   size="sm"
-                  onClick={() => handleClick(link)}
-                  className="min-h-10 shrink-0 rounded-full bg-white px-4 text-xs text-black hover:bg-amber-50"
+                  className="min-h-11 shrink-0 rounded-full bg-white px-4 text-xs text-black hover:bg-amber-50"
                 >
-                  {resolvedActionLabel}
-                  <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                  <a href={link.url} target="_blank" rel="sponsored noopener noreferrer" onClick={() => { void handleClick(link) }}>
+                    {resolvedActionLabel}
+                    <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
+                  </a>
                 </Button>
               </div>
             )
@@ -458,12 +459,14 @@ export default function AffiliateCard({
                     <div className="mt-3 flex items-center justify-between gap-3">
                       <p className="line-clamp-1 text-[11px] text-white/42">{hostname}</p>
                       <Button
+                        asChild
                         size="sm"
-                        onClick={() => handleClick(link)}
-                        className="h-8 shrink-0 rounded-full bg-white px-3 text-xs text-black hover:bg-amber-50"
+                        className="min-h-11 shrink-0 rounded-full bg-white px-3 text-xs text-black hover:bg-amber-50"
                       >
-                        {resolvedActionLabel}
-                        <ExternalLink className="ml-1 h-3 w-3" />
+                        <a href={link.url} target="_blank" rel="sponsored noopener noreferrer" onClick={() => { void handleClick(link) }}>
+                          {resolvedActionLabel}
+                          <ExternalLink className="ml-1 h-3 w-3" />
+                        </a>
                       </Button>
                     </div>
                   </div>
@@ -507,12 +510,14 @@ export default function AffiliateCard({
                   </div>
 
                   <Button
+                    asChild
                     size="sm"
-                    onClick={() => handleClick(link)}
-                    className="shrink-0 rounded-full bg-white text-black hover:bg-amber-50"
+                    className="min-h-11 shrink-0 rounded-full bg-white text-black hover:bg-amber-50"
                   >
-                    {resolvedActionLabel}
-                    <ExternalLink className="ml-1 h-3 w-3" />
+                    <a href={link.url} target="_blank" rel="sponsored noopener noreferrer" onClick={() => { void handleClick(link) }}>
+                      {resolvedActionLabel}
+                      <ExternalLink className="ml-1 h-3 w-3" />
+                    </a>
                   </Button>
                 </div>
               </div>

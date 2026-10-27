@@ -1,0 +1,990 @@
+{
+  "schemaVersion": 1,
+  "preparedOn": "2026-10-27",
+  "baselineCommit": "a2091c2",
+  "databaseWrites": 0,
+  "limitations": [
+    "仅用户指定5项有生产优先级证据，未提供逐Spot访问数；其余按原文可靠性与地区路线连贯性选择。",
+    "本地547份轻量快照生成于2026-08-09，不等于生产586条全量记录；正文可截断，SEO/体验未导出不代表缺失。",
+    "外部依据区分搜索索引摘要与全文读取，不把历史新闻当当前价格、开放或交通证明。",
+    "全部18项可审阅，未写入任何公开快照或生产库；不是可批量执行的更新文件。"
+  ],
+  "applyConditions": [
+    "授权内容编辑后，先只读取回每项当前完整正文、体验、中文SEO、updated_at、发布状态。",
+    "逐字段与草稿比较，已存在更好内容或已关闭/改名则暂停对应建议；只修改确认需要的字段。",
+    "所有个人体验及原始资料保持不动；仅6项开篇建议可手工合并，不可整篇覆盖。",
+    "对指定字段做更新前版本比较；如果updated_at变化，重新比较而不是重试覆盖。",
+    "另行批准生产写入，使用既有保存/发布路径，确认公开详情、卡片、搜索与英文翻译版本；失败不自动重放数据库写入。"
+  ],
+  "sources": {
+    "jinling": {
+      "title": "江宁区：金陵小城·燕集里人文经济案例",
+      "url": "https://www.jiangning.gov.cn/xwzx/gzdt/202411/t20241126_5019173.html",
+      "access": "search_index_excerpt_only; direct_open_timeout",
+      "supports": "夜游、沉浸式演艺定位；不能证明当前演出时间或票价。"
+    },
+    "avenue": {
+      "title": "中山陵园管理局：梧桐大道限定皮肤",
+      "url": "https://zschina.nanjing.gov.cn/lyzx/202601/t20260113_5763812.html",
+      "access": "search_index_excerpt",
+      "supports": "陵园路梧桐大道与人行天桥；不代表当前道路管制或拍摄条件。"
+    },
+    "guishan": {
+      "title": "独克宗古城官网：景点介绍",
+      "url": "https://dkzgc.cn/col.jsp?id=105",
+      "access": "search_index_excerpt_only; direct_open_timeout",
+      "supports": "龟山公园在月光广场旁，可登高看古城；官网记载康熙年间，与旧文唐代冲突。"
+    },
+    "prayer": {
+      "title": "云南省民政厅：独克宗地名文化",
+      "url": "https://ynmz.yn.gov.cn/cms/dimingfengcai/9985.html",
+      "access": "search_index_excerpt",
+      "supports": "龟山公园顶一侧有转经筒。草稿不复用最高/最大、精确尺寸等宣传数字。"
+    },
+    "tachuan": {
+      "title": "黄山市人民政府：塔川秋色渐入佳境",
+      "url": "https://www.huangshan.gov.cn/zxzx/qxdt/8407089.html",
+      "access": "search_index_excerpt_only; direct_open_412",
+      "supports": "塔川秋色、田野与乌桕；历史新闻不能证明今年最佳日期。"
+    },
+    "wuzhen": {
+      "title": "乌镇景区官方攻略：乌镇一日游",
+      "url": "https://www.ewuzhen.com/strategy/detail/313606623484395522",
+      "access": "direct_open_read; published_2020-12-31",
+      "supports": "西栅摇橹船、安渡坊售票码头；旧票价、班次、时长均不纳入当前草稿。"
+    },
+    "hongcun": {
+      "title": "UNESCO：皖南古村落—西递、宏村",
+      "url": "https://whc.unesco.org/en/list/1002",
+      "access": "search_index_excerpt",
+      "supports": "宏村世界文化遗产身份与传统村落格局；不证明当前票价。"
+    },
+    "bishan": {
+      "title": "黄山市人民政府：文创赋能古村",
+      "url": "https://www.huangshan.gov.cn/zxzx/ztzl/rdzt/ncrjhjzzmlxcjs/8416593.html",
+      "access": "search_index_excerpt",
+      "supports": "碧山村在黟县碧阳镇；古建筑活化背景。"
+    },
+    "niushou": {
+      "title": "牛首山官网：佛顶宫",
+      "url": "https://www.niushoushan.net/TheTempleOfTheBuddha.html",
+      "access": "search_index_excerpt",
+      "supports": "佛顶宫建筑与大小穹顶；不证明每日舍利瞻礼、接驳、展演开放。"
+    },
+    "qixia": {
+      "title": "南京市民族宗教事务局：栖霞寺简介",
+      "url": "https://mzzjj.nanjing.gov.cn/mzzj/njzjgk/njfj/201809/t20180927_1198633.html",
+      "access": "search_index_excerpt",
+      "supports": "栖霞寺在栖霞山；不证明红叶物候或当前交通。"
+    },
+    "gate": {
+      "title": "南京市文旅局：中华门",
+      "url": "https://wlj.nanjing.gov.cn/ztzl/mcq/gzqk/202302/t20230228_3838766.html",
+      "access": "search_index_excerpt",
+      "supports": "中华门为明代南京都城城门；不证明夜间项目仍在运营。"
+    },
+    "beasts": {
+      "title": "中山陵园管理局：石象路",
+      "url": "https://zschina.nanjing.gov.cn/fjms/jqjd/mxljq/zyjd_73297/201810/t20181015_3860149.html",
+      "access": "search_index_excerpt",
+      "supports": "石象路为明孝陵神道第一段、沿途六种石兽；不复述长度宣传数字。"
+    }
+  },
+  "drafts": [
+    {
+      "id": 794,
+      "name": "金陵小城",
+      "slug": "jinling-xiaocheng-794",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "user_supplied_30d_priority_without_per_spot_counts",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/jinling-xiaocheng-794.json",
+        "sha256": "b2f12a38ece2607d2ff221ba98186039398cf9feebf0c19c5ab2ef6596088e82",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "金陵小城我会把它定义成“氛围型夜游”，不是来考古，也不是非要每一处都拍照。它用六朝文化做了现代化的古风街区，真正好看的时段是天黑以后：灯一亮、演员进场，江南古韵才出来。最顺的玩法就是牛首山出来直接过来；演出时间和票种常变，别按旧攻略卡点。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "金陵小城｜南京夜游看点与牛首山行程衔接",
+        "seo_description_zh": "金陵小城的看点在夜间街区氛围与演艺，适合与牛首山安排在同一段旅程。这里整理游览侧重点和行程衔接建议，演出安排与票种需以景区当日公告为准。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "正文已有清楚的游览判断，保留风格，仅补充目的地与夜游意图明确的 SEO。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/jinling-xiaocheng-794.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "jinling"
+        }
+      ],
+      "review_checks": [
+        "生产正文已有深度，禁止以本地短版替换；确认牛首山与金陵小城当天开放安排。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 803,
+      "name": "陵园路梧桐大道",
+      "slug": "wutong-avenue-803",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "user_supplied_30d_priority_without_per_spot_counts",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/wutong-avenue-803.json",
+        "sha256": "8e0f3a90820041d4587d98093df3b618eca717cf242f4b888b8a91c09c05b85c",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "陵园路梧桐大道适合放在明孝陵之后慢慢走：它不是收费景点，也没有一个必须打卡的门头，重点就是梧桐把道路拉出的延伸感。秋天确实浪漫，但颜色会被风雨和降温直接影响，别只为了“金黄滤镜”而来；把它和燕雀湖、石象路串成一段散步，体验会更完整。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "陵园路梧桐大道｜南京钟山散步与拍照建议",
+        "seo_description_zh": "陵园路梧桐大道以树冠交织的道路景观见长，可与明孝陵、石象路及燕雀湖一带的散步衔接。整理赏景与拍照思路，秋叶颜色和道路通行情况需按出发时实际状态判断。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "已有正文实用且自然，不为字数重写；SEO 突出钟山、散步与摄影意图。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/wutong-avenue-803.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "avenue"
+        }
+      ],
+      "review_checks": [
+        "不写固定金黄日期、不承诺免费区域边界；道路管制和步行衔接现场核验。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 569,
+      "name": "龟山公园",
+      "slug": "spot-569",
+      "category": "attraction",
+      "region": "香格里拉",
+      "priority_basis": "user_supplied_30d_priority_without_per_spot_counts",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/spot-569.json",
+        "sha256": "7af01483e9f975e54cb7bf979e2fadaf5ce71ded7892d245b830158a4a5af8b3",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "龟山公园坐落于云南省迪庆藏族自治州香格里拉市独克宗古城中心制高点，紧邻月光广场，是古城的天然观景台与藏传佛教文化圣地，全天免费开放。公园始建于唐代，坐落于海拔3300米的龟山之巅，登顶可360°全景俯瞰整个独克宗古城的藏式土掌房群落、远处的纳帕海与连绵雪山。园内核心地标为世界最大的巨型转经筒，高约21米（5层楼高），纯铜镀金打造，筒壁浮雕四大菩萨与佛家八宝，",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "香格里拉龟山公园｜独克宗古城观景与转经筒",
+        "seo_description_zh": "龟山公园位于香格里拉独克宗古城月光广场旁，可登高看古城，也可近看转经筒。把它作为古城步行的一站，按体力安排登高，入园条件与开放情况出发前再确认。",
+        "intro_zh_for_manual_merge": "龟山公园位于香格里拉独克宗古城月光广场旁的小山上。登高望向古城，可以从屋顶与街巷的排列中看见不同于地面散步的视角；山上的转经筒也是这里醒目的地标。\n\n游览可以与月光广场和古城街巷连在一起，登高时按自己的体力慢慢走。开放范围、入园条件及现场参观要求，出发前向景区确认。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "旧文以堆叠数字和断句结束；移除未核实的全天免费、远望纳帕海与最高/最大等保证，重组为地点、看点和步行安排。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/spot-569.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "guishan"
+        },
+        {
+          "type": "external_primary",
+          "source": "prayer"
+        }
+      ],
+      "review_checks": [
+        "生产原文约208字符是用户只读核验，本地约200字且截断，两者不能视为同一版本。",
+        "唐代与官网康熙年间冲突：建议先不写建造年代；核对最新全文后只替换对应介绍段。",
+        "当前票价、开放时段、宗教空间参观与摄影要求均未核实。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 788,
+      "name": "塔川",
+      "slug": "tachuan-788",
+      "category": "attraction",
+      "region": "宏村",
+      "priority_basis": "user_supplied_30d_priority_without_per_spot_counts",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/tachuan-788.json",
+        "sha256": "e9cad7deb1591ea596094e9abf55201daf68f741b68f1f5de8754efdde805432",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "宏村附近秋色村落，行程中 2025-11-13 中午至下午游览。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "塔川赏秋｜宏村周边的村落与田野摄影",
+        "seo_description_zh": "塔川的秋景由村落、田野与变色树木共同组成，适合放进宏村周边的赏秋行程。阅读 JnQ 原有游览记录与摄影观察，实际叶色和天气每年不同，不按固定日期保证景观。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "生产已知有丰富正文与真实体验；仅提供 SEO，绝不把本地一句话简介当完整原文。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/tachuan-788.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "tachuan"
+        }
+      ],
+      "review_checks": [
+        "必须保留生产全文及个人体验；历史秋色新闻不代表2026年叶色。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 435,
+      "name": "安渡坊摇橹船",
+      "slug": "spot-435",
+      "category": "attraction",
+      "region": "乌镇",
+      "priority_basis": "user_supplied_30d_priority_without_per_spot_counts",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/spot-435.json",
+        "sha256": "8a18312b7ff734304001c02517bfd15aca7e8316db350401dd7053049911d50c",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "乌镇景区里很有代表性的水乡船游体验。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "安渡坊摇橹船｜乌镇西栅水上游览体验",
+        "seo_description_zh": "从水面看乌镇西栅，是步行逛街之外的另一种游览角度。安渡坊摇橹船页面保留 JnQ 的真实乘船记录，出发前区分摇橹船与摆渡船，并确认所乘航线、售票点及当日安排。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "生产已有个人体验且本地未导出，仅补 SEO，帮助用户区分游览船和入口摆渡船。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/spot-435.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "wuzhen"
+        }
+      ],
+      "review_checks": [
+        "当前完整体验必须只读取回并保留。",
+        "2020官方攻略仅用于识别项目；不得照抄60元/480元、8人、运营时段或航线为现行条件。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 785,
+      "name": "宏村风景区",
+      "slug": "hongcun-scenic-area-785",
+      "category": "attraction",
+      "region": "宏村",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/hongcun-scenic-area-785.json",
+        "sha256": "bf334ef0594f23387c9da38038671c0aa3c2171db1c3975bccab12ec83454e7d",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "宏村坐落于中国安徽省黄山市黟县，始建于南宋绍兴年间，距今已有近 900 年历史，是国家 5A 级景区，和西递村一同被列入世界文化遗产。整座古村落依照仿生牛形格局打造，村口古树为牛角，月沼为牛胃，蜿蜒水圳贯穿全村；从宏村西门入园首先会来到地标南湖，湖边常有写生学生与摄影爱好者，湖上知名石拱桥就是画桥，是电影《卧虎藏龙》取景地，也是必打卡景点，早起还有机会遇见梦",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "宏村风景区｜南湖、月沼与徽派村落散步",
+        "seo_description_zh": "宏村是皖南古村落世界文化遗产的一部分，南湖、月沼与水圳串起村落景观。沿水慢走、观察白墙黛瓦与街巷，比赶着收集打卡点更容易理解这里的空间，入园安排另行确认。",
+        "intro_zh_for_manual_merge": "宏村位于安徽黟县，与西递共同列入世界文化遗产。南湖、月沼与贯穿村落的水圳，是认识宏村格局的一条线索；白墙黛瓦和临水街巷，也让散步与摄影有了自然的节奏。\n\n初次来可以先沿水慢走，再走进感兴趣的巷子与建筑。拍摄时给居民和通行游客留出空间，具体入园条件与建筑开放范围按景区当日安排确认。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "本地长段落在半句截断；提供完整开篇，弱化必打卡与未经核实的电影标签，保留水系与村落的实用阅读主线。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/hongcun-scenic-area-785.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "hongcun"
+        }
+      ],
+      "review_checks": [
+        "只合并介绍开篇，不删除当前更丰富的建筑资料和个人体验。",
+        "当前票务、出入口、开放建筑未核实；不使用旧5A和拍摄机位宣传作为新增卖点。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 787,
+      "name": "卢村观景台",
+      "slug": "lucun-viewing-platform-787",
+      "category": "attraction",
+      "region": "宏村",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/lucun-viewing-platform-787.json",
+        "sha256": "51c671033d1e35263feabf7595ff6c8220b49c91e22cf7645519f6a7e508d79c",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "想看日出可以前往卢村观景台，我们清晨六点从宏村西门搭乘电瓶车前往。观景台游客比预期多，旺季容易堵车，有时需要步行上山。清晨六点二十分观景台就已经挤满人，想卡位拍日出要提早抵达，现场经常有二三十台无人机同时升空。虽然不一定能遇到梦幻晨雾搭配徽派建筑，但阳光洒落村落与田野间，皖南秋色依旧绝美 If you want to watch the sunrise, h",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "卢村观景台｜宏村周边日出与村落摄影记录",
+        "seo_description_zh": "从宏村周边前往卢村观景台，可以把村落与田野放进同一个画面。JnQ 的清晨记录包含候位与人流观察，晨雾、日出和交通条件随当天变化，不保证相同景观或接驳安排。",
+        "intro_zh_for_manual_merge": "卢村观景台适合从高处看村落与田野，把它放进宏村周边的清晨摄影行程时，重点是光线、天气和现场视野。晨雾不是每天都有，不必把某一张照片当成到访时一定能看到的画面。\n\n准备前往时，先确认当前可通行的上山方式，再为登高和候位留出余量。清晨光线较弱，步行按自己的体力安排，拍摄时也留意身边游客的通行。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "本地混有整段英文且将单次6点接驳经验写成常规线路；介绍改成中性建议，具体到访过程原封保留在个人体验区。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/lucun-viewing-platform-787.json"
+        }
+      ],
+      "review_checks": [
+        "原始“我们清晨六点”“六点二十”“无人机数量”仅是历史体验，不移植为今天的班次或承诺。",
+        "观景台位置、可达路径、接驳和无人机限制未获当前官方确认；发布前核对，不能据此给交通保证。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 789,
+      "name": "碧山村",
+      "slug": "bishan-village-789",
+      "category": "attraction",
+      "region": "宏村",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/bishan-village-789.json",
+        "sha256": "f880373d3b571d00bdfd057f6117faf37d431267629b6a62e86e88dc1d399bb0",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "从宏村打车约 25 分钟可达碧山村，氛围比宏村安静、更有在地生活感，保留皖南村落原始样貌。巷内有手绘鱼灯手作小店、文艺风格杂货咖啡馆，很好逛超好拍。 必去碧山书局，由两百年徽派古祠堂改造，是先锋乡村书店，二楼景观咖啡厅可拍到远方云门塔。也可以到阿卜糖水铺喝早茶，村外街道有漂亮银杏，终点地标云门塔矗立田野间，静谧治愈，很适合慢旅。 It’s a 25-minu",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "碧山村｜黟县村落散步与书店停留建议",
+        "seo_description_zh": "碧山村位于安徽黟县，村落街巷与古建筑活化空间适合慢慢看。可结合原有的碧山书局及小店探访记录安排散步，店铺营业、交通与现场开放情况出发前分别确认。",
+        "intro_zh_for_manual_merge": "碧山村位于安徽黟县碧阳镇。相比把每一处都当作拍照目标，沿街巷看看村落生活、再找一处愿意停留的空间，更能把这里放进一段有余裕的行程。\n\n原有记录中的碧山书局与小店，可以作为散步线索；出发前分别确认它们是否营业，再决定停留安排。村落仍有居民生活，进入巷道、拍摄门窗与店铺时，先尊重现场的边界。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "清理中文正文后接英文与固定25分钟车程的写法，保留真实小店和村落观察；不把历史店铺状态当实时。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/bishan-village-789.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "bishan"
+        }
+      ],
+      "review_checks": [
+        "打车时间受起点与交通影响，不作为固定时长。",
+        "碧山书局楼层、咖啡厅、云门塔可达性和各店营业未实时核实；原体验保留并注明到访日期。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 790,
+      "name": "秀里水镇",
+      "slug": "xiuli-water-town-790",
+      "category": "attraction",
+      "region": "宏村",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/xiuli-water-town-790.json",
+        "sha256": "fb4facb1b651a1a97db5d9d95c8bb7998b2c0b0892d0fcf471cc6ccb9934a3da",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "秀里水镇由影视城改造而成，门票亲民，单票 10 元、门票加船票 30 元。园区不大，1–2 小时就能逛完，店内营业店家不多，但江南水乡氛围浓厚，小桥流水、白墙黛瓦景致优美。 这里是电影版《武林外传》取景地，同福客栈、七侠镇场景都在此拍摄。可以搭乘游船绕河道一圈，推荐傍晚前来，晚上有鱼灯巡游与表演。若没去过其他江南水乡，这里很适合简单散步感受水乡风情。 Xiu",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "秀里水镇｜黟县水乡散步与影视场景记录",
+        "seo_description_zh": "秀里水镇的原有记录以小桥流水、白墙黛瓦与影视场景为主，适合与黟县村落行程一起阅读。计划前往时另行确认开放、票种及游船安排，旧记录的价格和表演不能当作当前承诺。",
+        "intro_zh_for_manual_merge": "秀里水镇的原有游览记录，重点是临水街巷、小桥和白墙黛瓦，以及与影视拍摄有关的场景。园区的游览安排可以围绕散步与看景展开，不必预设每家店都在营业。\n\n如果想乘船或看表演，先确认当天是否提供，再决定到访时间。门票与船票可能分开售卖，购买前看清项目范围；旧记录里的价格、时长和夜间活动，仅保留为当次到访背景。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "本地旧文带明确10元/30元价格与夜间鱼灯安排，当前未能证实；提供不含过期报价的开篇，避免误导决策。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/xiuli-water-town-790.json"
+        }
+      ],
+      "review_checks": [
+        "当前运营、影视场景展示、票种、游船和夜间表演全部待官方或现场核验。",
+        "《武林外传》取景说法尚未独立核实，不新增到 SEO；历史个人体验不删除。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 791,
+      "name": "新街口古南都弘嘉逸居酒店",
+      "slug": "grand-yiju-hotel-xinjiekou-791",
+      "category": "accommodation",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/grand-yiju-hotel-xinjiekou-791.json",
+        "sha256": "be5b18442f628ca859b47ad55418db443207e5c61c11790884948504e6418807",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "住新街口最大的优势不是酒店多高级，而是你每天收工后都还有选择：地铁方便、吃饭方便，去夫子庙和钟山也好调度。第一晚从南京南站过来，建议把它当“回血点”，别再硬塞景点；入住前确认楼栋、早餐和停车，比看房型文案更实在。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "新街口古南都弘嘉逸居酒店｜南京住宿位置与行程安排",
+        "seo_description_zh": "这篇新街口住宿记录着重位置与每天行程的衔接：抵达后先安顿，再安排南京市区游览。订房前核对酒店名称、具体楼栋、房型、早餐和停车条件，不把历史入住背景当成现时服务保证。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "住宿短文已有清楚的决策点，不扩写不存在的设施清单；仅补以位置及入住核对为核心的 SEO。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/grand-yiju-hotel-xinjiekou-791.json"
+        }
+      ],
+      "review_checks": [
+        "当前酒店全名、经营状态、地址及最近交通未实时核实。",
+        "早餐、停车、价格、步行到地铁的距离均不新增保证；保留原始入住体验。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 792,
+      "name": "牛首山文化旅游区",
+      "slug": "niushou-mountain-cultural-tourism-zone-792",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/niushou-mountain-cultural-tourism-zone-792.json",
+        "sha256": "a5815df2296e0d5e98b762677e9f102db7bef7a1d8d7643ac63926ddbb31ce08",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "牛首山很适合第一次来南京、又不想只看老城的人。它最震撼的地方不是爬山，而是从废弃矿坑走进佛顶宫时，山体、穹顶和地下空间一下子把尺度拉满；园区真的大，东门进来优先坐接驳，把体力留给佛顶宫。佛顶骨舍利只在官方公布的公开瞻礼日开放，平日不要抱着“进去就能看到”的期待。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "牛首山文化旅游区｜佛顶宫看点与游览安排",
+        "seo_description_zh": "牛首山的佛顶宫以穹顶和地下建筑空间形成鲜明看点，游览前可先确定重点再安排体力。结合南京行程规划入园，接驳、开放区域与佛顶骨舍利瞻礼需分别查看景区最新公告。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "原文有明确游览判断且提醒瞻礼差异，保留；SEO 区分常规建筑参观与特定瞻礼安排。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/niushou-mountain-cultural-tourism-zone-792.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "niushou"
+        }
+      ],
+      "review_checks": [
+        "不把东门接驳写成唯一必选路线；当前入口、接驳、票务和瞻礼日期待核实。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 793,
+      "name": "牛首山佛顶宫",
+      "slug": "foding-palace-793",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/foding-palace-793.json",
+        "sha256": "e8b6acf2b64c2a376bf230d73290f5a2ef8cf9b46e207e038c7a26023daefb57",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "佛顶宫是牛首山一定要慢下来的地方：外面先拍水景倒影和大小穹顶，进到里面再看九层空间如何把宗教意象做成一场沉浸式建筑体验。第一次来别急着跟着人流冲，抬头看穹顶、再走经文廊，画面会比单纯打卡丰富很多。演艺、展陈和舍利瞻礼都有可能调整，出发前看景区当天公告。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "牛首山佛顶宫｜穹顶、倒影与建筑参观重点",
+        "seo_description_zh": "佛顶宫是牛首山的核心建筑看点，可从水景倒影与穹顶外观，再走进室内空间慢慢看。这里整理建筑参观和摄影侧重点，展陈、演艺与舍利瞻礼开放情况需按景区当日安排确认。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "不重复改写已完成的叙事，仅补独立于牛首山园区页的建筑参观搜索意图。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/foding-palace-793.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "niushou"
+        }
+      ],
+      "review_checks": [
+        "当前可进入楼层、摄影要求、展演与瞻礼不作保证；不新增九层全部可达的表述。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 795,
+      "name": "栖霞山",
+      "slug": "qixia-mountain-795",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/qixia-mountain-795.json",
+        "sha256": "cca97984ae90d4ca3c14d669c96ba02cafa8774e684f27106475e2220cce6fed",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "想看南京秋天的颜色，栖霞山比“满山通红”更有层次：红、橙、黄和还没转色的绿会同时出现。我的建议是别把它当纯爬山，栖霞寺和南朝石窟要一起看，才不会只收获一张红叶照。秋季周末人流很猛，想拍干净画面就早到；红叶进度看当年官方发布，不要迷信固定日期。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "栖霞山赏秋｜红叶、栖霞寺与山间游览建议",
+        "seo_description_zh": "栖霞山的秋色不只有红叶，还可结合栖霞寺和山间文化景观看。这里整理赏景侧重点与人流观察，叶色随天气变化，出发前核对当年的物候、开放及交通安排。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "原文已有避开固定红叶日期的实用提醒；SEO 聚焦赏秋与寺院文化，不增加最佳日期。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/qixia-mountain-795.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "qixia"
+        }
+      ],
+      "review_checks": [
+        "今年物候、寺院开放、入园条件与交通未核实；不沿用旧攻略线路和票价。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 797,
+      "name": "中华门",
+      "slug": "zhonghua-gate-797",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/zhonghua-gate-797.json",
+        "sha256": "8324f5a78462f933a581a635fdaf93b649b3408122d098d2333a3d03391f1252",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "中华门最值得看的，是你能直接读懂明代城防到底有多复杂：闸券、瓮城、藏兵洞一层层往里走，比只在城墙上拍照更有意思。建议下午进，先逛结构、再等到傍晚看城墙日落，时间刚好最舒服。《心印·中华门》属于独立夜间项目，是否演出、怎么入场一定当天确认，别把旧票务技巧当保证。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "中华门｜南京明城墙瓮城结构与参观重点",
+        "seo_description_zh": "中华门是南京明城墙的代表性城门，参观时可留意瓮城、闸券与藏兵洞的层层结构。把建筑细节与城墙景观一起看，日间参观和夜间演出项目需分别确认开放与入场条件。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "保留读懂城防结构的优质原文，只补中华门与夜间项目应分开确认的 SEO。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/zhonghua-gate-797.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "gate"
+        }
+      ],
+      "review_checks": [
+        "当前城墙开放、登城范围、日落拍摄位置与《心印·中华门》演出仍需核实。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 798,
+      "name": "夫子庙秦淮河",
+      "slug": "confucius-temple-qinhuai-scenic-area-798",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/confucius-temple-qinhuai-scenic-area-798.json",
+        "sha256": "a1f5dd7c464dae931b54125bb06c9fb92cfafbb24dc690c804d1c93ca80456f2",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "夫子庙秦淮河适合晚上来，但别只沿主街走一圈就走。把夫子庙、江南贡院、乌衣巷周边和内秦淮河连起来走，才会知道这里为什么是南京的“城市名片”；想坐船就把它当体验，不要期待私享空镜，热门时段排队很正常。游船班次和展馆营业各自独立，临出发再确认最省心。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "夫子庙秦淮河｜南京老城夜游与步行安排",
+        "seo_description_zh": "夫子庙、江南贡院和乌衣巷周边，可与内秦淮河串成南京老城的一段夜游。这里整理步行与乘船的取舍，展馆营业、游船航线和排队情况需分别了解，不把夜景等同于所有项目都开放。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "已有正文提供具体街区与游览取舍，保留；SEO 解释步行、展馆和游船不是同一营业项目。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/confucius-temple-qinhuai-scenic-area-798.json"
+        }
+      ],
+      "review_checks": [
+        "地区范围来自本地原文，未核对当前展馆开放和游船服务；不新增航线/班次/价钱。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 800,
+      "name": "燕雀湖水杉林",
+      "slug": "yanque-lake-800",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/yanque-lake-800.json",
+        "sha256": "5cdfc40ba0211dc22e56df8b9c0283161acac1d9ac3d43f395f42650de7033ad",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "燕雀湖是那种“天气对了就很值”的小惊喜：秋末水杉临水，顺光和倒影一出来，画面会很安静。它不值得专门绕路，但放在明孝陵步行线里刚刚好；阴天、大风或色叶未到位时，观感会落差很大，所以别只照着别人的照片期待。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "燕雀湖水杉林｜明孝陵一带的临水赏景建议",
+        "seo_description_zh": "燕雀湖水杉林可放进明孝陵一带的步行安排，临水树影与倒影是主要看点。出片效果受叶色、光线和风影响，适合顺路观察，不把秋景照片当作到访当天的保证。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "小型赏景点不必凑字数；保留顺路游览与天气边界，只增加明确搜索摘要。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/yanque-lake-800.json"
+        }
+      ],
+      "review_checks": [
+        "地理衔接取自本地原文；具体入口、收费边界、当前步行通行和物候待核实。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 801,
+      "name": "石象路",
+      "slug": "shixiang-road-801",
+      "category": "attraction",
+      "region": "南京",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/shixiang-road-801.json",
+        "sha256": "ba129d3084bd33a7917bba42350c55a511d60a0fe2959dacdc18254a006b062f",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "石象路的精华不是“南京最美600米”这句标签，而是六种明代石兽排在神道两侧，秋叶只是最好的背景。建议边走边看狮、獬豸、骆驼、象、麒麟、马的细节，不要只拍背影照；这里也是文物保护区，别攀爬石刻。想避开人群，早点来比修图更有用。",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "石象路｜南京明孝陵神道石兽与赏秋散步",
+        "seo_description_zh": "石象路是明孝陵神道的一段，沿途石兽与秋叶形成不同的观赏层次。散步时可留意石刻造型，拍摄也别忽略文物保护；叶色、人流及入园条件，以到访时的实际情况为准。"
+      },
+      "body_action": "preserve_current_full_description_and_personal_experience",
+      "reason": "原文已有历史细节与保护提醒，保留；不重复“最美600米”宣传标签。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/shixiang-road-801.json"
+        },
+        {
+          "type": "external_primary",
+          "source": "beasts"
+        }
+      ],
+      "review_checks": [
+        "不攀爬石刻的建议保留；当前开放、票务和拍摄管理要求待核实。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    },
+    {
+      "id": 805,
+      "name": "阿卜糖水铺",
+      "slug": "abu-tong-sui-shop-805",
+      "category": "food",
+      "region": "宏村",
+      "priority_basis": "local_evidence_and_route_coherence_not_claimed_traffic_rank",
+      "status": "review_draft_not_applied",
+      "original": {
+        "file": "public-data/spots/abu-tong-sui-shop-805.json",
+        "sha256": "22de023d6571b1af84dc8ffeb821ceb6147cbaa8eee4224079a78d2213b4c013",
+        "source": {
+          "type": "static-lightweight-location-snapshot",
+          "generatedAt": "2026-08-09T13:26:47.005Z"
+        },
+        "description": "逛碧山村途中，我们来到阿卜糖水铺小坐喝早茶，店里氛围悠闲，可以放慢脚步歇歇脚，品尝地道中式甜汤点心。 While wandering around Bishan Village, we stopped by Abu Sweet Soup Shop for morning tea. It’s a cozy spot to slow down and enjoy",
+        "completeness": "lightweight_excerpt_not_current_full_body",
+        "seo_state": "unknown_in_lightweight_snapshot",
+        "personal_experience_state": "not_exported_do_not_replace"
+      },
+      "proposal": {
+        "seo_title_zh": "阿卜糖水铺｜碧山村早茶与甜汤小坐记录",
+        "seo_description_zh": "记录 JnQ 在碧山村阿卜糖水铺小坐喝早茶的一段停留：把村落散步放慢，在甜汤点心间歇歇脚。此页保留当次探店感受，当前营业、菜单和价格需向店家确认。",
+        "intro_zh_for_manual_merge": "阿卜糖水铺出现在这次碧山村的散步记录里，是逛村途中停下来喝茶、吃甜汤点心的一站。把它当作村落行程中的短暂停留，比围绕一家小店排满行程更从容。\n\n这是一段到访记录，不能代替店铺当前的营业公告。若准备专程前往，先确认是否营业及当日菜单，再安排停留。"
+      },
+      "body_action": "merge_intro_after_reading_current_full_body_never_overwrite_whole_description",
+      "reason": "餐饮小店保持简短；中文介绍去掉英文复述，不编招牌菜、味道、消费或营业时间。",
+      "evidence": [
+        {
+          "type": "local_primary_historical_excerpt",
+          "file": "public-data/spots/abu-tong-sui-shop-805.json"
+        }
+      ],
+      "review_checks": [
+        "“我们来到……喝早茶”的原始中文体验完整保留在个人体验区，不改成新的主观评价。",
+        "当前店名、地址、营业状态、菜单和价钱未实时核实，不能标记为现时餐饮攻略已验收。"
+      ],
+      "protected_fields": [
+        "user_experience",
+        "review",
+        "price_info",
+        "opening_hours",
+        "address",
+        "latitude",
+        "longitude",
+        "publication_status"
+      ]
+    }
+  ]
+}
