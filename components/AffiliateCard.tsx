@@ -67,12 +67,17 @@ interface AffiliatePreview {
 
 function getTrackingSessionId() {
   if (typeof window === 'undefined') return ''
-  const key = 'jnq_session_id'
-  const existing = window.localStorage.getItem(key)
-  if (existing) return existing
-  const value = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
-  window.localStorage.setItem(key, value)
-  return value
+  try {
+    const key = 'jnq_session_id'
+    const existing = window.localStorage.getItem(key)
+    if (existing) return existing
+    const value = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+    window.localStorage.setItem(key, value)
+    return value
+  } catch {
+    // Storage is optional; the existing endpoint accepts a missing session ID.
+    return ''
+  }
 }
 
 const PROVIDER_ICONS: Record<string, React.ReactNode> = {
