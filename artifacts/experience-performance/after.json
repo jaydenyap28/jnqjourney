@@ -1,0 +1,52 @@
+{
+  "label": "after",
+  "mode": "Next development server, local bundled public snapshots; HTTP/SSR only",
+  "htmlBytes": 873061,
+  "htmlGzipBytes": 189748,
+  "requestMs": [
+    1341,
+    133,
+    138,
+    113
+  ],
+  "warmMedianMs": 133,
+  "scriptRequests": 6,
+  "jsBytes": 8690982,
+  "jsGzipBytes": 1975620,
+  "imageElements": 75,
+  "imagesWithSizes": 75,
+  "htmlElements": 1480,
+  "spotLinkElements": 20,
+  "js": [
+    {
+      "url": "/_next/static/chunks/main-app.js?v=1793285512227",
+      "bytes": 6033988,
+      "gzipBytes": 1344340
+    },
+    {
+      "url": "/_next/static/chunks/app-pages-internals.js",
+      "bytes": 133267,
+      "gzipBytes": 31507
+    },
+    {
+      "url": "/_next/static/chunks/app/layout.js",
+      "bytes": 387919,
+      "gzipBytes": 106148
+    },
+    {
+      "url": "/_next/static/chunks/app/page.js",
+      "bytes": 1966864,
+      "gzipBytes": 443471
+    },
+    {
+      "url": "/_next/static/chunks/polyfills.js",
+      "bytes": 112594,
+      "gzipBytes": 39627
+    },
+    {
+      "url": "/_next/static/chunks/webpack.js?v=1793285512227",
+      "bytes": 56350,
+      "gzipBytes": 10527
+    }
+  ]
+}

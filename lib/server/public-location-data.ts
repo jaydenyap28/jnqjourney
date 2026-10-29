@@ -3,9 +3,12 @@ import { unstable_cache } from 'next/cache'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
+import type { PublicLocation } from '@/lib/public-data'
 
 export interface LocationSummary {
   id: number
+  slug?: string
+  region?: PublicLocation['region']
   name: string
   name_cn?: string | null
   category?: string | null
@@ -116,6 +119,8 @@ export async function fetchLocationsByRegion(regionId: number, limit = 60) {
     .slice(0, limit)
     .map((location) => ({
       id: location.id,
+      slug: location.slug,
+      region: location.region,
       name: location.name,
       category: location.category,
       latitude: location.latitude,

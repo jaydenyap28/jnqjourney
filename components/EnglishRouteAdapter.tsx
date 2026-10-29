@@ -17,6 +17,7 @@ import { publicSpotFromLocationSummary } from '@/lib/public-spot'
 import { localizedAlternates, localizedRobots } from '@/lib/localized-metadata'
 import { localizedPath, ui } from '@/lib/locale'
 import { absoluteUrl } from '@/lib/site'
+import { toHomeGuideCard } from '@/lib/home-cards'
 
 /** Route/SEO adapter only: every public body uses the Chinese production renderer. */
 export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
@@ -28,7 +29,7 @@ export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
   const packages=data.packages || []
   let body
   switch(data.kind) {
-    case 'home': body=<HomePageClient initialLocations={data.locations} initialRegions={data.regions} initialGuides={fullGuides} initialNotes={data.notes || []} initialPackages={packages.slice(0,3)}/>;break
+    case 'home': body=<HomePageClient initialLocations={data.locations} initialRegions={data.regions} initialGuides={data.homeGuides || fullGuides.map(toHomeGuideCard)} initialNotes={data.homeNotes || data.notes || []} initialPackages={packages.slice(0,3)}/>;break
     case 'regions': body=<RegionIndexView regions={data.regions.filter(r=>!r.parentId).map(r=>({...r,image_url:r.thumbnail,description:r.shortSummary}))}/>;break
     case 'region': body=<RegionPageView locale="en" region={{...data.region,image_url:data.region?.thumbnail,description:data.region?.shortSummary}} locations={data.locations.map(publicSpotFromLocationSummary)} allGuides={fullGuides} relatedPackages={packages.filter(p=>p.region_id===data.region?.id)}/>;break
     case 'guides': body=<GuideIndexView guides={fullGuides}/>;break

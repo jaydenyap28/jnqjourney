@@ -1,0 +1,97 @@
+{
+  "mode": "Node CPU benchmark over actual bundled records; not browser input latency",
+  "spots": 547,
+  "results": [
+    {
+      "q": "南湖",
+      "before": {
+        "p50Ms": 3.48,
+        "p95Ms": 5.84,
+        "hits": 1
+      },
+      "after": {
+        "p50Ms": 0.21,
+        "p95Ms": 0.31,
+        "hits": 2
+      }
+    },
+    {
+      "q": "cafe mori",
+      "before": {
+        "p50Ms": 6.21,
+        "p95Ms": 11.06,
+        "hits": 1
+      },
+      "after": {
+        "p50Ms": 0.13,
+        "p95Ms": 0.15,
+        "hits": 1
+      }
+    },
+    {
+      "q": "  CAFE   MORI  ",
+      "before": {
+        "p50Ms": 9.44,
+        "p95Ms": 13.17,
+        "hits": 0
+      },
+      "after": {
+        "p50Ms": 0.07,
+        "p95Ms": 0.15,
+        "hits": 1
+      }
+    },
+    {
+      "q": "湯けむり",
+      "before": {
+        "p50Ms": 2.52,
+        "p95Ms": 3.42,
+        "hits": 1
+      },
+      "after": {
+        "p50Ms": 0.08,
+        "p95Ms": 0.1,
+        "hits": 1
+      }
+    },
+    {
+      "q": "farm",
+      "before": {
+        "p50Ms": 2.93,
+        "p95Ms": 3.82,
+        "hits": 5
+      },
+      "after": {
+        "p50Ms": 0.12,
+        "p95Ms": 0.26,
+        "hits": 5
+      }
+    },
+    {
+      "q": "住宿",
+      "before": {
+        "p50Ms": 2.08,
+        "p95Ms": 3.33,
+        "hits": 8
+      },
+      "after": {
+        "p50Ms": 0.09,
+        "p95Ms": 0.22,
+        "hits": 51
+      }
+    },
+    {
+      "q": "不存在的火星景点zzzzz",
+      "before": {
+        "p50Ms": 7.23,
+        "p95Ms": 8.93,
+        "hits": 0
+      },
+      "after": {
+        "p50Ms": 7.74,
+        "p95Ms": 11.7,
+        "hits": 0
+      }
+    }
+  ]
+}

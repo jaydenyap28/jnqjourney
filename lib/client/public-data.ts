@@ -5,9 +5,10 @@ export const fetchPublicData = createRequestDeduper<{ locations: PublicLocation[
       .then(async (response) => {
         const payload = await response.json()
         if (!response.ok) throw new Error(payload?.error?.message || payload?.error || 'Unable to load travel spots right now.')
+        if (!Array.isArray(payload?.locations) || !Array.isArray(payload?.regions)) throw new Error('Unable to load travel spots right now. Please retry.')
         return {
-          locations: Array.isArray(payload.locations) ? payload.locations : [],
-          regions: Array.isArray(payload.regions) ? payload.regions : [],
+          locations: payload.locations,
+          regions: payload.regions,
         }
       })
 )

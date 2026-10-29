@@ -11,6 +11,10 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import FallbackImage from '@/components/FallbackImage'
 import type { PublicLocation } from '@/lib/public-data'
+import { usePublicLocale } from './PublicLocale'
+
+const PAGE_SIZE = 12
+const positionKey = () => `jnq-home-dock:${window.location.pathname}${window.location.search}`
 
 interface BottomFloatingDockProps {
   locations: PublicLocation[]
@@ -36,12 +40,34 @@ export default function BottomFloatingDock({
   onSelectLocation,
 }: BottomFloatingDockProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const locale = usePublicLocale()
+  const [limit, setLimit] = useState(PAGE_SIZE)
+  const visibleLocations = locations.slice(0, limit)
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null)
   const itemRefs = useRef<(HTMLDivElement | null)[]>([])
+  const scrollSaveFrame = useRef<number | null>(null)
 
   useEffect(() => {
+    let saved = window.history.state?.jnqSpotDock
+    try { saved = JSON.parse(sessionStorage.getItem(positionKey()) || 'null') || saved } catch {}
+    setLimit(Math.max(PAGE_SIZE, Math.min(locations.length, Number(saved?.limit) || PAGE_SIZE)))
+    setFocusedIndex(null)
     itemRefs.current = itemRefs.current.slice(0, locations.length)
+    const frame = requestAnimationFrame(() => {
+      if (scrollContainerRef.current) scrollContainerRef.current.scrollLeft = Number(saved?.scrollLeft) || 0
+    })
+    return () => {
+      cancelAnimationFrame(frame)
+      if (scrollSaveFrame.current !== null) cancelAnimationFrame(scrollSaveFrame.current)
+      scrollSaveFrame.current = null
+    }
   }, [locations])
+
+  const savePosition = (nextLimit = limit) => {
+    const position = { limit: nextLimit, scrollLeft: scrollContainerRef.current?.scrollLeft || 0 }
+    try { sessionStorage.setItem(positionKey(), JSON.stringify(position)) } catch {}
+    window.history.replaceState({ ...window.history.state, jnqSpotDock: position }, '')
+  }
 
   const scrollToItem = (index: number) => {
     const item = itemRefs.current[index]
@@ -50,35 +76,26 @@ export default function BottomFloatingDock({
     }
   }
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (locations.length === 0) return
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (locations.length === 0 || (event.target as HTMLElement).closest('input, select, textarea, button, a')) return
 
       if (event.key === 'ArrowRight') {
         event.preventDefault()
-        setFocusedIndex((prev) => {
-          const next = prev === null ? 0 : Math.min(prev + 1, locations.length - 1)
+          const next = focusedIndex === null ? 0 : Math.min(focusedIndex + 1, visibleLocations.length - 1)
+          setFocusedIndex(next)
           scrollToItem(next)
           onHoverLocation(locations[next])
-          return next
-        })
       } else if (event.key === 'ArrowLeft') {
         event.preventDefault()
-        setFocusedIndex((prev) => {
-          const next = prev === null ? 0 : Math.max(prev - 1, 0)
+          const next = focusedIndex === null ? 0 : Math.max(focusedIndex - 1, 0)
+          setFocusedIndex(next)
           scrollToItem(next)
           onHoverLocation(locations[next])
-          return next
-        })
       } else if (event.key === 'Enter' && focusedIndex !== null) {
         event.preventDefault()
         onSelectLocation(locations[focusedIndex])
       }
     }
-
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [locations, focusedIndex, onHoverLocation, onSelectLocation])
 
   const isDown = useRef(false)
   const startX = useRef(0)
@@ -129,6 +146,14 @@ export default function BottomFloatingDock({
           <div className="w-full max-w-fit px-1.5 md:px-6">
             <div
               ref={scrollContainerRef}
+              tabIndex={0}
+              role="region"
+              aria-label={locale === 'en' ? 'Travel spots' : '旅行地点'}
+              onKeyDown={handleKeyDown}
+              onScroll={() => {
+                if (scrollSaveFrame.current !== null) return
+                scrollSaveFrame.current = requestAnimationFrame(() => { scrollSaveFrame.current = null; savePosition() })
+              }}
               className="scrollbar-hide flex cursor-grab gap-2 overflow-x-auto snap-x px-1 pb-1.5 active:cursor-grabbing md:gap-4 md:px-2 md:pb-4"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               onMouseDown={handleMouseDown}
@@ -139,7 +164,7 @@ export default function BottomFloatingDock({
               {locations.length === 0 ? (
                 <div className="px-4 py-4 text-xs italic text-white/55 md:py-8 md:text-sm"><PublicCopy text={"\n                  No matching spots yet. Try another search / 目前没有符合条件的景点，请换一个关键词。\n                "}/></div>
               ) : (
-                locations.map((location, index) => {
+                visibleLocations.map((location, index) => {
                   const coverImage = location.thumbnail || '/placeholder-image.jpg'
 
                   return (
@@ -170,6 +195,8 @@ export default function BottomFloatingDock({
                               src={coverImage}
                               alt={location.name}
                               fill
+                              sizes="(max-width: 767px) 176px, 300px"
+                              priority={index < 2}
                               className={cn(
                                 'object-cover opacity-90 transition-transform duration-700',
                                 index === focusedIndex
@@ -209,7 +236,8 @@ export default function BottomFloatingDock({
                             <Link
                               href={`/spot/${location.slug}`}
                               onClick={(event) => event.stopPropagation()}
-                              className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-[9px] text-white/90 transition hover:bg-white/20 md:px-2.5 md:text-[11px]"
+                              prefetch={false}
+                              className="inline-flex min-h-11 items-center gap-1 rounded-full bg-black/55 px-3 py-1 text-xs text-white transition hover:bg-black/75"
                             >
                               View spot
                               <ArrowRight className="h-3 w-3" />
@@ -221,6 +249,7 @@ export default function BottomFloatingDock({
                   )
                 })
               )}
+              {limit < locations.length ? <button type="button" onClick={() => { const next = limit + PAGE_SIZE; setLimit(next); savePosition(next) }} className="min-h-11 w-36 shrink-0 snap-start rounded-2xl border border-white/20 bg-slate-950/90 px-4 text-sm text-white">{locale === 'en' ? `Show more (${locations.length - limit})` : `显示更多（${locations.length - limit}）`}</button> : null}
             </div>
           </div>
         </div>

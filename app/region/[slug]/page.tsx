@@ -61,5 +61,5 @@ export default async function RegionPage({params}:PageProps) {
  const region=await fetchRegionBySlug(params.slug);if(!region) notFound();
  const [locations,packages,allGuides,notes,publicData]=await Promise.all([fetchLocationsByRegion(region.id,Infinity),readPublishedPackages(),readPublicGuides(),readPublicNotes(),resolvePublicData()]);
  const relatedNotes=notes.filter(note=>note.published && noteRegionIds(note,publicData.locations,publicData.regions).has(region.id)).map(toRelatedNoteCard);
- return <RegionPageView region={region} locations={locations.slice(0,100)} relatedGuideSpotIds={locations.map(location=>location.id)} relatedPackages={packages.filter(p=>p.region_id===region.id)} allGuides={allGuides} relatedNotes={relatedNotes}/>
+ return <RegionPageView region={region} locations={locations} relatedGuideSpotIds={locations.map(location=>location.id)} relatedPackages={packages.filter(p=>p.region_id===region.id)} allGuides={allGuides} relatedNotes={relatedNotes}/>
 }

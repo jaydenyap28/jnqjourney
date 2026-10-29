@@ -1,0 +1,67 @@
+{
+  "mode": "Next compile only, no generate/static prerender, no baseline production build",
+  "homeRouteJs": [
+    {
+      "file": "static/chunks/webpack-48d32aad644b0d61.js",
+      "bytes": 4902,
+      "gzipBytes": 2458
+    },
+    {
+      "file": "static/chunks/fd9d1056-70240439aad7a8cb.js",
+      "bytes": 172837,
+      "gzipBytes": 53744
+    },
+    {
+      "file": "static/chunks/2117-5bbe7b3962995a51.js",
+      "bytes": 124727,
+      "gzipBytes": 32001
+    },
+    {
+      "file": "static/chunks/main-app-28aa3ac514d88be3.js",
+      "bytes": 471,
+      "gzipBytes": 223
+    },
+    {
+      "file": "static/chunks/7648-8337153ba7ae38d2.js",
+      "bytes": 26207,
+      "gzipBytes": 8767
+    },
+    {
+      "file": "static/chunks/3145-3a840e5cb4f09eda.js",
+      "bytes": 14043,
+      "gzipBytes": 5298
+    },
+    {
+      "file": "static/chunks/5569-697f8091a02a10d5.js",
+      "bytes": 31247,
+      "gzipBytes": 10059
+    },
+    {
+      "file": "static/chunks/3916-14ac86f881e6bbfc.js",
+      "bytes": 26170,
+      "gzipBytes": 9270
+    },
+    {
+      "file": "static/chunks/5099-d9e56dcdb5a0c87c.js",
+      "bytes": 9896,
+      "gzipBytes": 3660
+    },
+    {
+      "file": "static/chunks/9112-e234a929a98f93af.js",
+      "bytes": 18526,
+      "gzipBytes": 8614
+    },
+    {
+      "file": "static/chunks/8499-0ed0bce537fb7031.js",
+      "bytes": 11882,
+      "gzipBytes": 4506
+    },
+    {
+      "file": "static/chunks/app/page-d36a3b97312909f5.js",
+      "bytes": 55976,
+      "gzipBytes": 15988
+    }
+  ],
+  "totalBytes": 496884,
+  "sumGzipBytes": 154588
+}

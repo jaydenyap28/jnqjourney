@@ -22,6 +22,7 @@ import { absoluteUrl } from '@/lib/site'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import TiomanPackageComparison from '@/components/TiomanPackageComparison'
+import PublicSearch from '@/components/PublicSearch'
 
 import { buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
@@ -344,8 +345,12 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
         {locations.length > 0 && (
           <section className="space-y-6 pt-8 border-t border-white/10">
             <h2 className="text-2xl font-bold text-white"><PublicCopy text={"所有收录地点 ("}/>{locations.length})</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {locations.map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+            <div>
+              <PublicSearch browse locale={locale} regions={[]} guides={[]} locations={locations.map(spot => ({
+                id: spot.id, name: spot.name, name_cn: spot.name_cn, slug: spot.slug || buildLocationPath(spot.name, spot.id).split('/').pop()!,
+                category: spot.category, shortSummary: getSpotDescription(spot).slice(0, 240), thumbnail: spot.image_url || spot.images?.[0] || null,
+                region: spot.region || (spot.regions?.id ? spot.regions : { id: region.id, name: region.name, country: region.country }),
+              }))} />
             </div>
           </section>
         )}

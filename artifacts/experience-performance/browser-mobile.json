@@ -1,0 +1,39 @@
+{
+  "context": "Real Chrome browser, 390x844, local Next 14 development server, public data snapshots. Load event + 8 seconds. No network/CPU throttling or forced garbage collection. Browser extensions enabled. These are local observations, not Preview/Production benchmarks.",
+  "before": {
+    "navigation": { "transferBytes": 3550635, "encodedBytes": 3550335, "decodedBytes": 3550335, "dclMs": 1524.9, "loadMs": 2205.3 },
+    "fcpMs": 1036, "lcpMs": 2256, "cls": 0.004791067698389524,
+    "resources": { "count": 65, "transferBytes": 15098395, "encodedBytes": 15461535 },
+    "scripts": { "count": 7, "transferBytes": 13470731, "encodedBytes": 13469231 },
+    "imgInitiatedRequests": { "count": 9, "transferBytes": 494387, "encodedBytes": 491687 },
+    "domElements": 15610, "imageElements": 610, "domMapMarkers": 547,
+    "heapBytes": 324942007, "longTasks": 15, "longTaskMs": 2115
+  },
+  "afterFirstSample": {
+    "navigation": { "transferBytes": 875116, "encodedBytes": 874816, "decodedBytes": 874816, "dclMs": 719.3, "loadMs": 912.2 },
+    "fcpMs": 752, "lcpMs": 752, "cls": 0.0011016224553207102,
+    "resources": { "count": 45, "transferBytes": 16373549, "encodedBytes": 16742389 },
+    "scripts": { "count": 8, "transferBytes": 13544864, "encodedBytes": 13543064 },
+    "imgInitiatedRequests": { "count": 7, "transferBytes": 167255, "encodedBytes": 165155 },
+    "domElements": 1527, "imageElements": 75, "domMapMarkers": 0,
+    "heapBytes": 196517436, "longTasks": 6, "longTaskMs": 581
+  },
+  "afterFinalSample": {
+    "navigation": { "transferBytes": 875116, "encodedBytes": 874816, "decodedBytes": 874816, "dclMs": 632.5, "loadMs": 1220.5 },
+    "fcpMs": 652, "lcpMs": 652, "cls": 0,
+    "resources": { "count": 44, "transferBytes": 14319718, "encodedBytes": 14689158 },
+    "scripts": { "count": 8, "transferBytes": 13548234, "encodedBytes": 13546434 },
+    "imgInitiatedRequests": { "count": 14, "transferBytes": 317776, "encodedBytes": 313876 },
+    "domElements": 1527, "imageElements": 75, "domMapMarkers": 0,
+    "heapBytes": 256345708, "longTasks": 5, "longTaskMs": 495
+  },
+  "limits": [
+    "Resource Timing transfer sizes can be zero for cached/cross-origin responses. Not all external bytes are observable.",
+    "imgInitiatedRequests counts initiatorType=img only, includes local icons and excludes images initiated by preload links or CSS.",
+    "JS figures include development/HMR code; dynamic Mapbox adds a script request and did not demonstrate a lower total JS transfer.",
+    "The two after observations show image request and resource transfer variation. No guaranteed first-screen request reduction is claimed.",
+    "Heap observations are GC- and extension-dependent. FCP/LCP are unthrottled local samples, not a controlled production speedup.",
+    "No physical mobile touch or complete Spot route acceptance was performed. Gallery fixture checks were functional only and are excluded from these metrics.",
+    "A transient map loading status was added after the final sample; steady-state DOM and payload conclusions are unaffected, but its paint timing is not remeasured."
+  ]
+}

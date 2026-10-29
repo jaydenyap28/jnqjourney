@@ -6,29 +6,31 @@ import EntityName from '@/components/EntityName'
 import RegionCardDescription from '@/components/RegionCardDescription'
 
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import dynamic from 'next/dynamic'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import { ArrowRight, RefreshCw } from 'lucide-react'
 import { usePublicLocale } from '@/components/PublicLocale'
 import { localizedPath } from '@/lib/locale'
-import { MapRef } from 'react-map-gl/mapbox'
-import Fuse from 'fuse.js'
+import { createSpotSearch, EMPTY_SPOT_FILTERS, readSpotFilters, writeSpotFilters, type SpotFilters } from '@/lib/spot-search'
+import type { HomeGuideCard } from '@/lib/home-cards'
 
 import { Badge } from '@/components/ui/badge'
-import MapView from '@/components/MapView'
 import TopFloatingIsland from '@/components/TopFloatingIsland'
 import BottomFloatingDock from '@/components/BottomFloatingDock'
 import SiteFooter from '@/components/SiteFooter'
-import type { TravelGuide } from '@/lib/guides'
 import FallbackImage from '@/components/FallbackImage'
 import { getGuideDisplayPair } from '@/lib/content-display'
 import { stripSummaryTokens } from '@/lib/notes'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import type { TravelPackage } from '@/lib/server/travel-packages'
-import { resolveGuideMedia } from '@/lib/guide-media'
 import type { PublicLocation as Location, PublicRegion as Region } from '@/lib/public-data'
 import { fetchPublicData } from '@/lib/client/public-data'
 import { compareLocationsByVisitDate, homepageShowcase, type RegionHighlight } from '@/lib/homepage-order'
+
+const MapView = dynamic(() => import('@/components/MapView'), { ssr: false,
+  loading: () => <div className="flex h-full items-center justify-center text-sm text-white/70" role="status"><PublicCopy text="地图载入中，景点列表可先浏览。" /></div>,
+})
 
 interface NoteData {
   slug: string
@@ -55,8 +57,8 @@ function getCategoryLabel(category?: string | null) {
 }
 
 
-function getGuideCoverImage(guide: TravelGuide) {
-  return resolveGuideMedia(guide).coverImage || ''
+function getGuideCoverImage(guide: HomeGuideCard) {
+  return guide.coverImage || ''
 }
 
 function formatGuideDuration(duration: string, locale='zh') {
@@ -75,14 +77,14 @@ function formatGuideTravelStyle(style: string, locale='zh') {
   return style
 }
 
-function getGuideRouteSummary(guide: TravelGuide, limit = 6) {
+function getGuideRouteSummary(guide: HomeGuideCard, limit = 6) {
   return guide.route
     .map((stop) => stop.name)
     .filter(Boolean)
     .slice(0, limit)
 }
 
-function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations: Location[] }) {
+function GuideShowcase({ guides }: { guides: HomeGuideCard[] }) {
   const locale=usePublicLocale()
   const [activeGuidePage, setActiveGuidePage] = useState(0)
 
@@ -120,6 +122,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
                       src={coverImage}
                       alt={title.primary || title.secondary}
                       fill
+                      sizes="(max-width: 1023px) 92vw, 400px"
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
                   ) : (
@@ -218,6 +221,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
             alt={location.name}
             onError={() => onImageError(coverImage)}
             fill
+            sizes="(max-width: 767px) 92vw, (max-width: 1279px) 45vw, 300px"
             className="object-cover transition duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -275,6 +279,7 @@ function RegionCard({ region, onImageError }: { region: RegionHighlight; onImage
             alt={region.name}
             onError={() => onImageError(region.coverImage)}
             fill
+            sizes="(max-width: 639px) 92vw, (max-width: 1279px) 45vw, 400px"
             className="object-cover transition duration-700 group-hover:scale-105"
           />
         ) : (
@@ -315,7 +320,7 @@ function NoteCard({ note }: { note: NoteData }) {
             src={coverImage}
             alt={note.shortTitle || note.title}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 767px) 92vw, 600px"
             className="object-cover transition duration-700 group-hover:scale-105"
           />
         ) : null}
@@ -343,7 +348,7 @@ function NoteCard({ note }: { note: NoteData }) {
 
 interface HomePageClientProps {
   navigate?: (path:string)=>void
-  initialGuides: TravelGuide[]
+  initialGuides: HomeGuideCard[]
   initialLocations: Location[]
   initialNotes: NoteData[]
   initialRegions: Region[]
@@ -361,13 +366,11 @@ export default function HomePageClient({
   initialPackages,
 }: HomePageClientProps) {
   const locale = usePublicLocale()
-  const mapRef = useRef<MapRef>(null)
 
   const [locations, setLocations] = useState<Location[]>(initialLocations)
   const [regions, setRegions] = useState<Region[]>(initialRegions)
-  const [filteredLocations, setFilteredLocations] = useState<Location[]>(initialLocations)
   const [notes] = useState<NoteData[]>(initialNotes)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [filters, setFilters] = useState<SpotFilters>(EMPTY_SPOT_FILTERS)
   const [loadError, setLoadError] = useState<string | null>(initialLoadError)
   const [isRetrying, setIsRetrying] = useState(false)
   const [flyToLocation, setFlyToLocation] = useState<{
@@ -376,37 +379,16 @@ export default function HomePageClient({
     zoom?: number
   } | null>(null)
 
-  const fuse = useMemo(
-    () =>
-      new Fuse(locations, {
-        includeScore: true,
-        threshold: 0.3,
-        keys: [
-          { name: 'name', weight: 1.0 },
-          { name: 'region.country', weight: 0.7 },
-          { name: 'region.name', weight: 0.8 },
-          { name: 'category', weight: 0.6 },
-          { name: 'shortSummary', weight: 0.5 },
-        ],
-      }),
-    [locations]
-  )
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term)
-    const url = new URL(window.location.href)
-    if (term) url.searchParams.set('q', term)
-    else url.searchParams.delete('q')
-    window.history.replaceState(null, '', `${url.pathname}${url.search}${url.hash}`)
-
-    if (!term.trim()) {
-      setFilteredLocations(locations)
-      return
-    }
-
-    const results = fuse.search(term)
-    setFilteredLocations(results.map((result) => result.item))
-  }
+  const search = useMemo(() => createSpotSearch(locations), [locations])
+  const filteredLocations = useMemo(() => search(filters), [search, filters])
+  useEffect(() => {
+    const restore = () => setFilters(readSpotFilters(window.location.search))
+    restore()
+    window.addEventListener('popstate', restore)
+    return () => window.removeEventListener('popstate', restore)
+  }, [])
+  const changeFilters = (next: SpotFilters) => { setFilters(next); writeSpotFilters(next) }
+  const handleSearch = (term: string) => changeFilters({ ...filters, q: term })
 
   const retryLocations = async () => {
     setIsRetrying(true)
@@ -415,7 +397,6 @@ export default function HomePageClient({
       const payload = await fetchPublicData()
       const nextLocations = payload.locations
       setLocations(nextLocations)
-      setFilteredLocations(nextLocations)
       setRegions(payload.regions)
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : 'Unable to load travel spots right now.')
@@ -444,8 +425,8 @@ export default function HomePageClient({
   }
 
   const visibleLocations = useMemo(
-    () => [...filteredLocations].sort(compareLocationsByVisitDate),
-    [filteredLocations]
+    () => filters.q.trim() ? filteredLocations : [...filteredLocations].sort(compareLocationsByVisitDate),
+    [filteredLocations, filters.q]
   )
 
   const [failedImages, setFailedImages] = useState<Set<string>>(() => new Set())
@@ -472,7 +453,6 @@ export default function HomePageClient({
         <h1 className="sr-only"><PublicCopy text={"JnQ Journey 旅游地图、景点资料与完整旅行攻略"}/></h1>
         <div className="absolute inset-0 z-0">
           <MapView
-            ref={mapRef}
             locations={visibleLocations}
             onSelectLocation={handleLocationOpen}
             flyToLocation={flyToLocation}
@@ -481,7 +461,7 @@ export default function HomePageClient({
           <div className="bg-grid-fade pointer-events-none absolute inset-0 opacity-15" />
         </div>
 
-        <TopFloatingIsland onSearch={handleSearch} />
+        <TopFloatingIsland onSearch={handleSearch} filters={filters} onFiltersChange={changeFilters} locations={locations} resultCount={visibleLocations.length} />
         {loadError ? (
           <div className="absolute left-1/2 top-1/2 z-40 w-[min(92vw,28rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-rose-200/20 bg-[#09111f]/95 p-5 text-center shadow-2xl backdrop-blur-xl" role="alert">
             <p className="text-sm font-semibold text-white"><PublicCopy text={"景点暂时无法载入"}/></p>
@@ -519,7 +499,7 @@ export default function HomePageClient({
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
-            <GuideShowcase guides={initialGuides} locations={locations} />
+            <GuideShowcase guides={initialGuides} />
           </section>
 
           {initialPackages.length > 0 ? (

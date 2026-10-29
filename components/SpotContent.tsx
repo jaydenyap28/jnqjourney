@@ -12,7 +12,9 @@ import SpotDescription from './SpotDescription'
 
 
 import dynamic from 'next/dynamic'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import ZoomableImage from './ZoomableImage'
+import { gallerySwipeDirection } from '@/lib/gallery-gesture'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
@@ -281,6 +283,7 @@ export default function SpotContent({
   const locale = usePublicLocale()
   const experience = location[`experience_${locale}`]?.trim()
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
   const [copiedField, setCopiedField] = useState<'address' | 'coords' | ''>('')
@@ -576,18 +579,37 @@ export default function SpotContent({
       ) : null}
 
       {validImages.length > 0 ? (
-        <div className="group relative h-[31vh] min-h-[196px] w-full max-h-[500px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]">
+        <div className="group relative h-[31vh] min-h-[196px] w-full max-h-[500px] overflow-hidden rounded-t-2xl bg-neutral-900 md:h-[50vh] md:min-h-[320px]"
+          role="region" aria-label={locale === 'en' ? 'Spot photo gallery' : '景点相册'} tabIndex={0}
+          style={{ touchAction: 'pan-y pinch-zoom' }}
+          onTouchStart={event => { const touch = event.touches.length === 1 ? event.touches[0] : null; touchStart.current = touch ? { x: touch.clientX, y: touch.clientY } : null }}
+          onTouchCancel={() => { touchStart.current = null }}
+          onTouchEnd={event => {
+            const start = touchStart.current; touchStart.current = null
+            const end = event.changedTouches[0]
+            if (!start || !end || event.touches.length) return
+            const direction = gallerySwipeDirection(start, { x: end.clientX, y: end.clientY })
+            if (direction) event.preventDefault()
+            if (direction === 1) nextImage(); else if (direction === -1) prevImage()
+          }}
+          onKeyDown={event => {
+            if ((event.target as HTMLElement).closest('[role="dialog"]')) return
+            if (event.key === 'ArrowRight') { event.preventDefault(); nextImage() }
+            if (event.key === 'ArrowLeft') { event.preventDefault(); prevImage() }
+          }}>
           <div className="absolute inset-0 z-0">
-            <FallbackImage key={validImages[currentImageIndex]} src={validImages[currentImageIndex]} alt="" fill className="scale-110 object-cover blur-2xl opacity-30" priority />
+            <FallbackImage key={validImages[currentImageIndex]} src={validImages[currentImageIndex]} alt="" fill sizes="(max-width: 1151px) 100vw, 1088px" className="scale-110 object-cover blur-2xl opacity-30" priority={currentImageIndex === 0} />
           </div>
           <div className="relative z-10 h-full w-full p-0 transition-transform duration-500 ease-out md:p-4">
+            <ZoomableImage src={validImages[currentImageIndex]} alt={spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).alt} className="h-full">
             <FallbackImage
               key={validImages[currentImageIndex]}
               src={validImages[currentImageIndex]}
               alt={spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).alt}
               fill
+              sizes="(max-width: 1151px) 100vw, 1088px"
               className="object-contain drop-shadow-2xl"
-              priority
+              priority={currentImageIndex === 0}
               onError={() =>
                 setFailedImages((prev) =>
                   validImages[currentImageIndex] && !prev.includes(validImages[currentImageIndex])
@@ -596,6 +618,7 @@ export default function SpotContent({
                 )
               }
             />
+            </ZoomableImage>
           </div>
 
           {spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).caption ? <p className="absolute inset-x-0 bottom-0 z-10 bg-black/65 px-4 py-2 text-center text-sm text-white">{spotImageText(location, validImages[currentImageIndex], currentImageIndex, locale).caption}</p> : null}
@@ -611,7 +634,7 @@ export default function SpotContent({
                 type="button"
                 aria-label="Previous gallery image"
                 onClick={(event) => { event.stopPropagation(); prevImage() }}
-                className="absolute left-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/45 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/65 md:p-2"
+                className="absolute left-2 top-1/2 z-20 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/85 md:p-2"
               >
                 <ChevronLeft className="h-5 w-5 md:h-8 md:w-8" />
               </button>
@@ -619,7 +642,7 @@ export default function SpotContent({
                 type="button"
                 aria-label="Next gallery image"
                 onClick={(event) => { event.stopPropagation(); nextImage() }}
-                className="absolute right-2 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/45 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/65 md:p-2"
+                className="absolute right-2 top-1/2 z-20 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 p-1.5 text-white opacity-100 shadow-lg backdrop-blur-sm transition-all hover:bg-black/85 md:p-2"
               >
                 <ChevronRight className="h-5 w-5 md:h-8 md:w-8" />
               </button>

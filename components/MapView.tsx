@@ -1,9 +1,9 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import Map, { Marker, MapRef, NavigationControl } from 'react-map-gl/mapbox'
+import MapboxMap, { Source, Layer, MapRef, NavigationControl, Popup } from 'react-map-gl/mapbox'
+import { resolveEntityDisplayName } from '@/lib/entity-display-name'
 import {usePublicLocale} from './PublicLocale'
-import {resolveEntityDisplayName} from '@/lib/entity-display-name'
 import type { PublicLocation } from '@/lib/public-data'
 
 interface MapViewProps {
@@ -16,24 +16,54 @@ interface MapViewProps {
 const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation, className, flyToLocation }, ref) => {
   const locale=usePublicLocale()
   const internalMapRef = React.useRef<MapRef>(null)
+  const [mapError, setMapError] = React.useState(false)
+  const [attempt, setAttempt] = React.useState(0)
+  const [loaded, setLoaded] = React.useState(false)
+  const [hoveredId, setHoveredId] = React.useState<number | null>(null)
+  const geojson = React.useMemo(() => ({ type: 'FeatureCollection' as const,
+    features: locations.map(location => ({ type: 'Feature' as const, id: location.id,
+      properties: { id: location.id }, geometry: { type: 'Point' as const, coordinates: [location.longitude, location.latitude] } }))
+  }), [locations])
+  const locationById = React.useMemo(() => new Map(locations.map(location => [location.id, location])), [locations])
+  const nearestLocation = (ids: number[], point: { x: number; y: number }) => {
+    let nearest: PublicLocation | null = null
+    let distance = Infinity
+    for (const id of ids) {
+      const location = locationById.get(id)
+      if (!location || !internalMapRef.current) continue
+      const projected = internalMapRef.current.project([location.longitude, location.latitude])
+      const candidate = (projected.x - point.x) ** 2 + (projected.y - point.y) ** 2
+      if (candidate < distance) { nearest = location; distance = candidate }
+    }
+    return nearest
+  }
 
   React.useImperativeHandle(ref, () => internalMapRef.current!, [])
 
   React.useEffect(() => {
-    if (flyToLocation && internalMapRef.current) {
+    if (loaded && flyToLocation && internalMapRef.current) {
       internalMapRef.current.flyTo({
         center: [flyToLocation.longitude, flyToLocation.latitude],
         zoom: flyToLocation.zoom || 14,
-        duration: 2000,
-        essential: true
+        duration: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 800,
       })
     }
-  }, [flyToLocation])
+  }, [flyToLocation, loaded])
 
   return (
     <div className={`w-full h-full relative ${className}`}>
-      <Map
+      <MapboxMap
+        key={attempt}
         ref={internalMapRef}
+        interactiveLayerIds={['journey-spot-targets']}
+        onLoad={() => { setLoaded(true); setMapError(false) }}
+        onError={() => setMapError(true)}
+        onMouseMove={event => setHoveredId(nearestLocation((event.features || []).map(feature => Number((feature as { id?: number }).id)), event.point)?.id ?? null)}
+        onMouseLeave={() => setHoveredId(null)}
+        onClick={event => {
+          const location = nearestLocation((event.features || []).map(feature => Number((feature as { id?: number }).id)), event.point)
+          if (location) onSelectLocation(location)
+        }}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "pk.eyJ1Ijoiam5xam91cm5leSIsImEiOiJjbWwzZzhhd2owcmVkM3BvbTcwOHVwMjB5In0.7Jrx-zm0gIjs8qGsiJWUMA"}
         initialViewState={{
           longitude: 101.9758,
@@ -41,7 +71,8 @@ const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation,
           zoom: 6
         }}
         minZoom={2}
-        scrollZoom={true}
+        scrollZoom={false}
+        cooperativeGestures={true}
         dragPan={true}
         doubleClickZoom={true}
         touchZoomRotate={true}
@@ -50,28 +81,21 @@ const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation,
         mapStyle="mapbox://styles/mapbox/dark-v11"
       >
         <NavigationControl position="bottom-right" visualizePitch={false} />
-        {locations.map((location) => (
-          <Marker
-            key={location.id}
-            longitude={location.longitude}
-            latitude={location.latitude}
-            anchor="bottom"
-            onClick={(e) => {
-              e.originalEvent.stopPropagation()
-              onSelectLocation(location)
-            }}
-          >
-            <div className="relative flex items-center justify-center w-6 h-6 cursor-pointer hover:scale-110 transition-transform group">
-              <span className="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-amber-200"></span>
-              <span className="relative inline-flex w-3 h-3 bg-amber-400 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.8)] border border-white"></span>
-              
-              <div className="absolute bottom-full mb-2 hidden group-hover:block whitespace-nowrap bg-black/60 backdrop-blur-md border border-white/10 text-white text-xs px-2 py-1 rounded shadow-xl">
-                {resolveEntityDisplayName(location,locale).primary}
-              </div>
-            </div>
-          </Marker>
-        ))}
-      </Map>
+        <Source id="journey-locations" type="geojson" data={geojson}>
+          <Layer id="journey-spot-targets" type="circle" paint={{ 'circle-radius': 22, 'circle-opacity': 0 }} />
+          <Layer id="journey-spots" type="circle" paint={{ 'circle-radius': 6, 'circle-color': '#fbbf24', 'circle-stroke-width': 1, 'circle-stroke-color': '#fff' }} />
+        </Source>
+        {hoveredId !== null && locationById.has(hoveredId) ? <Popup longitude={locationById.get(hoveredId)!.longitude} latitude={locationById.get(hoveredId)!.latitude} closeButton={false} closeOnClick={false} anchor="bottom" offset={12}>
+          <span className="text-sm text-slate-950">{resolveEntityDisplayName(locationById.get(hoveredId)!, locale).primary}</span>
+        </Popup> : null}
+      </MapboxMap>
+      {!loaded && !mapError ? <div role="status" className="pointer-events-none absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-white/80">
+        {locale === 'en' ? 'Loading map. You can search and browse the places below.' : '地图载入中，可先搜索或浏览下方地点。'}
+      </div> : null}
+      {mapError ? <div role="status" className="absolute left-1/2 top-1/2 w-[min(90%,24rem)] -translate-x-1/2 rounded-2xl bg-slate-950/95 p-4 text-center text-sm text-white">
+        <p>{locale === 'en' ? 'Map unavailable. You can still search and open all places below.' : '地图暂时无法载入，仍可搜索并打开下方所有地点。'}</p>
+        <button type="button" className="mt-2 min-h-11 rounded-full border border-white/30 px-4" onClick={() => { setMapError(false); setLoaded(false); setAttempt(value => value + 1) }}>{locale === 'en' ? 'Retry map' : '重试地图'}</button>
+      </div> : null}
     </div>
   )
 })

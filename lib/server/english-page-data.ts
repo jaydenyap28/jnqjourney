@@ -16,12 +16,15 @@ import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/public-content-media'
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
+import { toHomeGuideCard, toHomeNoteCard, type HomeGuideCard, type HomeNoteCard } from '@/lib/home-cards'
 
 export interface EnglishPageData {
   sourceVersion?: string
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
   fullGuides?:TravelGuide[]
   notes?:LongformNote[]
+  homeGuides?:HomeGuideCard[]
+  homeNotes?:HomeNoteCard[]
   relatedNotes?:RelatedNoteCard[]
   packages?:TravelPackage[]
   kind: 'home' | 'region' | 'regions' | 'guide' | 'guides' | 'spot' | 'search' | 'about' | 'fallback'
@@ -40,7 +43,14 @@ export interface EnglishPageData {
 }
 export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   const result={...data}
-  if(data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region})=>({id,name,slug,region:region?{name:region.name}:null}))
+  if(data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region,category,shortSummary})=>({id,name,slug,region,category,shortSummary}))
+  if(data.kind==='home') {
+    result.homeGuides=(data.fullGuides || []).slice(0,6).map(toHomeGuideCard)
+    result.homeNotes=(data.notes || []).slice(0,4).map(toHomeNoteCard)
+    result.fullGuides=[]
+    result.notes=[]
+    result.guides=[]
+  }
   if(['search','regions','guides','about','fallback'].includes(data.kind)) result.locations=[]
   if(!['home','regions','search'].includes(data.kind)) result.regions=[]
   if(!['home','guides','spot','search'].includes(data.kind)) result.guides=[]

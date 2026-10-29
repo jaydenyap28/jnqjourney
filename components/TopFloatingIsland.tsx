@@ -2,7 +2,10 @@
 
 
 import {PublicCopy} from '@/components/PublicLocale'
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import type { ChangeEvent } from 'react'
+import SpotSearchControls from './SpotSearchControls'
+import type { PublicLocation } from '@/lib/public-data'
+import type { SpotFilters } from '@/lib/spot-search'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import { Search, MapPin, Compass } from 'lucide-react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
@@ -13,20 +16,17 @@ import { Input } from '@/components/ui/input'
 
 interface TopFloatingIslandProps {
   onSearch: (term: string) => void
+  filters: SpotFilters
+  onFiltersChange: (value: SpotFilters) => void
+  locations: PublicLocation[]
+  resultCount: number
 }
 
-export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) {
+export default function TopFloatingIsland({ onSearch, filters, onFiltersChange, locations, resultCount }: TopFloatingIslandProps) {
   const locale=usePublicLocale()
-  const [searchTerm, setSearchTerm] = useState('')
-  const initialSearch = useRef(onSearch)
-  useEffect(() => {
-    const query = new URLSearchParams(window.location.search).get('q') || ''
-    if (query) { setSearchTerm(query); initialSearch.current(query) }
-  }, [])
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value
-    setSearchTerm(term)
     onSearch(term)
   }
 
@@ -47,17 +47,19 @@ export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) 
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 h-3 w-3 -translate-y-1/2 text-white/50 md:left-4 md:h-4 md:w-4" />
               <Input
-                value={searchTerm}
+                type="search"
+                aria-label={ui(locale, 'searchPlaceholder')}
+                value={filters.q}
                 onChange={handleSearch}
                 placeholder={ui(locale, 'searchPlaceholder')}
-                className="h-8 rounded-full border border-white/10 bg-white/6 pl-8 pr-3 text-[11px] text-white placeholder:text-white/45 focus-visible:ring-1 focus-visible:ring-amber-200/50 md:h-11 md:pl-11 md:pr-4 md:text-sm"
+                className="h-11 rounded-full border border-white/10 bg-white/6 pl-8 pr-3 text-base text-white placeholder:text-white/60 focus-visible:ring-1 focus-visible:ring-amber-200/50 md:pl-11 md:pr-4 md:text-sm"
               />
             </div>
 
             <div className="flex items-center justify-between gap-2 sm:justify-start sm:flex-wrap">
               <Link
                 href="/region"
-                className="inline-flex min-w-0 items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-[10px] text-white/90 transition hover:bg-white/10 md:gap-2 md:px-4 md:py-2 md:text-sm"
+                className="inline-flex min-h-11 min-w-0 items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1 text-xs text-white/90 transition hover:bg-white/10 md:gap-2 md:px-4 md:py-2 md:text-sm"
               >
                 <Compass className="h-3 w-3 shrink-0 text-amber-200 md:h-4 md:w-4" />
                 <span className="truncate"><PublicCopy text={"Regions / 地区目录"}/></span>
@@ -66,6 +68,13 @@ export default function TopFloatingIsland({ onSearch }: TopFloatingIslandProps) 
             </div>
           </div>
         </div>
+        <details className="mt-2 text-xs text-white/80">
+          <summary className="flex min-h-11 cursor-pointer items-center gap-2 rounded-xl px-2 focus-visible:outline-amber-200">
+            {locale === 'en' ? 'Filter places' : '筛选地点'}
+            <span role="status" aria-live="polite">{resultCount} {locale === 'en' ? 'results' : '个结果'}</span>
+          </summary>
+          <SpotSearchControls spots={locations} value={filters} onChange={onFiltersChange} locale={locale} compact />
+        </details>
       </div>
     </div>
   )

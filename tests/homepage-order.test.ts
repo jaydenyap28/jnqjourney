@@ -45,7 +45,7 @@ test('ordering is independent of locale labels and both homes use shared UI',()=
 })
 test('public normalization projects only canonical visit_date and does not add reads',()=>{
   const source=fs.readFileSync('lib/server/public-data-resolver.ts','utf8')
-  assert.match(source,/LOCATIONS_SELECT = '[^']*visit_date'/)
+  assert.match(source,/LOCATIONS_SELECT = '[^']*\bvisit_date\b[^']*'/)
   assert.match(source,/visitDate: usableVisitDate\(row.visit_date\)/)
   const home=fs.readFileSync('components/HomePageClient.tsx','utf8')
   assert.match(home,/homepageShowcase\(visibleLocations, regions, failedImages\)/)

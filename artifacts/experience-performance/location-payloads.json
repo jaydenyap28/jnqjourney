@@ -1,0 +1,17 @@
+{
+  "sameData": true,
+  "results": [
+    {
+      "label": "before",
+      "count": 547,
+      "jsonBytes": 423497,
+      "sha256": "4c09b7665c1fc8b13c95f3dccb93dcd8cc47fa62aaeb4643889cefd8729ce9b6"
+    },
+    {
+      "label": "after",
+      "count": 547,
+      "jsonBytes": 423497,
+      "sha256": "4c09b7665c1fc8b13c95f3dccb93dcd8cc47fa62aaeb4643889cefd8729ce9b6"
+    }
+  ]
+}
