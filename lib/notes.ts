@@ -1,6 +1,10 @@
+import { parseNoteTable } from './note-table.ts'
+import { parseNoteVideo } from './note-video.ts'
+
 export type NoteBlockType =
   | 'paragraph'
   | 'heading'
+  | 'table'
   | 'quote'
   | 'image'
   | 'video'
@@ -283,9 +287,7 @@ function isLikelyImageUrl(value: string) {
 }
 
 function isLikelyVideoUrl(value: string) {
-  const text = String(value || '').trim()
-  if (!/^https?:\/\/\S+$/i.test(text)) return false
-  return /(?:youtube\.com|youtu\.be|facebook\.com|fb\.watch)/i.test(text)
+  return Boolean(parseNoteVideo(value))
 }
 
 function normalizeImageUrl(value: string) {
@@ -304,16 +306,36 @@ export function createNoteHeadingId(content?: string | null, fallback?: string |
 }
 
 export function getNoteTableOfContentsItems(blocks: NoteBlock[]): NoteTableOfContentsItem[] {
+  const ids = getNoteHeadingIds(blocks)
   return blocks.flatMap((block, index) => {
     if (block.type !== 'heading' || !block.content) return []
     const level = normalizeNoteHeadingLevel(block.headingLevel)
     if (level === 4) return []
     return [{
-      id: createNoteHeadingId(block.content, index),
+      id: ids[index]!,
       content: block.content,
       level,
     }]
   })
+}
+
+/** Share IDs between headings and TOC, including repeated subsection names. */
+export function getNoteHeadingIds(blocks: NoteBlock[]) {
+  const used = new Set<string>()
+  return blocks.map((block, index) => {
+    if (block.type !== 'heading') return undefined
+    const base = createNoteHeadingId(block.content, index)
+    let id = base
+    for (let count = 2; used.has(id); count++) id = `${base}-${count}`
+    used.add(id)
+    return id
+  })
+}
+
+export function noteUpdatedDate(value?: string) {
+  if (!value || !Number.isFinite(Date.parse(value))) return null
+  const date = new Date(value)
+  return { iso: date.toISOString(), label: new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Singapore', year: 'numeric', month: 'long', day: 'numeric' }).format(date) }
 }
 
 function parseImageList(value: string) {
@@ -407,6 +429,11 @@ export function parseMarkdownToBlocks(markdown: string): NoteBlock[] {
     if (!text) return
 
     const blockId = `block-${Date.now()}-${index}-${Math.random().toString(36).slice(2, 6)}`
+
+    if (parseNoteTable(text)) {
+      blocks.push({ id: blockId, type: 'table', content: text })
+      return
+    }
 
     // 1. Heading
     if (text.startsWith('#')) {

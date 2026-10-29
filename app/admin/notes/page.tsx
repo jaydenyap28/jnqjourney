@@ -8,7 +8,9 @@ import { Image as ImageIcon, Loader2, Plus, Save, Search, Trash2, Upload } from 
 import type { LongformNote, NoteBlock, NoteImageSize, NoteVideoAspect } from '@/lib/notes'
 import {
   buildFallbackAlt,
-  createNoteHeadingId,
+  getNoteHeadingIds,
+  getNoteTableOfContentsItems,
+  noteUpdatedDate,
   DEFAULT_NOTE_COVER_ACCENT,
   EMPTY_NOTE,
   getRenderableNoteBlocks,
@@ -23,6 +25,9 @@ import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
 import FallbackImage from '@/components/FallbackImage'
 import InlineMarkdown from '@/components/InlineMarkdown'
+import NoteTable from '@/components/NoteTable'
+import NoteVideo from '@/components/NoteVideo'
+import { NoteTableOfContents } from '@/components/NoteInteractiveReader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -121,57 +126,24 @@ function getDisplayKicker(kicker?: string | null) {
   return value && value.toLowerCase() !== 'longform note' ? value : ''
 }
 
-function getYoutubeEmbedUrl(url: string) {
-  const value = String(url || '').trim()
-  const match = value.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/)
-  return match ? `https://www.youtube.com/embed/${match[1]}` : ''
-}
-
-function getFacebookVideoEmbedUrl(url: string) {
-  const value = String(url || '').trim()
-  return /facebook\.com|fb\.watch/i.test(value)
-    ? `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(value)}&show_text=false&width=720`
-    : ''
-}
-
-function getCoverVideoEmbedUrl(url?: string | null) {
-  const value = String(url || '').trim()
-  if (!value) return ''
-  return getYoutubeEmbedUrl(value) || getFacebookVideoEmbedUrl(value)
-}
-
-function CoverVideoPreview({ url, title }: { url?: string | null; title: string }) {
-  const embedUrl = getCoverVideoEmbedUrl(url)
-  if (!embedUrl) return null
-
-  return (
-    <iframe
-      src={embedUrl}
-      title={title}
-      className="h-full w-full"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowFullScreen
-    />
-  )
-}
-
 function BlockPreview({
   block,
   locationsById,
   isFullPreview = false,
-  index = 0,
+  headingId,
 }: {
   block: NoteBlock
   locationsById: Map<number, LocationOption>
   isFullPreview?: boolean
-  index?: number
+  headingId?: string
 }) {
+  if (block.type === 'table') return <NoteTable content={block.content} />
   if (block.type === 'heading') {
     const headingLevel = normalizeNoteHeadingLevel(block.headingLevel)
     const Heading = `h${headingLevel}` as const
     if (isFullPreview) {
       return (
-        <Heading id={`heading-${createNoteHeadingId(block.content, index)}`} className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}>
+        <Heading id={`heading-${headingId}`} className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}>
           <InlineMarkdown>{block.content}</InlineMarkdown>
         </Heading>
       )
@@ -201,24 +173,8 @@ function BlockPreview({
   }
 
   if (block.type === 'video' && block.videoUrl) {
-    const title = block.title || 'Article video'
     const isPortrait = normalizeNoteVideoAspect(block.videoAspect) === 'portrait'
-    if (isFullPreview) {
-      return (
-        <figure className={`${isPortrait ? 'max-w-[480px]' : 'max-w-4xl'} mx-auto w-full my-10`}>
-          <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]`}>
-            <CoverVideoPreview url={block.videoUrl} title={title} />
-          </div>
-        </figure>
-      )
-    }
-    return (
-      <figure className={`${isPortrait ? 'max-w-[480px]' : 'max-w-3xl'} mx-auto w-full my-6`}>
-        <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[24px] border border-white/10 bg-black/40 shadow-lg`}>
-          <CoverVideoPreview url={block.videoUrl} title={title} />
-        </div>
-      </figure>
-    )
+    return <figure className={`${isPortrait ? 'max-w-[480px]' : 'max-w-4xl'} mx-auto my-8 w-full`}><NoteVideo url={block.videoUrl} title={block.title || '攻略影片'} aspect={block.videoAspect} /></figure>
   }
 
   if (block.type === 'image' && block.imageUrl) {
@@ -575,6 +531,9 @@ export default function AdminNotesPage() {
   const selectedSpotImages = useMemo(() => getLocationImages(selectedSpot), [selectedSpot])
 
   const previewBlocks = useMemo(() => parseMarkdownToBlocks(markdownText), [markdownText])
+  const previewHeadingIds = getNoteHeadingIds(previewBlocks)
+  const previewHeadings = getNoteTableOfContentsItems(previewBlocks)
+  const previewUpdatedDate = noteUpdatedDate(form.updatedAt)
 
   function createNewNote() {
     if (inFlight.current || (dirty && !window.confirm('Discard unsaved Note edits?'))) return
@@ -985,12 +944,13 @@ export default function AdminNotesPage() {
             </CardHeader>
             <CardContent className="grid gap-5 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Title</Label>
+                <Label>Title / 搜索标题</Label>
                 <Input value={form.title} onChange={(event) => updateForm({ title: event.target.value })} placeholder="Cameron Highlands travel guide" />
               </div>
               <div className="space-y-2">
                 <Label>Slug</Label>
                 <Input value={form.slug} onChange={(event) => updateForm({ slug: slugifyNote(event.target.value) })} placeholder="cameron-highlands-trip" />
+                <p className="text-xs text-white/50">Canonical 自动使用 /notes/slug；发布后尽量保持 slug 稳定。</p>
               </div>
               <div className="space-y-2">
                 <Label>Short Title</Label>
@@ -1005,7 +965,7 @@ export default function AdminNotesPage() {
                 <Textarea value={form.tagline} onChange={(event) => updateForm({ tagline: event.target.value })} rows={2} placeholder="A concise subtitle for the note." />
               </div>
               <div className="space-y-2 md:col-span-2">
-                <Label>Card Summary / 首页短摘要</Label>
+                <Label>Card Summary / 首页短摘要与 SEO Description</Label>
                 <Textarea value={form.summary} onChange={(event) => updateForm({ summary: event.target.value })} rows={2} placeholder="Keep this short. Full article content is edited in the writing canvas above." />
               </div>
               <div className="space-y-2 md:col-span-2">
@@ -1033,8 +993,9 @@ export default function AdminNotesPage() {
                 ) : null}
               </div>
               <div className="space-y-2 md:col-span-2">
-                <Label>Cover Video URL</Label>
+                <Label>Cover Video URL / 选填影片</Label>
                 <Input value={form.coverVideoUrl || ''} onChange={(event) => updateForm({ coverVideoUrl: event.target.value })} placeholder="Facebook or YouTube video link" />
+                <p className="text-xs text-white/50">文章开头展示；点击播放后才载入播放器，正文也可插入视频。</p>
               </div>
               <div className="space-y-2">
                 <Label>Tags</Label>
@@ -1043,7 +1004,7 @@ export default function AdminNotesPage() {
               <div className="space-y-4 md:col-span-2">
                 <OrderedRelationPicker label="自动推荐地区 / Geography" options={[...new Map(locations.flatMap(l => l.regions ? [[l.regions.id, l.regions] as const] : [])).values()].map(r => ({ id: String(r.id), label: [r.country, r.name_cn || r.name].filter(Boolean).join(' / ') }))} value={(form.relatedRegionIds || []).map(String)} onChange={ids => updateForm({ relatedRegionIds: ids.map(Number) })} />
                 <OrderedRelationPicker label="Related Spots / 相关景点" options={locations.map(l => ({ id: String(l.id), label: [l.name_cn, l.name, l.regions?.country, l.regions?.name].filter(Boolean).join(' / ') }))} value={(form.relatedSpotIds || []).map(String)} onChange={ids => updateForm({ relatedSpotIds: ids.map(Number) })} />
-                <OrderedRelationPicker label="Related Notes / 延伸阅读" options={notes.filter(n => n.slug !== form.slug).map(n => ({ id: n.slug, label: n.title }))} value={form.relatedNoteSlugs || []} onChange={ids => updateForm({ relatedNoteSlugs: ids })} />
+                <OrderedRelationPicker label="Related Notes / 延伸阅读（按顺序串联系列）" options={notes.filter(n => n.slug !== form.slug).map(n => ({ id: n.slug, label: n.title }))} value={form.relatedNoteSlugs || []} onChange={ids => updateForm({ relatedNoteSlugs: ids })} />
               </div>
               <div className="flex items-center gap-3 pt-8">
                 <input id="published" type="checkbox" checked={form.published} onChange={(event) => updateForm({ published: event.target.checked })} />
@@ -1100,13 +1061,15 @@ export default function AdminNotesPage() {
                   {getDisplayKicker(form.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(form.kicker)}</p> : null}
                   <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl tracking-tight">{form.title || 'Your note title'}</h1>
                   {form.tagline ? <p className="max-w-3xl text-lg leading-8 text-white/80">{form.tagline}</p> : null}
+                  {previewUpdatedDate ? <p className="text-sm text-white/60">最后更新：<time dateTime={previewUpdatedDate.iso}>{previewUpdatedDate.label}</time></p> : null}
                 </div>
               </section>
 
               {/* Grid content matching public detail page */}
               <div className="grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
                 {/* Main Article column */}
-                <article className="space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12 w-full text-left">
+                <article className="min-w-0 space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12 w-full text-left">
+                  <div className="lg:hidden"><details><summary className="cursor-pointer py-3 text-amber-200">文章目录</summary><NoteTableOfContents headings={previewHeadings} /></details></div>
                   {form.summary?.trim() ? (
                     <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
                       <p className="text-xs text-emerald-300 font-bold uppercase tracking-widest mb-1">Card Summary</p>
@@ -1114,9 +1077,11 @@ export default function AdminNotesPage() {
                     </div>
                   ) : null}
 
+                  {form.coverVideoUrl ? <NoteVideo url={form.coverVideoUrl} title={form.title || '攻略影片'} /> : null}
+
                   {previewBlocks.length ? (
                     previewBlocks.map((block, index) => (
-                      <BlockPreview key={block.id} block={block} locationsById={locationsById} isFullPreview={true} index={index} />
+                      <BlockPreview key={block.id} block={block} locationsById={locationsById} isFullPreview={true} headingId={previewHeadingIds[index]} />
                     ))
                   ) : (
                     <p className="text-sm text-gray-500 italic text-center py-10">在写作画布中输入 Markdown 格式故事，这里将渲染出 100% 真实的排版。</p>
@@ -1125,21 +1090,7 @@ export default function AdminNotesPage() {
 
                 {/* Sidebar Column */}
                 <aside className="space-y-4 lg:sticky lg:top-6 w-full text-left">
-                  {/* Simulated TOC */}
-                  <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
-                    <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80 mb-4 font-bold">Table of Contents / 目录</p>
-                    <div className="space-y-3 border-l border-white/10 pl-4 py-1">
-                      {previewBlocks.filter(b => b.type === 'heading' && b.content).length ? (
-                        previewBlocks.map((block, index) => ({ block, index })).filter(({ block }) => block.type === 'heading' && block.content).map(({ block: b, index }, i) => (
-                          <a key={b.id} href={`#heading-${createNoteHeadingId(b.content, index)}`} className={`block text-sm leading-6 transition hover:text-amber-200 ${i === 0 ? 'text-amber-300 font-medium' : 'text-white/60'}`}>
-                            {b.content}
-                          </a>
-                        ))
-                      ) : (
-                        <p className="text-xs text-white/40 italic">暂无目录标题 (添加 H2 标题自动生成)</p>
-                      )}
-                    </div>
-                  </div>
+                  <div className="hidden lg:block"><NoteTableOfContents headings={previewHeadings} /></div>
 
                   {/* Related Spots */}
                   <div className="rounded-[28px] border border-white/10 bg-white/5 p-5">
@@ -1189,10 +1140,12 @@ export default function AdminNotesPage() {
                       <p className="text-xs uppercase tracking-[0.28em] text-amber-300/80">Writing Canvas</p>
                       <span className="mt-1 block text-2xl font-bold">博客写作画布</span>
                       <p className="mt-1 text-sm font-normal text-white/50">
-                        支持标准 Markdown。您可在任何段落后点击 **“关联景点图片”** 直接在光标处插入景点画廊。
+                        支持 H2/H3、图片、链接和表格；段落与标题之间请留空行。FAQ 用 H2 章节、H3 问题与正文回答；参考资料使用链接。
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      <Button type="button" size="sm" variant="outline" className="border-white/10 bg-[#121214] text-white hover:bg-white/10" onClick={() => insertTextAtCursor('| 比较项目 | 说明 | 参考来源 |\n| --- | --- | --- |\n| 待填写 | 待核对 | [官方资料](https://) |')}>插入表格</Button>
+                      <Button type="button" size="sm" variant="outline" className="border-white/10 bg-[#121214] text-white hover:bg-white/10" onClick={() => insertTextAtCursor('## 常见问题\n\n### 问题标题\n\n填写有依据的回答。\n\n## 参考资料\n\n[官方来源名称](https://) · 核对日期：YYYY-MM-DD')}>FAQ 与来源</Button>
                       <select
                         value={imageInsertSize}
                         onChange={(event) => setImageInsertSize(event.target.value as NoteImageSize)}
@@ -1402,7 +1355,7 @@ export default function AdminNotesPage() {
                     <div className="space-y-6 max-w-xl mx-auto text-left">
                       {previewBlocks.length ? (
                         previewBlocks.map((block, index) => (
-                          <BlockPreview key={block.id} block={block} locationsById={locationsById} index={index} />
+                          <BlockPreview key={block.id} block={block} locationsById={locationsById} headingId={previewHeadingIds[index]} />
                         ))
                       ) : (
                         <p className="text-sm text-gray-500 italic text-center py-10">在左侧编辑区域输入文字后，这里将实时渲染出高档的杂志排版效果。</p>

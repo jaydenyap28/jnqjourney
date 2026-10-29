@@ -1,5 +1,15 @@
 import type { LongformNote } from './notes.ts'
 import type { PublicLocation, PublicRegion } from './public-data.ts'
+import type { TravelGuide } from './guides.ts'
+
+/** Backlinks use existing Guide route references; no title or country guesses. */
+export function guidesForNote(note: LongformNote, guides: TravelGuide[]) {
+  const slugs = new Set([note.slug, ...(note.aliases || [])])
+  return guides.filter(guide => [
+    ...guide.days.flatMap(day => day.routeItems || []),
+    ...(guide.itinerarySegments || []).flatMap(segment => [...segment.verifiedRoutes, ...(segment.referenceRoutes || [])].flatMap(route => route.routeItems || [])),
+  ].some(item => item.type === 'note' && slugs.has(item.noteSlug)))
+}
 
 export function packageMatchesSpot(item: { region_id?: number | null; related_location_ids?: number[] | null }, spot: { id: number; region_id?: number | null }) {
   return Boolean(item.related_location_ids?.includes(spot.id) ||

@@ -1,6 +1,7 @@
 
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
+import RegionCardDescription from '@/components/RegionCardDescription'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import type { Metadata } from 'next'
 import FallbackImage from '@/components/FallbackImage'
@@ -15,9 +16,9 @@ export default function RegionIndexView({regions}:{regions:any[]}) {
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_20%),linear-gradient(180deg,#0f172a_0%,#020617_45%,#000000_100%)] text-white">
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-8 md:py-12">
         <div className="rounded-[28px] border border-white/10 bg-white/5 p-6 md:p-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">Region Directory</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80"><PublicCopy text="地区目录" /></p>
           <h1 className="mt-4 text-3xl font-bold md:text-5xl"><PublicCopy text={"从地区开始探索"}/></h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-300 md:text-base"><PublicCopy text={"\n            区域页更适合沉淀攻略、广告位、联盟推荐和自媒体导流入口。你后面补资料时，景点会自然汇聚到这些地区页面里。\n          "}/></p>
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-300 md:text-base"><PublicCopy text="按地区浏览已收录的景点、美食与旅行笔记，寻找适合自己的旅行路线。" /></p>
           <div className="mt-5 flex flex-wrap gap-2">
             <Badge className="border border-white/10 bg-white/10 text-white">{regions.length}<PublicCopy text={" 个主区域"}/></Badge>
             <Link
@@ -55,7 +56,7 @@ export default function RegionIndexView({regions}:{regions:any[]}) {
                     <h2 className="text-xl font-semibold text-white"><EntityName entity={region} /></h2>
                   </div>
                   <p className="line-clamp-3 text-sm leading-6 text-gray-300">
-                    {region.description || `进入 ${region.name}，查看当地景点、美食和后续会持续补充的旅行内容。`}
+                    <RegionCardDescription region={region} description={region.description} />
                   </p>
                   {region.country ? (
                     <div className="pt-1">

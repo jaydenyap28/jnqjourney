@@ -1,6 +1,6 @@
 import RelatedNoteCards from '@/components/RelatedNoteCards'
 import { publicationVersion } from '@/lib/publication-version'
-import { selectNoteSpotIds, relatedNotesForNote } from '@/lib/content-relations'
+import { selectNoteSpotIds, relatedNotesForNote, guidesForNote } from '@/lib/content-relations'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -16,14 +16,16 @@ import NoteInteractiveReader, { NoteTableOfContents } from '@/components/NoteInt
 import AuthorTrustBlock from '@/components/AuthorTrustBlock'
 import TravelPackageCard from '@/components/TravelPackageCard'
 import InlineMarkdown from '@/components/InlineMarkdown'
+import NoteTable from '@/components/NoteTable'
+import NoteVideo from '@/components/NoteVideo'
 import ZoomableImage from '@/components/ZoomableImage'
 import { absoluteUrl } from '@/lib/site'
 import { buildLocationPath } from '@/lib/location-routing'
-import { readPublicNoteBySlug, readPublicNotes } from '@/lib/server/public-content-store'
+import { readPublicNoteBySlug, readPublicNotes, readPublicGuides } from '@/lib/server/public-content-store'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { getActiveKlookWidgetsForTargets, readKlookWidgets, type KlookWidgetRecord } from '@/lib/server/klook-widgets-store'
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-import { buildFallbackAlt, createNoteHeadingId, getNoteTableOfContentsItems, getRenderableNoteBlocks, normalizeNoteHeadingLevel, normalizeNoteVideoAspect, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
+import { buildFallbackAlt, getNoteHeadingIds, noteUpdatedDate, getNoteTableOfContentsItems, getRenderableNoteBlocks, normalizeNoteHeadingLevel, normalizeNoteVideoAspect, type LongformNote, type NoteBlock, type NoteImageSize } from '@/lib/notes'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
@@ -103,25 +105,6 @@ function getDisplayKicker(kicker?: string | null) {
   return value && value.toLowerCase() !== 'longform note' ? value : ''
 }
 
-function getYoutubeEmbedUrl(url: string) {
-  const value = String(url || '').trim()
-  const match = value.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/)
-  return match ? `https://www.youtube.com/embed/${match[1]}` : ''
-}
-
-function getFacebookVideoEmbedUrl(url: string) {
-  const value = String(url || '').trim()
-  return /facebook\.com|fb\.watch/i.test(value)
-    ? `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(value)}&show_text=false&width=720`
-    : ''
-}
-
-function getCoverVideoEmbedUrl(url?: string | null) {
-  const value = String(url || '').trim()
-  if (!value) return ''
-  return getYoutubeEmbedUrl(value) || getFacebookVideoEmbedUrl(value)
-}
-
 function getImageFigureClass(size?: NoteImageSize) {
   if (size === 'small') return 'max-w-sm'
   if (size === 'medium') return 'max-w-2xl'
@@ -133,21 +116,6 @@ function getGalleryClass(size?: NoteImageSize, count = 1) {
   const widthClass = size === 'small' ? 'max-w-xl' : size === 'medium' ? 'max-w-2xl' : size === 'full' ? 'max-w-full' : 'max-w-4xl'
   const gridClass = count === 1 ? 'grid-cols-1' : count === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
   return `${widthClass} ${gridClass}`
-}
-
-function CoverVideoEmbed({ url, title }: { url?: string | null; title: string }) {
-  const embedUrl = getCoverVideoEmbedUrl(url)
-  if (!embedUrl) return null
-
-  return (
-    <iframe
-      src={embedUrl}
-      title={title}
-      className="h-full w-full"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowFullScreen
-    />
-  )
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -177,14 +145,14 @@ export const revalidate = 3600
 // and unpublishing retain the existing per-note revalidatePath calls.
 export function generateStaticParams() { return [] }
 
-function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
+function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, headingId?: string, noteSlug?: string) {
+  if (block.type === 'table') return <NoteTable key={block.id} content={block.content} />
   if (block.type === 'heading') {
-    const headingId = `heading-${createNoteHeadingId(block.content, index)}`
     const headingLevel = normalizeNoteHeadingLevel(block.headingLevel)
     const Heading = `h${headingLevel}` as const
     return (
       <Heading
-        id={headingId}
+        id={`heading-${headingId}`}
         key={block.id}
         className={headingLevel === 2 ? 'max-w-2xl mx-auto pt-9 pb-3 text-[25px] font-semibold leading-tight tracking-tight text-white md:pt-10 md:text-[31px] scroll-mt-24' : headingLevel === 3 ? 'max-w-2xl mx-auto pt-8 pb-2 text-[20px] font-semibold leading-snug tracking-tight text-white md:pt-9 md:text-[23px] scroll-mt-24' : 'max-w-2xl mx-auto pt-7 pb-2 text-[17px] font-semibold leading-snug tracking-tight text-white md:pt-8 md:text-[19px] scroll-mt-24'}
       >
@@ -209,9 +177,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
     const isPortrait = normalizeNoteVideoAspect(block.videoAspect) === 'portrait'
     return (
       <figure key={block.id} className={`${isPortrait ? 'max-w-[480px]' : 'max-w-4xl'} mx-auto w-full my-10`}>
-        <div className={`relative ${isPortrait ? 'aspect-[9/16]' : 'aspect-video'} overflow-hidden rounded-[34px] border border-white/10 bg-black/40 shadow-[0_24px_70px_rgba(0,0,0,0.28)]`}>
-          <CoverVideoEmbed url={block.videoUrl} title={block.title || 'Article video'} />
-        </div>
+        <NoteVideo url={block.videoUrl} title={block.title || '攻略影片'} aspect={block.videoAspect} noteSlug={noteSlug} />
       </figure>
     )
   }
@@ -345,7 +311,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
   return (
     <p
       key={block.id}
-      className="max-w-2xl mx-auto text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem] tracking-wide my-6"
+      className="max-w-2xl mx-auto break-words text-[1.08rem] leading-9 text-gray-200 whitespace-pre-wrap md:text-[1.13rem] tracking-wide my-6"
     >
       <InlineMarkdown>{block.content}</InlineMarkdown>
     </p>
@@ -375,7 +341,9 @@ export default async function NoteDetailPage({ params }: PageProps) {
 
   const relatedIds = selectNoteSpotIds(note, publicData.locations, publicData.regions)
   const relatedSpots = (relatedIds.length ? selectPublicSpotCards(publicData.locations, { ids: relatedIds }) : []) as LocationData[]
-  const relatedNotes = relatedNotesForNote(note, await readPublicNotes(), publicData.locations, publicData.regions)
+  const [publicNotes, publicGuides] = await Promise.all([readPublicNotes(), readPublicGuides()])
+  const relatedNotes = relatedNotesForNote(note, publicNotes, publicData.locations, publicData.regions)
+  const relatedGuides = guidesForNote(note, publicGuides)
   const [affiliateLinks, allKlookWidgets, noteKlookWidgets, publishedPackages] = await Promise.all([
     fetchAffiliateLinksByIds(affiliateIds),
     klookWidgetIds.length ? readKlookWidgets() : Promise.resolve([] as KlookWidgetRecord[]),
@@ -390,6 +358,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
   const textExcerpt = getTextExcerpt(note)
 
   const headings = getNoteTableOfContentsItems(contentBlocks)
+  const headingIds = getNoteHeadingIds(contentBlocks)
+  const updatedDate = noteUpdatedDate(note.updatedAt)
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -397,6 +367,8 @@ export default async function NoteDetailPage({ params }: PageProps) {
       {
         '@type': 'Article',
         headline: note.title,
+        dateModified: updatedDate?.iso,
+        dateCreated: noteUpdatedDate(note.createdAt)?.iso,
         description: buildMetaDescription(textExcerpt, `Read this travel note about ${note.title}.`),
         image: note.coverImage || undefined,
         mainEntityOfPage: absoluteUrl(`/notes/${note.slug}`),
@@ -438,19 +410,23 @@ export default async function NoteDetailPage({ params }: PageProps) {
             {getDisplayKicker(note.kicker) ? <p className="text-xs uppercase tracking-[0.28em] text-amber-200/80">{getDisplayKicker(note.kicker)}</p> : null}
             <h1 className="text-4xl font-semibold leading-tight text-white md:text-7xl">{note.title}</h1>
             {note.tagline ? <p className="max-w-3xl text-lg leading-9 text-white/80">{note.tagline}</p> : null}
+            {updatedDate ? <p className="text-sm text-white/60">最后更新：<time dateTime={updatedDate.iso}>{updatedDate.label}</time></p> : null}
           </div>
         </section>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,980px)_360px] lg:items-start lg:justify-center">
           <article className="min-w-0 space-y-2 rounded-[38px] border border-white/10 bg-white/[0.035] px-5 py-8 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-md md:px-10 md:py-12">
+            {headings.length ? <details className="mb-8 lg:hidden"><summary className="cursor-pointer py-3 text-amber-200">文章目录</summary><NoteTableOfContents headings={headings} /></details> : null}
             {note.summary?.trim() ? (
               <div className="max-w-2xl mx-auto rounded-[28px] border border-emerald-300/15 bg-emerald-400/10 px-6 py-5 text-base leading-8 text-emerald-50/85 mb-8">
                 {note.summary.trim()}
               </div>
             ) : null}
 
+            {note.coverVideoUrl ? <div className="mx-auto my-8 max-w-4xl"><NoteVideo url={note.coverVideoUrl} title={note.title} noteSlug={note.slug} /></div> : null}
+
             {contentBlocks.length ? (
-              contentBlocks.map((block, index) => renderBlock(block, locationsById, index))
+              contentBlocks.map((block, index) => renderBlock(block, locationsById, headingIds[index], note.slug))
             ) : textExcerpt ? (
               <div className="space-y-6 max-w-2xl mx-auto">
                 {textExcerpt.split(/\n{2,}/).map((paragraph, index) => (
@@ -478,7 +454,7 @@ export default async function NoteDetailPage({ params }: PageProps) {
 
           <aside className="min-w-0 space-y-4 lg:sticky lg:top-6">
             {/* Dynamic Sticky Table of Contents sidebar widget */}
-            <NoteTableOfContents headings={headings} />
+            <div className="hidden lg:block"><NoteTableOfContents headings={headings} /></div>
             <SupportSidebarCard className="bg-white/5" />
 
             {affiliateBlocks.map((block) => {
@@ -535,6 +511,18 @@ export default async function NoteDetailPage({ params }: PageProps) {
             ))}
 
             <RelatedNoteCards notes={relatedNotes} heading="延伸阅读" />
+            {relatedGuides.length ? (
+              <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
+                <h2 className="text-lg font-semibold">相关完整游记</h2>
+                <div className="mt-4 space-y-3">
+                  {relatedGuides.map(guide => (
+                    <Link key={guide.slug} href={`/guide/${guide.slug}`} className="block rounded-xl border border-white/10 p-3 text-sm text-amber-100 hover:bg-white/5">
+                      {guide.title} →
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : null}
             {relatedSpots.length ? (
               <section className="rounded-[28px] border border-white/10 bg-white/5 p-5">
                 <p className="text-xs uppercase tracking-[0.24em] text-amber-300/80">Related Spots</p>

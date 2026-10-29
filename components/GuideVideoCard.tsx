@@ -13,37 +13,45 @@ export default function GuideVideoCard({
   guideSlug,
   dayNumber,
   locale: explicitLocale,
+  noteSlug,
+  portrait = false,
 }: {
   videoId: string
   title: string
-  guideSlug: string
+  guideSlug?: string
   dayNumber?: number
   locale?: Locale
+  noteSlug?: string
+  portrait?: boolean
 }) {
   const inheritedLocale=usePublicLocale()
   const locale=explicitLocale || inheritedLocale
   const [playing, setPlaying] = useState(false)
   const watchUrl = `https://www.youtube.com/watch?v=${videoId}`
-  const videoLabel = locale === 'en' ? 'Travel Video' : dayNumber ? '当日旅行影片' : '完整旅行影片'
+  const videoLabel = noteSlug ? (locale === 'en' ? 'Article Video' : '攻略影片') : locale === 'en' ? 'Travel Video' : dayNumber ? '当日旅行影片' : '完整旅行影片'
+
+  function trackVideo(position: string) {
+    trackEvent(noteSlug ? 'note_video_click' : 'guide_video_click', {
+      ...(noteSlug ? { note_slug: noteSlug } : { guide_slug: guideSlug, day_number: dayNumber }),
+      cta_position: position,
+    })
+  }
 
   function startVideo() {
     setPlaying(true)
-    trackEvent('guide_video_click', {
-      guide_slug: guideSlug,
-      day_number: dayNumber,
-      cta_position: dayNumber ? 'day_video' : 'guide_video',
-    })
+    trackVideo(noteSlug ? 'note_video' : dayNumber ? 'day_video' : 'guide_video')
   }
 
   return (
     <div className="mt-4 overflow-hidden rounded-2xl border border-white/10 bg-black/30">
-      <div className="relative aspect-video">
+      <div className={`relative ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}>
         {playing ? (
           <iframe
             src={`https://www.youtube-nocookie.com/embed/${videoId}?rel=0`}
             title={`${title} ${videoLabel}`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
+            loading="lazy"
             className="h-full w-full"
           />
         ) : (
@@ -70,13 +78,13 @@ export default function GuideVideoCard({
           </button>
         )}
       </div>
-      <div className="flex items-center justify-between gap-4 px-4 py-3">
-        <p className="text-sm font-medium text-white/82">{title}</p>
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+        <p className="min-w-0 break-words text-sm font-medium text-white/82">{title}</p>
         <a
           href={watchUrl}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => trackEvent('guide_video_click', { guide_slug: guideSlug, day_number: dayNumber, cta_position: 'youtube_link' })}
+          onClick={() => trackVideo('youtube_link')}
           className="inline-flex shrink-0 items-center gap-1.5 text-xs text-red-100 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
         >
           {locale === 'en' ? 'Watch on YouTube' : 'YouTube 观看'} <ExternalLink className="h-3.5 w-3.5" />

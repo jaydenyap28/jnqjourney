@@ -25,6 +25,7 @@ export type AnalyticsEventName =
   | 'guide_location_click'
   | 'guide_gallery_open'
   | 'guide_video_click'
+  | 'note_video_click'
   | 'hotel_affiliate_click'
   | 'related_guide_click'
   | 'budget_section_view'

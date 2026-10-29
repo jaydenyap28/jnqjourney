@@ -3,6 +3,7 @@
 
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
+import RegionCardDescription from '@/components/RegionCardDescription'
 
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -126,7 +127,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
                   )}
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.04)_0%,rgba(0,0,0,0.14)_40%,rgba(0,0,0,0.86)_100%)]" />
                   <div className="absolute inset-x-0 bottom-0 p-4 md:p-6">
-                    <p className="section-kicker text-[10px] text-amber-100/82"><PublicCopy text={"Travel Guide / 游记攻略"}/></p>
+                    <p className="section-kicker text-[10px] text-amber-100/82"><PublicCopy text={"游记攻略"}/></p>
                     <h3 className="font-editorial-title mt-2 text-[2rem] leading-[0.94] text-white md:mt-3 md:text-5xl">
                       {title.primary}
                     </h3>
@@ -160,7 +161,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
 
                   {route.length ? (
                     <div className="rounded-[18px] border border-white/10 bg-black/30 p-3 md:rounded-[22px] md:p-4">
-                      <p className="section-kicker text-[10px] text-amber-200/75"><PublicCopy text={"Route Highlights / 这趟路线"}/></p>
+                      <p className="section-kicker text-[10px] text-amber-200/75"><PublicCopy text={"这趟路线"}/></p>
                       <div className="mt-2.5 flex flex-wrap gap-1.5 md:mt-3 md:gap-2">
                         {route.map((stop) => (
                           <span
@@ -175,7 +176,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
                   ) : null}
 
                   <div className="inline-flex items-center gap-2 text-[13px] font-medium text-white/88 md:text-sm">
-                    {<PublicCopy text={"Open guide / 打开游记"}/>}
+                    {<PublicCopy text={"打开游记"}/>}
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -191,7 +192,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
             <button
               key={`guide-page-${index}`}
               type="button"
-              aria-label={`Go to guide page ${index + 1}`}
+              aria-label={locale === 'en' ? `Go to guide page ${index + 1}` : `游记第 ${index + 1} 页`}
               onClick={() => setActiveGuidePage(index)}
               className={`h-2.5 rounded-full transition-all ${
                 index === activeGuidePage ? 'w-8 bg-amber-200' : 'w-2.5 bg-white/20 hover:bg-white/40'
@@ -206,6 +207,7 @@ function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations
 
 function LocationCard({ location, onOpen, onImageError }: { location: Location; onOpen: (location: Location) => void; onImageError: (url: string) => void }) {
   const coverImage = location.thumbnail || '/placeholder-image.jpg'
+  const locale = usePublicLocale()
 
   return (
     <article className="group overflow-hidden rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition hover:-translate-y-1 hover:bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(17,24,39,0.96))] md:rounded-[28px]">
@@ -222,7 +224,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
           <div className="absolute left-4 top-4 flex flex-wrap gap-2">
             {location.category ? (
               <Badge className="border border-white/10 bg-black/50 text-white">
-                {getCategoryLabel(location.category)}
+                {locale === 'en' ? getCategoryLabel(location.category) : location.category === 'food' ? '美食' : location.category === 'accommodation' ? '住宿' : '景点'}
               </Badge>
             ) : null}
             {location.region?.name ? (
@@ -248,7 +250,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
             href={`/spot/${location.slug}`}
             className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-50"
           >
-            {<PublicCopy text={"View spot / 查看景点"}/>}
+            {<PublicCopy text={"查看景点"}/>}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -259,6 +261,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
 
 function RegionCard({ region, onImageError }: { region: RegionHighlight; onImageError: (url: string) => void }) {
   const href = `/region/${region.slug}`
+  const locale = usePublicLocale()
 
   return (
     <Link
@@ -286,12 +289,12 @@ function RegionCard({ region, onImageError }: { region: RegionHighlight; onImage
               <h3 className="text-xl font-semibold text-white"><EntityName entity={region} /></h3>
             </div>
           <Badge className="border border-amber-400/20 bg-amber-400/10 text-amber-100">
-          {region.count} spots
+          {region.count} {locale === 'en' ? 'places' : '个地点'}
           </Badge>
         </div>
 
         <p className="line-clamp-3 text-sm leading-6 text-gray-300">
-          {region.sampleText || `Spot ideas, food stops, stays, and route notes around ${region.name}.`}
+          <RegionCardDescription region={region} description={region.sampleText} />
         </p>
       </div>
     </Link>
@@ -318,7 +321,7 @@ function NoteCard({ note }: { note: NoteData }) {
         ) : null}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.18)_40%,rgba(0,0,0,0.86)_100%)]" />
         <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-          <p className="section-kicker text-[10px] text-amber-100/82"><PublicCopy text={"Longform Note / 长文笔记"}/></p>
+          <p className="section-kicker text-[10px] text-amber-100/82"><PublicCopy text={"长文笔记"}/></p>
           <h3 className="font-editorial-title mt-2 text-3xl leading-none text-white md:text-4xl">
             {note.shortTitle || note.title}
           </h3>
@@ -330,7 +333,7 @@ function NoteCard({ note }: { note: NoteData }) {
           {note.tagline || stripSummaryTokens(note.summary || '')}
         </p>
         <div className="inline-flex items-center gap-2 text-[13px] font-medium text-white/88 md:text-sm">
-          {<PublicCopy text={"Read note / 阅读长文"}/>}
+          {<PublicCopy text={"阅读长文"}/>}
           <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
         </div>
       </div>
@@ -506,13 +509,13 @@ export default function HomePageClient({
           <section id="guides" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl"><PublicCopy text={"Travel Guides / 完整游记攻略"}/></h2>
+                <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl"><PublicCopy text={"完整游记攻略"}/></h2>
               </div>
               <Link
                 href="/guide"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
               >
-                {<PublicCopy text={"View all guides / 查看全部游记"}/>}
+                {<PublicCopy text={"查看全部游记"}/>}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -523,7 +526,7 @@ export default function HomePageClient({
             <section id="packages" className="space-y-5 rounded-[26px] border border-emerald-200/15 bg-[linear-gradient(135deg,rgba(10,32,31,0.94),rgba(8,15,28,0.98))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] md:rounded-[32px] md:p-7">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="section-kicker text-xs text-emerald-200/75"><PublicCopy text={"Trip planning / 行程咨询"}/></p>
+                  <p className="section-kicker text-xs text-emerald-200/75"><PublicCopy text={"行程咨询"}/></p>
                   <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"热门旅游配套"}/></h2>
                   <p className="mt-3 max-w-2xl text-sm leading-7 text-white/60"><PublicCopy text={"从现有景点与攻略延伸的配套入口，价格和可出发日期以 WhatsApp 确认为准。"}/></p>
                 </div>
@@ -539,13 +542,13 @@ export default function HomePageClient({
             <section id="notes" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.36)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl"><PublicCopy text={"Longform Notes / 长文笔记"}/></h2>
+                  <h2 className="font-cjk-display text-[2rem] leading-none text-white md:text-4xl"><PublicCopy text={"长文笔记"}/></h2>
                 </div>
                 <Link
                   href="/notes"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
                 >
-                  {<PublicCopy text={"View all notes / 查看全部笔记"}/>}
+                  {<PublicCopy text={"查看全部笔记"}/>}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -560,13 +563,13 @@ export default function HomePageClient({
           <section id="malaysia" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"Explore Malaysia / 走遍马来西亚"}/></h2>
+                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"走遍马来西亚"}/></h2>
               </div>
               <Link
                 href="/region/malaysia"
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white transition hover:bg-white/10 md:px-4 md:text-sm"
               >
-                {<PublicCopy text={"View all Malaysia regions / 查看马来西亚所有地区"}/>}
+                {<PublicCopy text={"查看马来西亚所有地区"}/>}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
@@ -582,7 +585,7 @@ export default function HomePageClient({
           <section id="global" className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"Global Destinations / 海外城市与地区"}/></h2>
+                <h2 className="font-cjk-display text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"海外城市与地区"}/></h2>
               </div>
             </div>
             {globalRegions.length > 0 ? (
@@ -597,8 +600,8 @@ export default function HomePageClient({
           {topTags.length > 0 ? (
             <section className="rounded-[26px] border border-white/10 bg-[linear-gradient(180deg,rgba(8,15,28,0.88),rgba(12,18,32,0.96))] p-4 shadow-[0_28px_80px_rgba(2,6,23,0.32)] backdrop-blur-xl md:rounded-[32px] md:p-7 space-y-5">
               <div>
-                <p className="section-kicker text-xs text-amber-300/80"><PublicCopy text={"Quick Filters / 快速筛选"}/></p>
-                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"Popular Tags / 热门标签"}/></h2>
+                <p className="section-kicker text-xs text-amber-300/80"><PublicCopy text={"快速筛选"}/></p>
+                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"热门标签"}/></h2>
               </div>
               <div className="flex flex-wrap gap-2.5 md:gap-3">
                 {topTags.map(([tag, count], index) => {
@@ -615,7 +618,7 @@ export default function HomePageClient({
                       onClick={() => handleSearch(tag)}
                       className={`rounded-full border px-4 py-2.5 text-[13px] transition hover:-translate-y-0.5 md:px-5 md:py-3 md:text-sm ${accents[index % accents.length]}`}
                     >
-                      {tag}
+                      {locale === 'en' ? tag : tag === 'Food' ? '美食' : tag === 'Stay' ? '住宿' : '景点'}
                       <span className="ml-2 text-white/45">{count}</span>
                     </button>
                   )
@@ -627,8 +630,8 @@ export default function HomePageClient({
           <section id="latest" className="space-y-5 md:space-y-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="section-kicker text-xs text-amber-300/80"><PublicCopy text={"Recently Added / 最新打卡"}/></p>
-                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"Latest Updates / 最近更新"}/></h2>
+                <p className="section-kicker text-xs text-amber-300/80"><PublicCopy text={"最新打卡"}/></p>
+                <h2 className="font-cjk-display mt-2 text-[2rem] leading-tight text-white md:text-4xl"><PublicCopy text={"最近更新"}/></h2>
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-4">

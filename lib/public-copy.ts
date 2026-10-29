@@ -2,6 +2,23 @@ import type { Locale } from './locale'
 
 // Interface copy only. Entity content is supplied by the existing reviewed overlay.
 export const englishPublicCopy:Record<string,string> = {
+  '游记攻略': 'Travel Guide',
+  '这趟路线': 'Route Highlights',
+  '打开游记': 'Open guide',
+  '查看景点': 'View spot',
+  '阅读长文': 'Read note',
+  '完整游记攻略': 'Travel Guides',
+  '查看全部游记': 'View all guides',
+  '行程咨询': 'Trip planning',
+  '查看全部笔记': 'View all notes',
+  '走遍马来西亚': 'Explore Malaysia',
+  '查看马来西亚所有地区': 'View all Malaysia regions',
+  '海外城市与地区': 'Global Destinations',
+  '快速筛选': 'Quick Filters',
+  '热门标签': 'Popular Tags',
+  '最新打卡': 'Recently Added',
+  '最近更新': 'Latest Updates',
+  '按地区浏览已收录的景点、美食与旅行笔记，寻找适合自己的旅行路线。': 'Browse places, food and travel notes by region to plan your route.',
   '查看地点介绍、照片与地图位置。': 'Open this place for its description, photos and map location.',
   '地区目录':'Regions','旅游景点':'Travel places','完整攻略':'Travel guides','长文笔记':'Travel stories','旅游配套':'Travel packages','内容与编辑原则':'Editorial policy','联盟链接说明':'Affiliate disclosure','WhatsApp 联系我们':'Contact us on WhatsApp',
   '旅客人数':'Travellers','平均每人':'Per person','记录数量':'Records','最后同步':'Last synced','实际花费':'Actual spending','预算':'Budget','旅程花费':'Trip cost','路线':'Route','花费':'Cost',
