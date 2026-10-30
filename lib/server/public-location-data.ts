@@ -1,5 +1,9 @@
 import { cache } from 'react'
 import { unstable_cache } from 'next/cache'
+import { createClient } from '@supabase/supabase-js'
+import { supabaseReadKey } from './supabase-read-key'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
+import { isSpotPublished } from '@/lib/spot-content'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
@@ -153,8 +157,25 @@ export const fetchTopRegions = unstable_cache(
 )
 
 export async function fetchAllLocationsForSitemap() {
-  const { locations } = await resolvePublicData()
-  return locations.map((location) => ({ id: location.id, name: location.name, slug: location.slug, updated_at: undefined as string | undefined }))
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = supabaseReadKey(true)
+  if (!url || !key) throw new Error('Sitemap quality inventory is unavailable.')
+  const supabase = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
+  })
+  // Restore the deployed editorial gate with one inventory read. Lightweight
+  // card excerpts cannot establish indexing eligibility for full Spot pages.
+  const [result, { locations }] = await Promise.all([
+    supabase.from('locations')
+      .select('id,name,description,review,image_url,images,experience_zh,visit_date,video_url,facebook_video_url,address,opening_hours,price_info,related_note_slugs,updated_at,publication_status,status')
+      .eq('status', 'active').abortSignal(AbortSignal.timeout(4000)),
+    resolvePublicData(),
+  ])
+  if (result.error || !Array.isArray(result.data)) throw new Error('Sitemap quality inventory is unavailable.')
+  const byId = new Map(locations.map(location => [location.id, location]))
+  return result.data.filter(location => isSpotPublished(location) && evaluateSpotQuality(location).indexable)
+    .map(location => ({ id: Number(location.id), name: String(location.name || ''), slug: byId.get(Number(location.id))?.slug, updated_at: location.updated_at || undefined }))
 }
 
 export async function fetchAllRegionsForSitemap() {

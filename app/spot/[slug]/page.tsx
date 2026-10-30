@@ -15,6 +15,7 @@ import { absoluteUrl } from '@/lib/site'
 import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
 export const revalidate = 3600
@@ -56,6 +57,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: await chineseLocalizedAlternates(canonicalPath, 'spot', location.id, {...location,title:location.name}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, coverImage, 'article'),
     twitter: buildTwitterCardData(seoTitle, description, coverImage),
+    robots: evaluateSpotQuality(location).indexable && resolved.source !== 'static-fallback'
+      ? { index: true, follow: true }
+      : { index: false, follow: true, googleBot: { index: false, follow: true } },
   }
 }
 

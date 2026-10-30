@@ -1,0 +1,105 @@
+{
+  "warning": "Editorial proposals only. No import or apply command. Do not add official descriptions to personal experience fields. Recheck existing claims, approve manually, then re-evaluate public pages before any index change.",
+  "drafts": [
+    {
+      "id": 480,
+      "title": "故宫博物院参观｜午门入口、离院出口与导览路线",
+      "seoDescription": "整理故宫博物院午门入院、神武门或东华门离院的参观方向，以及官方导览路线和开放公告入口；结合页面现有照片规划行程。",
+      "append": "## 官方参观方向与导览\n故宫博物院官方说明实行自南向北单向参观：午门为参观入口，参观结束后可从神武门或东华门离开。官网另列有两小时、半日和一日游导览，可先按可用时间选路线，再核对各展馆的开放信息。这里的入口与出口用途不同，抵达前应按入院方向查交通，离院后的下一站则按实际出口衔接。开放区域和临时安排以院方最新公告为准。",
+      "sources": [
+        {
+          "url": "https://www.dpm.org.cn/Visit.html",
+          "supports": "单向参观、两个出口、两小时/半日/一日官方导览"
+        }
+      ],
+      "review": "现有正文把神武门写成唯一离院出口，可按官方说明补充东华门；预约与特展细则另按出行日复核。",
+      "status": "DRAFT_REQUIRES_EDITORIAL_REVIEW",
+      "checkedAt": "2026-10-30",
+      "descriptionSha256Before": "9d3dd1743be450f03ed50d0f1d183a99bd324d694b5e9a9093a0126891555a46",
+      "before": {
+        "descriptionLength": 215,
+        "indexable": false
+      },
+      "afterHypothetical": {
+        "indexable": true,
+        "score": 8,
+        "maxScore": 12,
+        "descriptionLength": 376,
+        "experienceLength": 0,
+        "mediaCount": 22,
+        "reasons": []
+      },
+      "experience_zh": "UNCHANGED",
+      "publication_status": "UNCHANGED",
+      "applyToProduction": false
+    },
+    {
+      "id": 357,
+      "title": "浅草寺参观｜雷门、风雷神门与本堂怎么区分",
+      "seoDescription": "以浅草寺官方导览说明雷门与本堂的区别，认识风雷神门和观音堂，配合现有景点照片安排参拜与步行。",
+      "append": "## 从雷门认识寺院空间\n浅草寺官方导览把雷门列为寺院的总门，正式名称为风雷神门；门名与两侧的风神、雷神像有关。走到本堂后，看到的则是供奉圣观世音菩萨的中心堂宇，本堂也称观音堂。雷门与本堂是不同的建筑，安排步行时可以把入口地标和参拜目的地分开理解。希望进一步辨认沿途建筑，可使用寺方的境内导览逐一对照，而不只停留在灯笼前拍照。",
+      "sources": [
+        {
+          "url": "https://www.senso-ji.jp/guide/guide01.html",
+          "supports": "雷门正式名称、总门与风雷神像"
+        },
+        {
+          "url": "https://www.senso-ji.jp/guide/guide04.html",
+          "supports": "本堂又称观音堂及供奉对象"
+        }
+      ],
+      "review": "原文早春花景、边走边吃等句子不由本次来源证实；发布前应确认或删改，不据此补写亲历。",
+      "status": "DRAFT_REQUIRES_EDITORIAL_REVIEW",
+      "checkedAt": "2026-10-30",
+      "descriptionSha256Before": "efc971166f64635eb1e905ab65f376bada23e053deb36c75ad750d9e17b23745",
+      "before": {
+        "descriptionLength": 211,
+        "indexable": false
+      },
+      "afterHypothetical": {
+        "indexable": true,
+        "score": 8,
+        "maxScore": 12,
+        "descriptionLength": 375,
+        "experienceLength": 0,
+        "mediaCount": 7,
+        "reasons": []
+      },
+      "experience_zh": "UNCHANGED",
+      "publication_status": "UNCHANGED",
+      "applyToProduction": false
+    },
+    {
+      "id": 375,
+      "title": "富良野森之时计咖啡馆｜位置、吧台磨豆与到店安排",
+      "seoDescription": "依据新富良野王子酒店官方信息，说明珈琲 森の時計的位置、电视剧背景、吧台磨豆及不接受预约的到店安排。",
+      "append": "## 店方公布的到店信息\n新富良野王子酒店的官方页面将珈琲 森の時計介绍为电视剧《温柔时刻》的舞台，位置在酒店步行约五分钟处。店方说明吧台席可使用磨豆机体验研磨，店内全面禁烟，目前不接受预约。因此，想体验磨豆时应先确认吧台席实际安排，不能把普通座位与磨豆体验视为同一服务。营业内容可能调整，菜单和到店安排请在出发前查看店方页面。",
+      "sources": [
+        {
+          "url": "https://www.princehotels.co.jp/shinfurano/restaurant/morinotokei/",
+          "supports": "位置、电视剧、吧台磨豆、全席禁烟、不接受预约"
+        }
+      ],
+      "review": "不新增味觉、等位时长或座位保证；旧文的季节氛围与既有餐食描述仍需编辑确认。",
+      "status": "DRAFT_REQUIRES_EDITORIAL_REVIEW",
+      "checkedAt": "2026-10-30",
+      "descriptionSha256Before": "66608f6ecf60398461cba5d49489b44b856f4a5b7d3459d07a74bad780deb745",
+      "before": {
+        "descriptionLength": 198,
+        "indexable": false
+      },
+      "afterHypothetical": {
+        "indexable": true,
+        "score": 8,
+        "maxScore": 12,
+        "descriptionLength": 363,
+        "experienceLength": 0,
+        "mediaCount": 6,
+        "reasons": []
+      },
+      "experience_zh": "UNCHANGED",
+      "publication_status": "UNCHANGED",
+      "applyToProduction": false
+    }
+  ]
+}

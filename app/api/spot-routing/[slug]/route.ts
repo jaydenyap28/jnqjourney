@@ -5,6 +5,7 @@ import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
 import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
 import { applyLocalization, localizationRecord } from '@/lib/localization'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 export const dynamic = 'force-dynamic'
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
@@ -25,7 +26,7 @@ export async function GET(request: Request, { params }: { params: { slug: string
       const prefix = new URL(request.url).searchParams.get('locale') === 'en' ? '/en' : ''
       return NextResponse.json({ ...routing, destination: `${prefix}${canonical}`, status: 301 }, { headers })
     }
-    let indexable = resolved.source !== 'static-fallback'
+    let indexable = resolved.source !== 'static-fallback' && evaluateSpotQuality(resolved.spot).indexable
     if (new URL(request.url).searchParams.get('locale') === 'en') {
       try {
         const snapshot = await readLocalizationSnapshot('en')

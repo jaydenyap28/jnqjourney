@@ -6,10 +6,12 @@ const ts = require('typescript')
 
 function load(file, mocks = {}) {
   const context = {
-    exports: {}, process: { env: {}, cwd: () => process.cwd() }, console, URL,
+    exports: {}, process: { env: { NEXT_PUBLIC_SUPABASE_URL: 'https://sitemap.invalid' }, cwd: () => process.cwd() }, console, URL, AbortSignal,
     require(id) {
       if (id in mocks) return mocks[id]
       if (id === '@/lib/location-routing') return load('lib/location-routing.ts')
+      if (id === '@/lib/spot-quality') return load('lib/spot-quality.ts')
+      if (id === '@/lib/spot-content') return { isSpotPublished: row => row.publication_status == null || row.publication_status === 'published' }
       if (id.startsWith('@/')) throw new Error(`Missing offline dependency: ${id}`)
       return require(id)
     },
@@ -26,6 +28,8 @@ async function spotUrls(locations, aliases = {}) {
     react: { cache: fn => fn }, 'next/cache': { unstable_cache: fn => fn },
     '@/lib/server/public-data-resolver': { resolvePublicData: async () => ({ locations, regions: [] }) },
     '@/lib/server/public-spot-resolver': {}, '@/lib/region-routing': {},
+    './supabase-read-key': { supabaseReadKey: () => 'synthetic-test-key' },
+    '@supabase/supabase-js': { createClient: () => ({ from: () => ({ select: () => ({ eq: () => ({ abortSignal: async () => ({ data: locations.map(location => ({ ...location, description: 'A'.repeat(300), images: ['a', 'b', 'c', 'd'], visit_date: '2025-01-01', address: 'Fixture' })), error: null }) }) }) }) }) },
   })
   const sitemap = load('app/sitemap.ts', {
     '@/lib/region-routing': {}, '@/lib/site': { absoluteUrl: path => `https://www.jnqjourney.com${path}` },
@@ -63,7 +67,7 @@ test('invalid, mismatched and absent snapshot identities use the existing safe n
   assert.deepEqual(Array.from(urls), [1, 2, 3].map((id, i) => `https://www.jnqjourney.com/spot/${['first', 'second', 'third'][i]}-spot-${id}`))
 })
 
-test('sitemap retains every public identity independently of homepage pagination', async () => {
+test('sitemap retains all 582 qualifying identities independently of homepage pagination', async () => {
   const locations = Array.from({ length: 582 }, (_, i) => ({ id: i + 1, name: `Display ${i + 1} / Display ${i + 1}`, slug: `published-${i + 1}` }))
   const urls = await spotUrls(locations)
   assert.equal(urls.length, 582)

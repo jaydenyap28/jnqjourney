@@ -1,0 +1,2290 @@
+{
+  "scope": "48 targeted public snapshots only; no database query, no content mutation. Active state supplied by user; public API fields and production gate independently evaluated.",
+  "productionCommit": "85d47509ae25fa622f3c246afc555cd19849b549",
+  "gateSha256": "6ea315fbe8f2da1c21d06d829ff63af3239f0f7a723b0367b7729a1c1858d586",
+  "rows": [
+    {
+      "id": 221,
+      "name": "Old Cruise Ship Jetty Kijal 旧码头",
+      "canonical": "https://www.jnqjourney.com/spot/old-cruise-ship-jetty-kijal-221",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 504,
+      "experienceLength": 0,
+      "mediaCount": 1,
+      "reasons": [
+        "媒体素材少于 2 张"
+      ],
+      "rawDescriptionLength": 511,
+      "seoTitlePresent": true,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120",
+          "media2"
+        ],
+        "substantialFirstHandPage": [
+          "media2"
+        ],
+        "compactFirstHandPage": [
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60",
+          "media2"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "media2"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "保留 noindex；核对原始摄影资产，只有真实独立照片才能满足媒体不足。不得复制照片、拆裁切凑数。",
+      "descriptionSha256": "4cca34e757cecf41a8e2f018aa8b7feee8cd959949bdfcd35e8ffdd7e7b21bc6"
+    },
+    {
+      "id": 336,
+      "name": "八音盒博物馆",
+      "canonical": "https://www.jnqjourney.com/spot/otaru-music-box-museum-336",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 209,
+      "experienceLength": 0,
+      "mediaCount": 13,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 217,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "04454135d1d3c66563827b493f8464d84020ec45d7ea5ee7696c966bfb82c03d"
+    },
+    {
+      "id": 337,
+      "name": "LeTao小樽洋菓子铺",
+      "canonical": "https://www.jnqjourney.com/spot/letao-pathos-337",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 196,
+      "experienceLength": 0,
+      "mediaCount": 8,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 198,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "6838ad8192ed79a205532e98e3991bb53c9869e719bad87ba2fe4293bf5f29e7"
+    },
+    {
+      "id": 340,
+      "name": "幸运小丑汉堡",
+      "canonical": "https://www.jnqjourney.com/spot/lucky-pierrot-340",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 194,
+      "experienceLength": 0,
+      "mediaCount": 7,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 196,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "67eef0bd657ce1c8533bba9aed354c490fd9adcae5035b2628db157b276af2f2"
+    },
+    {
+      "id": 342,
+      "name": "金森红砖仓库",
+      "canonical": "https://www.jnqjourney.com/spot/kanemori-red-brick-warehouse-342",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 196,
+      "experienceLength": 0,
+      "mediaCount": 6,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 198,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "690e49b131d1963810519cfed5c749f3d284694246c2d78265ffd1e0aa1469de"
+    },
+    {
+      "id": 343,
+      "name": "函馆山夜景",
+      "canonical": "https://www.jnqjourney.com/spot/mount-hakodate-night-view-343",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 196,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 198,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "0e8e6b7ce36b3580b8fe96e31f5fc60414a9e8836f8f2040a20a6f183656e333"
+    },
+    {
+      "id": 344,
+      "name": "金森神社",
+      "canonical": "https://www.jnqjourney.com/spot/kanemori-shrine-344",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 201,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 203,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "7fd0cf79fea7da08a921d2728c35152a90de25aacc817e090c9421023f821925"
+    },
+    {
+      "id": 346,
+      "name": "白银瀑布",
+      "canonical": "https://www.jnqjourney.com/spot/shirogane-falls-346",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 4,
+      "maxScore": 12,
+      "descriptionLength": 171,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 179,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "先处理身份冲突：region=Yamagata、坐标38.569/140.5315，地址却为北海道美瑛；不能当成376白须瀑布补写。",
+      "descriptionSha256": "8038115dd5c39fd79631ed787dff165e193bb5371989142edc0c0f0fc7a032e3"
+    },
+    {
+      "id": 347,
+      "name": "银山温泉街",
+      "canonical": "https://www.jnqjourney.com/spot/ginzan-onsen-street-347",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 210,
+      "experienceLength": 0,
+      "mediaCount": 13,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 212,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "d41da3e2b9860865bd1c66040f6fa2fa3dd835abd9e629bb2285a25781e7e588"
+    },
+    {
+      "id": 351,
+      "name": "道产子ぷりん",
+      "canonical": "https://www.jnqjourney.com/spot/dosanko-pudding-351",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 4,
+      "maxScore": 12,
+      "descriptionLength": 178,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 183,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "789d7012dea2103c146a4a7f86fe1c0f9ea1445d9abadad8d0a692aae9055b43"
+    },
+    {
+      "id": 352,
+      "name": "阎魔殿",
+      "canonical": "https://www.jnqjourney.com/spot/enma-do-352",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 293,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "中等长度正文仍需更多原创素材或体验"
+      ],
+      "rawDescriptionLength": 300,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "712b81855ce8adb1c7205168f0854a62d448df40ad493ef94dc1ec0944516f5a"
+    },
+    {
+      "id": 353,
+      "name": "汤泽神社",
+      "canonical": "https://www.jnqjourney.com/spot/yuzawa-shrine-353",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 214,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 228,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "bfefcd40c8fa39b6c256633c046ff499e35cff30f12c2818b26e5457ef6fb47c"
+    },
+    {
+      "id": 357,
+      "name": "浅草寺",
+      "canonical": "https://www.jnqjourney.com/spot/senso-ji-temple-357",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 211,
+      "experienceLength": 0,
+      "mediaCount": 7,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 213,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P1",
+      "sourceStatus": "官方来源已读；草稿待审",
+      "action": "优先审阅事实补充草稿；现有正文亦需审核，暂不解除noindex。",
+      "descriptionSha256": "efc971166f64635eb1e905ab65f376bada23e053deb36c75ad750d9e17b23745"
+    },
+    {
+      "id": 358,
+      "name": "雷一茶",
+      "canonical": "https://www.jnqjourney.com/spot/kaminari-issa-358",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 197,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 201,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "311052da38c399e61b54eb5e9d7b3bc696a6f0dc8470e80321e72fefce1ac951"
+    },
+    {
+      "id": 364,
+      "name": "新仓山浅间公园",
+      "canonical": "https://www.jnqjourney.com/spot/arakurayama-sengen-park-364",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 211,
+      "experienceLength": 0,
+      "mediaCount": 11,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 213,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "de42bc4e6d02e76790f0fff70cf2dcf652299b961115a37cd541dffa95e22367"
+    },
+    {
+      "id": 365,
+      "name": "金鸟居",
+      "canonical": "https://www.jnqjourney.com/spot/kanadorii-365",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 4,
+      "maxScore": 12,
+      "descriptionLength": 153,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 158,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "bf9ed0d1a29b082d4d3287b35d3748ab0b2ae7f62f647ccd6df40b03d2da670c"
+    },
+    {
+      "id": 367,
+      "name": "山中湖平野の浜",
+      "canonical": "https://www.jnqjourney.com/spot/hirano-no-hama-367",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 197,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 199,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "9b3c9a73b5608f8ae918f22e15721a2fd99f689f27bfa8984cad3a5a31d10bac"
+    },
+    {
+      "id": 369,
+      "name": "藏王温泉街",
+      "canonical": "https://www.jnqjourney.com/spot/zao-onsen-street-369",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 204,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 206,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "bdcaabb2bad2a41d35f38d9bb1cf9c08622375d65dc324dfe19338a81b4c35c0"
+    },
+    {
+      "id": 374,
+      "name": "精灵露台",
+      "canonical": "https://www.jnqjourney.com/spot/ningle-terrace-374",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 188,
+      "experienceLength": 0,
+      "mediaCount": 14,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 190,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "9508bd1fbc34ad006c505b65792a3cc352431957cf23c41a6be775621f85e990"
+    },
+    {
+      "id": 375,
+      "name": "珈琲 森の時計",
+      "canonical": "https://www.jnqjourney.com/spot/mori-no-tokei-cafe-375",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 198,
+      "experienceLength": 0,
+      "mediaCount": 6,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 200,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P1",
+      "sourceStatus": "官方来源已读；草稿待审",
+      "action": "优先审阅事实补充草稿；现有正文亦需审核，暂不解除noindex。",
+      "descriptionSha256": "66608f6ecf60398461cba5d49489b44b856f4a5b7d3459d07a74bad780deb745"
+    },
+    {
+      "id": 376,
+      "name": "白须瀑布",
+      "canonical": "https://www.jnqjourney.com/spot/shirhige-waterfall-376",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 201,
+      "experienceLength": 0,
+      "mediaCount": 7,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 203,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "32703f11edc4614bc26c114b8ba7d87f6c9510606d061ab729895116d4fd41ef"
+    },
+    {
+      "id": 377,
+      "name": "伝説のすた丼屋 札幌駅前店",
+      "canonical": "https://www.jnqjourney.com/spot/densetsu-no-sutadonya-sapporo-ekimae-377",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 195,
+      "experienceLength": 0,
+      "mediaCount": 7,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 197,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "3c32ad6662ec441767e82f87294925931aa9f3f956830a0c8a030c3c91e21229"
+    },
+    {
+      "id": 379,
+      "name": "美瑛神社",
+      "canonical": "https://www.jnqjourney.com/spot/biei-shrine-379",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 204,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 207,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "320964c9b0e1d93256dde1cec0046f80e94618309a95e4933ab8703bb91f2c54"
+    },
+    {
+      "id": 387,
+      "name": "Flexstay Inn Hakodate Station",
+      "canonical": "https://www.jnqjourney.com/spot/flexstay-inn-hakodate-station-387",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 187,
+      "experienceLength": 0,
+      "mediaCount": 7,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 191,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "a050e88c64217cb3f8bf309f9cf4819d8c6e7c32999e8811f40e72383af32154"
+    },
+    {
+      "id": 389,
+      "name": "歌舞伎町",
+      "canonical": "https://www.jnqjourney.com/spot/kabukicho-389",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 210,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 212,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "7d799f17df84ef56a75d8520d1caf274efed5f0053a3dc7894bbc7f07baab8a3"
+    },
+    {
+      "id": 410,
+      "name": "薄野",
+      "canonical": "https://www.jnqjourney.com/spot/susukino-410",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 195,
+      "experienceLength": 0,
+      "mediaCount": 6,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 197,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "2444ffd2e1a70fa58d957294426beb75b6a5cc2046930346dcd90b6706ff9403"
+    },
+    {
+      "id": 411,
+      "name": "札幌时计台",
+      "canonical": "https://www.jnqjourney.com/spot/sapporo-clock-tower-411",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 207,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 209,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "399a40c83c533599845fa49ef376f6509633a14112756cf109d834406124b674"
+    },
+    {
+      "id": 412,
+      "name": "湯けむり食堂しろがね",
+      "canonical": "https://www.jnqjourney.com/spot/yukemuri-shokudo-shirogane-412",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 182,
+      "experienceLength": 0,
+      "mediaCount": 11,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 184,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "d2a3874514b8b0fa73686898ef4de1aded0e3ce01dd30ed3fdc2ad2ea86d07ac"
+    },
+    {
+      "id": 413,
+      "name": "和乐足汤",
+      "canonical": "https://www.jnqjourney.com/spot/warashiyu-footbath-413",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 184,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 186,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "3a29b2c3cbada9128df66bf8b7e0dba73c23dd644d129b5e5f9d8a47799c8936"
+    },
+    {
+      "id": 478,
+      "name": "前门大街",
+      "canonical": "https://www.jnqjourney.com/spot/qianmen-street-beijing-478",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 210,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 212,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "b8748f337860f7634b125e15c00c7294d13d5dfea9e07088ff0a5a0069834d28"
+    },
+    {
+      "id": 480,
+      "name": "故宫博物院",
+      "canonical": "https://www.jnqjourney.com/spot/forbidden-city-beijing-480",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 215,
+      "experienceLength": 0,
+      "mediaCount": 22,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 217,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P1",
+      "sourceStatus": "官方来源已读；草稿待审",
+      "action": "优先审阅事实补充草稿；现有正文亦需审核，暂不解除noindex。",
+      "descriptionSha256": "9d3dd1743be450f03ed50d0f1d183a99bd324d694b5e9a9093a0126891555a46"
+    },
+    {
+      "id": 481,
+      "name": "烟袋斜街",
+      "canonical": "https://www.jnqjourney.com/spot/yan-dai-xie-jie-beijing-481",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 197,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 199,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "9f522aa3b36d55ce8eadfef8aa2e5fb488c0a18fef4e2a11d97aa81a2f72d74a"
+    },
+    {
+      "id": 483,
+      "name": "中央广播电视总台光华路办公区（央视总部大楼）",
+      "canonical": "https://www.jnqjourney.com/spot/zhong-guo-zhong-yang-dian-483",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 222,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "中等长度正文仍需更多原创素材或体验"
+      ],
+      "rawDescriptionLength": 224,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "只写公共街区可观察建筑的事实；不得暗示办公区内部开放参观。",
+      "descriptionSha256": "6c799129db472acc00a88b3bfa518034c6d19ab297f8ec7db53cd6fb17a5115f"
+    },
+    {
+      "id": 546,
+      "name": "卓睿大酒店",
+      "canonical": "https://www.jnqjourney.com/spot/zhuo-rui-da-jiu-dian-dali-hotel-546",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 73,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 76,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "仅73字符且地址为大理市泛地址；先核实正式酒店、当前经营与已保存住宿证据。",
+      "descriptionSha256": "ba864fe0764997903c4c870116845577058d59246f286c2b00280e0778f76b14"
+    },
+    {
+      "id": 566,
+      "name": "香格里拉爱慕唯色藏风客栈",
+      "canonical": "https://www.jnqjourney.com/spot/ai-mu-wei-se-ke-shangri-la-hotel-566",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 203,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 205,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "复核门店身份、房型、地暖/星空等已有主张；不能从照片补造入住体验。",
+      "descriptionSha256": "9a16a6f9dc9a7172d788cfd5af19e93d4c881caf7f0c4e98faecfdca3329ff46"
+    },
+    {
+      "id": 569,
+      "name": "龟山公园",
+      "canonical": "https://www.jnqjourney.com/spot/gui-shan-gong-yuan-shangri-la-569",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 206,
+      "experienceLength": 0,
+      "mediaCount": 8,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 208,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "ab12c19cce6edcdab31b324360a110fe61324c908d97ea48e7c271d3549372c2"
+    },
+    {
+      "id": 589,
+      "name": "Jodd Fairs",
+      "canonical": "https://www.jnqjourney.com/spot/jodd-fairs-589",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 204,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 206,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "2022年访问与当前夜市场地可能不同；核实运营方当前场址，避免用旧照片描述新址。",
+      "descriptionSha256": "8a6f0941ee3f18516bfa6183ba18bdee238c55c1551cabbbdca004e481d57747"
+    },
+    {
+      "id": 590,
+      "name": "考山路",
+      "canonical": "https://www.jnqjourney.com/spot/khao-san-road-590",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 193,
+      "experienceLength": 0,
+      "mediaCount": 4,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 195,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "b0dadd23d1bd94ec08348f1c5296110f6defe57b62ea379b60562c943ace57b1"
+    },
+    {
+      "id": 591,
+      "name": "邢泰记",
+      "canonical": "https://www.jnqjourney.com/spot/xing-tai-ji-591",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 196,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 197,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "1550eff0bbdd05d297272af7635a5883a69f3f4c84c7e1b5592a89cc248dd5d3"
+    },
+    {
+      "id": 599,
+      "name": "Kai Bae View Point",
+      "canonical": "https://www.jnqjourney.com/spot/kai-bae-view-point-599",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 216,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 218,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "593738fe80c1f602d0b89ef340d9f08e9216b69b3253d6a778efd0aae5453e4f"
+    },
+    {
+      "id": 600,
+      "name": "Kai Bae Beach",
+      "canonical": "https://www.jnqjourney.com/spot/kai-bae-beach-600",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 218,
+      "experienceLength": 0,
+      "mediaCount": 6,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 220,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "13aa39209eb777a1a5a8e189f822b12be4a53b669035dac07003bcb079f97e6f"
+    },
+    {
+      "id": 602,
+      "name": "白沙滩",
+      "canonical": "https://www.jnqjourney.com/spot/white-sand-beach-602",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 198,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 200,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "e0c49f889c410b205a8a198840a4d382f83cce834416ac6aab95ff72a7e07438"
+    },
+    {
+      "id": 603,
+      "name": "Naga Residence",
+      "canonical": "https://www.jnqjourney.com/spot/naga-residence-603",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 200,
+      "experienceLength": 0,
+      "mediaCount": 3,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 201,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "核实酒店官方位置、房型与当前服务；现有“河东”文字需与坐标交叉核对。",
+      "descriptionSha256": "032034131e81e9e28a80b4b6dd7dc78bf9b639d4c963c39ae965a1d66abf9e9c"
+    },
+    {
+      "id": 604,
+      "name": "Fire Tiger by Seoulcial Club",
+      "canonical": "https://www.jnqjourney.com/spot/fire-tiger-by-seoulcial-club-604",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 4,
+      "maxScore": 12,
+      "descriptionLength": 144,
+      "experienceLength": 0,
+      "mediaCount": 2,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 146,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220",
+          "media4"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "先确认品牌门店、当前营业与菜单；无可靠门店证据不补推荐。",
+      "descriptionSha256": "d8c6ee0ef587ae66f373ea0f5381aca7b1b12cd55ebada7336641f0294394508"
+    },
+    {
+      "id": 639,
+      "name": "易佳韩食馆",
+      "canonical": "https://www.jnqjourney.com/spot/yi-jia-korean-restaurant-639",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 5,
+      "maxScore": 12,
+      "descriptionLength": 143,
+      "experienceLength": 0,
+      "mediaCount": 6,
+      "reasons": [
+        "正文少于 180 字"
+      ],
+      "rawDescriptionLength": 144,
+      "seoTitlePresent": true,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "description180",
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote",
+          "description180"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "已有正文明确只有名称/类别/粗坐标；中文SEO已存在也未通过门槛。先核实门店身份，保持noindex。",
+      "descriptionSha256": "6bb5357d453d698f564b94d291b60f728fbf57f2b232eab29384698f2233a92b"
+    },
+    {
+      "id": 805,
+      "name": "阿卜糖水铺",
+      "canonical": "https://www.jnqjourney.com/spot/abu-dessert-shop-805",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 192,
+      "experienceLength": 0,
+      "mediaCount": 17,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 194,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "核实碧山店铺正式名称、具体门牌、当前菜单；不推断招牌甜汤。",
+      "descriptionSha256": "b4a451e017d4fb269e65bccd87c4f6a71f126a8207326cdd38ab55018bffef7a"
+    },
+    {
+      "id": 844,
+      "name": "鱼乐手工坊",
+      "canonical": "https://www.jnqjourney.com/spot/yule-handicraft-workshop-844",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 208,
+      "experienceLength": 0,
+      "mediaCount": 5,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 210,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P3",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "核实店方课程、预约及开放；不得把“可能有”限制写成确定条款。",
+      "descriptionSha256": "81b3423d14c01a88829caf84d8fcc5b85c6a62bde1c19c3b3cf3cea18e1e8350"
+    },
+    {
+      "id": 845,
+      "name": "碧山书局",
+      "canonical": "https://www.jnqjourney.com/spot/bishan-bookstore-845",
+      "activeEvidence": "User supplied fresh read-only Supabase verification; public API supplies no raw status field",
+      "public": true,
+      "publication_status": null,
+      "indexable": false,
+      "sitemapEligible": false,
+      "explicitNoindexFieldEvaluated": false,
+      "score": 6,
+      "maxScore": 12,
+      "descriptionLength": 213,
+      "experienceLength": 0,
+      "mediaCount": 14,
+      "reasons": [
+        "正文仍偏短，缺少补充体验"
+      ],
+      "rawDescriptionLength": 215,
+      "seoTitlePresent": false,
+      "mediaUrlsAreNotVisuallyVerified": true,
+      "visited": true,
+      "video": true,
+      "practical": true,
+      "relatedNote": false,
+      "failedBranches": {
+        "strongFirstHandExperience": [
+          "experience120"
+        ],
+        "substantialFirstHandPage": [
+          "description300"
+        ],
+        "compactFirstHandPage": [
+          "description220"
+        ],
+        "editedExperiencePage": [
+          "experience60"
+        ],
+        "noteSupportedPage": [
+          "relatedNote"
+        ]
+      },
+      "priority": "P2",
+      "sourceStatus": "本轮未核实外部来源",
+      "action": "从运营方/政府旅游资料核实地点身份、具体用途与到访资料；不为字数扩写，继续noindex。",
+      "descriptionSha256": "16e5e30c6e2c3cca7161a9bc7f6eb70c94e36139e240f9b667b14182df36d09a"
+    }
+  ]
+}

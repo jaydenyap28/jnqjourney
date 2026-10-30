@@ -91,6 +91,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const localization=englishCollections.localization
   const englishRoutes:MetadataRoute.Sitemap=[]
   for(const record of localization.records.filter(r=>r.translationStatus==='complete')) {
+    // A translation cannot bypass the existing source-page quality gate or
+    // reintroduce an obsolete Spot alias into either language's sitemap.
+    if (record.canonicalPath.startsWith('/spot/') && !chineseRoutes.some(route => route.url === absoluteUrl(record.canonicalPath))) continue
     // Verify actual translation completeness while reusing this generation's
     // collections. Related packages do not affect translation eligibility.
     const page=await englishPageData(record.canonicalPath.split('/').filter(Boolean), false, { collection: englishCollections, includePackages: false })
