@@ -154,7 +154,7 @@ export const fetchTopRegions = unstable_cache(
 
 export async function fetchAllLocationsForSitemap() {
   const { locations } = await resolvePublicData()
-  return locations.map((location) => ({ id: location.id, name: location.name, updated_at: undefined as string | undefined }))
+  return locations.map((location) => ({ id: location.id, name: location.name, slug: location.slug, updated_at: undefined as string | undefined }))
 }
 
 export async function fetchAllRegionsForSitemap() {

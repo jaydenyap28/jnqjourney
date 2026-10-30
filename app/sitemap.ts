@@ -41,9 +41,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/copyright'), changeFrequency: 'yearly', priority: 0.2 },
   ]
 
+  // Display names may contain both languages (and repeat Latin words). Keep
+  // the published URL identity; explicit editor-managed aliases still win.
+  const canonicalSlugs = {
+    ...Object.fromEntries(locations
+      .filter(location => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(location.slug || '') && location.slug?.endsWith(`-${location.id}`))
+      .map(location => [String(location.id), location.slug!.slice(0, -String(location.id).length - 1)])),
+    ...slugMap,
+  }
+
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
     locations.map(async (location) => ({
-      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id, slugMap)),
+      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id, canonicalSlugs)),
       lastModified: validDateOrUndefined(location.updated_at),
       changeFrequency: 'weekly',
       priority: 0.7,
