@@ -38,7 +38,7 @@ export default function SpotDescription({ children }: { children: string }) {
         }
 
         const Tag = block.type
-        return <Tag key={index} className={styles[Tag]}><InlineMarkdown>{block.content}</InlineMarkdown></Tag>
+        return <Tag key={index} id={/^h[2-4]$/.test(Tag) ? `spot-description-${index}` : undefined} className={`${styles[Tag]} scroll-mt-6`}><InlineMarkdown>{block.content}</InlineMarkdown></Tag>
       })}
     </div>
   )

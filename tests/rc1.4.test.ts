@@ -28,6 +28,7 @@ test('cards, excerpts and detail use the current description before legacy revie
 })
 test('the actual public collection normalizer includes descriptions with matching source precedence', () => {
   const normalized = load('lib/server/public-data-resolver.ts', {
+    './supabase-read-key': {}, './public-fallback-snapshot': {},
     'server-only': {}, '@supabase/supabase-js': {}, 'next/cache': { unstable_cache: (fn: any) => fn },
     '@/lib/public-data': require('../lib/public-data.ts'), '@/lib/public-spot': {}, '@/lib/public-region-media': {},
     '@/lib/homepage-order': { usableVisitDate: () => null }, '@/lib/spot-content': { isSpotPublished: () => true },
@@ -99,6 +100,7 @@ test('Note publication accepts byte-identical read-back and rejects stale bytes 
 test('English snapshot reads reject a configured source failure even outside explicit refresh', async () => {
   let fallbackReads = 0
   const { readBilingualSnapshot } = load('lib/server/localization-snapshot.ts', {
+    './public-fallback-snapshot': {}, '@/lib/location-routing': {},
     '@/public-data/i18n/en/records.json': {}, '@/lib/note-publication': { freshNoteSnapshotUrl },
   }, { process: { env: { PUBLIC_DATA_CDN_BASE_URL: 'https://fixture.invalid' } }, fetch: async () => new Response('', { status: 503 }) })
   await assert.rejects(readBilingualSnapshot('notes.json', async () => { fallbackReads++; return { notes: ['stale'] } }, () => true))

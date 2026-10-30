@@ -38,6 +38,13 @@ function splitBilingual(value: string) {
 }
 
 function pair(zh: string, original: string, locale: Locale): EntityDisplayName {
+  // Some public card rows repeat the full original name around the Chinese
+  // alias, e.g. "Oriental Village 东方村 / Oriental Village". Only remove an
+  // exact, whitespace-delimited duplicate; do not guess a translation.
+  if (original && hasHan(zh) && !hasHan(original)) {
+    if (comparable(zh).startsWith(`${comparable(original)} `)) zh = zh.slice(original.length).trim()
+    else if (comparable(zh).endsWith(` ${comparable(original)}`)) zh = zh.slice(0, -original.length).trim()
+  }
   const primary = (locale === 'en' ? original : zh) || original || zh
   const alternate = locale === 'en' ? zh : original
   return { primary, secondary: alternate && comparable(alternate) !== comparable(primary) ? alternate : null }

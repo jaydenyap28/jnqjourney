@@ -1,8 +1,7 @@
 import 'server-only'
 import { supabaseReadKey } from './supabase-read-key'
 
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
+import { readFallbackSpot } from './public-fallback-snapshot'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
@@ -128,24 +127,8 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
 }
 
 async function readStaticSpot(slug: string): Promise<PublicSpotLookup> {
-  try {
-    const indexRaw = await readFile(path.join(process.cwd(), 'public-data', 'spots', 'index.json'), 'utf8')
-    const index = JSON.parse(indexRaw) as PublicSpotIndexSnapshot
-    if (index?.schemaVersion !== 1 || !Array.isArray(index.slugs)) return { status: 'failure' }
-    const id = extractLocationIdFromSlug(slug)
-    const canonicalSlug = id ? index.slugs.find((value) => value.endsWith(`-${id}`)) : undefined
-    if (!canonicalSlug) {
-      const maxId = Math.max(0, ...index.slugs.map((value) => extractLocationIdFromSlug(value) || 0))
-      return { status: 'not-found', authoritative: Boolean(id && id > maxId) }
-    }
-    slug = canonicalSlug
-    const raw = await readFile(path.join(process.cwd(), 'public-data', 'spots', `${slug}.json`), 'utf8')
-    const payload = JSON.parse(raw) as PublicSpotSnapshot
-    return payload?.schemaVersion === 1 && payload.spot?.id ? { status: 'found', spot: payload.spot } : { status: 'failure' }
-  } catch (error: any) {
-    if (error?.code === 'ENOENT') return { status: 'not-found' }
-    return { status: 'failure', error }
-  }
+  const id = extractLocationIdFromSlug(slug)
+  return id ? readFallbackSpot(id) : { status: 'not-found' }
 }
 
 async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | null> {
@@ -168,12 +151,19 @@ function resolveCached(slug: string) {
   const identity = `spot-${id}`
   return unstable_cache(
     () => resolveSpotUncached(identity),
-    ['public-spot-v2', identity],
+    ['public-spot-v3-fallback-20261030', identity],
     { revalidate: 3600, tags: [`public-spot:${identity}`] }
   )()
 }
 
-const readPublicSpot = async (slug: string) => resolveCached(String(slug || '').trim())
+const readPublicSpot = async (slug: string) => {
+  const normalized = String(slug || '').trim()
+  // Explicitly withdrawn by the editorial owner. Apply before any persistent
+  // cache/CDN lookup, including aliases and a previously warmed legacy entry.
+  if (extractLocationIdFromSlug(normalized) === 450) return null
+  if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') return resolveSpotUncached(normalized)
+  return resolveCached(normalized)
+}
 // React 18 exposes cache in the App Router server condition, but not in Pages
 // API bundles that also import the authoritative publication reader below.
 // Keep request memoization where supported; the persistent ID cache is shared.

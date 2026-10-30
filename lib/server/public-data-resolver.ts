@@ -1,8 +1,6 @@
 import 'server-only'
 import { supabaseReadKey } from './supabase-read-key'
 
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 
@@ -21,6 +19,7 @@ import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 import { spotCardExcerpt } from '@/lib/public-editorial'
+import { readPublicFallbackSnapshot } from './public-fallback-snapshot'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date,description'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
@@ -101,17 +100,9 @@ async function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
   }
 }
 
-async function readJson<T>(fileName: string) {
-  const raw = await readFile(path.join(process.cwd(), 'public-data', fileName), 'utf8')
-  return JSON.parse(raw) as T
-}
-
 async function readStaticFallback(): Promise<ResolvedPublicData> {
-  const [locations, regions] = await Promise.all([
-    readJson<PublicLocationsPayload>('locations.json'),
-    readJson<PublicRegionsPayload>('regions.json'),
-  ])
-  return { locations: locations.locations.filter(hasValidCoordinates), regions: regions.regions, source: 'static-fallback' }
+  const snapshot = await readPublicFallbackSnapshot()
+  return { locations: snapshot.locations.filter(hasValidCoordinates), regions: snapshot.regions, source: 'static-fallback' }
 }
 
 function publicDataCdnBase() {
@@ -225,12 +216,14 @@ async function resolveCoalesced() {
   return inFlight
 }
 
-const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v1'], {
+// Do not reuse a persisted entry sourced from the frozen 547-record fallback.
+const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v2-fallback-20261030'], {
   revalidate: 3600,
   tags: ['public-data', 'public-locations', 'public-regions'],
 })
 
 export async function resolvePublicData() {
+  if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') return resolveUncached()
   return resolveCached()
 }
 

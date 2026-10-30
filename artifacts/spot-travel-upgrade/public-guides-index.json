@@ -1,0 +1,175 @@
+{
+  "capturedAt": "2026-10-30T14:48:05.706Z",
+  "guides": [
+    {
+      "slug": "china-jiangnan-autumn-15d14n",
+      "shortTitle": "中国江南秋季游",
+      "title": "上海·苏州·乌镇·杭州·黟县·南京",
+      "tagline": "15 天 14 夜，上海、苏州、乌镇、杭州、黟县与南京",
+      "summary": "从上海一路南下，经苏州、乌镇、杭州与皖南，最后在南京收尾的秋季旅程。",
+      "duration": "15天14夜",
+      "budget": "",
+      "budgetScope": "unspecified",
+      "travelStyle": "自由行",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f7830-b1be-4c33-9dc7-da04f8757a2b-img_5709.webp",
+      "route": [
+        {
+          "name": "上海"
+        },
+        {
+          "name": "苏州"
+        },
+        {
+          "name": "乌镇"
+        },
+        {
+          "name": "杭州"
+        },
+        {
+          "name": "宏村／黟县"
+        },
+        {
+          "name": "南京"
+        }
+      ]
+    },
+    {
+      "slug": "malaysia-langkawi-5d4n",
+      "shortTitle": "兰卡威 6天5夜",
+      "title": "Langkawi 6D5N 自驾游",
+      "tagline": "天空之桥、森林夜游、海滩与岛上餐桌",
+      "summary": "从士乃直飞兰卡威，机场取车开启五天四夜自驾。这篇游记整理影片中实际到访的地点、两间住宿及交通提醒；按 2025 年 7 月 20 日至 25 日整理六天行程。",
+      "duration": "6 Days / 5 Nights",
+      "budget": "",
+      "budgetScope": "unspecified",
+      "travelStyle": "Self-drive / 自驾",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/malaysia-langkawi-5d4n/cover/2026-09-23/22ef0530-cf39-4e3c-9eb1-6e1088e0600d-28ae771d-4827-4380-bff6-57f0bff332a5-sky-bridge7.webp",
+      "route": [
+        {
+          "name": "Langkawi"
+        }
+      ]
+    },
+    {
+      "slug": "malaysia-east-coast-route3-10d9n",
+      "shortTitle": "东海岸三号公路",
+      "title": "马来西亚-关丹·登嘉楼·吉兰丹",
+      "tagline": "从柔佛一路往北到关丹,登嘉楼和吉兰丹，沿着海岸线慢慢开，把海滩、小镇、瀑布、博物馆和寺庙串成一趟完整的东海岸自驾游。",
+      "summary": "",
+      "duration": "10 Days / 9 Nights",
+      "budget": "RM 1,512",
+      "budgetScope": "unspecified",
+      "travelStyle": "自驾游",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/232-1774857489816-62e10b06-4bff-4e56-b0ce-5f706fbe71bc-3-30-6--w-5105dd01-c679-4a62-819c-1646524e4e28.webp",
+      "route": [
+        {
+          "name": "关丹"
+        },
+        {
+          "name": "登嘉楼"
+        },
+        {
+          "name": "吉兰丹"
+        }
+      ]
+    },
+    {
+      "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
+      "shortTitle": "中国东北冬季游",
+      "title": "哈尔滨·雪谷·长白山·北京",
+      "tagline": "从哈尔滨出发，走进雪谷、长白山，再用北京收尾，把冬季雪景与城市经典串成完整路线",
+      "summary": "",
+      "duration": "11 Days / 10 Nights",
+      "budget": "RM 6,452",
+      "budgetScope": "unspecified",
+      "travelStyle": "自由行",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/511-1775104327405-0653af07-0341-44fc-9fc3-70fa93006d79-597774876-b239be76-cfb2-48b1-bc2a-7953b9ad77cd.webp",
+      "route": [
+        {
+          "name": "哈尔滨"
+        },
+        {
+          "name": "雪谷"
+        },
+        {
+          "name": "长白山"
+        },
+        {
+          "name": "北京"
+        }
+      ]
+    },
+    {
+      "slug": "china-dali-shangri-la-lijiang-11d10n",
+      "shortTitle": "中国云南夏季游",
+      "title": "大理·丽江·香格里拉",
+      "tagline": "从大理出发，接着走进香格里拉高原，最后回到丽江看雪山、蓝月谷和古城风景",
+      "summary": "",
+      "duration": "11 Days / 10 Nights",
+      "budget": "RM 4,326",
+      "budgetScope": "unspecified",
+      "travelStyle": "自由行",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/516-1775183885418-93069da3-8e1d-4e34-92ca-e9e8a4ab5709-4-2-4--wa-795a6799-724d-4927-bad1-fef7a41319da.webp",
+      "route": [
+        {
+          "name": "大理"
+        },
+        {
+          "name": "香格里拉"
+        },
+        {
+          "name": "丽江"
+        }
+      ]
+    },
+    {
+      "slug": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "shortTitle": "日本冬季游",
+      "title": "北海道·东北山形·东京·富士山",
+      "tagline": "从北海道一路玩到山形，再接东京与富士山周边，把雪景、温泉、老街、美食和城市夜景串成一趟完整的冬季自由行",
+      "summary": "",
+      "duration": "10 Days / 9 Nights",
+      "budget": "RM 7,715",
+      "budgetScope": "unspecified",
+      "travelStyle": "自由行",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/ningle-terrace/images/2026-07-24/98f02614-d192-485e-af44-41f2064f9bd0-3.webp#focus=50,50",
+      "route": [
+        {
+          "name": "北海道"
+        },
+        {
+          "name": "山形"
+        },
+        {
+          "name": "东京与富士山"
+        }
+      ]
+    },
+    {
+      "slug": "china-guangzhou-8d7n",
+      "shortTitle": "中国广州夏季游",
+      "title": "广州·番禺",
+      "tagline": "把老城区、荔湾西关、番禺园林和珠江新城排成一趟节奏舒服的广州路线。",
+      "summary": "这篇广州游记按你最新的打卡日期整理成 8 天版本，适合继续补每天的影片、交通和预算。",
+      "duration": "8 Days / 7 Nights",
+      "budget": "",
+      "budgetScope": "unspecified",
+      "travelStyle": "自由行",
+      "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/317-1774688564186-a82f3fac-b11b-4de9-abca-31017e7d0935-1-6fa2af87-2e2e-408e-abdf-3ba7b8500897.webp",
+      "route": [
+        {
+          "name": "广州老城"
+        },
+        {
+          "name": "荔湾西关"
+        },
+        {
+          "name": "番禺与白云"
+        },
+        {
+          "name": "珠江新城与天河"
+        }
+      ]
+    }
+  ]
+}

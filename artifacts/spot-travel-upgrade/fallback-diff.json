@@ -1,0 +1,8439 @@
+{
+  "version": "2026-10-30",
+  "source": {
+    "type": "public-api-get-only",
+    "origin": "https://www.jnqjourney.com",
+    "generatedAt": "2026-10-30T14:45:07.433Z",
+    "startedAt": "2026-10-30T14:44:08.740Z"
+  },
+  "beforeCount": 547,
+  "afterCount": 582,
+  "added": [
+    {
+      "id": 851,
+      "name": "黎苗长桌宴厅",
+      "slug": "spot-851"
+    },
+    {
+      "id": 850,
+      "name": "南山素斋",
+      "slug": "spot-850"
+    },
+    {
+      "id": 849,
+      "name": "凤凰岛桥头公园",
+      "slug": "spot-849"
+    },
+    {
+      "id": 845,
+      "name": "碧山书局",
+      "slug": "spot-845"
+    },
+    {
+      "id": 844,
+      "name": "鱼乐手工坊",
+      "slug": "spot-844"
+    },
+    {
+      "id": 839,
+      "name": "Sky Bistro 708 山顶餐厅 / Sky Bistro 708",
+      "slug": "sky-bistro-708-839"
+    },
+    {
+      "id": 838,
+      "name": "Oriental Village 东方村 / Oriental Village",
+      "slug": "oriental-village-838"
+    },
+    {
+      "id": 837,
+      "name": "Kalut Cafe & Bar 海滩酒吧 / Kalut Cafe & Bar",
+      "slug": "kalut-cafe-bar-837"
+    },
+    {
+      "id": 836,
+      "name": "Cenang Mall 珍南购物中心 / Cenang Mall",
+      "slug": "cenang-mall-836"
+    },
+    {
+      "id": 835,
+      "name": "3D Art Langkawi 3D艺术馆 / 3D Art in Paradise Langkawi",
+      "slug": "3d-art-in-paradise-langkawi-835"
+    },
+    {
+      "id": 834,
+      "name": "Langkawi SkyDome 穹幕影院 / Langkawi SkyDome",
+      "slug": "langkawi-skydome-834"
+    },
+    {
+      "id": 833,
+      "name": "Eagle’s Nest SkyWalk 鹰巢天空步道 / Eagle's Nest SkyWalk",
+      "slug": "eagle-s-nest-skywalk-833"
+    },
+    {
+      "id": 832,
+      "name": "Crab Langkawi 海鲜农场餐厅 / Crab Langkawi Farm and Restaurant",
+      "slug": "crab-langkawi-farm-and-restaurant-832"
+    },
+    {
+      "id": 830,
+      "name": "Temonyong 夜市 / Temonyong Night Market",
+      "slug": "temonyong-night-market-830"
+    },
+    {
+      "id": 829,
+      "name": "Golden Bamboo 竹主题咖啡馆 / Golden Bamboo Cafe",
+      "slug": "golden-bamboo-cafe-829"
+    },
+    {
+      "id": 828,
+      "name": "串吧日式居酒屋 / Chuan Bar Izakaya - Japanese Fusion",
+      "slug": "chuan-bar-izakaya-japanese-fusion-828"
+    },
+    {
+      "id": 827,
+      "name": "Che Ta 鸡饭店 / Che Ta Chicken Rice Store",
+      "slug": "che-ta-chicken-rice-store-827"
+    },
+    {
+      "id": 826,
+      "name": "FB Cafe 拿坡里披萨 / FB Cafe - Napolitan Pizza",
+      "slug": "fb-cafe-napolitan-pizza-826"
+    },
+    {
+      "id": 825,
+      "name": "Gua MAHA & GM Farm 海鲜餐厅 / Gua MAHA & GM Farm Seafood Restaurant",
+      "slug": "gua-maha-gm-farm-seafood-restaurant-825"
+    },
+    {
+      "id": 824,
+      "name": "兰卡威天后宫 / Langkawi Thean Hou Temple",
+      "slug": "langkawi-thean-hou-temple-824"
+    },
+    {
+      "id": 823,
+      "name": "Wat Tham Kisap 山洞泰佛寺 / Wat Tham Kisap",
+      "slug": "wat-tham-kisap-823"
+    },
+    {
+      "id": 822,
+      "name": "Wat Koh Wanararm 泰佛寺 / Wat Koh Wanararm",
+      "slug": "wat-koh-wanararm-822"
+    },
+    {
+      "id": 821,
+      "name": "Maha Tower 兰卡威观景塔 / Maha Tower",
+      "slug": "maha-tower-821"
+    },
+    {
+      "id": 820,
+      "name": "老鹰广场 / Eagle Square",
+      "slug": "eagle-square-820"
+    },
+    {
+      "id": 819,
+      "name": "Bukit Malut 沿海公路 / Jalan Bukit Malut Scenic Drive",
+      "slug": "jalan-bukit-malut-scenic-drive-819"
+    },
+    {
+      "id": 818,
+      "name": "兰卡威海底世界 / Underwater World Langkawi",
+      "slug": "underwater-world-langkawi-818"
+    },
+    {
+      "id": 817,
+      "name": "丹绒鲁海滩 / Tanjung Rhu Beach",
+      "slug": "tanjung-rhu-beach-817"
+    },
+    {
+      "id": 816,
+      "name": "鲨鱼湾 Teluk Yu / Teluk Yu",
+      "slug": "teluk-yu-816"
+    },
+    {
+      "id": 815,
+      "name": "珍南海滩 / Cenang Beach",
+      "slug": "cenang-beach-815"
+    },
+    {
+      "id": 814,
+      "name": "特姆伦瀑布 / Temurun Waterfall",
+      "slug": "temurun-waterfall-814"
+    },
+    {
+      "id": 813,
+      "name": "兰卡威梦幻森林 / Dream Forest Langkawi",
+      "slug": "dream-forest-langkawi-813"
+    },
+    {
+      "id": 812,
+      "name": "拉雅山 Gunung Raya / Gunung Raya",
+      "slug": "gunung-raya-812"
+    },
+    {
+      "id": 811,
+      "name": "Perdana Quay 灯塔 / Perdana Quay Light House",
+      "slug": "perdana-quay-light-house-811"
+    },
+    {
+      "id": 810,
+      "name": "兰卡威天空之桥 / Langkawi Sky Bridge",
+      "slug": "langkawi-sky-bridge-810"
+    },
+    {
+      "id": 809,
+      "name": "Airis Sanctuary 度假村 / Airis Sanctuary Resort Langkawi",
+      "slug": "airis-sanctuary-resort-langkawi-809"
+    },
+    {
+      "id": 808,
+      "name": "Villa Paddy",
+      "slug": "villa-paddy-808"
+    }
+  ],
+  "removed": [
+    {
+      "id": 450,
+      "name": "金陵东路渡口"
+    }
+  ],
+  "changed": [
+    {
+      "id": 807,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 806,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 805,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 804,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 803,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 802,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 801,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 800,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 798,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 797,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 795,
+      "fields": [
+        "slug",
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 794,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 793,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 792,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 791,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 790,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 789,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 788,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 787,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 786,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 785,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 784,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 783,
+      "fields": [
+        "latitude",
+        "longitude",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 782,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 781,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 780,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 779,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 778,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 777,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 776,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 775,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 774,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 773,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 772,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 771,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 770,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 769,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 768,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 767,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 766,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 765,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 764,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 763,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 761,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 760,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 759,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 757,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 756,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 755,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 753,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 752,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 751,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 750,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 749,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 748,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 746,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 745,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 744,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 743,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 742,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 741,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 740,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 739,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 738,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 737,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 736,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 735,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 734,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 711,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 710,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 709,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 708,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 707,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 705,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 704,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 703,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 702,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 701,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 700,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 698,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 697,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 696,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 695,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 693,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 692,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 691,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 690,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 689,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 688,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 687,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 686,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 685,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 684,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 683,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 682,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 681,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 680,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 679,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 678,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 675,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 674,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 672,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 671,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 670,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 669,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 668,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 667,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 666,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 665,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 663,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 662,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 660,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 659,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 657,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 656,
+      "fields": [
+        "name",
+        "region",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 655,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 654,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 653,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 652,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 651,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 650,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 649,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 648,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 647,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 645,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 644,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 643,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 642,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 641,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 640,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 639,
+      "fields": [
+        "region",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 638,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 637,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 636,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 635,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 634,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 633,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 632,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 631,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 630,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 629,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 628,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 626,
+      "fields": [
+        "name",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 625,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 624,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 621,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 619,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 618,
+      "fields": [
+        "region",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 617,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 616,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 615,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 613,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 612,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 610,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 609,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 608,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 605,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 604,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 603,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 602,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 601,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 600,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 599,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 591,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 590,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 589,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 588,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 587,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 586,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 585,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 583,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 582,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 581,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 579,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 576,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 574,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 570,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 569,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 567,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 566,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 565,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 563,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 561,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 559,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 558,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 554,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 552,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 551,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 550,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 548,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 547,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 546,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 545,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 544,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 543,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 542,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 541,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 540,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 539,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 538,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 537,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 535,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 534,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 533,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 532,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 531,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 530,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 529,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 528,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 527,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 526,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 525,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 524,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 523,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 522,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 521,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 516,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 515,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 514,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 513,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 511,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 510,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 509,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 508,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 507,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 506,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 505,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 504,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 503,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 502,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 501,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 500,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 498,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 497,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 496,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 495,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 494,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 493,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 492,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 491,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 490,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 489,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 488,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 487,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 486,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 484,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 483,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 481,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 480,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 479,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 478,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 477,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 476,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 475,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 471,
+      "fields": [
+        "name",
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 469,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 468,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 466,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 465,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 463,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 462,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 461,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 460,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 459,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 458,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 457,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 456,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 455,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 454,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 453,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 452,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 451,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 449,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 448,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 447,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 446,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 445,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 444,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 443,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 442,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 441,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 440,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 439,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 438,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 437,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 436,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 435,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 434,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 433,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 432,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 431,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 430,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 429,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 427,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 426,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 425,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 424,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 423,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 422,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 421,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 420,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 419,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 418,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 417,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 416,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 415,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 414,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 413,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 412,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 411,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 410,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 409,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 408,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 407,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 406,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 405,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 404,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 403,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 402,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 401,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 400,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 399,
+      "fields": [
+        "name",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 398,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 397,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 396,
+      "fields": [
+        "thumbnail",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 395,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 394,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 393,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 390,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 389,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 387,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 381,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 380,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 379,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 378,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 377,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 376,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 375,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 374,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 370,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 369,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 367,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 366,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 365,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 364,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 363,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 359,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 358,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 357,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 355,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 354,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 353,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 352,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 351,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 350,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 349,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 347,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 346,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 345,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 344,
+      "fields": [
+        "region",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 343,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 342,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 341,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 340,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 339,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 338,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 337,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 336,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 335,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 334,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 330,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 328,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 327,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 326,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 325,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 323,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 322,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 320,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 319,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 318,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 317,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 316,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 315,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 314,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 313,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 311,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 309,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 308,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 307,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 306,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 305,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 304,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 303,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 302,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 301,
+      "fields": [
+        "name",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 300,
+      "fields": [
+        "name",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 299,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 298,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 297,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 296,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 295,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 294,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 293,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 292,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 291,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 290,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 283,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 281,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 279,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 278,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 277,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 276,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 275,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 274,
+      "fields": [
+        "region",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 273,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 272,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 271,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 252,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 251,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 250,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 249,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 247,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 246,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 245,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 244,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 243,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 242,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 241,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 240,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 237,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 236,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 235,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 234,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 233,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 232,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 230,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 228,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 227,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 226,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 222,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 221,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 220,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 219,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 218,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 217,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 216,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 215,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 196,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 168,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 167,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 166,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 165,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 163,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 161,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 160,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 159,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 158,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 157,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 151,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 150,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 149,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 148,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 146,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 145,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 144,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 142,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 141,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 140,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 139,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 138,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 137,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 136,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 135,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 134,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 133,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 132,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 131,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 130,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 129,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 125,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 123,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 121,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 120,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 119,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 118,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 117,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 116,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 115,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 114,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 113,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 112,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 111,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 109,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 108,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 107,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 106,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 105,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 104,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 103,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 73,
+      "fields": [
+        "name",
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 72,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 71,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 70,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 69,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 68,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 67,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 66,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 65,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 64,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 63,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 62,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 61,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 60,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 58,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 55,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 54,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 53,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 52,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 51,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 50,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 49,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 48,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 47,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 46,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 45,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 44,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 30,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 29,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 28,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 26,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 25,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 21,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 20,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 19,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 17,
+      "fields": [
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 14,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 12,
+      "fields": [
+        "slug",
+        "name",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 11,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 7,
+      "fields": [
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 6,
+      "fields": [
+        "category",
+        "shortSummary"
+      ]
+    },
+    {
+      "id": 5,
+      "fields": [
+        "shortSummary"
+      ]
+    }
+  ],
+  "noindexIds": [
+    221,
+    336,
+    337,
+    340,
+    342,
+    343,
+    344,
+    346,
+    347,
+    351,
+    352,
+    353,
+    357,
+    358,
+    364,
+    365,
+    367,
+    369,
+    374,
+    375,
+    376,
+    377,
+    379,
+    387,
+    389,
+    410,
+    411,
+    412,
+    413,
+    478,
+    480,
+    481,
+    483,
+    546,
+    566,
+    569,
+    589,
+    590,
+    591,
+    599,
+    600,
+    602,
+    603,
+    604,
+    639,
+    805,
+    844,
+    845
+  ],
+  "bytes": 3308603,
+  "sha256": "6b45742c986b7aa2209f485ea7f3536e71b025c21bd4bcd3ae40125bc257806e",
+  "receipts": [
+    {
+      "route": "/api/locations",
+      "status": 200,
+      "source": "cdn-cache",
+      "indexable": null,
+      "date": "Fri, 30 Oct 2026 14:44:10 GMT",
+      "age": "154"
+    },
+    {
+      "route": "/api/spots/spot-849",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:11 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-851",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:11 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-850",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-844",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-845",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/oriental-village-838",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sky-bistro-708-839",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kalut-cafe-bar-837",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cenang-mall-836",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/3d-art-in-paradise-langkawi-835",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/langkawi-skydome-834",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/eagle-s-nest-skywalk-833",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:12 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/crab-langkawi-farm-and-restaurant-832",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/temonyong-night-market-830",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/golden-bamboo-cafe-829",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chuan-bar-izakaya-japanese-fusion-828",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/che-ta-chicken-rice-store-827",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/fb-cafe-napolitan-pizza-826",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/gua-maha-gm-farm-seafood-restaurant-825",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/langkawi-thean-hou-temple-824",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-tham-kisap-823",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-koh-wanararm-822",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/maha-tower-821",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:13 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/eagle-square-820",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jalan-bukit-malut-scenic-drive-819",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/underwater-world-langkawi-818",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tanjung-rhu-beach-817",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/teluk-yu-816",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cenang-beach-815",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/temurun-waterfall-814",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/dream-forest-langkawi-813",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/perdana-quay-light-house-811",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/gunung-raya-812",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:14 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/langkawi-sky-bridge-810",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/airis-sanctuary-resort-langkawi-809",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/villa-paddy-808",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tachuan-academy-806",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hongcun-youchao-villa-diyi-b-b-807",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-805",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nanhu-academy-804",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wutong-avenue-803",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:15 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/deji-plaza-802",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/shixiang-road-801",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-800",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-798",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-797",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-795",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/usnisa-palace-793",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-794",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/niushou-mountain-cultural-tourism-zone-792",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:16 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nanjing-grand-yiju-hotel-xinjiekou-791",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bishan-village-789",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-788",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lucun-viewing-platform-787",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/xiuli-water-town-790",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hongcun-rice-fields-786",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hongcun-scenic-area-785",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tokyo-town-cameron-784",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lata-iskandar-783",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hainan-highlands-kopitiam-782",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:17 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cameron-valley-tea-house-1-781",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/highlands-spice-780",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-lord-s-cafe-779",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/big-red-strawberry-farm-778",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sam-poh-temple-776",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/parkland-suites-777",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/he-ping-xiao-shi-breakfast-steamboat-775",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nong-xiang-restaurant-774",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cameron-centrum-773",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kedai-kopitiam-kopi-kaw-kaw-772",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:18 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/agro-market-771",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kea-farm-770",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/boh-tea-centre-sungei-palas-garden-769",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ee-feng-gu-bee-farm-768",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/green-view-garden-767",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/melaka-fort-766",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/genting-skyworlds-theme-park-764",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/skytropolis-indoor-theme-park-765",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/taman-pinggiran-sungai-marong-763",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-761",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:19 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/windmill-upon-hills-760",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/san-gong-charcoal-hotpot-759",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/skyavenue-757",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-756",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/encore-melaka-753",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-riviera-melaka-755",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/melaka-straits-mosque-752",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/7-warna-kopitiam-751",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/melaka-river-750",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/church-of-saint-paul-749",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:20 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/dutch-square-748",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lulala-cendol-746",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tan-kim-hock-jonker-walk-745",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mamee-jonker-house-744",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ah-ma-ho-liao-742",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jonker-walk-743",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/river-of-life-741",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bamboo-hills-740",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ramayana-cave-739",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/batu-caves-738",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:21 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/zoo-negara-737",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hill-heal-736",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/gunung-lambak-recreational-forest-735",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/putuo-village-734",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-711",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/gerbang-laut-pulau-mawar-710",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-tanjung-resang-709",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pontian-mural-street-707",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-bandar-mersing-708",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-705",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-704",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-703",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:22 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-701",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-700",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-698",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/timmyapartment-697",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-696",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-702",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-695",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:23 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-693",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-692",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-690",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spa-691",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-689",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ginstar-688",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-687",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mottle-686",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-685",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-684",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:24 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-683",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ming-men-seafood-restaurant-682",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/timba-timba-island-680",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/starbucks-semporna-679",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mataking-island-681",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cham-chuan-kee-restaurant-678",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/neo-paly-hotel-675",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-674",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-manis-tanjung-sedili-672",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:25 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jason-bay-public-beach-671",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-tanjung-balau-669",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-tanjung-buluh-670",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-batu-layar-668",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/desaru-public-beach-667",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/punggai-bayu-impian-campsite-666",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-665",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yard-co-663",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bamboo-walk-sebana-woods-660",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-662",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kopi-ping-cafe-tuaran-659",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:26 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/airdence-sutera-avenue-657",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sabah-tea-resort-655",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hooga-cafe-656",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/poring-hot-spring-654",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chill-1850-653",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pekan-nabalu-652",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/peranggi-view-point-651",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-cloud-kinabalu-glamping-homestay-650",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-648",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bw-bus-restaurant-649",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:27 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-647",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lao-xizi-hangzhou-cuisine-west-lake-musical-fountain-branch-645",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/stone-house-cave-644",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-643",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/miaosy-642",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/west-lake-hubin-pedestrian-street-641",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/qinghefang-ancient-street-640",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-639",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-638",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/turtle-alley-636",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bukit-keluang-637",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:28 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jambatan-angkat-kuala-terengganu-635",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pesisir-payang-634",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/zahon-cafe-633",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/masjid-kristal-631",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/terengganu-state-museum-632",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mayang-mall-630",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/restoran-one-warisan-629",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-628",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-626",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-625",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/dj-citi-plaza-hotel-suites-624",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:29 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tengku-tengah-zaharah-mosque-621",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/heng-92-kopitiam-619",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-617",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/restoran-weng-yong-618",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-616",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/whisper-615",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sunset-promenade-613",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/no-3-warehouse-restaurant-612",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/shikumen-old-street-610",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/waiting-century-hotel-shanghai-jing-an-railway-station-south-square-609",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:30 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/amam-lonbakery-town-608",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mercure-koh-chang-hideaway-605",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/fire-tiger-by-seoulcial-club-604",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/naga-residence-603",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/white-sand-beach-602",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/khlong-phlu-waterfall-601",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kai-bae-beach-600",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kai-bae-view-point-599",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-590",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-591",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jodd-fairs-589",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:31 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/stanton-hotel-588",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tanjung-aru-beach-587",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yee-fung-laksa-586",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sosodikon-hill-585",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kinabalu-park-582",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/desa-dairy-farm-583",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/89-station-581",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sinalau-bakas-579",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sipadan-kapalai-dive-resort-576",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-574",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:32 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-570",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-569",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-567",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-566",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-563",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-565",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-561",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-559",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-558",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-554",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-552",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-551",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:33 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-550",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-548",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-547",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-545",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-546",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-544",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-543",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-542",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-541",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:34 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-540",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-539",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-538",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/s-537",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-535",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-533",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-534",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-532",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-531",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-530",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-529",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:35 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-528",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-527",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-526",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-525",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-524",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-523",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-522",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-516",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-521",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-515",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:36 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-514",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-513",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-511",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-510",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-509",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-508",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-507",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-505",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-506",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-504",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-503",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-502",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:37 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-501",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-497",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "3795"
+    },
+    {
+      "route": "/api/spots/spot-500",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-498",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-496",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-495",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-494",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-493",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-492",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-491",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:38 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-490",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-489",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-487",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-488",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-486",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-484",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-481",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-483",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-480",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-479",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-478",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:39 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-477",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-476",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-475",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-469",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-471",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-468",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-466",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-465",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-462",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-463",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-461",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:40 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-460",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yuyuan-bazaar-459",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/north-bund-458",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-457",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/starbucks-reserve-roastery-shanghai-455",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wujiang-road-pedestrian-street-456",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/anfu-road-454",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wukang-road-453",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lujiazui-452",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/museum-of-art-pudong-451",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:41 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-bund-449",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jiujiang-road-448",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nanjing-road-pedestrian-street-447",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/xintiandi-446",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-445",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-444",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-443",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-441",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-442",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-440",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:42 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-439",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-438",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-437",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-436",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-435",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-434",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-433",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-431",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-432",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-430",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-429",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-427",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:43 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-426",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-425",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-424",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-423",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-422",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-420",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/in77-421",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-419",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cheng-leong-keng-418",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/machap-umboo-417",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:44 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/machap-baru-416",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/loteng-cafe-telok-cempedak-415",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bukit-singa-414",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/warashiyu-footbath-413",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yukemuri-shokudo-shirogane-412",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sapporo-clock-tower-411",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/susukino-410",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/borneo-cultures-museum-409",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/101-premier-foodcourt-408",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/malaysia-china-friendship-park-407",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:45 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sarawak-cultural-village-406",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kuching-waterfront-405",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bengoh-dam-404",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/fairy-cave-403",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/concubine-lane-402",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ipoh-tuck-kee-restaurant-400",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yee-fatt-curry-mee-401",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/m-roof-hotel-399",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/da-seng-ngan-temple-398",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kin-loong-valley-chang-jiang-white-coffee-397",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/perak-guanyin-cave-396",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:46 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ling-sen-tong-temple-395",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nam-thean-tong-temple-394",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/henn-na-hotel-tokyo-nishikasai-390",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ong-kee-restaurant-393",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kabukicho-389",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/flexstay-inn-hakodate-station-387",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hotel-forza-sapporo-station-381",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hotel-lavenir-biei-380",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/biei-shrine-379",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tanukikoji-shopping-street-378",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/densetsu-no-sutadonya-sapporo-ekimae-377",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:47 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-376",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ningle-terrace-374",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-375",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/zao-tree-ice-370",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/zao-onsen-street-369",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hirano-no-hama-367",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/oshino-hakkai-366",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kanadorii-365",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/arakurayama-sengen-park-364",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tokyo-disneysea-363",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kaminari-issa-358",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:48 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/shibuya-sky-359",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/senso-ji-temple-357",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/noboribetsu-sekisuitei-355",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/noboribetsu-jigokudani-354",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yuzawa-shrine-353",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/enma-do-352",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/dosanko-pudding-351",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sengen-park-350",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/oyunuma-river-natural-footbath-349",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ginzan-onsen-street-347",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/shirogane-falls-346",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:49 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kanemori-shrine-344",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/takimikan-345",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mount-hakodate-night-view-343",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kanemori-red-brick-warehouse-342",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lucky-pierrot-340",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hachiman-zaka-slope-341",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/otaru-canal-339",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/otaru-sakaimachi-street-338",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/letao-pathos-337",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:50 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ichiban-ramen-335",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/otaru-music-box-museum-336",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sumiyoshi-shrine-334",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-330",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-328",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-327",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-326",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-325",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-323",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-322",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-320",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:51 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-319",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-318",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-317",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-315",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-316",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-314",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-313",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-309",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-311",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-308",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:52 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-307",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-306",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-304",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-305",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-303",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-marian-boutique-lodging-house-302",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/the-culvert-301",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/meritin-hotel-300",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/abba-paradise-299",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:53 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/aladdin-chicken-rice-298",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/black-bean-coffee-297",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/choon-hui-cafe-296",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/commons-295",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kantin-at-the-granary-294",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nam-joo-293",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ceylonese-restaurant-292",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ming-ming-food-court-291",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/angkringan-tepi-danau-290",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/golden-gokart-283",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/a2-foodcourt-279",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/golden-view-hotel-281",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:54 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/blue-fire-beach-club-278",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/puncak-beliung-277",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kepri-seafood-restaurant-275",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jambatan-barelang-276",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bukit-tun-razak-274",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pulau-tioman-kampung-paya-273",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/masjid-lapan-kubah-272",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-rhu-sepuluh-271",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jeram-mengaji-252",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/srz-ternak-ladang-tenusu-jeram-mengaji-251",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:55 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/selera-tepi-sungai-250",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ktmb-guillemard-bridge-249",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-phothikyan-phutthaktham-247",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/senok-beach-246",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-uttamaram-245",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/masjid-beijing-rantau-panjang-244",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-maisuwankiri-243",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-phikulthong-242",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-machimmaram-241",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/wat-phothivihan-240",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/dataran-cheng-ho-237",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:56 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-mek-mas-236",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hattori-coffee-235",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/renai-hotel-kota-bharu-234",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/marang-wave-breaker-233",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pulau-kapas-232",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-jambu-bongkok-230",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/terowong-bukit-tebuk-226",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-teluk-bidara-227",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-batu-pelanduk-228",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:57 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-kemasik-222",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/old-cruise-ship-jetty-kijal-221",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "0",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-penunjuk-kijal-220",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-teluk-kalong-219",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/steven-s-coffee-house-218",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-teluk-mak-nik-monica-bay-217",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/riverine-garden-hotel-216",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/muzium-sungai-lembing-196",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ombok-cherating-surf-cafe-215",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/rainbow-waterfall-168",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sunrise-hill-167",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:58 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pasir-puteri-166",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kolong-pahat-3-165",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/thean-hou-temple-163",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kolong-pahat-hanging-bridge-161",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kampung-seberang-hanging-bridge-rainbow-bridge-160",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/riverside-palm-inn-159",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-158",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/gua-charas-157",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/esplanade-kuantan-151",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ms-elliot-at-hock-bee-150",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-pelindung-149",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:44:59 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/mohd-chan-restaurant-146",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sungai-pandan-waterfall-145",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-teluk-cempedak-148",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kuantan-art-street-142",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lian-heng-kopitiam-144",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/888-food-court-141",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/imperium-residence-kuantan-140",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-139",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tien-lock-coffee-shop-138",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:00 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-saujana-biru-137",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-lagenda-136",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jambatan-cherok-paloh-135",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-hiburan-134",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jambatan-endau-rompin-133",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-132",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cheng-tian-keong-131",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/si-hai-long-wang-temple-130",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-minyak-beku-125",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chong-long-gong-temple-129",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/batu-pahat-art-street-123",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:01 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/fish-soup-121",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bp-dragon-kopitiam-120",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kafe-kiri-kanan-119",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/yeo-yeo-118",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/batu-pahat-lim-sz-chong-su-temple-117",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kedai-makan-soon-lai-116",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-115",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jian-nan-si-temple-114",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/macau-kopitiam-113",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/han-kee-cake-cafe-112",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:02 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/fancy-carp-111",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-109",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-108",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/cinema-corner-106",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/black-dragon-cave-temple-105",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/che-ann-khor-104",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kim-kee-fish-ball-restaurant-107",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-103",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/muo-boutique-hotel-73",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/restoran-chun-hui-72",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:03 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/otak-otak-cheng-boi-71",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kopi-434-70",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/muar-glutton-street-69",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kedai-kopi-hua-nam-68",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kedai-kopi-see-hoi-67",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sultan-ismail-bridge-66",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/daily-happy-otak-otak-retro-house-65",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/parit-jawa-64",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/xiu-de-shan-tang-62",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/nan-ting-si-temple-63",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:04 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/muar-street-art-61",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/figgy-s-cafe-60",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-58",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chow-sun-yuk-cheong-fun-55",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tumike-hotel-bentong-54",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/restoran-wonderland-valley-53",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tauhu-auntie-mok-52",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/lemang-to-ki-51",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/thong-kee-kopitiam-50",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kechara-forest-retreat-49",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:05 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chamang-waterfall-48",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/colmar-tropicale-47",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/japanese-village-46",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/bentong-gallery-45",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/spot-44",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/telok-kerang-beach-30",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/taman-rekreasi-sungai-rambah-29",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/ah-leng-fried-kuey-tiau-26",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kedai-mee-sin-kee-25",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tambak-pontian-28",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:06 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jong-suan-hiang-kopitiam-24",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/twins-cafe-kukup-23",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kopi-tenggek-tanjung-piai-22",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/kukup-fishing-village-21",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/tanjung-piai-national-park-20",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-pasir-lanun-19",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sawah-air-papan-17",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-air-papan-16",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/jeti-teluk-buih-15",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/che-luan-khor-kluang-12",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/chicken-delight-14",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:07 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/hock-soon-temple-11",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:08 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/laman-samudera-7",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:08 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/sri-mersing-cafe-6",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:08 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/spots/pantai-mawar-5",
+      "status": 200,
+      "source": "supabase",
+      "indexable": "1",
+      "date": "Fri, 30 Oct 2026 14:45:08 GMT",
+      "age": "0"
+    },
+    {
+      "route": "/api/locations",
+      "status": 200,
+      "source": "cdn-cache",
+      "indexable": null,
+      "date": "Fri, 30 Oct 2026 14:45:08 GMT",
+      "age": "211"
+    }
+  ]
+}

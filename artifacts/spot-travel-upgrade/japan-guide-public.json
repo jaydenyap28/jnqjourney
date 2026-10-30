@@ -1,0 +1,474 @@
+{
+  "slug": "japan-hokkaido-yamagata-tokyo-10d9n",
+  "aliases": [
+    "japan-10d9n",
+    "japan-winter-10d9n"
+  ],
+  "sortDate": "2024-01-24",
+  "title": "北海道·东北山形·东京·富士山",
+  "shortTitle": "日本冬季游",
+  "tagline": "从北海道一路玩到山形，再接东京与富士山周边，把雪景、温泉、老街、美食和城市夜景串成一趟完整的冬季自由行",
+  "summary": "",
+  "duration": "10 Days / 9 Nights",
+  "budget": "RM 7,715",
+  "budgetScope": "unspecified",
+  "travelStyle": "自由行",
+  "route": [
+    {
+      "stopLabel": "D1-D5",
+      "name": "北海道",
+      "summary": "先从富良野、美瑛、札幌、小樽到登别与函馆，把北海道冬季经典路线走完整。",
+      "mapSpotName": "Ningle Terrace",
+      "latitude": 43.3406,
+      "longitude": 142.3831
+    },
+    {
+      "stopLabel": "D6-D7",
+      "name": "山形",
+      "summary": "中段转进银山温泉与藏王树冰，把最有冬季感的温泉和雪景收入路线里。",
+      "mapSpotName": "Ginzan Onsen Street",
+      "latitude": 38.5705,
+      "longitude": 140.5305
+    },
+    {
+      "stopLabel": "D8-D10",
+      "name": "东京与富士山",
+      "summary": "最后用东京市区与富士山周边收尾，节奏会从雪景慢慢切回城市自由行。",
+      "mapSpotName": "Arakurayama Sengen Park",
+      "latitude": 35.5013,
+      "longitude": 138.8077
+    }
+  ],
+  "coverAccent": "bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.28),transparent_22%),radial-gradient(circle_at_top_right,rgba(251,191,36,0.2),transparent_18%),linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03))]",
+  "coverImage": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/ningle-terrace/images/2026-07-24/98f02614-d192-485e-af44-41f2064f9bd0-3.webp#focus=50,50",
+  "highlightTags": [],
+  "heroBullets": [],
+  "budgetItems": [
+    {
+      "label": "Accommodation",
+      "amount": "2,061",
+      "note": "美瑛、札幌、登别、函馆、银山温泉与东京住宿人均花费"
+    },
+    {
+      "label": "Flights",
+      "amount": "1,713",
+      "currency": "RM",
+      "note": "往返国际航班人均花费。"
+    },
+    {
+      "label": "Transportation",
+      "amount": "1,450",
+      "currency": "RM",
+      "note": "JR、巴士、地铁与景区接驳人均花费。"
+    },
+    {
+      "label": "Food & Dining",
+      "amount": "1,137",
+      "currency": "RM",
+      "note": "正餐、甜点、小吃和沿路餐饮人均花费。"
+    },
+    {
+      "label": "Shopping",
+      "amount": "662",
+      "currency": "RM",
+      "note": "日本药妆店、土产店、伴手礼等个人消费。"
+    },
+    {
+      "label": "Tickets & Entrance Fees",
+      "amount": "331",
+      "currency": "RM",
+      "note": "东京迪士尼海洋、Shibuya Sky 门票。"
+    },
+    {
+      "label": "Other",
+      "amount": "311",
+      "currency": "RM",
+      "note": "行李寄存、旅游保险等个人费用。"
+    },
+    {
+      "label": "Internet & Communication",
+      "amount": "50",
+      "currency": "RM",
+      "note": "上网卡费用。"
+    }
+  ],
+  "days": [
+    {
+      "dayLabel": "Day 1",
+      "title": "富良野与美瑛",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 374,
+          "spotSlug": "ningle-terrace-374",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "Ningle Terrace"
+        },
+        {
+          "spotId": 375,
+          "spotSlug": "cafe-mori-no-tokei-375",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "Cafe Mori no Tokei"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/Ytl3kZ7jAbk",
+      "stay": "Hotel Lavenir Biei",
+      "stayRangeStart": 1,
+      "stayRangeEnd": 1,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 2",
+      "title": "美瑛转札幌",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 379,
+          "spotSlug": "biei-shrine-379",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "Biei Shrine"
+        },
+        {
+          "spotId": 376,
+          "spotSlug": "shirahige-falls-376",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "Shirahige Falls"
+        },
+        {
+          "spotId": 377,
+          "spotSlug": "densetsu-no-sutadonya-sapporo-ekimae-377",
+          "displayOrder": 2,
+          "enabled": true,
+          "displayName": "伝説のすた丼屋 札幌駅前店"
+        },
+        {
+          "spotId": 410,
+          "spotSlug": "susukino-410",
+          "displayOrder": 3,
+          "enabled": true,
+          "displayName": "薄野"
+        },
+        {
+          "spotId": 378,
+          "spotSlug": "tanukikoji-shopping-street-378",
+          "displayOrder": 4,
+          "enabled": true,
+          "displayName": "狸小路"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/cq3dP8tYxpk",
+      "stay": "Hotel Forza Sapporo Station",
+      "stayRangeStart": 2,
+      "stayRangeEnd": 3,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 3",
+      "title": "小樽老街与运河",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 334,
+          "spotSlug": "sumiyoshi-shrine-334",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "住吉神社"
+        },
+        {
+          "spotId": 335,
+          "spotSlug": "ichiban-ramen-335",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "一番拉面"
+        },
+        {
+          "spotId": 336,
+          "spotSlug": "otaru-music-box-museum-336",
+          "displayOrder": 2,
+          "enabled": true,
+          "displayName": "八音盒博物馆"
+        },
+        {
+          "spotId": 337,
+          "spotSlug": "letao-pathos-337",
+          "displayOrder": 3,
+          "enabled": true,
+          "displayName": "LeTao小樽洋菓子铺"
+        },
+        {
+          "spotId": 338,
+          "spotSlug": "otaru-sakaimachi-street-338",
+          "displayOrder": 4,
+          "enabled": true,
+          "displayName": "小樽堺町通商店街"
+        },
+        {
+          "spotId": 339,
+          "spotSlug": "otaru-canal-339",
+          "displayOrder": 5,
+          "enabled": true,
+          "displayName": "小樽运河"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/e3q5MVEF-yk",
+      "stay": "Hotel Forza Sapporo Station",
+      "stayRangeStart": 2,
+      "stayRangeEnd": 3,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 4",
+      "title": "登别温泉路线",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 349,
+          "spotSlug": "oyunuma-river-natural-footbath-349",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "大汤沼川天然足汤"
+        },
+        {
+          "spotId": 350,
+          "spotSlug": "sengen-park-350",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "泉源公园"
+        },
+        {
+          "spotId": 352,
+          "spotSlug": "enma-do-352",
+          "displayOrder": 2,
+          "enabled": true,
+          "displayName": "阎魔殿"
+        },
+        {
+          "spotId": 354,
+          "spotSlug": "noboribetsu-jigokudani-354",
+          "displayOrder": 3,
+          "enabled": true,
+          "displayName": "登别地狱谷"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/VBECrngYvIc",
+      "stay": "Noboribetsu Sekisuitei",
+      "stayRangeStart": 4,
+      "stayRangeEnd": 4,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 5",
+      "title": "函馆港口与夜景",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 340,
+          "spotSlug": "lucky-pierrot-340",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "幸运小丑汉堡"
+        },
+        {
+          "spotId": 341,
+          "spotSlug": "hachiman-zaka-slope-341",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "八幡坂"
+        },
+        {
+          "spotId": 343,
+          "spotSlug": "mount-hakodate-night-view-343",
+          "displayOrder": 2,
+          "enabled": true,
+          "displayName": "函馆山夜景"
+        },
+        {
+          "spotId": 342,
+          "spotSlug": "kanemori-red-brick-warehouse-342",
+          "displayOrder": 3,
+          "enabled": true,
+          "displayName": "金森红砖仓库"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/kSIb2dv0UAQ",
+      "stay": "FlexStay Inn Hotel",
+      "stayRangeStart": 5,
+      "stayRangeEnd": 5,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 6",
+      "title": "银山温泉",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 413,
+          "spotSlug": "warashiyu-footbath-413",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "和乐足汤"
+        },
+        {
+          "spotId": 347,
+          "spotSlug": "ginzan-onsen-street-347",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "银山温泉街"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/X373Zu9ac3U",
+      "stay": "Takimikan",
+      "stayRangeStart": 6,
+      "stayRangeEnd": 6,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 7",
+      "title": "藏王树冰",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 370,
+          "spotSlug": "zao-tree-ice-370",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "藏王树冰"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/gMlH0QVRZMM",
+      "stay": "Henn na Hotel Tokyo Nishikasai",
+      "stayRangeStart": 7,
+      "stayRangeEnd": 10,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 8",
+      "title": "东京迪士尼海洋",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 363,
+          "spotSlug": "tokyo-disneysea-363",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "东京迪士尼海洋"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/vScTGJzFrPI",
+      "stay": "Henn na Hotel Tokyo Nishikasai",
+      "stayRangeStart": 7,
+      "stayRangeEnd": 10,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 9",
+      "title": "富士山周边一日",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 364,
+          "spotSlug": "arakurayama-sengen-park-364",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "Arakurayama Sengen Park"
+        },
+        {
+          "spotId": 365,
+          "spotSlug": "kanadorii-365",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "金鸟居"
+        },
+        {
+          "spotId": 366,
+          "spotSlug": "oshino-hakkai-366",
+          "displayOrder": 2,
+          "enabled": true,
+          "displayName": "Oshino Hakkai"
+        },
+        {
+          "spotId": 367,
+          "spotSlug": "hirano-no-hama-367",
+          "displayOrder": 3,
+          "enabled": true,
+          "displayName": "山中湖平野の浜"
+        },
+        {
+          "spotId": 389,
+          "spotSlug": "kabukicho-389",
+          "displayOrder": 4,
+          "enabled": true,
+          "displayName": "歌舞伎町"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/r8-ezkj1Eks",
+      "stay": "Henn na Hotel Tokyo Nishikasai",
+      "stayRangeStart": 7,
+      "stayRangeEnd": 10,
+      "gallery": []
+    },
+    {
+      "dayLabel": "Day 10",
+      "title": "东京市区收尾",
+      "summary": "",
+      "highlights": [],
+      "attractions": [
+        {
+          "spotId": 357,
+          "spotSlug": "senso-ji-temple-357",
+          "displayOrder": 0,
+          "enabled": true,
+          "displayName": "浅草寺"
+        },
+        {
+          "spotId": 359,
+          "spotSlug": "shibuya-sky-359",
+          "displayOrder": 1,
+          "enabled": true,
+          "displayName": "Shibuya Sky"
+        }
+      ],
+      "linkedSpots": [],
+      "videoUrl": "https://youtu.be/unb-o4oxBlg",
+      "stay": "Henn na Hotel Tokyo Nishikasai",
+      "stayRangeStart": 7,
+      "stayRangeEnd": 10,
+      "gallery": []
+    }
+  ],
+  "itinerarySegments": [],
+  "bestFor": [],
+  "notes": [],
+  "featuredSpotNames": [
+    "Ningle Terrace",
+    "Shirahige Falls",
+    "小樽运河",
+    "登别地狱谷",
+    "函馆山夜景",
+    "Arakurayama Sengen Park"
+  ],
+  "featuredAffiliateLinkIds": [],
+  "sidebarAffiliateLinkIds": []
+}

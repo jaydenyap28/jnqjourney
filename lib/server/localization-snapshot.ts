@@ -4,6 +4,8 @@ import bundled from '@/public-data/i18n/en/records.json'
 import type { LocalizationSnapshot } from '@/lib/localization'
 import type { Locale } from '@/lib/locale'
 import { freshNoteSnapshotUrl } from '@/lib/note-publication'
+import { readPublicFallbackSnapshot, readFallbackSpot } from './public-fallback-snapshot'
+import { extractLocationIdFromSlug } from '@/lib/location-routing'
 
 const cache = new Map<string, { until: number; promise: Promise<unknown> }>()
 const base = () => String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
@@ -28,21 +30,26 @@ export async function readBilingualSnapshot<T>(key: string, fallback: () => Prom
 }
 
 export async function readBundledJson<T>(file: string): Promise<T> {
+  if (file === 'public-data/locations.json' || file === 'public-data/regions.json') {
+    const snapshot = await readPublicFallbackSnapshot()
+    return (file.endsWith('/locations.json') ? { locations: snapshot.locations } : { regions: snapshot.regions }) as T
+  }
+  const detailSlug = file.match(/^public-data\/spots\/([a-zA-Z0-9-]+)\.json$/)?.[1]
+  if (detailSlug) {
+    const id = extractLocationIdFromSlug(detailSlug)
+    const result = id ? await readFallbackSpot(id) : null
+    if (result?.status !== 'found') throw new Error('Spot absent from public fallback')
+    return { schemaVersion: 1, spot: result.spot } as T
+  }
   // Literal paths let Next's output tracer include these files in serverless ISR.
   // A generic cwd + caller string works locally but omits them from deployment.
   let text: string
   switch (file) {
-    case 'public-data/locations.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/locations.json'), 'utf8'); break
-    case 'public-data/regions.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/regions.json'), 'utf8'); break
     case 'public-data/guide-trip-costs.json': text = await fs.readFile(path.join(process.cwd(), 'public-data/guide-trip-costs.json'), 'utf8'); break
     case 'data/guides.json': text = await fs.readFile(path.join(process.cwd(), 'data/guides.json'), 'utf8'); break
     case 'data/notes.json': text = await fs.readFile(path.join(process.cwd(), 'data/notes.json'), 'utf8'); break
     case 'data/location-slugs.json': text = await fs.readFile(path.join(process.cwd(), 'data/location-slugs.json'), 'utf8'); break
-    default: {
-      const slug = file.match(/^public-data\/spots\/([a-zA-Z0-9-]+)\.json$/)?.[1]
-      if (!slug) throw new Error('Unsupported bundled public snapshot')
-      text = await fs.readFile(path.join(process.cwd(), 'public-data/spots', `${slug}.json`), 'utf8')
-    }
+    default: throw new Error('Unsupported bundled public snapshot')
   }
   return JSON.parse(text.replace(/^\uFEFF/, '')) as T
 }

@@ -9,6 +9,8 @@ import { usePublicLocale } from './PublicLocale'
 import {PublicCopy} from '@/components/PublicLocale'
 import EntityName from '@/components/EntityName'
 import SpotDescription from './SpotDescription'
+import { spotPracticalSections } from '@/lib/spot-description'
+import { publicProse } from '@/lib/public-prose'
 
 
 import dynamic from 'next/dynamic'
@@ -20,7 +22,7 @@ import FallbackImage from '@/components/FallbackImage'
 import AffiliateCard from '@/components/AffiliateCard'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
-import { formatOpeningHoursDisplay, hasVisibleOpeningHours } from '@/lib/opening-hours'
+import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { hasPriceInfo, parsePriceInfo } from '@/lib/price-utils'
 import { Badge } from '@/components/ui/badge'
 import TravelPackageCard from '@/components/TravelPackageCard'
@@ -63,6 +65,7 @@ interface RelatedLocation {
 
 interface Location extends SpotContentFields {
   id: number
+  title?: string
   name: string
   name_cn?: string | null
   category?: string | null
@@ -172,25 +175,6 @@ function formatCompactAmount(value: number) {
   return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.?0+$/, '')
 }
 
-function extractNumericBudget(value?: string | null) {
-  const normalized = String(value || '')
-    .replace(/,/g, '')
-    .match(/(\d+(?:\.\d+)?)/)
-  return normalized ? Number(normalized[1]) : null
-}
-
-function buildAccommodationRangeLabel(value?: string | null, currency?: string) {
-  const amount = extractNumericBudget(value)
-  if (!amount) return ''
-
-  const lower = Math.max(0, Math.floor(amount / 50) * 50)
-  const upper = Math.ceil((amount * 1.55) / 50) * 50
-  const unit = currency || ''
-
-  if (!lower || !upper) return formatBudgetLabel(String(amount), unit)
-  return `${unit ? `${unit}` : ''}${unit ? '' : ''}${lower} - ${unit ? `${unit}` : ''}${upper}`
-}
-
 function getPriceHeading(category?: string | null) {
   if (category === 'food') return 'Food Budget'
   if (category === 'accommodation') return 'Stay Price Guide'
@@ -233,6 +217,7 @@ function SocialLink({ href, icon, label, color }: { href: string; icon: React.Re
 }
 
 function RelatedLocationCard({ location }: { location: RelatedLocation }) {
+  const locale = usePublicLocale()
   const coverImage = location.image_url || location.images?.[0] || '/placeholder-image.jpg'
   const title = getDisplayTitle(location.name, location.name_cn)
 
@@ -265,7 +250,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
         {location.distanceKm !== undefined ? (
           <p className="text-xs text-amber-200">About {location.distanceKm.toFixed(1)} km</p>
         ) : null}
-        <p className="line-clamp-2 text-sm text-gray-300">{getSpotDescription(location) || 'Open this spot for photos, maps, and more details.'}</p>
+        <p className="line-clamp-2 text-sm text-gray-300">{getSpotDescription(location, locale) || (locale === 'en' ? 'View available photos and map location.' : '查看照片、地图与景点详情。')}</p>
       </div>
     </Link>
   )
@@ -281,13 +266,15 @@ export default function SpotContent({
   relatedPackages = [],
 }: SpotContentProps) {
   const locale = usePublicLocale()
-  const experience = location[`experience_${locale}`]?.trim()
+  const experience = publicProse(location[`experience_${locale}`], locale)
+  const englishTitle = locale === 'en' ? publicProse(location.title, locale) : ''
+  const displayLocation = englishTitle ? { ...location, displayName: englishTitle } : location
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const touchStart = useRef<{ x: number; y: number } | null>(null)
   const [youtubeEmbedFailed, setYoutubeEmbedFailed] = useState(false)
   const [failedImages, setFailedImages] = useState<string[]>([])
   const [copiedField, setCopiedField] = useState<'address' | 'coords' | ''>('')
-  const visibleTags = getVisibleLocationTags(location.tags)
+  const visibleTags = getVisibleLocationTags(location.tags).filter(tag => publicProse(tag, locale))
   const isDrawer = mode === 'drawer'
   const spotTitle = getDisplayTitle(location.name, location.name_cn)
   const locationPath = buildLocationPath(location.name, location.id)
@@ -308,7 +295,8 @@ export default function SpotContent({
   const facebookVideoUrl = location.facebook_video_url || ''
   const shouldShowYoutube = Boolean(videoId && !youtubeEmbedFailed)
   const facebookPreviewImage = String(location.image_url || validImages[0] || '').trim()
-  const spotDescription = useMemo(() => getSpotDescription(location), [location])
+  const spotDescription = useMemo(() => getSpotDescription(location, locale), [location, locale])
+  const practicalSections = useMemo(() => spotPracticalSections(spotDescription), [spotDescription])
   const priceInfo = useMemo(() => parsePriceInfo(location.price_info), [location.price_info])
   const hasPriceSnapshot = useMemo(() => hasPriceInfo(priceInfo), [priceInfo])
   const formattedMealBudget = useMemo(() => {
@@ -341,9 +329,9 @@ export default function SpotContent({
         : ''
 
     return {
-      primary: `${priceInfo.mealPartySize}人约 ${totalLabel}`,
-      secondary: totalBudget.secondary ? `${priceInfo.mealPartySize}人约 ${totalBudget.secondary}` : '',
-      perPersonPrimary: `人均 ${perPersonLabel}`,
+      primary: locale === 'en' ? `${totalLabel} for ${priceInfo.mealPartySize}` : `${priceInfo.mealPartySize}人约 ${totalLabel}`,
+      secondary: totalBudget.secondary ? (locale === 'en' ? `${totalBudget.secondary} for ${priceInfo.mealPartySize}` : `${priceInfo.mealPartySize}人约 ${totalBudget.secondary}`) : '',
+      perPersonPrimary: locale === 'en' ? `Per person ${perPersonLabel}` : `人均 ${perPersonLabel}`,
       perPersonSecondary: secondaryPerPersonLabel ? `Per pax ${secondaryPerPersonLabel}` : '',
     }
   }, [
@@ -352,6 +340,7 @@ export default function SpotContent({
     priceInfo.mealBudgetSecondary,
     priceInfo.mealPartySize,
     priceInfo.secondaryCurrency,
+    locale,
   ])
   const hasTieredAdmission =
     Boolean(priceInfo.admissionLocalAdult || priceInfo.admissionLocalChild || priceInfo.admissionForeignAdult || priceInfo.admissionForeignChild)
@@ -359,16 +348,17 @@ export default function SpotContent({
   const isAttractionSpot = location.category === 'attraction'
   const showAdmissionPricing = isAttractionSpot && (hasTieredAdmission || priceInfo.admissionAdult || priceInfo.admissionChild || priceInfo.isFree)
   const showParkingPricing = isAttractionSpot && Boolean(priceInfo.parkingBudget)
+  const showTransportPricing = Boolean(priceInfo.transportBudget)
   const showMealPricing = isFoodSpot && Boolean(formattedMealBudget)
   const showStayPricing = location.category === 'accommodation' && Boolean(priceInfo.accommodationBudget)
   const showCustomPricing = isAttractionSpot && Array.isArray(priceInfo.customItems) && priceInfo.customItems.length > 0
   const showPriceInfoImages = Array.isArray(priceInfo.infoImages) && priceInfo.infoImages.length > 0
   const stayPriceRange = useMemo(
-    () => buildAccommodationRangeLabel(priceInfo.accommodationBudget, priceInfo.currency),
+    () => formatBudgetLabel(priceInfo.accommodationBudget, priceInfo.currency),
     [priceInfo.accommodationBudget, priceInfo.currency]
   )
   const stayPriceRangeSecondary = useMemo(
-    () => buildAccommodationRangeLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency),
+    () => formatBudgetLabel(priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency),
     [priceInfo.accommodationBudgetSecondary, priceInfo.secondaryCurrency]
   )
   const shouldShowPriceSnapshot =
@@ -377,12 +367,13 @@ export default function SpotContent({
       showMealPricing ||
       showStayPricing ||
       showParkingPricing ||
+      showTransportPricing ||
       showCustomPricing ||
       showPriceInfoImages ||
       Boolean(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt))
   const priceHeading = getPriceHeading(location.category)
   const priceCurrencyLabel = getPriceCurrencyLabel(priceInfo.currency, priceInfo.secondaryCurrency)
-  const openingHoursDisplay = useMemo(() => formatOpeningHoursDisplay(location.opening_hours), [location.opening_hours])
+  const openingHoursDisplay = useMemo(() => formatOpeningHoursDisplay(location.opening_hours, locale), [location.opening_hours, locale])
 
   const socialLinks = [
     { href: 'https://www.youtube.com/@jnqjourney', icon: <Youtube className="h-3 w-3" />, label: 'YouTube', color: 'bg-red-600' },
@@ -469,7 +460,7 @@ export default function SpotContent({
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-amber-300/80">JnQ Journey Spot</p>
-            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl"><EntityName entity={location} /></h1>
+            <h1 className="mt-2 text-3xl font-bold text-white md:text-5xl"><EntityName entity={displayLocation} /></h1>
           </div>
           <Link
             href="/"
@@ -480,6 +471,16 @@ export default function SpotContent({
           </Link>
         </div>
       ) : null}
+
+        {!isDrawer ? <nav aria-label={locale === 'en' ? 'Visit information' : '旅行实用资讯'} className="flex flex-wrap gap-x-5 gap-y-1 border-y border-white/10 py-2 text-sm text-amber-100">
+          {[
+            ...(shouldShowPriceSnapshot ? [{ id: 'spot-prices', title: locale === 'en' ? 'Tickets & costs' : '门票与费用' }] : []),
+            ...(openingHoursDisplay.visible ? [{ id: 'spot-hours', title: locale === 'en' ? 'Opening hours' : '开放与休息日' }] : []),
+            ...practicalSections,
+            { id: 'spot-navigation', title: locale === 'en' ? 'Map & directions' : '地图导航' },
+            ...(relatedLocations.length ? [{ id: 'spot-nearby', title: locale === 'en' ? 'Nearby places' : '附近景点' }] : []),
+          ].map(item => <a key={item.id} href={`#${item.id}`} className="inline-flex min-h-11 items-center underline decoration-white/20 underline-offset-4 hover:decoration-amber-200">{item.title}</a>)}
+        </nav> : null}
 
       {(hasYoutubeLink || hasFacebookLink) ? (
         <section className={`mb-4 grid gap-4 ${hasYoutubeLink && hasFacebookLink ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
@@ -670,7 +671,7 @@ export default function SpotContent({
         <div className="flex flex-col gap-3.5 md:gap-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col">
-              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl"><EntityName entity={location} /></h2> : null}
+              {isDrawer ? <h2 className="text-[1.9rem] font-extrabold tracking-tight md:text-4xl"><EntityName entity={displayLocation} /></h2> : null}
               {(location.regions?.name || location.regions?.country) ? (
                 <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs text-gray-400 md:mt-3 md:text-sm">
                   <span>{[location.regions?.country, location.regions?.name].filter(Boolean).join(' / ')}</span>
@@ -692,7 +693,7 @@ export default function SpotContent({
                       ? 'border-emerald-500/30 bg-emerald-500/20 text-emerald-200'
                       : 'border-blue-500/30 bg-blue-500/20 text-blue-200'
                 }`}>
-                  <PublicCopy text={location.category === 'food' ? '美食' : location.category === 'accommodation' ? '住宿' : '景点'} />
+                  {locale === 'en' ? (location.category === 'food' ? 'Food' : location.category === 'accommodation' ? 'Stay' : 'Spot') : <PublicCopy text={location.category === 'food' ? '美食' : location.category === 'accommodation' ? '住宿' : '景点'} />}
                 </Badge>
               ) : null}
               {visibleTags[0] ? <Badge className="border border-white/20 bg-white/10 px-2.5 py-1 text-[11px] text-white shadow-sm md:px-3 md:text-sm">{visibleTags[0]}</Badge> : null}
@@ -734,6 +735,8 @@ export default function SpotContent({
           </div>
         </div>
 
+
+
         {location.address ? (
           <div className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3 backdrop-blur-md md:gap-3 md:p-4">
             <div className="rounded-lg bg-sky-400/15 p-2">
@@ -761,7 +764,7 @@ export default function SpotContent({
         <div className="grid min-w-0 grid-cols-1 gap-4 [overflow-wrap:anywhere] lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6">
           <div className="space-y-4">
             {shouldShowPriceSnapshot ? (
-              <div className="overflow-hidden rounded-[24px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3.5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:rounded-[32px] md:p-7">
+              <div id="spot-prices" className="scroll-mt-6 overflow-hidden rounded-[24px] border border-amber-300/18 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.15),transparent_30%),linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-3.5 shadow-[0_28px_90px_rgba(0,0,0,0.24)] md:rounded-[32px] md:p-7">
                 <div className="flex flex-wrap items-start justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-200/80"><PublicCopy text="价格参考" /></p>
@@ -954,6 +957,12 @@ export default function SpotContent({
                     </div>
                   ) : null}
 
+                  {showTransportPricing ? <div className="rounded-[22px] border border-white/10 bg-white/5 p-4">
+                    <p className="text-xs text-amber-100/70">{locale === 'en' ? 'Transport reference' : '交通参考'}</p>
+                    <p className="mt-3 text-sm text-white">{formatBudgetLabel(priceInfo.transportBudget, priceInfo.currency)}</p>
+                    {priceInfo.transportBudgetSecondary ? <p className="mt-1 text-xs text-amber-100">{formatBudgetLabel(priceInfo.transportBudgetSecondary, priceInfo.secondaryCurrency)}</p> : null}
+                  </div> : null}
+
                   {showCustomPricing ? (
                     <div className="rounded-[22px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 md:col-span-2 md:rounded-[28px] md:p-5 xl:col-span-2">
                       <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text="额外费用说明" /></p>
@@ -962,8 +971,8 @@ export default function SpotContent({
                           <div key={`${item.label}-${item.value}-${index}`} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                             <div className="flex items-start justify-between gap-3">
                               <div>
-                                <div className="font-medium text-white">{item.label || item.labelEn || '附加项目'}</div>
-                                {item.labelEn && item.labelEn !== item.label ? (
+                                <div className="font-medium text-white">{locale === 'en' ? item.labelEn || publicProse(item.label, locale) || 'Additional item' : item.label || item.labelEn || '附加项目'}</div>
+                                {locale === 'zh' && item.labelEn && item.labelEn !== item.label ? (
                                   <div className="mt-1 text-xs uppercase tracking-[0.16em] text-white/45">{item.labelEn}</div>
                                 ) : null}
                               </div>
@@ -974,7 +983,7 @@ export default function SpotContent({
                                 </div>
                               ) : null}
                             </div>
-                            {item.note ? <p className="mt-3 text-sm leading-6 text-gray-300">{item.note}</p> : null}
+                            {publicProse(item.note, locale) ? <p className="mt-3 text-sm leading-6 text-gray-300">{publicProse(item.note, locale)}</p> : null}
                           </div>
                         ))}
                       </div>
@@ -1016,7 +1025,7 @@ export default function SpotContent({
 
                 {(priceInfo.notes || priceInfo.priceSource || priceInfo.lastCheckedAt) ? (
                   <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-4 text-xs text-gray-300">
-                    {priceInfo.notes ? <span className="text-gray-300">{priceInfo.notes}</span> : null}
+                    {publicProse(priceInfo.notes, locale) ? <span className="text-gray-300">{publicProse(priceInfo.notes, locale)}</span> : null}
                     {priceInfo.priceSource ? <span className="min-w-0 [overflow-wrap:anywhere]">Source: {priceInfo.priceSource}</span> : null}
                     {priceInfo.lastCheckedAt ? <span>Checked: {priceInfo.lastCheckedAt}</span> : null}
                   </div>
@@ -1035,7 +1044,7 @@ export default function SpotContent({
                 </div>
               ) : (
                 <div className="rounded-xl border border-dashed border-white/10 bg-white/5 p-5 text-center md:p-8">
-                  <p className="italic text-gray-400"><PublicCopy text="这个景点暂时还没有完整介绍。" /></p>
+                  {locale === 'en' ? <p className="text-sm leading-6 text-gray-400">An English description is not available yet. <a className="underline underline-offset-4" href={locationPath}>Read the Chinese page</a></p> : <p className="italic text-gray-400"><PublicCopy text="这个景点暂时还没有完整介绍。" /></p>}
                 </div>
               )}
             </div>
@@ -1089,7 +1098,7 @@ export default function SpotContent({
             ) : null}
 
             {!isDrawer && relatedLocations.length > 0 ? (
-              <section className="space-y-4">
+              <section id="spot-nearby" className="scroll-mt-6 space-y-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70"><PublicCopy text="继续探索" /></p>
@@ -1124,7 +1133,7 @@ export default function SpotContent({
             ) : null}
             {!isDrawer ? <SupportSidebarCard className="bg-white/5" /> : null}
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div id="spot-navigation" className="scroll-mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
               <p className="text-xs uppercase tracking-[0.25em] text-amber-300/70"><PublicCopy text={isDrawer ? '快速操作' : '导航地图'} /></p>
               <div className="mt-4 grid gap-3">
                 {isChinaLocation ? (
@@ -1150,8 +1159,8 @@ export default function SpotContent({
                     </Button>
                   </>
                 )}
-                {hasVisibleOpeningHours(location.opening_hours) ? (
-                  <div className="rounded-xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-gray-200">
+                {openingHoursDisplay.visible ? (
+                  <div id="spot-hours" className="scroll-mt-6 rounded-xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-gray-200">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="inline-flex items-center gap-2 font-semibold text-amber-100">
                         <Clock className="h-4 w-4 text-amber-300" />

@@ -17,6 +17,9 @@ import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/pu
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
 import { toHomeGuideCard, toHomeNoteCard, type HomeGuideCard, type HomeNoteCard } from '@/lib/home-cards'
+import { publicProse } from '@/lib/public-prose'
+import { regionEditorial, spotCardExcerpt } from '@/lib/public-editorial'
+import { getSpotDescription } from '@/lib/content-display'
 
 export interface EnglishPageData {
   sourceVersion?: string
@@ -77,6 +80,17 @@ function localizedGuide(guide: TravelGuide, snapshot: LocalizationSnapshot) {
   return {slug,title,duration,tagline,coverImage,translationStatus:result.status}
 }
 
+function localizedSpotSummary(location: PublicLocation, snapshot: LocalizationSnapshot) {
+  const record = localizationRecord(snapshot,'spot',location.id)
+  const translated = publicProse(applyLocalization(location,record).value.shortSummary,'en')
+  if (translated) return { ...location, shortSummary: translated }
+  // Reuse a bound description translation only when its source projects to
+  // this exact card excerpt. A stale full-body translation cannot fill a card.
+  const field = record?.fields.description
+  const matches = field && spotCardExcerpt({description:field.source},Number.MAX_SAFE_INTEGER) === location.shortSummary
+  return { ...location, shortSummary: matches ? spotCardExcerpt({description:publicProse(field.text,'en')}) || null : null }
+}
+
 export async function englishPageData(parts: string[] = [], freshLocalization = false, options: {
   collection?: Awaited<ReturnType<typeof readEnglishCollections>>
   includePackages?: boolean
@@ -128,8 +142,9 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     const result = applyLocalization(source,localizationRecord(localization,'region',source.id))
     const ids = new Set([source.id])
     for(let i=0;i<regions.length;i++) for(const region of regions) if(region.parentId && ids.has(region.parentId)) ids.add(region.id)
-    data.kind='region'; data.region=result.value; data.status=result.status; data.title=resolveEntityDisplayName(source,'en').primary; data.description=result.value.shortSummary || ''
-    data.locations=locations.filter(l=>l.region && ids.has(l.region.id))
+    data.kind='region'; data.region=result.value; data.status=result.status; data.title=resolveEntityDisplayName(source,'en').primary
+    data.locations=locations.filter(l=>l.region && ids.has(l.region.id)).map(location => localizedSpotSummary(location,localization))
+    data.description=regionEditorial({name:data.title,description:result.value.shortSummary},data.locations.map(location=>resolveEntityDisplayName(location,'en').primary),'en').description
     return {data}
   }
   if (parts[0] === 'spot') {
@@ -143,12 +158,12 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     data.sourceVersion=spotPublicationVersion(snapshot.spot as unknown as Record<string, unknown>)
     const result = applyLocalization(source,localizationRecord(localization,'spot',source.id))
     data.kind='spot'; data.spot=result.value; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
-    data.description=result.value.description || result.value.review || ''
+    data.description=getSpotDescription(result.value,'en')
     {
       const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes),freshLocalization)
       data.relatedNotes = relatedNotesForSpot(source, notes.notes).map(toRelatedNoteCard)
     }
-    data.locations=locations.filter(l=>l.id!==source.id && l.region?.id===source.region_id).slice(0,6)
+    data.locations=locations.filter(l=>l.id!==source.id && l.region?.id===source.region_id).slice(0,6).map(location => localizedSpotSummary(location,localization))
     const matchingGuides=new Set(guides.filter(g=>[...(g.attractions||[]),...g.days.flatMap(d=>d.attractions||[]),...(g.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))].some(ref=>ref.enabled!==false && ref.spotId===source.id) || g.accommodationStays?.some(s=>s.accommodationId===source.id)).map(g=>g.slug))
     data.guides=data.guides.filter(g=>matchingGuides.has(g.slug))
     return {data}

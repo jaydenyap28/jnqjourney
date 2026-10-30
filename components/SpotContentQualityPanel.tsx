@@ -1,10 +1,10 @@
 'use client'
 import { useState } from 'react'
-import { assessSpotContent, cleanSpotEditorialDraft } from '@/lib/spot-content-quality'
+import { assessSpotContent, cleanSpotEditorialDraft, type SpotQualityInput } from '@/lib/spot-content-quality'
 
-export default function SpotContentQualityPanel({ value, category, original, onApply }: { value: string; category?: string; original?: string; onApply: (value: string) => void }) {
+export default function SpotContentQualityPanel({ value, category, original, context, onApply }: { value: string; category?: string; original?: string; context?: SpotQualityInput; onApply: (value: string) => void }) {
   const [reviewing, setReviewing] = useState(false)
-  const result = assessSpotContent({ description: value, category })
+  const result = assessSpotContent({ ...context, description: value, category })
   const issues = result.issues.map(issue => issue.message)
   const cleaned = cleanSpotEditorialDraft(value)
   return <aside className="mt-3 rounded border border-slate-200 bg-slate-50 p-4 text-sm text-slate-900">

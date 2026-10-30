@@ -1,0 +1,1246 @@
+{
+  "state": "UNPUBLISHED_REVIEW_ONLY",
+  "checkedAt": "2026-10-30",
+  "scope": "Existing 48 noindex records; four new priorities. No full-site editorial audit.",
+  "previousChecklistShape": "object",
+  "reusedDrafts": [
+    {
+      "id": 480,
+      "source": "artifacts/spot-index-review/content-drafts.json",
+      "descriptionUnchanged": true,
+      "approval": "DRAFT_REQUIRES_EDITORIAL_REVIEW"
+    },
+    {
+      "id": 357,
+      "source": "artifacts/spot-index-review/content-drafts.json",
+      "descriptionUnchanged": true,
+      "approval": "DRAFT_REQUIRES_EDITORIAL_REVIEW"
+    },
+    {
+      "id": 375,
+      "source": "artifacts/spot-index-review/content-drafts.json",
+      "descriptionUnchanged": true,
+      "approval": "DRAFT_REQUIRES_EDITORIAL_REVIEW"
+    }
+  ],
+  "newDrafts": [
+    {
+      "id": 343,
+      "name": "Mount Hakodate Night View",
+      "descriptionSha256Before": "0e8e6b7ce36b3580b8fe96e31f5fc60414a9e8836f8f2040a20a6f183656e333",
+      "priceInfoSha256Before": "2cc9ee2cfd9e94386b3fceb060ed06d3e1ebbe615eea0c7f68942566ebcf06a2",
+      "openingHoursSha256Before": "767c07f4df7c99b0c07987f88b7ad28a193d6b149eec42d48fd3f67efddf67f1",
+      "publicGuide": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "currentIndexable": false,
+      "experienceChanged": false,
+      "identityChanged": false,
+      "publicationChanged": false,
+      "applyToProduction": false
+    },
+    {
+      "id": 411,
+      "name": "Sapporo Clock Tower",
+      "descriptionSha256Before": "399a40c83c533599845fa49ef376f6509633a14112756cf109d834406124b674",
+      "priceInfoSha256Before": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "openingHoursSha256Before": "dfad3c21eab501394a8ee31f704b0bc880700b8bff33fa20a355a14d1e5f8dd2",
+      "publicGuide": null,
+      "currentIndexable": false,
+      "experienceChanged": false,
+      "identityChanged": false,
+      "publicationChanged": false,
+      "applyToProduction": false
+    },
+    {
+      "id": 364,
+      "name": "Arakurayama Sengen Park",
+      "descriptionSha256Before": "de42bc4e6d02e76790f0fff70cf2dcf652299b961115a37cd541dffa95e22367",
+      "priceInfoSha256Before": "2cc9ee2cfd9e94386b3fceb060ed06d3e1ebbe615eea0c7f68942566ebcf06a2",
+      "openingHoursSha256Before": "a965bf43c23b53ada0c0b05f076bf4a4abe1034753b6e417bd23a3456b706c55",
+      "publicGuide": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "currentIndexable": false,
+      "experienceChanged": false,
+      "identityChanged": false,
+      "publicationChanged": false,
+      "applyToProduction": false
+    },
+    {
+      "id": 336,
+      "name": "Otaru Music Box Museum",
+      "descriptionSha256Before": "04454135d1d3c66563827b493f8464d84020ec45d7ea5ee7696c966bfb82c03d",
+      "priceInfoSha256Before": "2cc9ee2cfd9e94386b3fceb060ed06d3e1ebbe615eea0c7f68942566ebcf06a2",
+      "openingHoursSha256Before": "cd19f9126657a3158cb6e11be93cbd8c16e51b151e12042a491249af8a6c86fc",
+      "publicGuide": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "currentIndexable": false,
+      "experienceChanged": false,
+      "identityChanged": false,
+      "publicationChanged": false,
+      "applyToProduction": false
+    }
+  ],
+  "findings": [
+    {
+      "id": 221,
+      "name": "Old Cruise Ship Jetty Kijal 旧码头",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 469
+    },
+    {
+      "id": 336,
+      "name": "八音盒博物馆",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 184
+    },
+    {
+      "id": 337,
+      "name": "LeTao小樽洋菓子铺",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 187
+    },
+    {
+      "id": 340,
+      "name": "幸运小丑汉堡",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 186
+    },
+    {
+      "id": 342,
+      "name": "金森红砖仓库",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 185
+    },
+    {
+      "id": 343,
+      "name": "函馆山夜景",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 187
+    },
+    {
+      "id": 344,
+      "name": "金森神社",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 189
+    },
+    {
+      "id": 346,
+      "name": "白银瀑布",
+      "issues": [
+        {
+          "code": "short",
+          "level": "info",
+          "message": "介绍较短，请核对是否缺少已有资料；不要为了字数编造内容"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 149
+    },
+    {
+      "id": 347,
+      "name": "银山温泉街",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 198
+    },
+    {
+      "id": 351,
+      "name": "道产子ぷりん",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 168
+    },
+    {
+      "id": 352,
+      "name": "阎魔殿",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 280
+    },
+    {
+      "id": 353,
+      "name": "汤泽神社",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 201
+    },
+    {
+      "id": 357,
+      "name": "浅草寺",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少有效核实日期；复用 Column Info 的核实日期与来源，不以访问日期替代"
+        },
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少来源；请在现有 Column Info 来源字段补证"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "review",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 200
+    },
+    {
+      "id": 358,
+      "name": "雷一茶",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 174
+    },
+    {
+      "id": 364,
+      "name": "新仓山浅间公园",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 199
+    },
+    {
+      "id": 365,
+      "name": "金鸟居",
+      "issues": [
+        {
+          "code": "short",
+          "level": "info",
+          "message": "介绍较短，请核对是否缺少已有资料；不要为了字数编造内容"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 136
+    },
+    {
+      "id": 367,
+      "name": "山中湖平野の浜",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 188
+    },
+    {
+      "id": 369,
+      "name": "藏王温泉街",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 195
+    },
+    {
+      "id": 374,
+      "name": "精灵露台",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 179
+    },
+    {
+      "id": 375,
+      "name": "珈琲 森の時計",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少有效核实日期；复用 Column Info 的核实日期与来源，不以访问日期替代"
+        },
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少来源；请在现有 Column Info 来源字段补证"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "review",
+      "seoKnown": true,
+      "category": {
+        "label": "咖啡馆",
+        "reviewBelow": 60,
+        "guidance": "简洁说明特色即可，品牌名与饮品英文可保留。"
+      },
+      "characters": 190
+    },
+    {
+      "id": 376,
+      "name": "白须瀑布",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少有效核实日期；复用 Column Info 的核实日期与来源，不以访问日期替代"
+        },
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少来源；请在现有 Column Info 来源字段补证"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "review",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 189
+    },
+    {
+      "id": 377,
+      "name": "伝説のすた丼屋 札幌駅前店",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 187
+    },
+    {
+      "id": 379,
+      "name": "美瑛神社",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 180
+    },
+    {
+      "id": 387,
+      "name": "Flexstay Inn Hakodate Station",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "住宿",
+        "reviewBelow": 120,
+        "guidance": "核对已有住宿位置、房型与入住资料；不补写未经证实的入住体验。"
+      },
+      "characters": 162
+    },
+    {
+      "id": 389,
+      "name": "歌舞伎町",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 198
+    },
+    {
+      "id": 410,
+      "name": "薄野",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 186
+    },
+    {
+      "id": 411,
+      "name": "札幌时计台",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 196
+    },
+    {
+      "id": 412,
+      "name": "湯けむり食堂しろがね",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 174
+    },
+    {
+      "id": 413,
+      "name": "和乐足汤",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 175
+    },
+    {
+      "id": 478,
+      "name": "前门大街",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 197
+    },
+    {
+      "id": 480,
+      "name": "故宫博物院",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 204
+    },
+    {
+      "id": 481,
+      "name": "烟袋斜街",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 183
+    },
+    {
+      "id": 483,
+      "name": "中央广播电视总台光华路办公区（央视总部大楼）",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 206
+    },
+    {
+      "id": 546,
+      "name": "卓睿大酒店",
+      "issues": [
+        {
+          "code": "short",
+          "level": "info",
+          "message": "介绍较短，请核对是否缺少已有资料；不要为了字数编造内容"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "住宿",
+        "reviewBelow": 120,
+        "guidance": "核对已有住宿位置、房型与入住资料；不补写未经证实的入住体验。"
+      },
+      "characters": 66
+    },
+    {
+      "id": 566,
+      "name": "香格里拉爱慕唯色藏风客栈",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "住宿",
+        "reviewBelow": 120,
+        "guidance": "核对已有住宿位置、房型与入住资料；不补写未经证实的入住体验。"
+      },
+      "characters": 195
+    },
+    {
+      "id": 569,
+      "name": "龟山公园",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 194
+    },
+    {
+      "id": 589,
+      "name": "Jodd Fairs",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 194
+    },
+    {
+      "id": 590,
+      "name": "考山路",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 184
+    },
+    {
+      "id": 591,
+      "name": "邢泰记",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 189
+    },
+    {
+      "id": 599,
+      "name": "Kai Bae View Point",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 197
+    },
+    {
+      "id": 600,
+      "name": "Kai Bae Beach",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 201
+    },
+    {
+      "id": 602,
+      "name": "白沙滩",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 189
+    },
+    {
+      "id": 603,
+      "name": "Naga Residence",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "住宿",
+        "reviewBelow": 120,
+        "guidance": "核对已有住宿位置、房型与入住资料；不补写未经证实的入住体验。"
+      },
+      "characters": 187
+    },
+    {
+      "id": 604,
+      "name": "Fire Tiger by Seoulcial Club",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 123
+    },
+    {
+      "id": 639,
+      "name": "易佳韩食馆",
+      "issues": [],
+      "grade": "ready",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 138
+    },
+    {
+      "id": 805,
+      "name": "阿卜糖水铺",
+      "issues": [
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "suggestion",
+      "seoKnown": true,
+      "category": {
+        "label": "餐饮",
+        "reviewBelow": 80,
+        "guidance": "核对已有菜品与环境资料；短餐饮记录也可以完整。"
+      },
+      "characters": 184
+    },
+    {
+      "id": 844,
+      "name": "鱼乐手工坊",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少有效核实日期；复用 Column Info 的核实日期与来源，不以访问日期替代"
+        },
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少来源；请在现有 Column Info 来源字段补证"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "review",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 199
+    },
+    {
+      "id": 845,
+      "name": "碧山书局",
+      "issues": [
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少有效核实日期；复用 Column Info 的核实日期与来源，不以访问日期替代"
+        },
+        {
+          "code": "verification",
+          "level": "review",
+          "message": "票价或费用缺少来源；请在现有 Column Info 来源字段补证"
+        },
+        {
+          "code": "verification",
+          "level": "info",
+          "message": "开放信息未见核实日期；核实后在现有正文或营业备注记录日期，费用日期不代表开放时间已核实"
+        },
+        {
+          "code": "seo",
+          "level": "info",
+          "message": "独立中文 SEO 字段未齐；公开页仍使用现有 fallback，请按搜索价值决定是否补充"
+        }
+      ],
+      "grade": "review",
+      "seoKnown": true,
+      "category": {
+        "label": "景点",
+        "reviewBelow": 160,
+        "guidance": "核对已有看点与游览资料；不以字数代替质量判断。"
+      },
+      "characters": 201
+    }
+  ],
+  "pendingIds": [
+    221,
+    337,
+    340,
+    342,
+    344,
+    346,
+    347,
+    351,
+    352,
+    353,
+    358,
+    365,
+    367,
+    369,
+    374,
+    376,
+    377,
+    379,
+    387,
+    389,
+    410,
+    412,
+    413,
+    478,
+    481,
+    483,
+    546,
+    566,
+    569,
+    589,
+    590,
+    591,
+    599,
+    600,
+    602,
+    603,
+    604,
+    639,
+    805,
+    844,
+    845
+  ]
+}

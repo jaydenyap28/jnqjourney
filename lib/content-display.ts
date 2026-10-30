@@ -1,4 +1,6 @@
 import { resolveEntityDisplayName } from './entity-display-name.ts'
+import { publicProse } from './public-prose.ts'
+import type { Locale } from './locale.ts'
 import type { TravelGuide } from '@/lib/guides'
 
 function containsCjk(value?: string | null) {
@@ -61,14 +63,15 @@ export function getSpotDescription(location: {
   description?: string | null
   review?: string | null
   opening_hours?: string | null
-}) {
+}, locale: Locale = 'zh') {
   const candidates = [location.description, location.review]
     .map((item) => String(item || '').trim())
     .filter(Boolean)
 
   for (const candidate of candidates) {
-    if (!looksLikeOpeningHoursText(candidate, location.opening_hours)) {
-      return candidate
+    const prose = publicProse(candidate, locale)
+    if (prose.replace(/<[^>]*>/g, '').trim() && !looksLikeOpeningHoursText(candidate, location.opening_hours)) {
+      return prose
     }
   }
 

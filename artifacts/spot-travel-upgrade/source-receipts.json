@@ -1,0 +1,65 @@
+{
+  "scope": "Official pages read for four unpublished drafts. Factual synthesis and conflicts are in new-drafts.json, not a claim of perpetual validity.",
+  "sources": [
+    {
+      "url": "https://334.co.jp/",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d48-2a48-779e-b7fb-0fe3cd95f3d3"
+    },
+    {
+      "url": "https://334.co.jp/ropeway/price/",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d40-9a80-743e-9764-0b1e855a8156"
+    },
+    {
+      "url": "https://334.co.jp/access/",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d48-26ed-7667-8652-427eb3ba1209"
+    },
+    {
+      "url": "https://www.hakodate.travel/en/information/mt-hakodate/",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f8cc-759e-b71f-8e37ad65da31"
+    },
+    {
+      "url": "https://sapporoshi-tokeidai.jp/inspect/guide.php",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f828-71e8-a108-f62e7ee0f672"
+    },
+    {
+      "url": "https://www.sapporo.travel/spot/facility/clock_tower/",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f837-762c-a842-90035b044fa1"
+    },
+    {
+      "url": "https://fujiyoshida.net/spot/12",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f8bf-749c-b74f-f77277f83d16"
+    },
+    {
+      "url": "https://www.yamanashi-kankou.jp/kankou/spot/p1_4919.html",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f8ed-702f-88ec-71d33bdc47f9"
+    },
+    {
+      "url": "https://www.otaru-orgel.co.jp/shop",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f8ab-7616-a366-0addf76b9c98"
+    },
+    {
+      "url": "https://otaru.gr.jp/shop/orgel-doh-mainbuilding",
+      "status": 200,
+      "checkedAt": "2026-10-30",
+      "scrapeId": "01a18d41-f8a3-7619-a2ae-cfeabc220279"
+    }
+  ]
+}

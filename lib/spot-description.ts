@@ -41,6 +41,13 @@ export function parseSpotDescription(value: string): SpotDescriptionBlock[] {
   return blocks.filter((block) => block.type === 'image' || block.content)
 }
 
+/** Reading shortcuts into the existing body, never another facts store. */
+export function spotPracticalSections(value: string) {
+  return parseSpotDescription(value).flatMap((block, index) =>
+    block.type !== 'image' && /^(h2|h3|h4)$/.test(block.type) && /门票|票种|开放|营业|闭园|停留|游览时间|交通|到达|怎么安排|ticket|admission|hours|duration|transport|getting|access/i.test(block.content)
+      ? [{ id: `spot-description-${index}`, title: block.content }] : [])
+}
+
 export function spotDescriptionExcerpt(value?: string | null): string {
   return String(value || '')
     .replace(/^ {0,3}#{1,6}[\t ]+/gm, '')

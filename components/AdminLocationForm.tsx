@@ -2785,7 +2785,7 @@ export default function AdminLocationForm({ initialData, mode }: AdminLocationFo
               value={formData.review}
               onChange={(review) => setFormData((previous) => ({ ...previous, review }))}
             />
-            <SpotContentQualityPanel value={formData.review} category={spotEditorialCategory({ category: formData.category, name: formData.name, name_cn: formData.name_cn, tags: formData.tags.split(/[,，、]/) })} original={initialData?.description ?? initialData?.review ?? ''} onApply={review => setFormData(previous => ({...previous,review}))} />
+            <SpotContentQualityPanel context={{ name: formData.name, name_cn: formData.name_cn, price_info: structuredPriceInfo, opening_hours: JSON.stringify(structuredHours), image_url: formData.image_url, images: formData.images }} value={formData.review} category={spotEditorialCategory({ category: formData.category, name: formData.name, name_cn: formData.name_cn, tags: formData.tags.split(/[,，、]/) })} original={initialData?.description ?? initialData?.review ?? ''} onApply={review => setFormData(previous => ({...previous,review}))} />
           </div>
 
           <SpotContentEditor spotId={initialData?.id} value={contentFields} onChange={setContentFields} images={[formData.image_url, ...formData.images]} name={formData.name} nameCn={formData.name_cn} description={formData.review} />

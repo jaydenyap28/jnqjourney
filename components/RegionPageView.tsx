@@ -35,7 +35,7 @@ function normalizeGuideMatch(value?: string | null) {
     .replace(/[^\p{L}\p{N}]+/gu, '')
 }
 
-function SpotCard({ spot, regionName }: { spot: any, regionName: string }) {
+function SpotCard({ spot, regionName, locale }: { spot: any, regionName: string, locale: Locale }) {
   const title = getDisplayTitle(spot.name, spot.name_cn)
   const coverImage = spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'
   return (
@@ -52,7 +52,7 @@ function SpotCard({ spot, regionName }: { spot: any, regionName: string }) {
       </div>
       <div className="flex-1 p-3 md:p-4">
         <h3 className="font-semibold text-white text-base"><EntityName entity={spot} /></h3>
-        <p className="line-clamp-2 text-xs md:text-sm text-gray-400 mt-1.5 leading-relaxed">{getSpotDescription(spot) || '查看详细介绍、图片与地图位置。'}</p>
+        <p className="line-clamp-2 text-xs md:text-sm text-gray-400 mt-1.5 leading-relaxed">{getSpotDescription(spot, locale) || (locale === 'en' ? 'View available photos and map location.' : '查看详细介绍、图片与地图位置。')}</p>
       </div>
     </Link>
   )
@@ -140,7 +140,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
   }) : []
 
   // JSON-LD
-  const editorial = regionEditorial({ name: readableName, description: region.description }, locations.map(location => location.name_cn || location.name), locale)
+  const editorial = regionEditorial({ name: readableName, description: region.description }, locations.map(location => resolveEntityDisplayName(location, locale).primary), locale)
   const description = editorial.description
   const canonicalPath = buildRegionPath(region.name, region.id)
   
@@ -254,7 +254,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"茶园与咖啡厅"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronTea.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronTea.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -262,7 +262,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"亲子农场"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronFarm.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronFarm.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -270,7 +270,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"花园打卡"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronGarden.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronGarden.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -278,7 +278,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"Brinchang 区域"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronBrinchang.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronBrinchang.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -286,7 +286,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"Tanah Rata 区域"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronTanahRata.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronTanahRata.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -294,7 +294,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
                <section className="space-y-6">
                  <h2 className="text-2xl font-bold text-white"><PublicCopy text={"Kea Farm 区域"}/></h2>
                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-                   {cameronKeaFarm.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+                   {cameronKeaFarm.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
                  </div>
                </section>
             )}
@@ -306,7 +306,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
           <section className="space-y-6">
             <h2 className="text-2xl font-bold text-white"><PublicCopy text={"热门景点"}/></h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {popularSpots.map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+              {popularSpots.map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
             </div>
           </section>
         )}
@@ -316,7 +316,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
           <section className="space-y-6">
             <h2 className="text-2xl font-bold text-white"><PublicCopy text={"美食与咖啡厅"}/></h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {foodSpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+              {foodSpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
             </div>
           </section>
         )}
@@ -326,7 +326,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
           <section className="space-y-6">
             <h2 className="text-2xl font-bold text-white"><PublicCopy text={"亲子友好游玩"}/></h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {familySpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+              {familySpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
             </div>
           </section>
         )}
@@ -336,7 +336,7 @@ export default function RegionPageView({region,locations,relatedPackages,allGuid
           <section className="space-y-6">
             <h2 className="text-2xl font-bold text-white"><PublicCopy text={"绝美拍照打卡"}/></h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-              {photoSpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} />)}
+              {photoSpots.slice(0, 8).map(spot => <SpotCard key={spot.id} spot={spot} regionName={readableName} locale={locale} />)}
             </div>
           </section>
         )}

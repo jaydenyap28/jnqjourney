@@ -1,0 +1,805 @@
+{
+  "checkedAt": "2026-10-30T14:55:35.651Z",
+  "scope": [
+    480,
+    357,
+    375,
+    336,
+    343,
+    364,
+    411
+  ],
+  "method": "HEAD only; no content/rights/identity acceptance",
+  "rows": [
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123040707-5c7fda81-a39d-4a73-bc84-c30d96c85570-614649662-3927f95c-61a1-43eb-a15d-cde4c60e2787.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123041314-74c8b5d2-a239-47c2-b88a-652a6ffa80f3-615153175-63b31809-ff5c-4ce0-bbec-a4267fb4a631.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123041787-f1aa13db-bc00-47f3-90fa-7db4a7ea7b89-615359293-0dfc1bfd-8ba6-4d04-8823-5d3eba1faee1.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123042226-ebdfd7cd-da6e-4166-b27e-ad356c5dfcae-615366873-f73cd62e-d760-4896-b827-aaec30cbea6a.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123044098-72f0ee18-b006-4108-9cc8-1724f49dc353-615831280-934ea200-fca1-456f-8332-0fc1d191e2df.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775122814820-e78d724d-81d9-410e-87cd-d7f19293aa2f-img-2447--703300b9-b23b-4ad9-a74b-a35bca377a2a.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123043367-27c167bf-aab0-4f67-a85a-f5c6ae4500a7-615438392-74ee826b-9fd5-4375-89d1-dea41c0cc090.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123043733-d64e9952-2f46-49b4-87c7-1c641659ab60-615494445-c8f44105-9d48-4928-968a-988616e3c71d.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123044457-2b9c197b-e3c2-41ec-84d3-830ea683f904-616135755-d06e4aff-4465-4ba7-a472-01ee01bcd46b.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123042623-22b1f048-8678-4e1c-b964-79f3bf0e2f0c-615416351-f0fac57f-9609-4925-8275-7e7e8d9d7050.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123043000-a993d43f-5cba-430b-9d2c-4305362b2d23-615435856-8c663c3d-78b3-4848-81db-83457c102b06.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123044866-0046d31c-dfa8-4935-9ba1-53b0cfa4bb61-img-2421--e5484f88-311d-4554-9ac8-cf441b309926.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123064885-7f2656d8-8ade-4273-aa16-bfa13b19e3c6-img-2435--67918806-cf9b-4593-a518-2900988bbee8.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123064528-e884e693-d25d-4061-a547-50cf0579cf58-img-2427--b3093956-aed3-4a2a-96ed-36e6fa51be83.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123065243-811947bb-4bce-4b39-8ed1-029f999e9ad5-img-2441--1733ecd3-bc84-464e-985c-2ae7656c1add.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123065620-61a1e91c-412d-452a-85b9-b43104d9d1af-img-2447--c34ffa91-8539-4ef5-b984-534e75be064d.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123068378-16de1e25-1bfe-4124-b6ab-965044030fba-img-2448--99f5c697-061c-4d24-8572-f0ba4f33c7e6.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123068799-6e639c54-0246-47dc-9e0e-e72c5eb3b46e-img-2450--bdd716a5-d83f-4811-b0e1-3b7764455f56.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123069144-b9bcecf2-a32f-4754-aeec-444771c51a88-img-2456--09c43267-b334-44d5-ba51-6ff660a3491e.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123069504-10fa8580-e693-483f-9473-40d9a449f72c-img-2460--3b72ceda-77e6-4f09-a92d-dfbf4f1dd49d.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123069827-fc7a5318-c5da-4d36-9d85-56cae5547bb1-img-2461--907e7e46-0057-463a-a386-af81de41dc07.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775123070160-d4e41f1c-4fea-43ea-94d1-09419bd2dc19-img-2463--40f21a40-e156-4a08-a07c-4b23d9a1c8b9.webp",
+      "kind": "image",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-01-f9d16281-7405-4537-b0cf-9cd91d4c9108.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-01-a44f4dc1-67f6-4e63-b62d-8aae9664ad8a.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-02-008218c9-895b-4b5d-b6b2-79ec403f71c4.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-03-c88151c9-a2a0-4fa8-b8b3-2946866c9351.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/RsxorBCejcU?si=Qem-yeLB8uUrijVQ",
+      "kind": "external-link",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-04-170bce2e-ab88-4847-85ee-b107c045c157.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.facebook.com/share/v/1XDms7K7y6/",
+      "kind": "external-link",
+      "spotIds": [
+        480
+      ],
+      "status": 200,
+      "type": "text/html; charset=\"utf-8\"",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-06-0f225b7d-9b54-442d-85e0-0c55d61ee9e2.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/357-gallery-senso-ji-temple-05-907a63de-6a25-485f-b493-b83c81c7a001.webp",
+      "kind": "image",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/cafe-mori-no-tokei/images/2026-07-24/44664d08-ba51-43da-b836-f957fb0c5399-2.webp#focus=50,50",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/vScTGJzFrPI?si=O64aTmr1D2e9ZE36",
+      "kind": "external-link",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/cafe-mori-no-tokei/images/2026-07-24/44664d08-ba51-43da-b836-f957fb0c5399-2.webp",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/375-gallery-cafe-mori-no-tokei-01-8667826c-f8bc-4394-b7c2-dcb9c65e7353.webp",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/cafe-mori-no-tokei/images/2026-07-24/02af2c42-197b-4676-a33f-d3fe39eb2869-1.webp",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/375-gallery-cafe-mori-no-tokei-03-4545f51a-eaae-45f2-9c7e-bcbe046b0707.webp",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/cafe-mori-no-tokei/images/2026-07-24/6f19b330-28b3-43d5-9781-5f85e2ff91ea-3.webp",
+      "kind": "image",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.facebook.com/share/v/1GizFNx7WH/",
+      "kind": "external-link",
+      "spotIds": [
+        357
+      ],
+      "status": 200,
+      "type": "text/html; charset=\"utf-8\"",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-1-fbac71e8-54ea-46df-8110-59dc5d47907a.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-1-d6793be6-3921-4ac7-a8ac-5bbe3c91b4b9.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-2-ea72fba7-c6bb-4ad3-a190-183780c1a29e.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-3-396dfc92-fac7-464b-8105-5d99a51c4311.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-4-59fd161f-ad50-49f4-8a5e-62e81e69a415.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-5-2dc8fa94-14c9-40ed-9413-b3c6bf3a0e3f.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-6-d3812916-834a-4c3b-bae2-a2bdea34234e.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-7-8c753492-3c9a-4a7a-b13b-d1a3d3d3cd8d.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/Ytl3kZ7jAbk?si=njUZkKSzQnp5p1FK",
+      "kind": "external-link",
+      "spotIds": [
+        375
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-8-744623e1-603c-415d-9c4b-5eb8d7c62815.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-10-e159bd56-1ff0-4adc-8403-c25eabcb8441.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-9-818cba1a-33ab-4840-9de5-ee6b1bbc5821.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-11-8d9d1231-32c2-4658-bcbd-16d8ca8d1e15.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/336-12-c202411a-55af-4704-a8a4-924164c145b6.webp",
+      "kind": "image",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/343-gallery-mount-hakodate-night-view-04-c7d74a95-da2c-4a52-845d-dc42a57cba76.webp",
+      "kind": "image",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/343-1774516756078-1-facebook-1-93b28d1d-bb2e-4dcd-bb0e-0d63f9c19c10.webp",
+      "kind": "image",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/343-gallery-mount-hakodate-night-view-01-557f758f-5378-4fc6-ad07-b27bf5f2b1d8.webp",
+      "kind": "image",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/343-gallery-mount-hakodate-night-view-02-2833419c-c656-45f2-8704-9d54c6aa9bf0.webp",
+      "kind": "image",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/343-gallery-mount-hakodate-night-view-05-8fce25c7-1638-416f-81cc-4e5a54116839.webp",
+      "kind": "image",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/e3q5MVEF-yk",
+      "kind": "external-link",
+      "spotIds": [
+        336
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-1774515145520-1-facebook-1-86fa8314-f2fb-438f-8f8c-1fe6aa3b3fbb.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-1774515145520-1-facebook-1-290f406e-3c47-4c1a-9851-969307ca582c.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/kSIb2dv0UAQ?si=bhVlkuAzCL6mMcB_",
+      "kind": "external-link",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-01-fa9c1bb2-5a7d-43e1-996e-3581005cfed7.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-02-4f7c220d-41a2-4b6b-8832-4b23c43e6142.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-03-cb4da231-652c-49a2-9433-680586cbc96f.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-04-40862c70-96b2-4ce5-a82f-5445e7e5dffb.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-06-152658d2-32c6-4343-85dc-a6c1ee83652b.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.facebook.com/share/v/1GdE7vdQE3/",
+      "kind": "external-link",
+      "spotIds": [
+        343
+      ],
+      "status": 200,
+      "type": "text/html; charset=\"utf-8\"",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-08-266368f1-a989-4b5e-838b-295d53904a95.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-07-334b9467-f7d2-4863-807b-43645fdf70fb.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-09-f812a4e0-5a4f-48c4-b13c-fc229741f2c3.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/364-gallery-arakurayama-sengen-park-10-5db0c530-3244-4bc6-bca0-f71a0c63cb54.webp",
+      "kind": "image",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/411-1774769263126-c38b6138-e9aa-47cc-96ac-75fc82a3052a-1-c7fc2331-37d1-42bd-92af-99592c809808.webp",
+      "kind": "image",
+      "spotIds": [
+        411
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/411-1774769268119-c1ac018d-5c3b-476d-81f5-a9fe9addd998-1-09b64b4b-0423-4032-9f09-8d074b30248e.webp",
+      "kind": "image",
+      "spotIds": [
+        411
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/411-1774769301839-e66d4b24-f20a-4249-aac0-a43733056992-img-7687-fafb5e8a-00e3-4400-ba09-54d23d06691e.webp",
+      "kind": "image",
+      "spotIds": [
+        411
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/411-1774769302485-0f97d750-31a0-4bfc-9d21-6fd18edaf373-img-7694-a45db5cc-dd57-43aa-a465-640a87b996bf.webp",
+      "kind": "image",
+      "spotIds": [
+        411
+      ],
+      "status": 200,
+      "type": "image/webp",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/r8-ezkj1Eks?si=N4lQEkF12SVjs0eF",
+      "kind": "external-link",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    },
+    {
+      "url": "https://www.facebook.com/share/v/1ApPZRCo8h/",
+      "kind": "external-link",
+      "spotIds": [
+        364
+      ],
+      "status": 200,
+      "type": "text/html; charset=\"utf-8\"",
+      "result": "reachable"
+    },
+    {
+      "url": "https://youtu.be/cq3dP8tYxpk?si=OISa6LFNGzzIXSOK",
+      "kind": "external-link",
+      "spotIds": [
+        411
+      ],
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "result": "reachable"
+    }
+  ]
+}

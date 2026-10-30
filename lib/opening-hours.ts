@@ -1,3 +1,6 @@
+import { publicProse } from './public-prose.ts'
+import type { Locale } from './locale.ts'
+
 interface ScheduleGroup {
   label: string
   hours: string
@@ -56,7 +59,7 @@ function isStructuredHours(value: unknown): value is Record<string, any> {
   return Boolean(value && typeof value === 'object' && !Array.isArray(value))
 }
 
-export function formatOpeningHoursDisplay(value?: string | null): FormattedOpeningHours {
+function formatHours(value?: string | null): FormattedOpeningHours {
   const raw = String(value || '').trim()
   const fallback: FormattedOpeningHours = {
     visible: Boolean(raw) && !looksLikeUnknownHours(raw),
@@ -126,7 +129,7 @@ export function formatOpeningHoursDisplay(value?: string | null): FormattedOpeni
       visible: Boolean(primary),
       isUnknown: false,
       primary,
-      statusLabel: closedDaysLabel ? `休息：${closedDaysLabel}` : '每日开放',
+      statusLabel: closedDaysLabel ? `休息：${closedDaysLabel}` : '',
       statusTone: closedDaysLabel ? 'closed' : 'open',
       closedDaysLabel,
       groupedHours: hoursGroups,
@@ -138,6 +141,15 @@ export function formatOpeningHoursDisplay(value?: string | null): FormattedOpeni
   } catch {
     return fallback
   }
+}
+
+export function formatOpeningHoursDisplay(value?: string | null, locale: Locale = 'zh'): FormattedOpeningHours {
+  const result = formatHours(value)
+  if (locale === 'zh') return result
+  const labels: Record<string,string> = { '周日':'Sun','周一':'Mon','周二':'Tue','周三':'Wed','周四':'Thu','周五':'Fri','周六':'Sat','24 小时营业':'Open 24 hours','营业时间待确认':'Hours unconfirmed','休息：':'Closed: ','待确认':'Unconfirmed' }
+  const translate = (text: string) => publicProse(text.replace(/周[日一二三四五六]|24 小时营业|营业时间待确认|休息：|待确认/g, word => labels[word]).replace(/、/g, ', '), locale)
+  const primary = translate(result.primary)
+  return { ...result, visible: result.visible && Boolean(primary), primary, statusLabel:translate(result.statusLabel), closedDaysLabel:translate(result.closedDaysLabel), groupedHours: result.groupedHours.map(group=>({label:translate(group.label),hours:translate(group.hours)})).filter(group=>group.label && group.hours), remarks:publicProse(result.remarks,locale), plainText:translate(result.plainText) }
 }
 
 export function hasVisibleOpeningHours(value?: string | null) {

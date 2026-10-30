@@ -1,0 +1,32 @@
+{
+  "scope": "Actual SpotContent server render + generated Tailwind CSS; static preview only, no Next production build or hydrated controls",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "chinese": {
+    "h1": 1,
+    "scrollWidth": 390,
+    "practicalNavigationBeforeMedia": true
+  },
+  "english": {
+    "h1": 1,
+    "scrollWidth": 375,
+    "chineseBodyVisible": false,
+    "missingTranslationNotice": true,
+    "hoursAnchorClicked": true
+  },
+  "review": [
+    {
+      "id": 411,
+      "field": "image_url",
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/411-1774769263126-c38b6138-e9aa-47cc-96ac-75fc82a3052a-1-c7fc2331-37d1-42bd-92af-99592c809808.webp",
+      "finding": "首图为高塔夜景，与时计台木造建筑不符；需人工核对原始照片归属",
+      "action": "REVIEW_ONLY_NO_MEDIA_WRITE"
+    }
+  ],
+  "screenshots": [
+    "mobile-zh-390.png",
+    "mobile-en-hours-390.png"
+  ]
+}
