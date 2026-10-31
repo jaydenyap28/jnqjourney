@@ -1,0 +1,102 @@
+{
+  "checkedAt": "2026-10-31",
+  "source": "Supabase JNQ Media / vrufunuomioczocdsoer; BEGIN TRANSACTION READ ONLY, metadata SELECT only, ROLLBACK",
+  "schemaChanges": 0,
+  "rowReads": 0,
+  "rowWrites": 0,
+  "scope": "Five RLS-disabled backup candidates identified by catalogs. Not a permission-change authorization; no function bodies or cron commands exported.",
+  "roles": [
+    {
+      "name": "authenticated",
+      "bypassRls": false
+    },
+    {
+      "name": "anon",
+      "bypassRls": false
+    },
+    {
+      "name": "service_role",
+      "bypassRls": true
+    }
+  ],
+  "tables": [
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "oid": "46956",
+      "rls": false,
+      "name": "hainan_package_merge_backup_20261006",
+      "owner": "postgres",
+      "forceRls": false
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "oid": "47045",
+      "rls": false,
+      "name": "spot_content_backup_20261009",
+      "owner": "postgres",
+      "forceRls": false
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "oid": "47360",
+      "rls": false,
+      "name": "spot_content_backup_20261013_evening",
+      "owner": "postgres",
+      "forceRls": false
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "oid": "47428",
+      "rls": false,
+      "name": "spot_content_backup_20261013_lijiang_hangzhou",
+      "owner": "postgres",
+      "forceRls": false
+    },
+    {
+      "acl": "{postgres=arwdDxtm/postgres,anon=arwdDxtm/postgres,authenticated=arwdDxtm/postgres,service_role=arwdDxtm/postgres}",
+      "oid": "47319",
+      "rls": false,
+      "name": "spot_northeast_backup_20261013",
+      "owner": "postgres",
+      "forceRls": false
+    }
+  ],
+  "policies": [],
+  "columnAcl": [],
+  "dependencies": [
+    {
+      "table": "spot_content_backup_20261009",
+      "dependent": "constraint spot_content_backup_20261009_pkey on table spot_content_backup_20261009"
+    },
+    {
+      "table": "spot_content_backup_20261009",
+      "dependent": "default value for column backed_up_at of table spot_content_backup_20261009"
+    },
+    {
+      "table": "spot_content_backup_20261013_evening",
+      "dependent": "constraint spot_content_backup_20261013_evening_pkey on table spot_content_backup_20261013_evening"
+    },
+    {
+      "table": "spot_content_backup_20261013_evening",
+      "dependent": "default value for column backed_up_at of table spot_content_backup_20261013_evening"
+    },
+    {
+      "table": "spot_content_backup_20261013_lijiang_hangzhou",
+      "dependent": "constraint spot_content_backup_20261013_lijiang_hangzhou_pkey on table spot_content_backup_20261013_lijiang_hangzhou"
+    },
+    {
+      "table": "spot_content_backup_20261013_lijiang_hangzhou",
+      "dependent": "default value for column backed_up_at of table spot_content_backup_20261013_lijiang_hangzhou"
+    },
+    {
+      "table": "spot_northeast_backup_20261013",
+      "dependent": "constraint spot_northeast_backup_20261013_pkey on table spot_northeast_backup_20261013"
+    },
+    {
+      "table": "spot_northeast_backup_20261013",
+      "dependent": "default value for column backup_created_at of table spot_northeast_backup_20261013"
+    }
+  ],
+  "roleMembership": [],
+  "functionCandidates": []
+}

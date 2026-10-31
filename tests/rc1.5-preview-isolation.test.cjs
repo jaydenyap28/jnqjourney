@@ -22,6 +22,7 @@ function loader(env = safe, mocks = {}, globals = {}) {
         if (id === '@/lib/preview-safety') return load('lib/preview-safety.ts')
         if (id === '@/lib/server/admin-auth') return load('lib/server/admin-auth.ts')
         if (id === '@/lib/server/supabase-read-key' || id === './supabase-read-key') return load('lib/server/supabase-read-key.ts')
+        if (id === './public-fallback-snapshot') return load('lib/server/public-fallback-snapshot.ts')
         if (id === 'react') return { cache: fn => fn }
         if (id.startsWith('@/')) return mocks.__unknown || {}
         if (id === './scripts/lib/preview-isolation-policy.cjs') return { assertPreviewIsolation }

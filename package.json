@@ -16,7 +16,9 @@
     "import:locations": "node scripts/bulk-import-locations.mjs",
     "import:youtube:gemini": "node scripts/import-from-youtube-gemini.mjs",
     "update:photos": "node scripts/bulk-update-photos.mjs",
-    "migrate:images:r2": "node scripts/migrate-images-to-r2.mjs"
+    "migrate:images:r2": "node scripts/migrate-images-to-r2.mjs",
+    "release:check": "node scripts/release-readiness.mjs",
+    "release:bundle": "node scripts/check-bilingual-bundle.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1057.0",

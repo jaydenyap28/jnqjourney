@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "notice": "Public-content example only. Preview must substitute approved independent test routes/assets; this file does not configure or create them.",
+  "canonicalOrigin": "https://www.jnqjourney.com",
+  "allowedResourceOrigins": [],
+  "routes": [
+    {"kind":"page","path":"/","indexable":true},
+    {"kind":"page","path":"/region","indexable":true},
+    {"kind":"page","path":"/guide","indexable":true},
+    {"kind":"page","path":"/notes","indexable":true},
+    {"kind":"page","path":"/packages","indexable":true},
+    {"kind":"page","path":"/en","indexable":false},
+    {"kind":"guide","path":"/guide/china-jiangnan-autumn-15d14n","indexable":true},
+    {"kind":"note","path":"/notes/malaysia-turtle-night-terengganu","indexable":true,"video":true},
+    {"kind":"package","path":"/packages/tioman-3d2n","indexable":true,"contactTerms":["Tioman"]},
+    {"kind":"spot","path":"/spot/pantai-teluk-mak-nik-monica-bay-217","indexable":true},
+    {"kind":"spot","path":"/spot/sapporo-clock-tower-411","indexable":false},
+    {"kind":"spot","path":"/en/spot/pantai-teluk-mak-nik-monica-bay-217"},
+    {"kind":"spot","path":"/en/spot/sapporo-clock-tower-411","indexable":false}
+  ]
+}

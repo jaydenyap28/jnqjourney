@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-31",
+  "featureBaseline": "111beff4af6d64018f1752b7e24b24cc0911dad1",
+  "scope": "Local release-engineering checks; no fresh Next build or real Preview acceptance",
+  "lineage": {"milestones": 10, "allAncestors": true, "rc12Paths": 31, "allRetained": true},
+  "existingPreviewIsolationSuite": {"passed": 9, "total": 9, "evidence": "LOCAL_SYNTHETIC; test loader updated for the new fallback module; assertions retained"},
+  "newReleaseToolTests": {"passed": 7, "total": 7, "evidence": "Injected HTTP transport and synthetic NFT manifest; no live target"},
+  "targetedLint": "PASS",
+  "javascriptSyntaxChecks": "PASS",
+  "gitDiffCheck": "PASS",
+  "realPreviewHttpAndBrowser": "UNVERIFIED",
+  "freshCandidateBuildAndPackaging": "UNVERIFIED",
+  "cloudEnvironmentValues": "NOT_READ",
+  "backupCheck": "Live READ ONLY catalog metadata; five RLS-disabled backup tables identified; no historical content read",
+  "schemaChanges": 0,
+  "productionDataWrites": 0,
+  "push": false,
+  "deploy": false
+}
