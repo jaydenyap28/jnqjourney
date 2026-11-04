@@ -1,16 +1,18 @@
 import type { GetStaticPaths, GetStaticProps } from 'next'
 import EnglishRouteAdapter from '@/components/EnglishRouteAdapter'
-import { compactEnglishPageData, englishPageData, type EnglishPageData } from '@/lib/server/english-page-data'
-import pilot from '@/public-data/i18n/en/records.json'
-import spotIndex from '@/public-data/spots/index.json'
+import type { EnglishPageData } from '@/lib/server/english-page-data'
 
-const bundledSpotIds = new Set(
+export const getStaticPaths: GetStaticPaths = async () => {
+  const { default: pilot } = await import('@/public-data/i18n/en/records.json')
+  const { default: spotIndex } = await import('@/public-data/spots/index.json')
+  const bundledSpotIds = new Set(
   spotIndex.slugs
     .map((slug) => Number(String(slug).match(/-(\d+)$/)?.[1] || 0))
-    .filter((id) => Number.isSafeInteger(id) && id > 0)
+    .filter((id) => Number.isSafeInteger(id) && id > 0 && id !== 450)
 )
 
-export const getStaticPaths: GetStaticPaths = async () => ({
+
+  return ({
   paths: [
     '/en',
     '/en/region',
@@ -24,7 +26,9 @@ export const getStaticPaths: GetStaticPaths = async () => ({
   ],
   fallback: 'blocking',
 })
+}
 export const getStaticProps: GetStaticProps<{data:EnglishPageData}> = async ({params,revalidateReason}) => {
+  const { compactEnglishPageData, englishPageData } = await import('@/lib/server/english-page-data')
   const value = await englishPageData(Array.isArray(params?.path) ? params.path : [],revalidateReason === 'on-demand')
   if (!value) return {notFound:true,revalidate:600}
   if ('redirect' in value) return {redirect:{destination:value.redirect,permanent:true}}

@@ -261,6 +261,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
   return (
     <Link
       href={buildLocationPath(location.name, location.id)}
+      prefetch={false}
       className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-white/5">

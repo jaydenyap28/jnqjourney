@@ -249,6 +249,7 @@ function LocationCard({ location, onOpen, onImageError }: { location: Location; 
         <div className="flex justify-end">
           <Link
             href={`/spot/${location.slug}`}
+            prefetch={false}
             className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-black transition hover:bg-amber-50"
           >
             {<PublicCopy text={"View spot / 查看景点"}/>}

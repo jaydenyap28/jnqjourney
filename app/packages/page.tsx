@@ -47,7 +47,7 @@ export default async function PackagesPage() {
                   {item.title_en ? <p className="mt-1 text-sm text-white/45">{item.title_en}</p> : null}
                   <p className="mt-4 leading-7 text-white/65">{item.short_description}</p>
                   <div className="mt-6 flex flex-wrap gap-3">
-                    <Link href={`/packages/${item.slug}`} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">查看详情 <ArrowRight className="h-4 w-4" /></Link>
+                    <Link href={`/packages/${item.slug}`} prefetch={false} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black">查看详情 <ArrowRight className="h-4 w-4" /></Link>
                     <WhatsAppButton pageType="package" packageName={item.title_zh} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" />
                   </div>
                 </div>

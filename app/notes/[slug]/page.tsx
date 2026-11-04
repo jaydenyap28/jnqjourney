@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import RelatedNoteCards from '@/components/RelatedNoteCards'
 import { selectNoteSpotIds, relatedNotesForNote } from '@/lib/content-relations'
 import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
@@ -27,6 +28,8 @@ import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
 
+const resolveNoteMediaForRender = cache(resolveNotePublicMedia)
+export function generateStaticParams() { return [] }
 interface PageProps {
   params: { slug: string }
 }
@@ -149,11 +152,10 @@ function CoverVideoEmbed({ url, title }: { url?: string | null; title: string })
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const [storedNote, { locations }] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
-  const note = storedNote ? resolveNotePublicMedia(storedNote, locations) : null
-  if (!note) {
-    return { title: 'Note not found' }
-  }
+  const storedNote = await readPublicNoteBySlug(params.slug)
+  if (!storedNote || !storedNote.published) notFound()
+  const { locations } = await resolvePublicData()
+  const note = resolveNoteMediaForRender(storedNote, locations)
 
   const description = buildMetaDescription(getTextExcerpt(note), `Read this travel note about ${note.title}.`)
   const title = note.title
@@ -169,7 +171,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export const revalidate = 600
+export const revalidate = 3600
 
 function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
   if (block.type === 'heading') {
@@ -348,7 +350,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
 
 export default async function NoteDetailPage({ params }: PageProps) {
   const [storedNote, publicData] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
-  const note = storedNote ? resolveNotePublicMedia(storedNote, publicData.locations) : null
+  const note = storedNote ? resolveNoteMediaForRender(storedNote, publicData.locations) : null
   if (!note || !note.published) notFound()
 
   const blocks = getRenderableNoteBlocks(note)

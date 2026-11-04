@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import type { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 
@@ -11,8 +12,9 @@ import WhatsAppFloatingButton from '@/components/WhatsAppFloatingButton'
 import { absoluteUrl } from '@/lib/site'
 import { readPublishedPackage, readPublishedPackageOptions } from '@/lib/server/travel-packages'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
+export const revalidate = 3600
+export function generateStaticParams() { return [] }
+const readPackageForRender = cache(readPublishedPackage)
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   if (params.slug.startsWith('hainan-')) {
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       alternates: { canonical: '/packages/hainan' },
     }
   }
-  const item = await readPublishedPackage(params.slug)
+  const item = await readPackageForRender(params.slug)
   if (!item) notFound()
   const title = item.seo_title || item.title_zh
   const description = item.seo_description || item.short_description || 'JnQ Journey 旅游配套详情。'
@@ -41,7 +43,7 @@ export default async function PackagePage({ params }: { params: { slug: string }
     redirect(`/packages/hainan/${params.slug.replace(/^hainan-/, '')}`)
   }
 
-  const item = await readPublishedPackage(params.slug)
+  const item = await readPackageForRender(params.slug)
   if (!item) notFound()
 
   const options = ['tioman-3d2n', 'batam-3d2n'].includes(item.slug) ? await readPublishedPackageOptions(item.id) : []

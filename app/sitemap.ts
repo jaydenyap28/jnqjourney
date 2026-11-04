@@ -2,13 +2,16 @@
 
 import { buildRegionPath } from '@/lib/region-routing'
 import { absoluteUrl } from '@/lib/site'
-import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
+import { buildPublicCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackageOptions, readPublishedPackages } from '@/lib/server/travel-packages'
 import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
 
 export const revalidate = 3600
+// The live quality inventory must be read for each regeneration. Its
+// no-store fetch must not turn every crawler request into a regeneration.
+export const dynamic = 'force-static'
 
 function validDateOrUndefined(value?: string | null) {
   if (!value) return undefined
@@ -43,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
     locations.map(async (location) => ({
-      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id)),
+      url: absoluteUrl(await buildPublicCanonicalLocationPath(location.name, location.id)),
       lastModified: location.updated_at || undefined,
       changeFrequency: 'weekly',
       priority: 0.7,

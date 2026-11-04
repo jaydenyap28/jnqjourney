@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
 import SpotPageView from '@/components/SpotPageView'
-import { buildCanonicalLocationPath } from '@/lib/server/location-slugs-store'
+import { buildPublicCanonicalLocationPath } from '@/lib/server/location-slugs-store'
 import { fetchRelatedLocations } from '@/lib/server/public-location-data'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
@@ -15,7 +15,6 @@ import { buildRegionPath } from '@/lib/region-routing'
 import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
-import { evaluateSpotQuality } from '@/lib/spot-quality'
 
 export const revalidate = 600
 export const dynamic = 'force-static'
@@ -46,9 +45,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const { title: seoTitle, description } = spotSeo(location, 'zh')
-  const canonicalPath = await buildCanonicalLocationPath(location.name, location.id)
+  const canonicalPath = await buildPublicCanonicalLocationPath(location.name, location.id)
   const coverImage = getCoverImage(location)
-  const quality = evaluateSpotQuality(location)
 
   return {
     title: { absolute: seoTitle },
@@ -56,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: await chineseLocalizedAlternates(canonicalPath, 'spot', location.id, {...location,title:location.name}),
     openGraph: buildOpenGraphData(seoTitle, description, canonicalPath, coverImage, 'article'),
     twitter: buildTwitterCardData(seoTitle, description, coverImage),
-    robots: quality.indexable
+    robots: resolved.quality.indexable && resolved.source !== 'static-fallback'
       ? { index: true, follow: true }
       : { index: false, follow: true, googleBot: { index: false, follow: true } },
   }
@@ -70,7 +68,7 @@ export default async function SpotPage({ params }: PageProps) {
     notFound()
   }
 
-  const canonicalPath = await buildCanonicalLocationPath(location.name, location.id)
+  const canonicalPath = await buildPublicCanonicalLocationPath(location.name, location.id)
   if (params.slug !== canonicalPath.replace('/spot/', '')) {
     redirect(canonicalPath)
   }

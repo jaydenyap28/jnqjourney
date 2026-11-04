@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
@@ -143,6 +144,8 @@ export async function POST(request: Request) {
   }, { onConflict: 'option_id' })
   if (internalError) return NextResponse.json({ error: internalError.message }, { status: 500 })
 
+  revalidateTag('travel-packages')
+  revalidatePath('/packages/[slug]', 'page')
   return NextResponse.json({ option: { ...data, supplier_ref: supplierRef, supplier_package_name: supplierPackageName, internal_notes: internalNotes } })
 }
 
@@ -154,5 +157,7 @@ export async function DELETE(request: Request) {
   if (!supabase || !Number.isInteger(Number(body.id))) return NextResponse.json({ error: 'Invalid option.' }, { status: 400 })
   const { error } = await supabase.from('travel_package_options').delete().eq('id', Number(body.id))
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  revalidateTag('travel-packages')
+  revalidatePath('/packages/[slug]', 'page')
   return NextResponse.json({ ok: true })
 }

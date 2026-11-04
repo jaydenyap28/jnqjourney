@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import EntityName from '@/components/EntityName'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import Link from 'next/link'
@@ -42,7 +43,9 @@ import { selectGuideRouteNoteCards } from '@/lib/content-relations'
 
 import GuidePageView from '@/components/GuidePageView'
 import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-export const revalidate=600
+export const revalidate = 3600
+const resolveGuideMediaForRender = cache(resolveGuidePublicMedia)
+export function generateStaticParams() { return [] }
 interface PageProps {
   params: {
     slug: string
@@ -50,14 +53,10 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const [storedGuide, { locations }] = await Promise.all([readPublicGuideBySlug(params.slug), resolvePublicData()])
-  const guide = storedGuide ? resolveGuidePublicMedia(storedGuide, locations) : null
-
-  if (!guide) {
-    return {
-      title: buildPageTitle('Guide not found'),
-    }
-  }
+  const storedGuide = await readPublicGuideBySlug(params.slug)
+  if (!storedGuide) notFound()
+  const { locations } = await resolvePublicData()
+  const guide = resolveGuideMediaForRender(storedGuide, locations)
 
   const daysText = guide.duration ? `${guide.duration}` : ''
   const hasBudgetOrStay = guide.budget || guide.days.some(d => d.stay)
@@ -81,7 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function GuideDetailPage({params}:PageProps) {
  const [storedGuide,publicData]=await Promise.all([readPublicGuideBySlug(params.slug),resolvePublicData()]);
- const guide=storedGuide?resolveGuidePublicMedia(storedGuide,publicData.locations):null;
+ const guide=storedGuide?resolveGuideMediaForRender(storedGuide,publicData.locations):null;
  if(!guide) notFound();
  if(params.slug!==guide.slug) redirect(`/guide/${guide.slug}`);
  const [publicTripCost,approvedPriceHighlights,packages,guides,notes]=await Promise.all([readPublicGuideTripCost(guide),readApprovedGuidePriceHighlights(guide.slug),readPublishedPackages(),readPublicGuides(),readPublicNotes()]);
@@ -89,5 +88,5 @@ export default async function GuideDetailPage({params}:PageProps) {
    ...guide.days.flatMap(day => day.routeItems || []),
    ...(guide.itinerarySegments || []).flatMap(segment => [...segment.verifiedRoutes, ...(segment.referenceRoutes || [])].flatMap(route => route.routeItems || [])),
  ].flatMap(item => item.type === 'note' ? [item.noteSlug] : [])
- return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuidePublicMedia(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
+ return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuideMediaForRender(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
 }

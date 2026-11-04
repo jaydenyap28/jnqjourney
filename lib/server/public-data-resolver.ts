@@ -1,9 +1,9 @@
 import 'server-only'
 
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
+import { readPublicFallbackSnapshot } from './public-fallback-snapshot'
 
 import {
   hasValidCoordinates,
@@ -100,17 +100,9 @@ async function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
   }
 }
 
-async function readJson<T>(fileName: string) {
-  const raw = await readFile(path.join(process.cwd(), 'public-data', fileName), 'utf8')
-  return JSON.parse(raw) as T
-}
-
 async function readStaticFallback(): Promise<ResolvedPublicData> {
-  const [locations, regions] = await Promise.all([
-    readJson<PublicLocationsPayload>('locations.json'),
-    readJson<PublicRegionsPayload>('regions.json'),
-  ])
-  return { locations: locations.locations.filter(hasValidCoordinates), regions: regions.regions, source: 'static-fallback' }
+  const snapshot = await readPublicFallbackSnapshot()
+  return { locations: snapshot.locations, regions: snapshot.regions, source: 'static-fallback' }
 }
 
 function publicDataCdnBase() {
@@ -222,14 +214,17 @@ async function resolveCoalesced() {
   return inFlight
 }
 
-const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v1'], {
+const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v2-fallback-20261030'], {
   revalidate: 3600,
   tags: ['public-data', 'public-locations', 'public-regions'],
 })
 
-export async function resolvePublicData() {
+async function readPublicData() {
+  if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') return resolveUncached()
   return resolveCached()
 }
+
+export const resolvePublicData = typeof cache === 'function' ? cache(readPublicData) : readPublicData
 
 export async function resolvePublicDataUncachedForSnapshot() {
   const bundle = await readSupabaseSnapshotBundle()

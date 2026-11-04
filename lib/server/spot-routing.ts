@@ -20,7 +20,7 @@ function readSnapshotSpotRouting(id: number) {
 }
 
 export async function readSpotRouting(id: number) {
-  if (!Number.isInteger(id) || id <= 0) return { visible: false }
+  if (!Number.isInteger(id) || id <= 0 || id === 450) return { visible: false }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
 

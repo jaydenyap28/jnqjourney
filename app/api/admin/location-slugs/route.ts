@@ -1,6 +1,7 @@
-﻿import { NextResponse } from 'next/server'
+import { revalidatePath, revalidateTag } from 'next/cache'
+import { NextResponse } from 'next/server'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { readLocationSlugForId, saveLocationSlugForId } from '@/lib/server/location-slugs-store'
+import { PUBLIC_LOCATION_SLUGS_TAG, readLocationSlugForId, saveLocationSlugForId } from '@/lib/server/location-slugs-store'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,6 +34,11 @@ export async function POST(request: Request) {
     }
 
     const savedSlug = await saveLocationSlugForId(id, slug)
+    revalidateTag(PUBLIC_LOCATION_SLUGS_TAG)
+    revalidateTag('public-spots')
+    revalidateTag('public-data')
+    revalidateTag('public-locations')
+    revalidatePath('/sitemap.xml')
     return NextResponse.json({ slug: savedSlug })
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'Failed to save location slug.' }, { status: 500 })

@@ -1,10 +1,10 @@
 import 'server-only'
 
-import { readFile } from 'node:fs/promises'
-import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
+import { readFallbackSpot } from './public-fallback-snapshot'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 import { extractLocationIdFromSlug, slugifyLocationName } from '@/lib/location-routing'
@@ -38,6 +38,7 @@ export class PublicSpotUnavailableError extends Error {
 export interface ResolvedPublicSpot {
   spot: PublicSpotRecord
   source: PublicSpotSource
+  quality: ReturnType<typeof evaluateSpotQuality>
 }
 
 async function withTimeout<T>(promise: PromiseLike<T>, label: string): Promise<T> {
@@ -127,56 +128,31 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
 }
 
 async function readStaticSpot(slug: string): Promise<PublicSpotLookup> {
-  try {
-    const indexRaw = await readFile(path.join(process.cwd(), 'public-data', 'spots', 'index.json'), 'utf8')
-    const index = JSON.parse(indexRaw) as PublicSpotIndexSnapshot
-    if (index?.schemaVersion !== 1 || !Array.isArray(index.slugs)) return { status: 'failure' }
-    const id = extractLocationIdFromSlug(slug)
-    const canonicalSlug = id ? index.slugs.find((value) => value.endsWith(`-${id}`)) : undefined
-    if (!canonicalSlug) {
-      const maxId = Math.max(0, ...index.slugs.map((value) => extractLocationIdFromSlug(value) || 0))
-      return { status: 'not-found', authoritative: Boolean(id && id > maxId) }
-    }
-    slug = canonicalSlug
-    const raw = await readFile(path.join(process.cwd(), 'public-data', 'spots', `${slug}.json`), 'utf8')
-    const payload = JSON.parse(raw) as PublicSpotSnapshot
-    return payload?.schemaVersion === 1 && payload.spot?.id ? { status: 'found', spot: payload.spot } : { status: 'failure' }
-  } catch (error: any) {
-    if (error?.code === 'ENOENT') return { status: 'not-found' }
-    return { status: 'failure', error }
-  }
+  const id = extractLocationIdFromSlug(slug)
+  return id ? readFallbackSpot(id) : { status: 'not-found' }
 }
 
 async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | null> {
-  if (!extractLocationIdFromSlug(slug)) return null
-
-  // Spot detail pages are freshness-sensitive. Prefer the authoritative
-  // Supabase row so a recently published edit cannot be masked by an older
-  // CDN object that is still being revalidated. CDN/static data remain
-  // resilience fallbacks when Supabase is unavailable.
-  try {
-    const live = await readSupabaseSpot(slug)
-    if (live.status === 'found') {
-      return isSpotPublished(live.spot) ? { spot: live.spot, source: 'supabase' } : null
-    }
-    if (live.status === 'not-found' && live.authoritative) return null
-  } catch {}
+  if (!extractLocationIdFromSlug(slug) || extractLocationIdFromSlug(slug) === 450) return null
 
   const result = await resolvePublicSpotSources({
     cdn: () => readCdnSpot(slug),
     supabase: () => readSupabaseSpot(slug),
     fallback: () => readStaticSpot(slug),
   })
-  if (result.status === 'found') return isSpotPublished(result.spot) ? { spot: result.spot, source: result.source } : null
+  if (result.status === 'found') return isSpotPublished(result.spot) ? { spot: result.spot, source: result.source, quality: evaluateSpotQuality(result.spot) } : null
   if (result.status === 'not-found') return null
   throw new PublicSpotUnavailableError(slug)
 }
 
 function resolveCached(slug: string) {
+  const id = extractLocationIdFromSlug(slug)
+  if (!id || !Number.isSafeInteger(id) || id <= 0 || id === 450) return Promise.resolve(null)
+  const identity = `spot-${id}`
   return unstable_cache(
-    () => resolveSpotUncached(slug),
-    ['public-spot-v1', slug],
-    { revalidate: 3600, tags: ['public-spots', `public-spot:${slug}`] }
+    () => resolveSpotUncached(identity),
+    ['public-spot-v4-quality', identity],
+    { revalidate: 3600, tags: ['public-spots', `public-spot:${identity}`] }
   )()
 }
 

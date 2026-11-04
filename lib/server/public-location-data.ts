@@ -162,7 +162,7 @@ export async function fetchAllLocationsForSitemap() {
 
     if (!result.error && result.data) {
       return result.data
-        .filter((location: any) => (location.publication_status == null || location.publication_status === 'published') && evaluateSpotQuality(location).indexable)
+        .filter((location: any) => Number(location.id) !== 450 && (location.publication_status == null || location.publication_status === 'published') && evaluateSpotQuality(location).indexable)
         .map((location: any) => ({ id: Number(location.id), name: String(location.name || ''), updated_at: location.updated_at || undefined }))
     }
   }

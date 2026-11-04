@@ -1,3 +1,5 @@
+import { readPublicFallbackSnapshot, readFallbackSpot } from './public-fallback-reader'
+import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import bundled from '@/public-data/i18n/en/records.json'
@@ -28,6 +30,17 @@ export async function readBilingualSnapshot<T>(key: string, fallback: () => Prom
 }
 
 export async function readBundledJson<T>(file: string): Promise<T> {
+  if (file === 'public-data/locations.json' || file === 'public-data/regions.json') {
+    const snapshot = await readPublicFallbackSnapshot()
+    return (file.endsWith('/locations.json') ? { locations: snapshot.locations } : { regions: snapshot.regions }) as T
+  }
+  const detail = file.match(/^public-data\/spots\/([a-zA-Z0-9-]+)\.json$/)?.[1]
+  if (detail) {
+    const id = extractLocationIdFromSlug(detail)
+    const result = id ? await readFallbackSpot(id) : null
+    if (result?.status !== 'found') throw new Error('Spot absent from public fallback')
+    return { schemaVersion: 1, spot: result.spot } as T
+  }
   // Literal paths let Next's output tracer include these files in serverless ISR.
   // A generic cwd + caller string works locally but omits them from deployment.
   let text: string
