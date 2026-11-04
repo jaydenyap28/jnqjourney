@@ -27,6 +27,7 @@ function loader(env = safe, mocks = {}, globals = {}) {
         if (id === 'react') return { cache: fn => fn }
         if (id.startsWith('@/')) return mocks.__unknown || {}
         if (id === './scripts/lib/preview-isolation-policy.cjs') return { assertPreviewIsolation }
+        if (id === './scripts/lib/font-entry.cjs') return require('../scripts/lib/font-entry.cjs')
         return require(id)
       } }
     const source = fs.readFileSync(file, 'utf8').replace(/import\.meta\.url/g, JSON.stringify(require('node:url').pathToFileURL(require('node:path').resolve(file)).href))

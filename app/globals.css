@@ -172,8 +172,8 @@
   }
 }
 .preview-system-fonts {
-  --font-poppins: system-ui;
-  --font-noto-sans-sc: sans-serif;
-  --font-cormorant-garamond: Georgia;
-  --font-noto-serif-sc: serif;
+  --font-poppins: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI";
+  --font-noto-sans-sc: "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-cormorant-garamond: Georgia, "Times New Roman";
+  --font-noto-serif-sc: "Songti SC", SimSun, serif;
 }

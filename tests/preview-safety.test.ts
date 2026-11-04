@@ -23,7 +23,7 @@ function fixture(env: Record<string, string>, mocks: Record<string, any> = {}, g
         if (['@/lib/preview-safety', '@/lib/internal-http', '@/lib/server/admin-auth'].includes(id)) return load(`${id.slice(2)}.ts`)
         if (id === '@/lib/server/package-visibility') return load('lib/server/package-visibility.ts')
         if (id === './supabase-read-key') return load('lib/server/supabase-read-key.ts')
-        if (id === '@/lib/site-fonts') return { siteFontClassName: 'fixture-fonts' }
+        if (id === '@/lib/build-fonts.generated') return { siteFontClassName: 'fixture-fonts' }
         if (id === 'next/server' || id === 'react' || id === 'react/jsx-runtime') return require(id)
         return unknown
       } }

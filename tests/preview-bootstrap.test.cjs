@@ -65,8 +65,8 @@ test('Preview fixture readers reject production fallbacks and contain only local
 test('the actual Preview Next configuration uses local fonts and prevents browser service connections', () => {
   const result = spawnSync(process.execPath, ['--input-type=module', '-e', `
     const { default: config } = await import('./next.config.mjs')
-    const aliases = config.webpack({ resolve: { alias: {} } }).resolve.alias
-    console.log(JSON.stringify({ env: config.env, rules: await config.headers(), images: config.images, aliases }))
+    const fontEntry = (await import('node:fs')).readFileSync('./lib/build-fonts.generated.ts', 'utf8')
+    console.log(JSON.stringify({ env: config.env, rules: await config.headers(), images: config.images, fontEntry }))
   `], { encoding: 'utf8', env: { ...env, PATH: process.env.PATH, SystemRoot: process.env.SystemRoot } })
   assert.equal(result.status, 0, result.stderr)
   const config = JSON.parse(result.stdout.trim())
@@ -77,7 +77,8 @@ test('the actual Preview Next configuration uses local fonts and prevents browse
   for (const directive of ["default-src 'self'", "frame-src 'none'", "form-action 'none'", "worker-src 'none'"]) {
     assert.ok(csp.includes(directive))
   }
-  assert.ok(config.aliases['@/lib/site-fonts$'].replace(/\\/g, '/').endsWith('/lib/preview-fonts.ts'))
+  assert.match(config.fontEntry, /from '.\/preview-fonts'/)
+  assert.doesNotMatch(config.fontEntry, /next\/font|from '.\/site-fonts'/)
 })
 
 test('Home, Spot, Guide, Note and Package entry points consume the isolated fixture sources', async t => {

@@ -4,7 +4,7 @@ import bundled from '@/public-data/i18n/en/records.json'
 import type { LocalizationSnapshot } from '@/lib/localization'
 import type { Locale } from '@/lib/locale'
 import { freshNoteSnapshotUrl } from '@/lib/note-publication'
-import { readPublicFallbackSnapshot, readFallbackSpot } from './public-fallback-snapshot'
+import { readPublicFallbackSnapshot, readFallbackSpot } from './public-fallback-reader'
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
 import { readPreviewSnapshot } from './preview-fixtures'
 
