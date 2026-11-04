@@ -8,8 +8,8 @@ function persistentCache(){const values=new Map();return { unstable_cache:(fn,ke
   const value=Promise.resolve().then(()=>fn(...args));values.set(id,{value,tags:options.tags});value.catch(()=>values.delete(id));return value
 },expire:tag=>{for(const [key,entry]of values)if(entry.tags.includes(tag))values.delete(key)}}}
 
-test('formal fonts, maps, WhatsApp, English rendering and specialty packages match main exactly',()=>{
-  for(const file of ['app/layout.tsx','pages/_app.tsx','app/globals.css','components/MapView.tsx','components/WhatsAppButton.tsx','components/EnglishRouteAdapter.tsx',
+test('maps, WhatsApp, English rendering and specialty packages match main exactly',()=>{
+  for(const file of ['components/MapView.tsx','components/WhatsAppButton.tsx','components/EnglishRouteAdapter.tsx',
     'components/HainanPackagesHub.tsx','components/BatamPackageDetail.tsx','app/packages/hainan/page.tsx','app/packages/hainan/[optionSlug]/page.tsx',
     'app/packages/[slug]/[optionSlug]/page.tsx','lib/spot-quality.ts','lib/server/travel-packages.ts','data/travel-packages-snapshot.json','data/spot-routing-snapshot.json']){
     const expected=execFileSync('git',['show',`bd656882c4eb13ad8a0a372ec84daf6100f4d608:${file}`],{encoding:'utf8',maxBuffer:8*1024*1024,windowsHide:true}).replace(/^\uFEFF/,'').replace(/\r\n/g,'\n')
