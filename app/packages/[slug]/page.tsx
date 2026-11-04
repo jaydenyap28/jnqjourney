@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { cache } from 'react'
 
 import PackageViewTracker from '@/components/PackageViewTracker'
 import SiteFooter from '@/components/SiteFooter'
@@ -13,9 +14,12 @@ import { packageCanonicalUrl } from '@/lib/package-presentation'
 import { packageRelatedLinks } from '@/lib/server/package-relations'
 
 export const revalidate = 3600
+export function generateStaticParams() { return [] }
+
+const readPackageForRender = typeof cache === 'function' ? cache(readPublishedPackage) : readPublishedPackage
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const item = await readPublishedPackage(params.slug)
+  const item = await readPackageForRender(params.slug)
   if (!item) notFound()
   const title = item.seo_title || item.title_zh
   const description = item.seo_description || item.short_description || 'JnQ Journey 旅游配套详情。'
@@ -30,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function PackagePage({ params }: { params: { slug: string } }) {
-  const item = await readPublishedPackage(params.slug)
+  const item = await readPackageForRender(params.slug)
   if (!item) notFound()
   const [options,relatedLinks] = await Promise.all([readPublishedPackageOptions(item.id),packageRelatedLinks(item)])
   const canonicalPath = packageCanonicalUrl(item,absoluteUrl('/'))

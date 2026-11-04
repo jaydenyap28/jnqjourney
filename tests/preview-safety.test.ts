@@ -17,10 +17,12 @@ function fixture(env: Record<string, string>, mocks: Record<string, any> = {}, g
     if (cache.has(file)) return cache.get(file)
     const mod: any = {}
     cache.set(file, mod)
-    const context = { exports: mod, process: { env }, console, URL, Request, Response, Headers, Buffer, AbortSignal, setTimeout, clearTimeout, ...globals,
+    const context = { exports: mod, process: { env }, console, URL, URLSearchParams, Request, Response, Headers, Buffer, AbortSignal, setTimeout, clearTimeout, ...globals,
       require: (id: string) => {
         if (id in mocks) return mocks[id]
         if (['@/lib/preview-safety', '@/lib/internal-http', '@/lib/server/admin-auth'].includes(id)) return load(`${id.slice(2)}.ts`)
+        if (id === '@/lib/server/package-visibility') return load('lib/server/package-visibility.ts')
+        if (id === './supabase-read-key') return load('lib/server/supabase-read-key.ts')
         if (id === 'next/server' || id === 'react' || id === 'react/jsx-runtime') return require(id)
         return unknown
       } }
@@ -174,8 +176,17 @@ test('production, third-party, branch alias, spoofed Host and credential URLs ca
 test('protected Spot Middleware forwards auth once, rejects redirects and forged origins without following them', async () => {
   let calls = 0, redirect = false
   const load = fixture(preview, {}, { console: { error() {} }, fetch: async (url: URL, init: RequestInit) => {
-    calls++; assert.equal(init.redirect, 'manual'); assert.equal(new Headers(init.headers).get('cookie'), '_vercel_jwt=fixture')
-    if (url.pathname.startsWith('/api/package-visibility/')) return new Response(null, { status: 204 })
+    calls++
+    if (url.pathname === '/rest/v1/travel_packages') {
+      assert.equal(url.origin, preview.NEXT_PUBLIC_SUPABASE_URL)
+      assert.equal(init.redirect, 'error')
+      assert.equal(init.cache, 'no-store')
+      const headers = new Headers(init.headers)
+      assert.equal(headers.get('apikey'), preview.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+      assert.equal(headers.has('cookie'), false)
+      return Response.json([{ id: 1 }])
+    }
+    assert.equal(init.redirect, 'manual'); assert.equal(new Headers(init.headers).get('cookie'), '_vercel_jwt=fixture')
     return redirect ? new Response(null, { status: 302, headers: { location: 'https://www.jnqjourney.com' } }) : Response.json({ visible: true })
   } })
   const handler = load('middleware.ts').middleware

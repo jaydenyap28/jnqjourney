@@ -1,12 +1,15 @@
 ﻿import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { createClient } from '@supabase/supabase-js'
+import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 import { slugifyLocationName } from '@/lib/location-routing'
 
 const LOCATION_SLUGS_PATH = path.join(process.cwd(), 'data', 'location-slugs.json')
 const STORAGE_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET || 'location-images'
 const STORAGE_PATH = '_system/location-slugs.webp'
 const LEGACY_STORAGE_PATH = '_system/location-slugs.json'
+export const PUBLIC_LOCATION_SLUGS_TAG = 'public-location-slugs'
 
 export type LocationSlugMap = Record<string, string>
 
@@ -59,29 +62,42 @@ async function writeLocalLocationSlugMap(slugMap: LocationSlugMap) {
   }
 }
 
-async function readStorageLocationSlugMap(fresh = false): Promise<LocationSlugMap | null> {
+async function readStorageLocationSlugMap(fresh = false, strict = false): Promise<LocationSlugMap | null> {
   const supabase = getAdminSupabaseClient(fresh)
   if (!supabase) return null
 
   try {
     let raw = ''
     for (const candidatePath of [STORAGE_PATH, LEGACY_STORAGE_PATH]) {
-      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
-      if (error || !data) continue
+      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(
+        candidatePath, {}, strict ? { signal: AbortSignal.timeout(4000) } : undefined,
+      )
+      if (error || !data) {
+        const missing = error && (error.status === 404 || error.statusCode === '404' || ('code' in error && error.code === 'NoSuchKey'))
+        if (strict && !missing) {
+          throw new Error('Public location slug map is unavailable.')
+        }
+        continue
+      }
       raw = await data.text()
+      if (strict && !raw) throw new Error('Public location slug map is empty.')
       if (raw) break
     }
     if (!raw) return null
 
     const parsed = JSON.parse(raw)
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {}
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      if (strict) throw new Error('Invalid public location slug map.')
+      return {}
+    }
 
     return Object.fromEntries(
       Object.entries(parsed)
         .map(([key, value]) => [String(key), normalizeLocationSlug(String(value || ''))])
         .filter(([, value]) => value)
     )
-  } catch {
+  } catch (error) {
+    if (strict) throw error
     return null
   }
 }
@@ -140,6 +156,19 @@ export async function buildCanonicalLocationPath(name: string, id: number | stri
   const base = customSlug || slugifyLocationName(name) || 'spot'
   return `/spot/${base}-${id}`
 }
+
+// Public routing reuses the normalized mapping without writing a local copy.
+export const readPublicLocationSlugMap = unstable_cache(async () =>
+  (await readStorageLocationSlugMap(false, true)) ?? await readLocalLocationSlugMap(),
+  ['public-location-slug-map-v1'],
+  { revalidate: 3600, tags: [PUBLIC_LOCATION_SLUGS_TAG] },
+)
+
+async function buildPublicPath(name: string, id: number) {
+  return buildCanonicalLocationPath(name, id, await readPublicLocationSlugMap())
+}
+
+export const buildPublicCanonicalLocationPath = typeof cache === 'function' ? cache(buildPublicPath) : buildPublicPath
 
 
 

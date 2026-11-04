@@ -3,6 +3,7 @@ import 'server-only'
 import { freshGuideSnapshotUrl } from '@/lib/guide-publication'
 import { freshNoteSnapshotUrl } from '@/lib/note-publication'
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 
 import type { TravelGuide } from '@/lib/guides'
 import type { LongformNote } from '@/lib/notes'
@@ -78,20 +79,10 @@ const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v
   tags: ['notes'],
 })
 
-export function readPublicGuides() {
-  return readGuidesCached()
-}
+export const readPublicGuides = typeof cache === 'function' ? cache(readGuidesCached) : readGuidesCached
 
-export async function readPublicGuideBySlug(slug: string) {
-  // One collection cache, then a cheap selection. Nesting a second persistent
-  // cache here can freeze a stale selection while the collection refreshes.
-  return readPublicGuideBySlugUncached(slug)
-}
-
-export function readPublicNotes() {
-  return readNotesCached()
-}
-
-export async function readPublicNoteBySlug(slug: string) {
-  return readPublicNoteBySlugUncached(slug)
-}
+// Memoize selection only for the current render. The collection remains the
+// sole persistent entry, so edits and aliases use the existing invalidations.
+export const readPublicGuideBySlug = typeof cache === 'function' ? cache(readPublicGuideBySlugUncached) : readPublicGuideBySlugUncached
+export const readPublicNotes = typeof cache === 'function' ? cache(readNotesCached) : readNotesCached
+export const readPublicNoteBySlug = typeof cache === 'function' ? cache(readPublicNoteBySlugUncached) : readPublicNoteBySlugUncached

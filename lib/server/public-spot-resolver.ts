@@ -5,6 +5,7 @@ import { readFallbackSpot } from './public-fallback-snapshot'
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
+import { evaluateSpotQuality } from '@/lib/spot-quality'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
@@ -38,6 +39,7 @@ export class PublicSpotUnavailableError extends Error {
 export interface ResolvedPublicSpot {
   spot: PublicSpotRecord
   source: PublicSpotSource
+  quality: ReturnType<typeof evaluateSpotQuality>
 }
 
 async function withTimeout<T>(promise: PromiseLike<T>, label: string): Promise<T> {
@@ -138,7 +140,9 @@ async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | n
     supabase: () => readSupabaseSpot(slug),
     fallback: () => readStaticSpot(slug),
   })
-  if (result.status === 'found') return isSpotPublished(result.spot) ? { spot: result.spot, source: result.source } : null
+  if (result.status === 'found') return isSpotPublished(result.spot)
+    ? { spot: result.spot, source: result.source, quality: evaluateSpotQuality(result.spot) }
+    : null
   if (result.status === 'not-found') return null
   throw new PublicSpotUnavailableError(slug)
 }
@@ -151,7 +155,7 @@ function resolveCached(slug: string) {
   const identity = `spot-${id}`
   return unstable_cache(
     () => resolveSpotUncached(identity),
-    ['public-spot-v3-fallback-20261030', identity],
+    ['public-spot-v4-quality', identity],
     { revalidate: 3600, tags: [`public-spot:${identity}`] }
   )()
 }

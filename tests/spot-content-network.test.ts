@@ -4,7 +4,6 @@ import { readFileSync, existsSync } from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import vm from 'node:vm'
-import http from 'node:http'
 import ts from 'typescript'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
@@ -17,9 +16,9 @@ import type { PublicLocation, PublicRegion } from '../lib/public-data.ts'
 
 const require = createRequire(import.meta.url)
 const cache = new Map<string, any>()
-function load(file: string, mocks: Record<string, any> = {}): any {
-  if (cache.has(file) && !Object.keys(mocks).length) return cache.get(file)
-  const context = { exports: {} as any, process, console, URL, setTimeout, clearTimeout, fetch, Buffer, require: (id: string) => {
+function load(file: string, mocks: Record<string, any> = {}, transport = fetch): any {
+  if (cache.has(file) && !Object.keys(mocks).length && transport === fetch) return cache.get(file)
+  const context = { exports: {} as any, process, console, URL, Headers, AbortSignal, setTimeout, clearTimeout, fetch: transport, Buffer, require: (id: string) => {
     if (id in mocks) return mocks[id]
     if (id === 'next/dynamic') return () => () => null
     if (id === 'next/navigation') return { usePathname: () => '/spot/example-1', useRouter: () => ({}) }
@@ -30,13 +29,13 @@ function load(file: string, mocks: Record<string, any> = {}): any {
       const resolved = ['', '.ts', '.tsx', '.json'].map(ext => target + ext).find(existsSync)
       if (!resolved) throw Error(`Cannot resolve ${id} in ${file}`)
       if (resolved.endsWith('.json')) return JSON.parse(readFileSync(resolved, 'utf8'))
-      return load(resolved, mocks)
+      return load(resolved, mocks, transport)
     }
     return require(id)
   }}
   const js = ts.transpileModule(readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText
   vm.runInNewContext(js, context, { filename: file })
-  if (!Object.keys(mocks).length) cache.set(file, context.exports)
+  if (!Object.keys(mocks).length && transport === fetch) cache.set(file, context.exports)
   return context.exports
 }
 const spot = { id: 1, slug: 'old-1', name: 'River Ferry', name_cn: '渡口', description: '沿江欣赏风景。', latitude: 31, longitude: 121 }
@@ -97,24 +96,12 @@ test('redirects validate schemes, self aliases, multi-hop loops, hidden states a
 })
 test('real middleware produces HTTP 301 and Location for both locale paths and old aliases', async () => {
   const { NextRequest } = require('next/server')
-  const { middleware } = load('middleware.ts', {})
-  // Reload with an isolated fetch transport; Node HTTP receives the actual NextResponse.
-  const source = ts.transpileModule(readFileSync('middleware.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText
-  const context = {exports:{} as any, require:(id:string)=>id==='@/lib/internal-http'?require('../lib/internal-http.ts'):require(id), process, console, URL, AbortSignal, fetch: async () => Response.json({ destination:'/notes/shanghai-ferry', status:301 })}
-  vm.runInNewContext(source, context)
-  const server = http.createServer(async (req, res) => {
-    const response = await context.exports.middleware(new NextRequest(`http://localhost${req.url}`))
-    res.writeHead(response.status, Object.fromEntries(response.headers)); res.end(await response.text())
-  })
-  await new Promise<void>(resolve => server.listen(0,'127.0.0.1',resolve))
-  try {
-    const address = server.address() as {port:number}
-    for (const route of ['/spot/old-1','/spot/alias-1','/en/spot/alias-1']) {
-      const response = await fetch(`http://127.0.0.1:${address.port}${route}`, {redirect:'manual'})
-      assert.equal(response.status,301); assert.equal(response.headers.get('location'),'http://localhost/notes/shanghai-ferry')
-    }
-  } finally { await new Promise<void>(resolve => server.close(() => resolve())) }
-  assert.ok(middleware)
+  const { middleware } = load('middleware.ts', {}, async () => Response.json({ destination: '/notes/shanghai-ferry', status: 301 }))
+  for (const route of ['/spot/old-1', '/spot/alias-1', '/en/spot/alias-1']) {
+    const response = await middleware(new NextRequest(`http://localhost${route}`))
+    assert.equal(response.status, 301)
+    assert.equal(response.headers.get('location'), 'http://localhost/notes/shanghai-ferry')
+  }
 })
 test('legacy and enriched Spot render with unchanged H1 and conditional experience, cards and alt', () => {
   const { default: SpotContent } = load('components/SpotContent.tsx')
@@ -134,9 +121,9 @@ test('actual Spot metadata includes canonical, custom SEO, OG and Twitter cover'
   const custom = { ...spot, seo_title_zh: '上海两元轮渡', seo_description_zh: '上海轮渡亲身体验。', image_url: 'https://cdn.test/cover.webp' }
   const { generateMetadata } = load('app/spot/[slug]/page.tsx', {
     '@/lib/server/localized-seo': { chineseLocalizedAlternates: async (path: string) => ({ canonical: `https://www.jnqjourney.com${path}` }) },
-    '@/lib/server/location-slugs-store': { buildCanonicalLocationPath: async () => '/spot/river-ferry-1' },
+    '@/lib/server/location-slugs-store': { buildPublicCanonicalLocationPath: async () => '/spot/river-ferry-1' },
     '@/lib/server/public-location-data': {},
-    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot: custom }) },
+    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot: custom, quality: { indexable: false } }) },
     '@/lib/server/public-content-store': {},
     '@/lib/server/travel-packages': {},
   })

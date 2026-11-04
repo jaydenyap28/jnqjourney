@@ -9,7 +9,7 @@ test('homepages share the existing package reader and public note source', () =>
   const chinese = read('app/page.tsx')
   assert.match(chinese, /readPublishedPackages\(\)/)
   assert.match(english, /data\.packages=await readPublishedPackagesUncached\(\)/)
-  assert.match(read('lib/server/travel-packages.ts'), /unstable_cache\(readPublishedPackagesUncached, \['published-travel-packages'\]/)
+  assert.match(read('lib/server/travel-packages.ts'), /unstable_cache\(readPublishedPackagesUncached, \['published-travel-packages', 'v2'\]/)
   assert.match(read('components/EnglishRouteAdapter.tsx'), /initialPackages=\{packages\.slice\(0,3\)\}/)
   assert.match(read('components/EnglishRouteAdapter.tsx'), /const packages=data\.packages \|\| \[\]/)
   assert.doesNotMatch(read('components/EnglishRouteAdapter.tsx'), /usePublicPackages|\/api\/packages/)
@@ -18,7 +18,7 @@ test('homepages share the existing package reader and public note source', () =>
   assert.doesNotMatch(english, /homeSupplements|home-supplements|unstable_cache/)
   assert.equal(fs.existsSync('public-data/home-supplements.json'), false)
   assert.match(english, /readBilingualSnapshot[^\n]*'notes.json'/)
-  assert.match(read('lib/server/public-content-store.ts'), /readCdnCollection\('notes.json'/)
+  assert.match(read('lib/server/public-content-store.ts'), /readCdnCollection\('notes'\)/)
 })
 test('booking requests do not branch by locale', () => {
   const card = read('components/AffiliateCard.tsx')

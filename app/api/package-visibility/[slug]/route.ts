@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
-import { supabaseReadKey } from '@/lib/server/supabase-read-key'
+import { packageVisibility } from '@/lib/server/package-visibility'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -11,26 +10,11 @@ const NO_STORE_HEADERS = {
 }
 
 export async function GET(_: Request, { params }: { params: { slug: string } }) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = supabaseReadKey()
-  if (!url || !key) {
-    console.error('[package-visibility] Supabase configuration is missing')
-    return NextResponse.json({ error: 'Visibility check unavailable' }, { status: 503, headers: NO_STORE_HEADERS })
-  }
-
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  const { data, error } = await supabase
-    .from('travel_packages')
-    .select('id')
-    .eq('slug', params.slug)
-    .eq('status', 'published')
-    .limit(1)
-
-  if (error) {
-    console.error('[package-visibility]', error.message)
-    return NextResponse.json({ error: 'Visibility check failed' }, { status: 502, headers: NO_STORE_HEADERS })
-  }
-
-  if (!data?.length) return new NextResponse('Not Found', { status: 404, headers: NO_STORE_HEADERS })
-  return new NextResponse(null, { status: 204, headers: NO_STORE_HEADERS })
+  const status = await packageVisibility(params.slug)
+  if (status === 204) return new NextResponse(null, { status, headers: NO_STORE_HEADERS })
+  if (status === 404) return new NextResponse('Not Found', { status, headers: NO_STORE_HEADERS })
+  return NextResponse.json(
+    { error: status === 502 ? 'Visibility check failed' : 'Visibility check unavailable' },
+    { status, headers: NO_STORE_HEADERS },
+  )
 }

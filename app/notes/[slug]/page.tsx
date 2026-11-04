@@ -5,6 +5,7 @@ import { explicitNoteAffiliateIds } from '@/lib/note-affiliates'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { cache } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
 import SiteFooter from '@/components/SiteFooter'
@@ -29,6 +30,8 @@ import { buildFallbackAlt, getNoteHeadingIds, noteUpdatedDate, getNoteTableOfCon
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia, selectPublicSpotCards } from '@/lib/server/public-content-media'
 import { resolvePublicImage } from '@/lib/public-media'
+
+const resolveNoteMediaForRender = typeof cache === 'function' ? cache(resolveNotePublicMedia) : resolveNotePublicMedia
 
 interface PageProps {
   params: { slug: string }
@@ -123,7 +126,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const storedNote = await readPublicNoteBySlug(params.slug)
   if (!storedNote || !storedNote.published) notFound()
   const { locations } = await resolvePublicData()
-  const note = resolveNotePublicMedia(storedNote, locations)
+  const note = resolveNoteMediaForRender(storedNote, locations)
 
   const description = buildMetaDescription(getTextExcerpt(note), `Read this travel note about ${note.title}.`)
   const title = note.title
@@ -320,7 +323,7 @@ function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>,
 
 export default async function NoteDetailPage({ params }: PageProps) {
   const [storedNote, publicData] = await Promise.all([readPublicNoteBySlug(params.slug), resolvePublicData()])
-  const note = storedNote ? resolveNotePublicMedia(storedNote, publicData.locations) : null
+  const note = storedNote ? resolveNoteMediaForRender(storedNote, publicData.locations) : null
   if (!note || !note.published) notFound()
 
   const blocks = getRenderableNoteBlocks(note)

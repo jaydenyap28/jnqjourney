@@ -39,7 +39,7 @@ function SpotCard({ spot, regionName, locale }: { spot: any, regionName: string,
   const title = getDisplayTitle(spot.name, spot.name_cn)
   const coverImage = spot.image_url || spot.images?.[0] || '/placeholder-image.jpg'
   return (
-    <Link href={buildLocationPath(spot.name, spot.id)} className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition hover:-translate-y-1 hover:bg-white/10">
+    <Link href={buildLocationPath(spot.name, spot.id)} prefetch={false} className="group flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(15,23,42,0.96),rgba(17,24,39,0.92))] transition hover:-translate-y-1 hover:bg-white/10">
       <div className="relative aspect-[4/3] bg-white/5">
         <FallbackImage src={coverImage} alt={`${title.primary} ${regionName} ${spot.category === 'food' ? '美食或环境照片' : '旅游照片'}`.trim()} fill sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw" className="object-cover transition duration-500 group-hover:scale-105" />
         {spot.category && (

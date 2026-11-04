@@ -13,7 +13,7 @@ function loader(env = safe, mocks = {}, globals = {}) {
   function load(file) {
     if (cache.has(file)) return cache.get(file)
     const exports = {}; cache.set(file, exports)
-    const context = { exports, process: { env }, console, URL, Request, Response, Headers, AbortSignal, Buffer, setTimeout, clearTimeout, ...globals,
+    const context = { exports, process: { env }, console, URL, URLSearchParams, Request, Response, Headers, AbortSignal, Buffer, setTimeout, clearTimeout, ...globals,
       require(id) {
         if (id in mocks) return mocks[id]
         if (id === 'server-only') return {}
@@ -22,6 +22,7 @@ function loader(env = safe, mocks = {}, globals = {}) {
         if (id === '@/lib/preview-safety') return load('lib/preview-safety.ts')
         if (id === '@/lib/server/admin-auth') return load('lib/server/admin-auth.ts')
         if (id === '@/lib/server/supabase-read-key' || id === './supabase-read-key') return load('lib/server/supabase-read-key.ts')
+        if (id === '@/lib/server/package-visibility') return load('lib/server/package-visibility.ts')
         if (id === './public-fallback-snapshot') return load('lib/server/public-fallback-snapshot.ts')
         if (id === 'react') return { cache: fn => fn }
         if (id.startsWith('@/')) return mocks.__unknown || {}
@@ -102,7 +103,10 @@ test('actual public readers use only anonymous key in Preview and retain the Pro
     '@/lib/public-region-media': { resolvePublicRegionMedia: regions => regions },
     '@/lib/public-data': { hasValidCoordinates: () => true },
     '@/lib/spot-content': { isSpotPublished: () => true },
-  })
+  }, { fetch: async (_url, init) => {
+    keys.push(init.headers.apikey)
+    return Response.json([])
+  } })
   await load('lib/server/spot-routing.ts').readSpotRouting(1)
   const packages = load('lib/server/travel-packages.ts')
   await packages.readPublishedPackagesUncached(); await packages.readPublishedPackage('fixture'); await packages.readPublishedPackageOptions(1)

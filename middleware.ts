@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { internalPreviewHeaders } from '@/lib/internal-http'
+import { assertInternalPreviewOrigin, internalPreviewHeaders } from '@/lib/internal-http'
+import { packageVisibility } from '@/lib/server/package-visibility'
 
 const BLOCKED_SEO = { 'Cache-Control': 'private, no-store, max-age=0', 'X-Robots-Tag': 'noindex, nofollow', 'X-JNQ-SEO-Indexable': 'false' }
 
@@ -48,35 +49,31 @@ async function guardPackage(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308)
   }
 
-  const endpoint = new URL(`/api/package-visibility/${encodeURIComponent(slug)}`, request.url)
-
   try {
-    const response = await fetch(endpoint, { cache: 'no-store', redirect: 'manual', headers: internalPreviewHeaders(request, endpoint) })
-    if (response.status === 204) {
+    assertInternalPreviewOrigin(request)
+    const status = await packageVisibility(slug)
+    if (status === 204) {
       const nextResponse = NextResponse.next()
       nextResponse.headers.set('X-JnQ-Package-Guard', 'published')
       return nextResponse
     }
 
-    if (response.status === 404) {
+    if (status === 404) {
       return new NextResponse('Not Found', {
         status: 404,
         headers: {
+          ...BLOCKED_SEO,
           'Content-Type': 'text/plain; charset=utf-8',
           'X-JnQ-Package-Guard': 'not-published',
-          'X-Robots-Tag': 'noindex, nofollow',
         },
       })
     }
 
-    console.error('[package-visibility]', response.status, await response.text())
-    if (process.env.VERCEL_ENV === 'preview') return new NextResponse('Package temporarily unavailable.', { status: 503, headers: BLOCKED_SEO })
-    return NextResponse.next()
+    console.error('[package-visibility]', status)
   } catch (error) {
     console.error('[package-visibility]', error)
-    if (process.env.VERCEL_ENV === 'preview') return new NextResponse('Package temporarily unavailable.', { status: 503, headers: BLOCKED_SEO })
-    return NextResponse.next()
   }
+  return new NextResponse('Package temporarily unavailable.', { status: 503, headers: { ...BLOCKED_SEO, 'Retry-After': '30' } })
 }
 
 export async function middleware(request: NextRequest) {
@@ -85,5 +82,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/packages/:path*', '/spot/:path*', '/en/spot/:path*'],
+  matcher: ['/packages/:slug', '/spot/:path*', '/en/spot/:path*'],
 }

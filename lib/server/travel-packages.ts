@@ -107,46 +107,38 @@ export async function readPublishedPackagesUncached() {
     .eq('status', 'published')
     .order('featured', { ascending: false })
     .order('sort_order', { ascending: true })
-  if (error) {
-    if (!error.message.includes('travel_packages')) console.error('[travel-packages]', error.message)
-    return []
-  }
+  if (error) throw new Error('Unable to read the published package collection.')
   return (data || []) as TravelPackage[]
 }
 
-export const readPublishedPackages = unstable_cache(readPublishedPackagesUncached, ['published-travel-packages'], {
+export const readPublishedPackages = unstable_cache(readPublishedPackagesUncached, ['published-travel-packages', 'v2'], {
   revalidate: 3600,
   tags: ['travel-packages'],
 })
 
 export async function readPublishedPackage(slug: string) {
   const supabase = createServerClient()
-  if (!supabase) return null
+  if (!supabase) throw new Error('Published package source is unavailable.')
   const { data, error } = await supabase
     .from('travel_packages')
     .select(PACKAGE_SELECT)
     .eq('slug', slug)
     .eq('status', 'published')
     .maybeSingle()
-  if (error) {
-    if (!error.message.includes('travel_packages')) console.error('[travel-package]', error.message)
-    return null
-  }
+  if (error) throw new Error('Unable to read the published package.')
   return data as TravelPackage | null
 }
 
 export async function readPublishedPackageOptions(packageId: number) {
   const supabase = createServerClient()
-  if (!supabase || !Number.isInteger(packageId) || packageId <= 0) return []
+  if (!Number.isInteger(packageId) || packageId <= 0) return []
+  if (!supabase) throw new Error('Published package options source is unavailable.')
   const { data, error } = await supabase
     .from('travel_package_options')
     .select(PACKAGE_OPTION_SELECT)
     .eq('package_id', packageId)
     .eq('status', 'active')
     .order('sort_order', { ascending: true })
-  if (error) {
-    if (!error.message.includes('travel_package_options')) console.error('[travel-package-options]', error.message)
-    return []
-  }
+  if (error) throw new Error('Unable to read published package options.')
   return (data || []) as TravelPackageOption[]
 }

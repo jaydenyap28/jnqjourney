@@ -9,6 +9,9 @@ import { readPublishedPackages } from '@/lib/server/travel-packages'
 import { englishPageData, readEnglishCollections } from '@/lib/server/english-page-data'
 
 export const revalidate = 3600
+// The live quality inventory must be read for each regeneration. Its
+// no-store fetch must not turn every crawler request into a regeneration.
+export const dynamic = 'force-static'
 
 function validDateOrUndefined(value?: string | null) {
   if (!value) return undefined

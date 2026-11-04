@@ -13,6 +13,10 @@ function load(file: string, mocks: Record<string, any>, globals: Record<string, 
     ...globals, require: (id: string) => {
       if (id in mocks) return mocks[id]
       if (id === '@/lib/internal-http') return require('../lib/internal-http.ts')
+      if (id === '@/lib/server/package-visibility') return {}
+      if (id === './supabase-read-key') return load('lib/server/supabase-read-key.ts', mocks, globals)
+      if (id === './public-fallback-snapshot') return {}
+      if (id === '@/lib/spot-quality') return require('../lib/spot-quality.ts')
       if (id === '@/lib/preview-safety') return require('../lib/preview-safety.ts')
       if (id === '@/lib/server/publish-location-batch') return load('lib/server/publish-location-batch.ts',mocks)
       if (id === '@/lib/server/publication') return require('./helpers/publication-mock.cjs').publicationMock()
@@ -98,8 +102,8 @@ test('routing API preserves live deny decisions and gives explicit English/fallb
   const loaded = load('app/api/spot-routing/[slug]/route.ts', {
     '@/lib/location-routing': { extractLocationIdFromSlug: () => 1 },
     '@/lib/server/spot-routing': { readSpotRouting: async () => routing },
-    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => { detailReads++; return { spot: { id:1, name:'Name' }, source } } },
-    '@/lib/server/location-slugs-store': { buildCanonicalLocationPath: async () => '/spot/old-1' },
+    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => { detailReads++; return { spot: { id:1, name:'Name' }, source, quality: { indexable: true } } } },
+    '@/lib/server/location-slugs-store': { buildPublicCanonicalLocationPath: async () => '/spot/old-1' },
     '@/lib/server/localization-snapshot': { readLocalizationSnapshot: async () => ({ records:[] }) },
     '@/lib/localization': { localizationRecord: () => null, applyLocalization: () => ({ status: translation }) },
   })

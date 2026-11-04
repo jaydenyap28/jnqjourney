@@ -3,6 +3,7 @@ import { supabaseReadKey } from './supabase-read-key'
 
 import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
+import { cache } from 'react'
 
 import {
   hasValidCoordinates,
@@ -222,10 +223,12 @@ const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v2-fallback
   tags: ['public-data', 'public-locations', 'public-regions'],
 })
 
-export async function resolvePublicData() {
+async function readPublicData() {
   if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') return resolveUncached()
   return resolveCached()
 }
+
+export const resolvePublicData = typeof cache === 'function' ? cache(readPublicData) : readPublicData
 
 export async function resolvePublicDataUncachedForSnapshot() {
   const bundle = await readSupabaseSnapshotBundle()

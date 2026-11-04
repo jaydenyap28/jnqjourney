@@ -1,6 +1,7 @@
 ﻿import { NextResponse } from 'next/server'
+import { revalidateTag } from 'next/cache'
 import { requireAdminRequest } from '@/lib/server/admin-auth'
-import { readLocationSlugForId, saveLocationSlugForId } from '@/lib/server/location-slugs-store'
+import { PUBLIC_LOCATION_SLUGS_TAG, readLocationSlugForId, saveLocationSlugForId } from '@/lib/server/location-slugs-store'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { publishLocationBatch } from '@/lib/server/publish-location-batch'
 import { invalidatePublication, publicationResponse, publicationFailure } from '@/lib/server/publication'
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     const previousLocations = (await resolvePublicData()).locations
     const previousSlugs = previousLocations.filter(location => location.id === id).map(location => location.slug)
     const savedSlug = await saveLocationSlugForId(id, slug)
+    revalidateTag(PUBLIC_LOCATION_SLUGS_TAG)
     // The full Spot form publishes once after this identity write. Standalone
     // alias edits must also rebuild snapshots and expire both old/new paths.
     if (body.deferPublication === true) return NextResponse.json({ slug: savedSlug, previousSlugs, publicationPending: true })

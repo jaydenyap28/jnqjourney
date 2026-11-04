@@ -3,6 +3,7 @@ import { guideSearchTitle } from '@/lib/public-editorial'
 import { publicationVersion } from '@/lib/publication-version'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import Link from 'next/link'
+import { cache } from 'react'
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { ArrowRight, BedDouble, CalendarDays, Film, MapPin, MapPinned, Navigation } from 'lucide-react'
@@ -48,6 +49,7 @@ export const revalidate = 3600
 // Enable ISR for paths first visited after the build without enumerating live DB
 // content during builds. Admin publication already revalidates the target path.
 export function generateStaticParams() { return [] }
+const resolveGuideMediaForRender = typeof cache === 'function' ? cache(resolveGuidePublicMedia) : resolveGuidePublicMedia
 interface PageProps {
   params: {
     slug: string
@@ -60,7 +62,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const storedGuide = await readPublicGuideBySlug(params.slug)
   if (!storedGuide) notFound()
   const { locations } = await resolvePublicData()
-  const guide = resolveGuidePublicMedia(storedGuide, locations)
+  const guide = resolveGuideMediaForRender(storedGuide, locations)
 
   const hasBudgetOrStay = guide.budget || guide.days.some(d => d.stay)
   const baseTitle = guide.seoTitle?.trim() || guideSearchTitle(guide)
@@ -84,7 +86,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function GuideDetailPage({params}:PageProps) {
  const [storedGuide,publicData]=await Promise.all([readPublicGuideBySlug(params.slug),resolvePublicData()]);
- const guide=storedGuide?resolveGuidePublicMedia(storedGuide,publicData.locations):null;
+ const guide=storedGuide?resolveGuideMediaForRender(storedGuide,publicData.locations):null;
  if(!guide) notFound();
  if(params.slug!==guide.slug) redirect(`/guide/${guide.slug}`);
  const [publicTripCost,approvedPriceHighlights,packages,guides,notes]=await Promise.all([readPublicGuideTripCost(guide),readApprovedGuidePriceHighlights(guide.slug),readPublishedPackages(),readPublicGuides(),readPublicNotes()]);
@@ -92,5 +94,5 @@ export default async function GuideDetailPage({params}:PageProps) {
    ...guide.days.flatMap(day => day.routeItems || []),
    ...(guide.itinerarySegments || []).flatMap(segment => [...segment.verifiedRoutes, ...(segment.referenceRoutes || [])].flatMap(route => route.routeItems || [])),
  ].flatMap(item => item.type === 'note' ? [item.noteSlug] : [])
- return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuidePublicMedia(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
+ return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuideMediaForRender(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
 }

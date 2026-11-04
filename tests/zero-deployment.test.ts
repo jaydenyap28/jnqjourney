@@ -12,6 +12,7 @@ function load(file: string, mocks: Record<string, any>, globals: Record<string, 
     require: (id: string) => {
       if (id in mocks) return mocks[id]
       if (id === '@/lib/internal-http') return require('../lib/internal-http.ts')
+      if (id === '@/lib/server/package-visibility') return {}
       if (id === 'server-only') return {}
       if (id.startsWith('@/')) throw new Error(`Missing offline mock: ${id}`)
       return require(id)
@@ -132,11 +133,12 @@ test('Guide and Note detail reads share collection downloads and retain alias/fi
 })
 
 test('Spot routing checks visibility first; redirect/hidden skips detail; errors never publish a page', async () => {
-  let routing: any = { visible: true }, detail: any = { source: 'cdn-cache' }, reads = 0
+  let routing: any = { visible: true }, detail: any = { spot: { id: 1, name: 'Test' }, source: 'cdn-cache', quality: { indexable: false } }, reads = 0
   const route = load('app/api/spot-routing/[slug]/route.ts', {
     '@/lib/location-routing': { extractLocationIdFromSlug: () => 1 },
     '@/lib/server/spot-routing': { readSpotRouting: async () => routing },
     '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => { reads++; if (detail instanceof Error) throw detail; return detail } },
+    '@/lib/server/location-slugs-store': { buildPublicCanonicalLocationPath: async () => '/spot/test-1' },
     '@/lib/server/localization-snapshot': { readLocalizationSnapshot: async () => ({ records: [] }) },
     '@/lib/localization': { applyLocalization: () => ({ status: 'missing' }), localizationRecord: () => null },
   })

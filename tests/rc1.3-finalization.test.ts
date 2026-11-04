@@ -92,8 +92,8 @@ test('canonical Spot gate handles both locales before streaming and retains hidd
   const api = load('app/api/spot-routing/[slug]/route.ts', {
     '@/lib/location-routing': { extractLocationIdFromSlug: () => 1 },
     '@/lib/server/spot-routing': { readSpotRouting: async () => { if (fail) throw Error('Synthetic outage'); return routing } },
-    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot: { id: 1, name: 'Current' }, source: 'cdn-cache' }) },
-    '@/lib/server/location-slugs-store': { buildCanonicalLocationPath: async () => { canonicalReads++; return '/spot/current-1' } },
+    '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot: { id: 1, name: 'Current' }, source: 'cdn-cache', quality: { indexable: true } }) },
+    '@/lib/server/location-slugs-store': { buildPublicCanonicalLocationPath: async () => { canonicalReads++; return '/spot/current-1' } },
     '@/lib/server/localization-snapshot': { readLocalizationSnapshot: async () => ({}) },
     '@/lib/localization': { applyLocalization: () => ({ status: 'complete' }), localizationRecord: () => null },
   })

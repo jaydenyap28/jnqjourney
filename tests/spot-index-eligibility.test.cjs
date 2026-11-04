@@ -55,9 +55,9 @@ test('metadata, detail API, routing and middleware agree for thin, qualified and
     [qualified, 'static-fallback', false],
   ]) {
     const mocks = {
-      '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot, source }) },
+      '@/lib/server/public-spot-resolver': { getPublicSpotBySlug: async () => ({ spot, source, quality: evaluateSpotQuality(spot) }) },
       '@/lib/server/spot-routing': { readSpotRouting: async () => ({ visible: true }) },
-      '@/lib/server/location-slugs-store': { buildCanonicalLocationPath: async () => '/spot/fixture-1' },
+      '@/lib/server/location-slugs-store': { buildPublicCanonicalLocationPath: async () => '/spot/fixture-1' },
       '@/lib/server/localized-seo': { chineseLocalizedAlternates: async () => ({ canonical: '/spot/fixture-1' }) },
       '@/components/SpotPageView': { __esModule: true, default: () => null },
       '@/lib/server/public-location-data': {}, '@/lib/server/public-content-store': {}, '@/lib/server/travel-packages': {},
