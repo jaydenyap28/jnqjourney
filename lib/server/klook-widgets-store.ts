@@ -186,6 +186,7 @@ async function readWidgetsUncached(fresh = false) {
 // Cache. Public ISR shares a tag; Admin always reads the authoritative version.
 const readWidgetsCached = unstable_cache(readWidgetsUncached, ['klook-widgets-v1'], { revalidate: 3600, tags: ['klook-widgets'] })
 export async function readKlookWidgets(fresh = false) {
+  if (process.env.VERCEL_ENV === 'preview') return []
   return fresh ? readWidgetsUncached(true) : readWidgetsCached()
 }
 

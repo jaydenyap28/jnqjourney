@@ -118,6 +118,7 @@ async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
 }
 
 export async function readLocationSlugMap(fresh = false): Promise<LocationSlugMap> {
+  if (process.env.VERCEL_ENV === 'preview') return {}
   const storageMap = await readStorageLocationSlugMap(fresh)
   if (storageMap) {
     try {
@@ -158,7 +159,7 @@ export async function buildCanonicalLocationPath(name: string, id: number | stri
 }
 
 // Public routing reuses the normalized mapping without writing a local copy.
-export const readPublicLocationSlugMap = unstable_cache(async () =>
+const readCachedPublicSlugMap = unstable_cache(async () =>
   (await readStorageLocationSlugMap(false, true)) ?? await readLocalLocationSlugMap(),
   ['public-location-slug-map-v1'],
   { revalidate: 3600, tags: [PUBLIC_LOCATION_SLUGS_TAG] },
@@ -166,6 +167,10 @@ export const readPublicLocationSlugMap = unstable_cache(async () =>
 
 async function buildPublicPath(name: string, id: number) {
   return buildCanonicalLocationPath(name, id, await readPublicLocationSlugMap())
+}
+
+export function readPublicLocationSlugMap(): Promise<LocationSlugMap> {
+  return process.env.VERCEL_ENV === 'preview' ? Promise.resolve({}) : readCachedPublicSlugMap()
 }
 
 export const buildPublicCanonicalLocationPath = typeof cache === 'function' ? cache(buildPublicPath) : buildPublicPath

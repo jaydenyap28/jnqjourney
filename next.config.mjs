@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 import previewIsolation from './scripts/lib/preview-isolation-policy.cjs'
+import { fileURLToPath } from 'node:url'
 
 previewIsolation.assertPreviewIsolation(process.env)
+const isPreview = process.env.VERCEL_ENV === 'preview'
 
 function getHostname(value) {
   if (!value) return null
@@ -17,15 +19,24 @@ const r2PublicHost = getHostname(process.env.R2_PUBLIC_BASE_URL || process.env.N
 
 const nextConfig = {
   // Public boolean only; server write guards always use VERCEL_ENV directly.
-  env: { JNQ_PREVIEW_READ_ONLY: process.env.VERCEL_ENV === 'preview' ? '1' : '0' },
+  env: { JNQ_PREVIEW_READ_ONLY: isPreview ? '1' : '0' },
+  ...(isPreview ? {
+    webpack(config) {
+      config.resolve.alias['@/lib/site-fonts$'] = fileURLToPath(new URL('./lib/preview-fonts.ts', import.meta.url))
+      return config
+    },
+  } : {}),
   async headers() {
-    return process.env.VERCEL_ENV === 'preview' ? [{
+    return isPreview ? [{
       source: '/:path*',
-      headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }],
+      headers: [
+        { key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' },
+        { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; frame-src 'none'; object-src 'none'; worker-src 'none'; form-action 'none'; base-uri 'self'; sandbox allow-scripts allow-same-origin" },
+      ],
     }] : []
   },
   images: {
-    remotePatterns: [
+    remotePatterns: isPreview ? [] : [
       ...(r2PublicHost ? [{ protocol: 'https', hostname: r2PublicHost }] : []),
       { protocol: 'https', hostname: 'vrufunuomioczocdsoer.supabase.co' },
       { protocol: 'https', hostname: '*.supabase.co' },

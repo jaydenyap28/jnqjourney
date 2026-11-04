@@ -96,6 +96,7 @@ async function readPublicGuideTripCostUncached(guide: Pick<TravelGuide, 'slug' |
 }
 
 export function readPublicGuideTripCost(guide: Pick<TravelGuide, 'slug' | 'budgetItems'>) {
+  if (process.env.VERCEL_ENV === 'preview') return Promise.resolve(resolvePublicGuideTripCost(null, guide.budgetItems))
   return unstable_cache(
     () => readPublicGuideTripCostUncached(guide),
     ['public-guide-trip-cost-v1', guide.slug],

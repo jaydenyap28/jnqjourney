@@ -58,6 +58,7 @@ export default function WhatsAppButton({
   eventName,
 }: WhatsAppButtonProps) {
   const locale = usePublicLocale()
+  if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return null
   const pathname = typeof window==='undefined' ? '' : window.location.pathname
   const href = buildWhatsAppUrl({
     pageType,

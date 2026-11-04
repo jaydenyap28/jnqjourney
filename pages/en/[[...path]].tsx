@@ -4,6 +4,7 @@ import { compactEnglishPageData, englishPageData, type EnglishPageData } from '@
 import pilot from '@/public-data/i18n/en/records.json'
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  if (process.env.VERCEL_ENV === 'preview') return { paths: [], fallback: 'blocking' }
   // A pilot identity can become an alias in the published snapshot. Next 14
   // rejects getStaticProps redirects during build; keep aliases runtime-only.
   const identities = await Promise.all(pilot.records.map(async record => {

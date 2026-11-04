@@ -9,6 +9,8 @@ import type { TravelGuide } from '@/lib/guides'
 import type { LongformNote } from '@/lib/notes'
 import { normalizeGuidePayload, readGuides } from '@/lib/server/guides-store'
 import { normalizeNotePayload, readPublishedNotes } from '@/lib/server/notes-store'
+import { previewGuide, previewNote } from './preview-fixtures'
+import { previewCacheKey } from '@/lib/preview-safety'
 
 const TIMEOUT_MS = 4000
 
@@ -48,6 +50,7 @@ async function readCdnCollection(key: 'guides' | 'notes') {
 }
 
 async function readPublicGuidesUncached(): Promise<TravelGuide[]> {
+  if (process.env.VERCEL_ENV === 'preview') return [normalizeGuidePayload(previewGuide)]
   const snapshot = await readCdnCollection('guides')
   if (snapshot) return snapshot.map((item) => normalizeGuidePayload(item)).filter((guide) => guide.slug && guide.title)
   return readGuides()
@@ -59,6 +62,7 @@ async function readPublicGuideBySlugUncached(slug: string): Promise<TravelGuide 
 }
 
 async function readPublicNotesUncached(): Promise<LongformNote[]> {
+  if (process.env.VERCEL_ENV === 'preview') return [normalizeNotePayload(previewNote)]
   const snapshot = await readCdnCollection('notes')
   if (snapshot) return snapshot.map((item) => normalizeNotePayload(item)).filter((note) => note.published && note.slug && note.title)
   return readPublishedNotes()
@@ -70,11 +74,11 @@ async function readPublicNoteBySlugUncached(slug: string): Promise<LongformNote 
 }
 
 // Drop v3 entries that may contain a swallowed static-generation fallback.
-const readGuidesCached = unstable_cache(readPublicGuidesUncached, ['public-guides-v5'], {
+const readGuidesCached = unstable_cache(readPublicGuidesUncached, previewCacheKey(['public-guides-v5']), {
   revalidate: 3600,
   tags: ['guides'],
 })
-const readNotesCached = unstable_cache(readPublicNotesUncached, ['public-notes-v4'], {
+const readNotesCached = unstable_cache(readPublicNotesUncached, previewCacheKey(['public-notes-v4']), {
   revalidate: 3600,
   tags: ['notes'],
 })

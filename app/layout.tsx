@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { Cormorant_Garamond, Noto_Sans_SC, Noto_Serif_SC, Poppins } from 'next/font/google'
+import { siteFontClassName } from '@/lib/site-fonts'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
@@ -10,30 +10,6 @@ import { getSiteUrl } from '@/lib/site'
 import PageViewTracker from '@/components/PageViewTracker'
 import SiteStructuredData from '@/components/SiteStructuredData'
 import PublicLanguageControl from '@/components/PublicLanguageControl'
-
-const notoSansSC = Noto_Sans_SC({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  variable: '--font-noto-sans-sc',
-})
-
-const notoSerifSC = Noto_Serif_SC({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-noto-serif-sc',
-})
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['300', '400', '600', '800'],
-  variable: '--font-poppins',
-})
-
-const cormorantGaramond = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-cormorant-garamond',
-})
 
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
@@ -89,7 +65,7 @@ export default function RootLayout({
   return (
     <html lang="zh" translate="yes" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} ${notoSansSC.variable} ${notoSerifSC.variable} ${cormorantGaramond.variable} font-sans antialiased`}
+        className={`${siteFontClassName} font-sans antialiased`}
       >
         <SiteStructuredData />
         {!previewReadOnly && <Suspense fallback={null}>

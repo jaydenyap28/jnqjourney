@@ -18,7 +18,7 @@ let pending: Promise<PublicFallbackSnapshot> | undefined
 export async function readPublicFallbackSnapshot() {
   // Emergency rollback disables this independent layer. Never silently fall
   // through to the frozen 547-item set, which would resurrect withdrawn IDs.
-  if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') throw new Error('Public fallback disabled')
+  if (process.env.VERCEL_ENV === 'preview' || process.env.JNQ_PUBLIC_FALLBACK === 'disabled') throw new Error('Public fallback disabled')
   pending ??= readFile(path.join(process.cwd(), 'public-data/fallback/2026-10-30.json'), 'utf8').then(raw => {
     const value = JSON.parse(raw) as PublicFallbackSnapshot
     if (value.schemaVersion !== 1 || value.version !== '2026-10-30' || !Array.isArray(value.locations) || !Array.isArray(value.regions) || !value.spots || !value.eligibility || !value.withdrawnIds?.includes(450)) throw new Error('Invalid public fallback snapshot')

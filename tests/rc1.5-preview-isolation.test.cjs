@@ -5,8 +5,8 @@ const vm = require('node:vm')
 const ts = require('typescript')
 const { assertPreviewIsolation } = require('../scripts/lib/preview-isolation-policy.cjs')
 const safe = { VERCEL_ENV: 'preview', VERCEL_URL: 'jnq-test-branch.vercel.app',
-  JNQ_PREVIEW_SUPABASE_PROJECT_REF: 'abcdefghijklmnopqrst',
-  NEXT_PUBLIC_SUPABASE_URL: 'https://abcdefghijklmnopqrst.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_synthetic_public_key' }
+  JNQ_PREVIEW_SUPABASE_PROJECT_REF: 'rnamstwwbzknwbjwdgrf',
+  NEXT_PUBLIC_SUPABASE_URL: 'https://rnamstwwbzknwbjwdgrf.supabase.co', NEXT_PUBLIC_SUPABASE_ANON_KEY: 'sb_publishable_synthetic_public_key' }
 
 function loader(env = safe, mocks = {}, globals = {}) {
   const cache = new Map()
@@ -29,7 +29,8 @@ function loader(env = safe, mocks = {}, globals = {}) {
         if (id === './scripts/lib/preview-isolation-policy.cjs') return { assertPreviewIsolation }
         return require(id)
       } }
-    vm.runInNewContext(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: {
+    const source = fs.readFileSync(file, 'utf8').replace(/import\.meta\.url/g, JSON.stringify(require('node:url').pathToFileURL(require('node:path').resolve(file)).href))
+    vm.runInNewContext(ts.transpileModule(source, { compilerOptions: {
       module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true,
     } }).outputText, context, { filename: file })
     return exports
@@ -38,7 +39,7 @@ function loader(env = safe, mocks = {}, globals = {}) {
 }
 test('Preview rejects inherited writers and analytics without exposing synthetic values; Production is unchanged', () => {
   assert.doesNotThrow(() => assertPreviewIsolation(safe))
-  const fakeJWT = role => `synthetic.${Buffer.from(JSON.stringify({ role })).toString('base64url')}.synthetic`
+  const fakeJWT = role => `synthetic.${Buffer.from(JSON.stringify({ role, ref: safe.JNQ_PREVIEW_SUPABASE_PROJECT_REF })).toString('base64url')}.synthetic`
   assert.doesNotThrow(() => assertPreviewIsolation({ ...safe, NEXT_PUBLIC_SUPABASE_ANON_KEY: fakeJWT('anon') }))
   for (const key of ['sb_secret_synthetic', fakeJWT('service_role'), fakeJWT('authenticated')]) {
     assert.throws(() => assertPreviewIsolation({ ...safe, NEXT_PUBLIC_SUPABASE_ANON_KEY: key }), /NEXT_PUBLIC_SUPABASE_ANON_KEY/)
@@ -49,7 +50,7 @@ test('Preview rejects inherited writers and analytics without exposing synthetic
   assert.doesNotThrow(() => assertPreviewIsolation({ VERCEL_ENV: 'production', SUPABASE_SERVICE_ROLE_KEY: 'synthetic' }))
   assert.doesNotThrow(() => assertPreviewIsolation({ VERCEL_ENV: 'development' }))
 })
-test('Preview requires an explicitly identified test project and matching independent storage origin', () => {
+test('Preview requires the pinned test project and bundled fixture sources', () => {
   for (const patch of [
     { JNQ_PREVIEW_SUPABASE_PROJECT_REF: '' }, { NEXT_PUBLIC_SUPABASE_URL: 'https://other-project.supabase.co' },
     { JNQ_PREVIEW_SUPABASE_PROJECT_REF: 'vrufunuomioczocdsoer', NEXT_PUBLIC_SUPABASE_URL: 'https://vrufunuomioczocdsoer.supabase.co' },
@@ -59,7 +60,7 @@ test('Preview requires an explicitly identified test project and matching indepe
     { PUBLIC_DATA_CDN_BASE_URL: 'https://user:private@test-cdn.example', JNQ_PREVIEW_PUBLIC_DATA_ORIGIN: 'https://test-cdn.example' },
     { PUBLIC_DATA_CDN_BASE_URL: 'https://www.jnqjourney.com', JNQ_PREVIEW_PUBLIC_DATA_ORIGIN: 'https://www.jnqjourney.com' },
   ]) assert.throws(() => assertPreviewIsolation({ ...safe, ...patch }))
-  assert.doesNotThrow(() => assertPreviewIsolation({ ...safe, PUBLIC_DATA_CDN_BASE_URL: 'https://test-cdn.example/assets', R2_PUBLIC_BASE_URL: 'https://test-cdn.example', JNQ_PREVIEW_PUBLIC_DATA_ORIGIN: 'https://test-cdn.example' }))
+  assert.throws(() => assertPreviewIsolation({ ...safe, PUBLIC_DATA_CDN_BASE_URL: 'https://test-cdn.example/assets', R2_PUBLIC_BASE_URL: 'https://test-cdn.example', JNQ_PREVIEW_PUBLIC_DATA_ORIGIN: 'https://test-cdn.example' }))
 })
 test('next.config enforces isolation before build and attaches noindex to every Preview response', async () => {
   const config = loader(safe)('next.config.mjs').default

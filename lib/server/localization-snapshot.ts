@@ -6,12 +6,18 @@ import type { Locale } from '@/lib/locale'
 import { freshNoteSnapshotUrl } from '@/lib/note-publication'
 import { readPublicFallbackSnapshot, readFallbackSpot } from './public-fallback-snapshot'
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
+import { readPreviewSnapshot } from './preview-fixtures'
 
 const cache = new Map<string, { until: number; promise: Promise<unknown> }>()
 const base = () => String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
 
 /** Raw public snapshots are shared; localized documents have an explicit locale key and tag. No database fallback. */
 export async function readBilingualSnapshot<T>(key: string, fallback: () => Promise<T>, validate: (value: unknown) => boolean, fresh = false): Promise<T> {
+  if (process.env.VERCEL_ENV === 'preview') {
+    const value = readPreviewSnapshot(key)
+    if (!validate(value)) throw new Error('Invalid Preview fixture snapshot.')
+    return value as T
+  }
   const entry = cache.get(key)
   if (!fresh && entry && entry.until > Date.now()) return entry.promise as Promise<T>
   const promise = (async () => {
@@ -30,6 +36,10 @@ export async function readBilingualSnapshot<T>(key: string, fallback: () => Prom
 }
 
 export async function readBundledJson<T>(file: string): Promise<T> {
+  if (process.env.VERCEL_ENV === 'preview') {
+    if (file === 'data/location-slugs.json') return {} as T
+    throw new Error('Bundled production snapshot is unavailable in Preview.')
+  }
   if (file === 'public-data/locations.json' || file === 'public-data/regions.json') {
     const snapshot = await readPublicFallbackSnapshot()
     return (file.endsWith('/locations.json') ? { locations: snapshot.locations } : { regions: snapshot.regions }) as T
@@ -56,7 +66,7 @@ export async function readBundledJson<T>(file: string): Promise<T> {
 
 export async function readLocalizationSnapshot(locale: Locale, fresh = false): Promise<LocalizationSnapshot> {
   if (locale === 'zh') return { schemaVersion: 1, locale: 'en', version: 'source', records: [] }
-  if (fresh && base()) {
+  if (process.env.VERCEL_ENV !== 'preview' && fresh && base()) {
     // On-demand Pages ISR after Admin publication must not reuse an older process/CDN cache.
     const response = await fetch(`${base()}/public-data/i18n/en/records.json?publication=${Date.now()}`, {signal:AbortSignal.timeout(10000),next:{revalidate:0}})
     if (!response.ok) throw new Error('Published localization unavailable during page refresh')

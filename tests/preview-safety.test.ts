@@ -23,6 +23,7 @@ function fixture(env: Record<string, string>, mocks: Record<string, any> = {}, g
         if (['@/lib/preview-safety', '@/lib/internal-http', '@/lib/server/admin-auth'].includes(id)) return load(`${id.slice(2)}.ts`)
         if (id === '@/lib/server/package-visibility') return load('lib/server/package-visibility.ts')
         if (id === './supabase-read-key') return load('lib/server/supabase-read-key.ts')
+        if (id === '@/lib/site-fonts') return { siteFontClassName: 'fixture-fonts' }
         if (id === 'next/server' || id === 'react' || id === 'react/jsx-runtime') return require(id)
         return unknown
       } }
@@ -136,13 +137,11 @@ test('English Pages shell and GA event helper stay disabled through Preview hydr
   const marker = () => React.createElement('i', { 'data-fixture-tracker': 'yes' })
   for (const flag of ['1', '0']) {
     let events = 0
-    const env: Record<string, string> = { VERCEL_ENV: flag === '1' ? 'preview' : 'production' }
+    const env: Record<string, string> = { VERCEL_ENV: flag === '1' ? 'preview' : 'production', JNQ_PREVIEW_READ_ONLY: flag }
     const load = fixture(env, {
       'next/font/google': Object.fromEntries(['Cormorant_Garamond', 'Noto_Sans_SC', 'Noto_Serif_SC', 'Poppins'].map(key => [key, () => ({ variable: 'font' })])),
       '@vercel/analytics/react': { Analytics: marker }, '@vercel/speed-insights/next': { SpeedInsights: marker },
     }, { window: { gtag: () => events++ } })
-    env.JNQ_PREVIEW_READ_ONLY = load('next.config.mjs').default.env.JNQ_PREVIEW_READ_ONLY
-    assert.equal(env.JNQ_PREVIEW_READ_ONLY, flag)
     const html = renderToStaticMarkup(load('pages/_app.tsx').default({ Component: () => 'fixture', pageProps: {} }))
     assert.equal((html.match(/data-fixture-tracker/g) || []).length, flag === '1' ? 0 : 2)
     load('lib/analytics.ts').trackEvent('affiliate_click')

@@ -9,7 +9,7 @@ test('homepages share the existing package reader and public note source', () =>
   const chinese = read('app/page.tsx')
   assert.match(chinese, /readPublishedPackages\(\)/)
   assert.match(english, /data\.packages=await readPublishedPackagesUncached\(\)/)
-  assert.match(read('lib/server/travel-packages.ts'), /unstable_cache\(readPublishedPackagesUncached, \['published-travel-packages', 'v2'\]/)
+  assert.match(read('lib/server/travel-packages.ts'), /unstable_cache\(readPublishedPackagesUncached, previewCacheKey\(\['published-travel-packages', 'v2'\]\)/)
   assert.match(read('components/EnglishRouteAdapter.tsx'), /initialPackages=\{packages\.slice\(0,3\)\}/)
   assert.match(read('components/EnglishRouteAdapter.tsx'), /const packages=data\.packages \|\| \[\]/)
   assert.doesNotMatch(read('components/EnglishRouteAdapter.tsx'), /usePublicPackages|\/api\/packages/)

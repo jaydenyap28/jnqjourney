@@ -21,6 +21,7 @@ import { usableVisitDate } from '@/lib/homepage-order'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 import { spotCardExcerpt } from '@/lib/public-editorial'
 import { readPublicFallbackSnapshot } from './public-fallback-snapshot'
+import { previewCacheKey } from '@/lib/preview-safety'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date,description'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
@@ -107,6 +108,7 @@ async function readStaticFallback(): Promise<ResolvedPublicData> {
 }
 
 function publicDataCdnBase() {
+  if (process.env.VERCEL_ENV === 'preview') return ''
   return String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
 }
 
@@ -137,7 +139,7 @@ async function readCdnSnapshot(): Promise<ResolvedPublicData | null> {
 
 async function readSupabase(): Promise<ResolvedPublicData | null> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = process.env.VERCEL_ENV === 'preview' ? supabaseReadKey() : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) return null
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   try {
@@ -218,7 +220,7 @@ async function resolveCoalesced() {
 }
 
 // Do not reuse a persisted entry sourced from the frozen 547-record fallback.
-const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v2-fallback-20261030'], {
+const resolveCached = unstable_cache(resolveCoalesced, previewCacheKey(['public-data-v2-fallback-20261030']), {
   revalidate: 3600,
   tags: ['public-data', 'public-locations', 'public-regions'],
 })

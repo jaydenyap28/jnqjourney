@@ -50,6 +50,7 @@ const MapView = forwardRef<MapRef, MapViewProps>(({ locations, onSelectLocation,
     }
   }, [flyToLocation, loaded])
 
+  if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return null
   return (
     <div className={`w-full h-full relative ${className}`}>
       <MapboxMap

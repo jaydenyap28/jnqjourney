@@ -6,3 +6,8 @@ export function previewReadOnlyResponse(tracking = false): Response | null {
     { status: tracking ? 200 : 503, headers: { 'Cache-Control': 'private, no-store' } },
   )
 }
+
+// Older Preview deployments may have cached content from a different source.
+export function previewCacheKey(parts: string[]) {
+  return process.env.VERCEL_ENV === 'preview' ? [...parts, 'isolated-preview-fixtures-v1'] : parts
+}

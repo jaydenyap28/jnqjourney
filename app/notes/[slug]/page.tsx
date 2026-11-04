@@ -7,6 +7,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { cache } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import { supabaseReadKey } from '@/lib/server/supabase-read-key'
 
 import SiteFooter from '@/components/SiteFooter'
 import AffiliateCard from '@/components/AffiliateCard'
@@ -69,7 +70,7 @@ interface AffiliateData {
 
 function createPublicSupabaseClient(ids: number[]) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseAnonKey = process.env.VERCEL_ENV === 'preview' ? supabaseReadKey() : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('Missing Supabase public environment variables')

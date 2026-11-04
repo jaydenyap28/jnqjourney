@@ -15,5 +15,6 @@ const GuideRouteMapCanvas = dynamic(() => import('@/components/GuideRouteMapCanv
 })
 
 export default function GuideRouteMap(props: React.ComponentProps<typeof GuideRouteMapCanvas>) {
+  if (process.env.JNQ_PREVIEW_READ_ONLY === '1') return null
   return <GuideRouteMapCanvas {...props} />
 }

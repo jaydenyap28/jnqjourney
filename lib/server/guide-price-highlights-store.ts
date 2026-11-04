@@ -187,6 +187,7 @@ export async function readGuidePriceHighlightsForAdmin(guideSlug: string, fresh 
 }
 
 export async function readApprovedGuidePriceHighlights(guideSlug: string) {
+  if (process.env.VERCEL_ENV === 'preview') return []
   return (await readGuidePriceHighlightsForAdmin(guideSlug, false))
     .map(toPublicGuidePriceHighlight)
     .filter((record): record is NonNullable<typeof record> => Boolean(record))

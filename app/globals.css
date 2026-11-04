@@ -171,3 +171,9 @@
     pointer-events: none;
   }
 }
+.preview-system-fonts {
+  --font-poppins: system-ui;
+  --font-noto-sans-sc: sans-serif;
+  --font-cormorant-garamond: Georgia;
+  --font-noto-serif-sc: serif;
+}

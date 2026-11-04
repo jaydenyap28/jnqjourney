@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { GUIDE_DISPLAY_CURRENCIES, normalizeGuideDisplayCurrency } from '@/lib/guide-budget'
+import { previewReadOnlyResponse } from '@/lib/preview-safety'
 
 const FX_REVALIDATE_SECONDS = 60 * 60 * 6
 
 type FrankfurterRate = { date?: unknown; quote?: unknown; rate?: unknown }
 
 export async function GET(request: NextRequest) {
+  const blocked = previewReadOnlyResponse()
+  if (blocked) return blocked
   const base = normalizeGuideDisplayCurrency(request.nextUrl.searchParams.get('base'))
   if (!base) {
     return NextResponse.json({ error: 'Unsupported base currency.' }, { status: 400 })

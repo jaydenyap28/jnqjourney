@@ -6,6 +6,7 @@ import { createClient } from '@supabase/supabase-js'
 import { unstable_cache } from 'next/cache'
 import { cache } from 'react'
 import { evaluateSpotQuality } from '@/lib/spot-quality'
+import { previewCacheKey } from '@/lib/preview-safety'
 import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
 
 import { extractLocationIdFromSlug } from '@/lib/location-routing'
@@ -57,6 +58,7 @@ async function withTimeout<T>(promise: PromiseLike<T>, label: string): Promise<T
 }
 
 function cdnBase() {
+  if (process.env.VERCEL_ENV === 'preview') return ''
   return String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
 }
 
@@ -104,7 +106,7 @@ async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
   const id = extractLocationIdFromSlug(slug)
   if (!id) return { status: 'not-found' }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const key = process.env.VERCEL_ENV === 'preview' ? supabaseReadKey() : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   if (!url || !key) return { status: 'failure', error: new Error('Missing Supabase public environment variables') }
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   try {
@@ -155,7 +157,7 @@ function resolveCached(slug: string) {
   const identity = `spot-${id}`
   return unstable_cache(
     () => resolveSpotUncached(identity),
-    ['public-spot-v4-quality', identity],
+    previewCacheKey(['public-spot-v4-quality', identity]),
     { revalidate: 3600, tags: [`public-spot:${identity}`] }
   )()
 }
