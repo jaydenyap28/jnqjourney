@@ -23,7 +23,7 @@ export function normalizeLocationSlug(value: string) {
     .replace(/^-+|-+$/g, '')
 }
 
-function getAdminSupabaseClient(fresh = false) {
+function getAdminSupabaseClient(fresh = false, strict = false) {
   if (process.env.VERCEL_ENV === 'preview') return null
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -32,7 +32,18 @@ function getAdminSupabaseClient(fresh = false) {
 
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
-    ...(fresh ? { global: { fetch: (input: RequestInfo | URL, init?: RequestInit) => fetch(input, { ...init, cache: 'no-store' }) } } : {}),
+    // The locked Storage SDK has no per-download fetch options. Apply a real
+    // abort signal at the supported client transport boundary, including body reads.
+    ...(fresh || strict ? { global: { fetch: (input: RequestInfo | URL, init?: RequestInit) => {
+      const signal = init?.signal ?? (input instanceof Request ? input.signal : undefined)
+      return fetch(input, {
+        ...init,
+        ...(fresh ? { cache: 'no-store' } : {}),
+        ...(strict ? { signal: signal
+          ? AbortSignal.any([signal, AbortSignal.timeout(4000)])
+          : AbortSignal.timeout(4000) } : {}),
+      })
+    } } } : {}),
   })
 }
 
@@ -63,17 +74,19 @@ async function writeLocalLocationSlugMap(slugMap: LocationSlugMap) {
 }
 
 async function readStorageLocationSlugMap(fresh = false, strict = false): Promise<LocationSlugMap | null> {
-  const supabase = getAdminSupabaseClient(fresh)
+  const supabase = getAdminSupabaseClient(fresh, strict)
   if (!supabase) return null
 
   try {
     let raw = ''
     for (const candidatePath of [STORAGE_PATH, LEGACY_STORAGE_PATH]) {
-      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(
-        candidatePath, {}, strict ? { signal: AbortSignal.timeout(4000) } : undefined,
-      )
+      const { data, error } = await supabase.storage.from(STORAGE_BUCKET).download(candidatePath)
       if (error || !data) {
-        const missing = error && (error.status === 404 || error.statusCode === '404' || ('code' in error && error.code === 'NoSuchKey'))
+        // Storage 2.93.3 wraps failed download Responses in StorageUnknownError.
+        const originalResponse = error && 'originalError' in error && error.originalError instanceof Response
+          ? error.originalError : null
+        const missing = error && (error.status === 404 || error.statusCode === '404'
+          || ('code' in error && error.code === 'NoSuchKey') || originalResponse?.status === 404)
         if (strict && !missing) {
           throw new Error('Public location slug map is unavailable.')
         }
