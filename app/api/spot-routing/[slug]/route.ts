@@ -8,12 +8,13 @@ import { applyLocalization, localizationRecord } from '@/lib/localization'
 
 export const dynamic = 'force-dynamic'
 export async function GET(request: Request, { params }: { params: { slug: string } }) {
-  const headers = { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex, nofollow', 'X-JNQ-SEO-Indexable': 'false' }
+  const headers = { 'Cache-Control': 'private, no-store, max-age=0', 'X-Robots-Tag': 'noindex, nofollow', 'X-JNQ-SEO-Indexable': 'false' }
   const id = extractLocationIdFromSlug(params.slug)
   if (!id || !Number.isSafeInteger(id) || id <= 0 || params.slug.length > 200 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(params.slug)) return NextResponse.json({ visible: false }, { status: 404, headers })
   try {
     const routing = await readSpotRouting(id)
-    if (('destination' in routing && routing.destination) || !routing.visible) return NextResponse.json(routing, { headers })
+    if ('destination' in routing && routing.destination) return NextResponse.json(routing, { headers })
+    if (!routing.visible) return NextResponse.json(routing, { status: 404, headers })
     // The Middleware needs availability, not a second HTTP call carrying the
     // entire gallery. Visibility/redirects still use the live authoritative read.
     const resolved = await getPublicSpotBySlug(params.slug)
@@ -36,6 +37,6 @@ export async function GET(request: Request, { params }: { params: { slug: string
     // API JSON itself is never indexed; Middleware consumes the eligibility bit.
     return NextResponse.json(routing, { headers: { ...headers, 'X-JNQ-Data-Source': resolved.source, 'X-JNQ-SEO-Indexable': String(indexable) } })
   } catch {
-    return NextResponse.json({ error: 'Spot routing temporarily unavailable.' }, { status: 503, headers })
+    return NextResponse.json({ error: 'Spot routing temporarily unavailable.' }, { status: 503, headers: { ...headers, 'Retry-After': '30' } })
   }
 }

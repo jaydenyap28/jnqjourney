@@ -1,0 +1,23 @@
+# Live Spot publication guard
+
+The public Spot routing guard reads only `id,status,publication_status,redirect_url,redirect_type` from current Supabase data. It never reads `data/spot-routing-snapshot.json`, never retries an older id/status-only schema, and never grants publication from cached content. Every Spot hop in a redirect chain uses the same current-source check and one real 2.5-second cancellation deadline. The SDK transport uses `cache: no-store` and rejects HTTP redirects.
+
+Network, permission, HTTP/query errors, invalid shapes/IDs/field types, missing required properties and missing configuration propagate to HTTP 503 with private/no-store, noindex and Retry-After headers. Confirmed absent, inactive, hidden or draft records without an explicit current redirect return 404. Valid current explicit redirects retain existing 301/302 precedence and local URL validation; Spot targets are checked recursively, loops and oversized chains fail, and no source body is returned for a redirected record. ID 450 is denied before any query and also when reached through a chain.
+
+Compatibility detail: the existing `isSpotPublished` policy treats an explicitly returned `publication_status: null` as legacy published. A read-only metadata query found all 582 current active production rows use this legal value. This behavior remains only when all five current routing fields are actually present and valid. A missing `publication_status` property, an absent schema column or any query error is never interpreted as null. No production records or schema were changed.
+
+Middleware still performs one internal routing API request per page/alias access. Existing payload, quality and canonical-ID caches remain. `/api/spots/[slug]` now uses the same current live gate before looking up cached JSON, and its HTTP response is private/no-store so a shared response cache cannot bypass the gate. This adds the necessary small live check to direct detail API calls; normal page routing does not add a second detail API/gallery fetch. Actual billed CPU remains a post-release measurement.
+
+## Targeted evidence
+
+`tests/spot-live-guard.test.cjs` uses the locked real Supabase SDK with synthetic transports and exercises routing API → middleware as well as the direct detail API. Covered cases include published and explicit legacy-null records, disconnection, timeout, 500, permission denial, missing schema columns/cache fields, duplicate/malformed/wrong-ID data, all five missing required fields, live hidden/draft/inactive/deleted records despite old snapshot publication, current redirect changes, hidden/deleted/withdrawn targets, loops, unsafe URLs, English/RSC alias requests, and no cached body or payload lookup on denied requests. A loopback HTTP test proves real cancellation while a response body is stalled at approximately 2.5 seconds. These tests do not contact production.
+
+All 35 targeted cases passed, including rejecting blank status and ensuring an inactive row's whitespace-only redirect cannot grant visibility. A local `next start` check also confirmed that a genuinely pre-generated English Spot HTML page and its `/_next/data` JSON return 503 before cached content when live credentials are unavailable; the Chinese page/detail API return 503 and ID 450 returns 404, all private/no-store and noindex.
+
+The prior font, CPU and unrelated site test suites are not repeated. Production-mode validation uses Node 24.13.0, the existing locked Next 14.2.35 / Supabase 2.93.3 dependencies, non-routable public placeholders, no production dotenv/credentials, and an external-request blocker. TypeScript and changed-file lint passed. The final complete build passed with 79/79 static generation tasks and zero Google Fonts requests. The five loopback HTTP guard checks also passed against the final build. Generated local placeholder-configured artifacts must not be deployed.
+
+## R2 public URL check: OWNER_CHECK_REQUIRED
+
+The Vercel metadata check confirms `R2_PUBLIC_BASE_URL` and `NEXT_PUBLIC_R2_PUBLIC_BASE_URL` exist for Production as Sensitive variables. A value request for each public-URL variable returns `decrypted: false`; the actual URL cannot be obtained through the available connector. No R2 private key was requested, printed, exported, copied or replaced.
+
+Therefore the actual configured HTTPS domain, `/public-data/` paths, index availability, and absence of a Preview/test origin remain unverified. A prior successful GET against a known public domain does not establish the value of these two settings. The owner must confirm their actual public URLs through an authorized source before read-only URL/index verification and final GO. No configuration or production data change was made by this task.
