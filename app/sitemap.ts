@@ -2,7 +2,8 @@
 
 import { buildRegionPath } from '@/lib/region-routing'
 import { absoluteUrl } from '@/lib/site'
-import { buildPublicCanonicalLocationPath } from '@/lib/server/location-slugs-store'
+import bundledLocationSlugs from '@/data/location-slugs.json'
+import { buildCanonicalLocationPath, readPublicLocationSlugMap } from '@/lib/server/location-slugs-store'
 import { readPublicGuides, readPublicNotes } from '@/lib/server/public-content-store'
 import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/server/public-location-data'
 import { readPublishedPackageOptions, readPublishedPackages } from '@/lib/server/travel-packages'
@@ -44,9 +45,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: absoluteUrl('/copyright'), changeFrequency: 'yearly', priority: 0.2 },
   ]
 
+  // Resolve the canonical slug map once for the complete sitemap, not per Spot.
+  // A transient Storage error must not break sitemap regeneration; the bundled
+  // map is only a sitemap fallback, never a substitute for live visibility checks.
+  let sitemapSlugMap: Record<string, string> = bundledLocationSlugs
+  if (locations.length) {
+    try {
+      const current = await readPublicLocationSlugMap()
+      if (Object.keys(current).length) sitemapSlugMap = current
+    } catch {
+      console.warn('[sitemap] temporary slug map read failed; using bundled fallback')
+    }
+  }
   const spotRoutes: MetadataRoute.Sitemap = await Promise.all(
     locations.map(async (location) => ({
-      url: absoluteUrl(await buildPublicCanonicalLocationPath(location.name, location.id)),
+      url: absoluteUrl(await buildCanonicalLocationPath(location.name, location.id, sitemapSlugMap)),
       lastModified: location.updated_at || undefined,
       changeFrequency: 'weekly',
       priority: 0.7,
