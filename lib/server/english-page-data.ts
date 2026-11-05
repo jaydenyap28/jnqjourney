@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import priceHighlights from '@/data/guide-price-highlights.json'
+import locationSlugMap from '@/data/location-slugs.json'
 import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
@@ -76,7 +77,7 @@ export async function readEnglishCollections(freshLocalization = false) {
     readBilingualSnapshot<{regions:PublicRegion[]}>('regions.json', () => readBundledJson('public-data/regions.json'), x => Array.isArray((x as any)?.regions)),
     readBilingualSnapshot<{guides:TravelGuide[]}>('guides.json', async () => { const raw = await readBundledJson<any>('data/guides.json'); return {guides:Array.isArray(raw)?raw:raw.guides} }, x => Array.isArray((x as any)?.guides)),
     readLocalizationSnapshot('en',freshLocalization),
-    readBundledJson<Record<string,string>>('data/location-slugs.json'),
+    locationSlugMap as Record<string,string>,
   ])
   const snapshotSlugs=Object.fromEntries(locationData.locations.map(location=>[location.id,location.slug]))
   const locations=locationData.locations.map(location=>{
