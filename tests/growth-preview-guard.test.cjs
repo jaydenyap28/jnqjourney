@@ -16,22 +16,22 @@ function fixture(environment, reply = Response.json({ visible: true })) {
   return { calls, request, middleware }
 }
 
-test('protected Preview forwards only Vercel proof to the same-origin live API', async () => {
+test('protected Preview uses the existing public live gate without forwarding credentials', async () => {
   const f = fixture('preview'), result = await f.middleware(f.request)
   assert.equal(result.status, 200)
   const { url, init } = f.calls[0]
-  assert.equal(url.origin, f.request.nextUrl.origin)
+  assert.equal(url.origin, 'https://www.jnqjourney.com')
   assert.equal(url.pathname, '/api/spot-routing/the-bund-449')
   assert.equal(url.searchParams.get('locale'), 'en')
-  assert.equal(url.searchParams.get('_vercel_share'), 'test-share')
-  assert.equal(init.headers.get('cookie'), '__vercel_protection_bypass=test-access; __vercel_sso_cookie=test-sso')
-  assert.equal(init.headers.get('x-vercel-protection-bypass'), 'test-proof')
+  assert.equal(url.searchParams.has('_vercel_share'), false)
+  assert.equal(init.headers, undefined)
   assert.equal(init.cache, 'no-store'); assert.equal(init.redirect, 'manual')
 })
 
 test('Production does not forward Preview credentials or change its routing URL', async () => {
   const f = fixture('production'); await f.middleware(f.request)
-  assert.equal([...f.calls[0].init.headers].length, 0)
+  assert.equal(f.calls[0].url.origin, f.request.nextUrl.origin)
+  assert.equal(f.calls[0].init.headers, undefined)
   assert.equal(f.calls[0].url.searchParams.has('_vercel_share'), false)
 })
 

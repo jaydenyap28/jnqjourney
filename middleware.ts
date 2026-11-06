@@ -9,22 +9,13 @@ async function guardSpot(request: NextRequest) {
   // This uncached routing decision precedes static page/alias resolution, so
   // hidden source pages and every old alias return an actual HTTP 301/302.
   try {
-    const endpoint = new URL(`/api/spot-routing/${encodeURIComponent(slug)}`, request.url)
+    // A protected Preview cannot call its own API without platform access proof.
+    // Reuse the existing public, uncached publication gate; Production keeps its
+    // original same-origin path, live query and fail-closed response handling.
+    const origin = process.env.VERCEL_ENV === 'preview' ? 'https://www.jnqjourney.com' : request.url
+    const endpoint = new URL(`/api/spot-routing/${encodeURIComponent(slug)}`, origin)
     if (request.nextUrl.pathname.startsWith('/en/')) endpoint.searchParams.set('locale', 'en')
-    const headers = new Headers()
-    if (process.env.VERCEL_ENV === 'preview') {
-      // The same-origin API is protected too. Forward only Vercel's scoped
-      // access proof, never user/auth cookies, and still run the live guard.
-      for (const name of ['x-vercel-protection-bypass', 'x-vercel-trusted-oidc-idp-token']) {
-        const value = request.headers.get(name)
-        if (value) headers.set(name, value)
-      }
-      const cookies = request.headers.get('cookie')?.match(/(?:^|;\s*)(__vercel_(?:protection_bypass|sso_cookie)=[^;]*)/g)
-      if (cookies?.length) headers.set('cookie', cookies.map(cookie => cookie.replace(/^;\s*/, '')).join('; '))
-      const share = request.nextUrl.searchParams.get('_vercel_share')
-      if (share) endpoint.searchParams.set('_vercel_share', share)
-    }
-    const routingResponse = await fetch(endpoint, { headers, cache: 'no-store', redirect: 'manual', signal: AbortSignal.timeout(10000) })
+    const routingResponse = await fetch(endpoint, { cache: 'no-store', redirect: 'manual', signal: AbortSignal.timeout(10000) })
     if (routingResponse.status === 404) return new NextResponse('Not Found', { status: 404, headers: BLOCKED_SEO })
     if (!routingResponse.ok) throw new Error('Spot routing unavailable')
     const routing = await routingResponse.json()
