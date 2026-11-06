@@ -27,6 +27,33 @@ continue to work before migration; saving newly filled fields requires the schem
 The existing business/operating `status` is unchanged. Publication and redirect checks
 use the separate nullable `publication_status`; existing business filters remain intact.
 
+## Single Spot Note publication
+
+`POST /api/admin/public-data/spots/<id>/related-note` requires an allowlisted admin
+Bearer token. It is disabled unless the request uses the production origin,
+`VERCEL_ENV=production`, and `JNQ_SPOT_NOTE_PUBLICATION_ENABLED=1`. Preview keeps
+the writer disabled and exercises the same handler with mocked stores.
+
+1. Submit `{"noteSlug":"<canonical-published-slug>"}` to prepare. Keep the returned
+   `receipt` with the prior relationships, row version, object ETag and slugs.
+   Before any future live operation, retain a read-only copy of the exact indexed
+   detail object and confirm the deployed database has the version trigger and
+   no full-site publisher hooked to a relationship-only update.
+2. Submit `{"noteSlug":"<same-slug>","expected":<receipt>}`. The row update
+   compares the prior version and relationships. The object update uses
+   `If-Match` and preserves the previous document and metadata except for the
+   relationship field. Success requires readback and target-only revalidation.
+3. For a `503` with `retry_same_receipt` in its code, replay the exact second
+   request. It checks what persisted and resumes the remaining step. For a
+   `409` after a partial write, keep the receipt and inspect the authoritative
+   row, index and object before retrying. There is no automatic rollback over
+   newer edits.
+
+The operation requires the Chinese and English readers to agree on the existing
+indexed detail object and canonical Spot slug. A missing indexed object or a
+relationship that would change a quality decision from noindex to index blocks
+the operation. The index, location list, Notes and Guides are read-only here.
+
 ## Redirect boundary
 
 Redirects accept local `/notes/<slug>`, `/spot/<slug>-<id>` and their `/en/` forms.

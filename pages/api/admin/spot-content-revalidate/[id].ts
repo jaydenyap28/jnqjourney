@@ -11,6 +11,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!Number.isSafeInteger(id) || id <= 0) return res.status(400).json({ error: 'Invalid Spot ID' })
   try {
     const spot = await readAuthoritativePublicSpotById(id)
+    const expectedSlug = req.headers['x-jnq-expected-spot-slug']
+    if (expectedSlug !== undefined && spot?.slug !== expectedSlug) {
+      return res.status(409).json({ error: 'Spot canonical changed; page refresh skipped.' })
+    }
     if (spot) await res.revalidate(`/en/spot/${spot.slug}`)
     return res.json({ ok: true })
   } catch {

@@ -114,6 +114,12 @@ async function readStorageLocationSlugMap(fresh = false, strict = false): Promis
   }
 }
 
+export async function readAuthoritativeLocationSlugMap() {
+  const map = await readStorageLocationSlugMap(true, true)
+  if (!map) throw new Error('Authoritative public location slug map is missing.')
+  return map
+}
+
 async function writeStorageLocationSlugMap(slugMap: LocationSlugMap) {
   const supabase = getAdminSupabaseClient()
   if (!supabase) return
