@@ -1,5 +1,8 @@
 'use client'
 
+import { PRODUCTION_ANALYTICS_HOSTS, isAnalyticsBot, isAnalyticsPath } from './analytics-policy'
+import { readAnalyticsStorage, writeAnalyticsStorage } from './analytics-storage'
+
 export type AnalyticsEventName =
   | 'whatsapp_click'
   | 'about_whatsapp_click'
@@ -28,6 +31,7 @@ export type AnalyticsEventName =
   | 'guide_video_click'
   | 'hotel_affiliate_click'
   | 'related_guide_click'
+  | 'spot_navigation_click'
   | 'budget_section_view'
 
 export type AnalyticsEventParams = Record<string, string | number | boolean | null | undefined>
@@ -46,6 +50,8 @@ export type AnalyticsTrackingContext = {
 }
 
 const FIRST_PARTY_EVENTS = new Set<AnalyticsEventName>([
+  'related_guide_click',
+  'spot_navigation_click',
   'social_link_click',
   'package_view',
   'package_whatsapp_click',
@@ -112,13 +118,13 @@ function externalReferrerSource() {
 export function getAnalyticsVisitorId() {
   if (typeof window === 'undefined') return ''
 
-  const existing = window.localStorage.getItem(VISITOR_KEY)
+  const existing = readAnalyticsStorage(VISITOR_KEY)
   if (existing) return existing
 
-  const legacy = window.localStorage.getItem(LEGACY_VISITOR_KEY)
+  const legacy = readAnalyticsStorage(LEGACY_VISITOR_KEY)
   const value = legacy || makeId()
-  window.localStorage.setItem(VISITOR_KEY, value)
-  if (!legacy) window.localStorage.setItem(LEGACY_VISITOR_KEY, value)
+  writeAnalyticsStorage(VISITOR_KEY, value)
+  if (!legacy) writeAnalyticsStorage(LEGACY_VISITOR_KEY, value)
   return value
 }
 
@@ -128,14 +134,14 @@ export function getAnalyticsVisitId() {
   const now = Date.now()
   let state: { id?: string; lastActivity?: number } | null = null
   try {
-    state = JSON.parse(window.localStorage.getItem(VISIT_STATE_KEY) || 'null')
+    state = JSON.parse(readAnalyticsStorage(VISIT_STATE_KEY) || 'null')
   } catch {
     state = null
   }
 
   const expired = !state?.id || !state?.lastActivity || now - Number(state.lastActivity) > VISIT_TIMEOUT_MS
   const id = expired ? makeId() : String(state!.id)
-  window.localStorage.setItem(VISIT_STATE_KEY, JSON.stringify({ id, lastActivity: now }))
+  writeAnalyticsStorage(VISIT_STATE_KEY, JSON.stringify({ id, lastActivity: now }))
   return id
 }
 
@@ -155,7 +161,7 @@ export function getAnalyticsAttribution(visitId = getAnalyticsVisitId()): Analyt
 
   let stored: { visitId?: string; source?: string; medium?: string; campaign?: string } | null = null
   try {
-    stored = JSON.parse(window.localStorage.getItem(ATTRIBUTION_KEY) || 'null')
+    stored = JSON.parse(readAnalyticsStorage(ATTRIBUTION_KEY) || 'null')
   } catch {
     stored = null
   }
@@ -179,7 +185,7 @@ export function getAnalyticsAttribution(visitId = getAnalyticsVisitId()): Analyt
       ? { source: referrerSource, medium: 'referral', campaign: '' }
       : { source: 'direct', medium: 'direct', campaign: '' }
 
-  window.localStorage.setItem(ATTRIBUTION_KEY, JSON.stringify({ visitId, ...attribution }))
+  writeAnalyticsStorage(ATTRIBUTION_KEY, JSON.stringify({ visitId, ...attribution }))
   return attribution
 }
 
@@ -199,8 +205,7 @@ export function getAnalyticsTrackingContext(): AnalyticsTrackingContext {
 }
 
 export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParams = {}) {
-  if (typeof window === 'undefined') return
-  if (window.localStorage.getItem('jnq_exclude_analytics') === '1') return
+  if (!isAnalyticsAllowed()) return
 
   const context = getAnalyticsTrackingContext()
   const safeParams = Object.fromEntries(
@@ -211,7 +216,7 @@ export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParam
   )
 
   if (typeof window.gtag === 'function') {
-    window.gtag('event', name, safeParams)
+    try { window.gtag('event', name, safeParams) } catch { /* Analytics must not block a link. */ }
   }
 
   if (FIRST_PARTY_EVENTS.has(name)) {
@@ -236,4 +241,18 @@ export function trackEvent(name: AnalyticsEventName, params: AnalyticsEventParam
       }),
     }).catch(() => null)
   }
+}
+
+export function isAnalyticsAllowed(path?: string) {
+  if (typeof window === 'undefined') return false
+  return PRODUCTION_ANALYTICS_HOSTS.has(window.location.hostname.toLowerCase())
+    && isAnalyticsPath(path || window.location.pathname + window.location.search)
+    && !isAnalyticsBot(navigator.userAgent)
+    && readAnalyticsStorage('jnq_exclude_analytics') !== '1'
+}
+
+export function trackSpotNavigation(spotId: number, target: 'spot' | 'guide' | 'note' | 'package' | 'region', slug: string, position: string) {
+  trackEvent(target === 'guide' ? 'related_guide_click' : target === 'package' ? 'package_cta_click' : 'spot_navigation_click', {
+    page_type: 'spot', spot_id: spotId, destination_type: target, destination_slug: slug, cta_position: position,
+  })
 }

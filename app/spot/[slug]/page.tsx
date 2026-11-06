@@ -1,7 +1,7 @@
 import { spotSeo } from '@/lib/spot-content'
-import { guideRouteSpotIds } from '@/lib/guide-route-spot-ids'
+import { relatedGuidesForSpot, relatedPackagesForSpot } from '@/lib/spot-relations'
 import { spotDescriptionExcerpt } from '@/lib/spot-description'
-import { selectRelatedNotes, toRelatedNoteCard } from '@/lib/content-relations'
+import { notesForSpot, toRelatedNoteCard } from '@/lib/content-relations'
 import type { Metadata } from 'next'
 import { chineseLocalizedAlternates } from '@/lib/server/localized-seo'
 import { notFound, redirect } from 'next/navigation'
@@ -23,13 +23,6 @@ interface PageProps {
   params: {
     slug: string
   }
-}
-
-function normalizeGuideMatch(value?: string | null) {
-  return String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}]+/gu, '')
 }
 
 function getCoverImage(location: { image_url?: string | null; images?: string[] | null }) {
@@ -79,40 +72,8 @@ export default async function SpotPage({ params }: PageProps) {
     readPublishedPackages(),
     readPublicNotes(),
   ])
-  const relatedPackages = allPackages.filter((item) =>
-    item.region_id === location.region_id || item.related_location_ids?.includes(location.id)
-  )
-
-  const locationNames = new Set([
-    normalizeGuideMatch(location.name),
-    normalizeGuideMatch(location.name_cn),
-  ].filter(Boolean))
-  const relatedGuides = allGuides
-    .filter((guide) => {
-      if (guideRouteSpotIds(guide).has(location.id)) return true
-      if (guide.attractions?.some(ref => ref.enabled !== false && ref.spotId === location.id) ||
-          guide.accommodationStays?.some(stay => stay.accommodationId === location.id)) return true
-      const guideNames = new Set(
-        [
-          ...guide.route.map((item) => item.mapSpotName || item.name),
-          ...(guide.featuredSpotNames || []),
-          ...guide.days.flatMap((day) => day.linkedSpots || []),
-        ]
-          .map(normalizeGuideMatch)
-          .filter(Boolean)
-      )
-      for (const name of locationNames) {
-        if (guideNames.has(name)) return true
-      }
-      return false
-    })
-    .slice(0, 3)
-    .map((guide) => ({
-      slug: guide.slug,
-      title: guide.title,
-      shortTitle: guide.shortTitle,
-      duration: guide.duration,
-    }))
+  const relatedGuides = relatedGuidesForSpot(location, allGuides).map(({ slug, title, shortTitle, duration }) => ({ slug, title, shortTitle, duration }))
+  const relatedPackages = relatedPackagesForSpot(location, allPackages, relatedGuides.map(guide => guide.slug))
 
   const baseType = location.category === 'food' ? 'Restaurant' : location.category === 'accommodation' ? 'Hotel' : 'TouristAttraction'
   const structuredData: Record<string, unknown> = {
@@ -174,7 +135,7 @@ export default async function SpotPage({ params }: PageProps) {
   }
 
   return (
-    <SpotPageView location={location} relatedNotes={selectRelatedNotes(location.related_note_slugs, allNotes).map(toRelatedNoteCard)} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
+    <SpotPageView location={location} relatedNotes={notesForSpot(location, allNotes).map(toRelatedNoteCard)} relatedLocations={relatedLocations} relatedGuides={relatedGuides} relatedPackages={relatedPackages} dataSource={resolved.source}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData).replace(/</g, '\\u003c') }} />
 

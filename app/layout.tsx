@@ -79,7 +79,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GoogleAnalytics measurementId={googleAnalyticsId} />
         </Suspense>
-        <PageViewTracker />
+        <Suspense fallback={null}><PageViewTracker /></Suspense>
         <PublicLanguageControl />
         {children}
         <Analytics />

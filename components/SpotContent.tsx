@@ -40,6 +40,7 @@ import { buildLocationPath } from '@/lib/location-routing'
 import { buildRegionPath } from '@/lib/region-routing'
 import { getVisibleLocationTags } from '@/lib/tag-utils'
 import { resolveSpotDisplayImages } from '@/lib/spot-media'
+import { trackSpotNavigation } from '@/lib/analytics'
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
 
@@ -253,7 +254,7 @@ function SocialLink({ href, icon, label }: { href: string; icon: React.ReactNode
   )
 }
 
-function RelatedLocationCard({ location }: { location: RelatedLocation }) {
+function RelatedLocationCard({ location, sourceId }: { location: RelatedLocation; sourceId: number }) {
   const locale = usePublicLocale()
   const coverImage = location.image_url || location.images?.[0] || '/placeholder-image.jpg'
   const title = getDisplayTitle(location.name, location.name_cn)
@@ -262,6 +263,7 @@ function RelatedLocationCard({ location }: { location: RelatedLocation }) {
     <Link
       href={buildLocationPath(location.name, location.id)}
       prefetch={false}
+      onClick={() => trackSpotNavigation(sourceId, 'spot', String(location.id), 'spot_nearby')}
       className="group overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
@@ -1051,7 +1053,16 @@ export default function SpotContent({
                 <SpotDescription>{experience}</SpotDescription>
               </div>
             </section> : null}
-            {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} /> : null}
+            {!isDrawer && (relatedGuides[0] || relatedNotes[0] || relatedLocations[0] || relatedPackages[0]) ? <nav aria-label={locale === 'en' ? 'Continue your journey' : '接着看这一程'} className="border-y border-amber-200/20 py-5">
+              <p className="text-xs tracking-[0.18em] text-amber-200/70">{locale === 'en' ? 'CONTINUE YOUR JOURNEY' : '接着看这一程'}</p>
+              <div className="mt-3 flex flex-col gap-3 text-sm leading-6">
+                {relatedGuides[0] ? <Link prefetch={false} href={`/guide/${relatedGuides[0].slug}`} onClick={() => trackSpotNavigation(location.id, 'guide', relatedGuides[0].slug, 'spot_reading_cue')} className="text-white/85 underline decoration-white/20 underline-offset-4 hover:text-amber-100">{locale === 'en' ? 'Full travel story' : '完整游记'} · {relatedGuides[0].shortTitle || relatedGuides[0].title} →</Link> : null}
+                {relatedNotes[0] ? <Link prefetch={false} href={`/notes/${relatedNotes[0].slug}`} onClick={() => trackSpotNavigation(location.id, 'note', relatedNotes[0].slug, 'spot_reading_cue')} className="text-white/85 underline decoration-white/20 underline-offset-4 hover:text-amber-100">{locale === 'en' ? 'Related reading' : '延伸阅读'} · {relatedNotes[0].title} →</Link> : null}
+                {relatedLocations[0] ? <Link prefetch={false} href={buildLocationPath(relatedLocations[0].name, relatedLocations[0].id)} onClick={() => trackSpotNavigation(location.id, 'spot', String(relatedLocations[0].id), 'spot_reading_cue')} className="text-white/85 underline decoration-white/20 underline-offset-4 hover:text-amber-100">{locale === 'en' ? 'Nearby place' : '顺路景点'} · {relatedLocations[0].name_cn || relatedLocations[0].name} →</Link> : null}
+                {relatedPackages[0] ? <a href={`/packages/${relatedPackages[0].slug}`} onClick={() => trackSpotNavigation(location.id, 'package', relatedPackages[0].slug, 'spot_reading_cue')} className="text-amber-100/85 underline decoration-amber-200/20 underline-offset-4 hover:text-amber-50">{locale === 'en' ? 'Related tour package (Chinese)' : '相关旅游配套'} · {locale === 'en' ? relatedPackages[0].title_en || relatedPackages[0].title_zh : relatedPackages[0].title_zh} →</a> : null}
+              </div>
+            </nav> : null}
+            {!isDrawer ? <RelatedNoteCards notes={relatedNotes} heading={locale === 'en' ? 'Related Notes' : '相关攻略'} onNoteClick={slug => trackSpotNavigation(location.id, 'note', slug, 'spot_related_note')} /> : null}
 
             {!isDrawer && relatedGuides.length > 0 ? (
               <section className="space-y-4">
@@ -1066,6 +1077,8 @@ export default function SpotContent({
                     <Link
                       key={guide.slug}
                       href={`/guide/${guide.slug}`}
+                      prefetch={false}
+                      onClick={() => trackSpotNavigation(location.id, 'guide', guide.slug, 'spot_related_guide')}
                       className="group rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] p-4 transition hover:-translate-y-1 hover:bg-white/10"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -1089,7 +1102,7 @@ export default function SpotContent({
                   <h3 className="mt-2 text-2xl font-bold text-white"><PublicCopy text={"想把这个景点安排进完整行程？"}/></h3>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" />)}
+                  {relatedPackages.map((item) => <TravelPackageCard key={item.id} item={item} compact showWhatsApp={false} detailLabel="查看相关配套" onDetailClick={() => trackSpotNavigation(location.id, 'package', item.slug, 'spot_related_package')} />)}
                 </div>
               </section>
             ) : null}
@@ -1110,7 +1123,7 @@ export default function SpotContent({
                 </div>
                 <div className="grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                   {relatedLocations.map((item) => (
-                    <RelatedLocationCard key={item.id} location={item} />
+                    <RelatedLocationCard key={item.id} location={item} sourceId={location.id} />
                   ))}
                 </div>
               </section>

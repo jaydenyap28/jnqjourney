@@ -8,6 +8,7 @@ function compile(source) {
 const moduleOutput = { exports: {} }
 new Function('exports', compile(fs.readFileSync('lib/guide-route-spot-ids.ts', 'utf8')))(moduleOutput.exports)
 const { guideRouteSpotIds } = moduleOutput.exports
+const { relatedGuidesForSpot } = require('./helpers/spot-travel-loader.cjs').loader()('lib/spot-relations.ts')
 // Execute the actual selection expressions from both public surfaces.
 function selection(file) {
   const ast = ts.createSourceFile(file, fs.readFileSync(file, 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
@@ -21,7 +22,10 @@ function selection(file) {
   assert.ok(expression && normalize)
   return new Function('allGuides', 'guideRouteSpotIds', 'location', 'region', 'locationNames', 'relatedGuideSpotIds', compile(`${normalize}\nreturn ${expression}`))
 }
-const selectors = [selection('app/spot/[slug]/page.tsx'), selection('components/RegionPageView.tsx')]
+const selectors = [
+  (allGuides, _ids, location) => relatedGuidesForSpot({ ...location, name: 'Ferry' }, allGuides),
+  selection('components/RegionPageView.tsx'),
+]
 const base = { slug: 'guide', title: 'Unrelated title', route: [], days: [] }
 const spot = { spotId: 42, displayOrder: 0 }
 function matches(guide, ids = [42]) {

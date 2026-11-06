@@ -28,6 +28,14 @@ export function selectRelatedNotes(slugs: string[] | null | undefined, notes: Lo
   })
 }
 
+// A saved reverse reference is equally useful; geography alone is not evidence.
+export function notesForSpot(spot: { id: number; related_note_slugs?: string[] | null }, notes: LongformNote[]) {
+  const slugs = [...(spot.related_note_slugs || []), ...notes.filter(note => note.published && (
+    note.relatedSpotIds?.includes(spot.id) || note.blocks?.some(block => block.spotId === spot.id)
+  )).map(note => note.slug)]
+  return selectRelatedNotes(slugs, notes).slice(0, 3)
+}
+
 // Only descend into explicitly selected geography. Never widen a city to its
 // country or use unverified title/tag guesses to select a destination.
 export function noteRegionIds(note: LongformNote, locations: PublicLocation[], regions: PublicRegion[]) {

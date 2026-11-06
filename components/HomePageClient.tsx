@@ -18,13 +18,11 @@ import MapView from '@/components/MapView'
 import TopFloatingIsland from '@/components/TopFloatingIsland'
 import BottomFloatingDock from '@/components/BottomFloatingDock'
 import SiteFooter from '@/components/SiteFooter'
-import type { TravelGuide } from '@/lib/guides'
+import type { HomeGuideCard, HomeNoteCard, PackageCard } from '@/lib/home-cards'
 import FallbackImage from '@/components/FallbackImage'
 import { getGuideDisplayPair } from '@/lib/content-display'
 import { stripSummaryTokens } from '@/lib/notes'
 import TravelPackageCard from '@/components/TravelPackageCard'
-import type { TravelPackage } from '@/lib/server/travel-packages'
-import { resolveGuideMedia } from '@/lib/guide-media'
 import type { PublicLocation as Location, PublicRegion as Region } from '@/lib/public-data'
 import { fetchPublicData } from '@/lib/client/public-data'
 import { compareLocationsByVisitDate, homepageShowcase, type RegionHighlight } from '@/lib/homepage-order'
@@ -55,8 +53,8 @@ function getCategoryLabel(category?: string | null) {
 }
 
 
-function getGuideCoverImage(guide: TravelGuide) {
-  return resolveGuideMedia(guide).coverImage || ''
+function getGuideCoverImage(guide: HomeGuideCard) {
+  return guide.coverImage || ''
 }
 
 function formatGuideDuration(duration: string, locale='zh') {
@@ -75,14 +73,14 @@ function formatGuideTravelStyle(style: string, locale='zh') {
   return style
 }
 
-function getGuideRouteSummary(guide: TravelGuide, limit = 6) {
+function getGuideRouteSummary(guide: HomeGuideCard, limit = 6) {
   return guide.route
     .map((stop) => stop.name)
     .filter(Boolean)
     .slice(0, limit)
 }
 
-function GuideShowcase({ guides, locations }: { guides: TravelGuide[]; locations: Location[] }) {
+function GuideShowcase({ guides, locations }: { guides: HomeGuideCard[]; locations: Location[] }) {
   const locale=usePublicLocale()
   const [activeGuidePage, setActiveGuidePage] = useState(0)
 
@@ -345,12 +343,12 @@ function NoteCard({ note }: { note: NoteData }) {
 
 interface HomePageClientProps {
   navigate?: (path:string)=>void
-  initialGuides: TravelGuide[]
+  initialGuides: HomeGuideCard[]
   initialLocations: Location[]
-  initialNotes: NoteData[]
+  initialNotes: HomeNoteCard[]
   initialRegions: Region[]
   initialLoadError?: string | null
-  initialPackages: TravelPackage[]
+  initialPackages: PackageCard[]
 }
 
 export default function HomePageClient({

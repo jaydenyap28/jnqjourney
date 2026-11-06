@@ -1,7 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 import priceHighlights from '@/data/guide-price-highlights.json'
 import locationSlugMap from '@/data/location-slugs.json'
-import { selectRelatedNotes, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
+import { notesForSpot, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
+import { relatedGuidesForSpot, relatedPackagesForSpot, nearbySpots } from '@/lib/spot-relations'
+import { toHomeGuideCard, toHomeNoteCard, toPackageCard, type HomeGuideCard, type HomeNoteCard, type PackageCard } from '@/lib/home-cards'
 import { readPublishedPackagesUncached } from '@/lib/server/travel-packages'
 import { toPublicGuidePriceHighlight, type GuidePriceHighlight } from '@/lib/guide-price-highlights'
 import { getRenderableNoteBlocks, type LongformNote } from '@/lib/notes'
@@ -42,6 +44,7 @@ async function readPagesPublicSpotFallback(id: number, slug: string): Promise<Pu
 }
 
 export interface EnglishPageData {
+  homeCards?: { guides: HomeGuideCard[]; notes: HomeNoteCard[]; packages: PackageCard[] }
   priceHighlights?: NonNullable<ReturnType<typeof toPublicGuidePriceHighlight>>[]
   fullGuides?:TravelGuide[]
   notes?:LongformNote[]
@@ -65,6 +68,10 @@ export interface EnglishPageData {
 }
 export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   const result={...data}
+  if (data.kind === 'home') {
+    result.homeCards = { guides: (data.fullGuides || []).slice(0, 6).map(toHomeGuideCard), notes: (data.notes || []).slice(0, 4).map(toHomeNoteCard), packages: (data.packages || []).slice(0, 3).map(toPackageCard) }
+    result.fullGuides = []; result.notes = []; result.packages = []; result.guides = []
+  }
   if(data.kind==='search') result.searchLocations=data.locations.map(({id,name,slug,region})=>({id,name,slug,region:region?{name:region.name}:null}))
   if(['search','regions','guides','notes','about','fallback'].includes(data.kind)) result.locations=[]
   if(!['home','regions','search'].includes(data.kind)) result.regions=[]
@@ -223,13 +230,14 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     const result = applyLocalization(source,spotLocalization)
     data.kind='spot'; data.spot=result.value; data.spotSeoIndexable=evaluateSpotQuality(sourceSpot).indexable; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary
     data.description=result.value.description || result.value.review || ''
-    if (source.related_note_slugs?.length) {
+    {
       const notes = await readBilingualSnapshot<{notes:LongformNote[]}>('notes.json',()=>readBundledJson('data/notes.json').then(raw=>({notes:Array.isArray(raw)?raw:[]})),value=>Array.isArray((value as {notes?:unknown})?.notes))
-      data.relatedNotes = selectRelatedNotes(source.related_note_slugs, notes.notes).map(toRelatedNoteCard)
+      data.relatedNotes = notesForSpot(source, notes.notes).map(note => toRelatedNoteCard(localizeLongformNote(note, localization).value))
     }
-    data.locations=locations.filter(l=>l.id!==source.id && l.region?.id===source.region_id).slice(0,6)
-    const matchingGuides=new Set(guides.filter(g=>[...(g.attractions||[]),...g.days.flatMap(d=>d.attractions||[]),...(g.itinerarySegments||[]).flatMap(s=>s.verifiedRoutes.flatMap(r=>r.attractions||[]))].some(ref=>ref.enabled!==false && ref.spotId===source.id) || g.accommodationStays?.some(s=>s.accommodationId===source.id)).map(g=>g.slug))
+    data.locations=nearbySpots(source, locations)
+    const matchingGuides=new Set(relatedGuidesForSpot(source, guides).map(g=>g.slug))
     data.guides=data.guides.filter(g=>matchingGuides.has(g.slug))
+    data.packages=relatedPackagesForSpot(source, data.packages || [], [...matchingGuides])
     return {data}
   }
   if (parts[0] === 'guide') {

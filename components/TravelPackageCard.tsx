@@ -5,13 +5,14 @@ import { ArrowRight, ImageOff, MapPinned } from 'lucide-react'
 
 import FallbackImage from '@/components/FallbackImage'
 import WhatsAppButton from '@/components/WhatsAppButton'
-import type { TravelPackage } from '@/lib/server/travel-packages'
+import type { PackageCard } from '@/lib/home-cards'
 
 interface TravelPackageCardProps {
-  item: TravelPackage
+  item: PackageCard
   compact?: boolean
   showWhatsApp?: boolean
   detailLabel?: string
+  onDetailClick?: () => void
 }
 
 function formatCardPrice(value?: string | null, slug?: string) {
@@ -27,10 +28,12 @@ function formatCardPrice(value?: string | null, slug?: string) {
   return raw
 }
 
-export default function TravelPackageCard({ item, compact = false, showWhatsApp = true, detailLabel = '查看详情' }: TravelPackageCardProps) {
+export default function TravelPackageCard({ item, compact = false, showWhatsApp = true, detailLabel = '查看详情', onDetailClick }: TravelPackageCardProps) {
   const locale=usePublicLocale()
   const name=locale==='en'&&item.title_en?item.title_en:item.title_zh
   const price=formatCardPrice(item.price_display, item.slug)
+  const detailClass = 'inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black'
+  const detailContent = <><PublicCopy text={detailLabel}/> <ArrowRight className="h-4 w-4" /></>
   return (
     <article className="overflow-hidden rounded-[24px] border border-white/10 bg-[linear-gradient(180deg,rgba(18,31,50,0.96),rgba(8,15,28,0.98))]">
       <div className={`relative ${compact ? 'aspect-[16/8]' : 'aspect-[16/9]'} bg-[#0d1726]`}>
@@ -42,7 +45,7 @@ export default function TravelPackageCard({ item, compact = false, showWhatsApp 
         <p className="mt-3 line-clamp-3 text-sm leading-7 text-white/65">{item.short_description}</p>
         {price ? <p className="mt-4 text-lg font-semibold text-amber-100">{price}</p> : null}
         <div className="mt-5 flex flex-wrap gap-2.5">
-          <Link href={`/packages/${item.slug}`} prefetch={false} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-black"><PublicCopy text={detailLabel}/> <ArrowRight className="h-4 w-4" /></Link>
+          {locale === 'en' ? <a href={`/packages/${item.slug}`} onClick={onDetailClick} className={detailClass}>{detailContent}</a> : <Link href={`/packages/${item.slug}`} prefetch={false} onClick={onDetailClick} className={detailClass}>{detailContent}</Link>}
           {showWhatsApp ? <WhatsAppButton pageType="package" packageName={name} source={item.source_code || undefined} message={item.whatsapp_message || undefined} label="WhatsApp 咨询" position="inline" className="px-4" /> : null}
         </div>
       </div>

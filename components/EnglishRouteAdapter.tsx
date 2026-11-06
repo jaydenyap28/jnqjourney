@@ -29,14 +29,14 @@ export default function EnglishRouteAdapter({data}:{data:EnglishPageData}) {
   const packages=data.packages || []
   let body
   switch(data.kind) {
-    case 'home': body=<HomePageClient initialLocations={data.locations} initialRegions={data.regions} initialGuides={fullGuides} initialNotes={data.notes || []} initialPackages={packages.slice(0,3)}/>;break
+    case 'home': body=<HomePageClient initialLocations={data.locations} initialRegions={data.regions} initialGuides={data.homeCards?.guides || []} initialNotes={data.homeCards?.notes || []} initialPackages={data.homeCards?.packages || []}/>;break
     case 'regions': body=<RegionIndexView regions={data.regions.filter(r=>!r.parentId).map(r=>({...r,image_url:r.thumbnail,description:r.shortSummary}))}/>;break
     case 'region': body=<RegionPageView locale="en" region={{...data.region,image_url:data.region?.thumbnail,description:data.region?.shortSummary}} locations={data.locations.map(publicSpotFromLocationSummary)} allGuides={fullGuides} relatedPackages={packages.filter(p=>p.region_id===data.region?.id)}/>;break
     case 'guides': body=<GuideIndexView guides={fullGuides}/>;break
     case 'guide': body=data.guide&&data.tripCost?<GuidePageView locale="en" guide={data.guide} publicData={{locations:data.locations}} publicTripCost={data.tripCost} approvedPriceHighlights={data.priceHighlights || []} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(data.guide!.slug))} allGuides={fullGuides}/>:null;break
     case 'notes': body=<EnglishNotesIndex notes={data.notes || []}/>;break
     case 'note': body=data.note?<EnglishNoteView note={data.note} locations={data.locations}/>:null;break
-    case 'spot': body=data.spot?<SpotPageView location={data.spot} relatedNotes={data.relatedNotes || []} relatedLocations={data.locations.map(publicSpotFromLocationSummary)} relatedGuides={data.guides} relatedPackages={packages.filter(p=>p.region_id===data.spot!.region_id)} dataSource="public-snapshot">
+    case 'spot': body=data.spot?<SpotPageView location={data.spot} relatedNotes={data.relatedNotes || []} relatedLocations={data.locations.map(publicSpotFromLocationSummary)} relatedGuides={data.guides} relatedPackages={packages} dataSource="public-snapshot">
       <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@graph':[
         {'@type':data.spot.category==='food'?'Restaurant':data.spot.category==='accommodation'?'Hotel':'TouristAttraction',name:data.title,description,url:absoluteUrl(alternates.canonical),image,address:data.spot.address || undefined,geo:{'@type':'GeoCoordinates',latitude:data.spot.latitude,longitude:data.spot.longitude}},
         {'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Home',item:absoluteUrl('/en')},{'@type':'ListItem',position:2,name:data.title,item:absoluteUrl(alternates.canonical)}]}

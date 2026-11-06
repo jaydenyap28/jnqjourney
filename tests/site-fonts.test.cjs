@@ -75,11 +75,13 @@ test('Latin extensions keep the original Latin families instead of dropping to m
 
 test('font integration preserves non-font layout, CSS variables and original fallback metrics',()=>{
   const normalizeLayout=s=>s.replace(/import \{ (?:Cormorant_Garamond[^\n]+|siteFontClassName) \} from '[^']+'\n/g,'')
+    .replace('<Suspense fallback={null}><PageViewTracker /></Suspense>', '<PageViewTracker />')
     .replace(/const notoSansSC = Noto_Sans_SC\([\s\S]*?(?=import \{ buildMetaDescription)/,'')
     .replace(/className=\{`\$\{poppins.variable\}[^`]+`\}/,'className={FONT}')
     .replace('className={siteFontClassName}','className={FONT}').replace(/\s+/g,' ').trim()
   assert.equal(normalizeLayout(read('app/layout.tsx')),normalizeLayout(baseline('app/layout.tsx')))
   const normalizeApp=s=>s.replace(/import \{ (?:Cormorant_Garamond[^\n]+|siteFontClassName) \} from '[^']+'\n/g,'')
+    .replace("import PagesAnalytics from '@/components/PagesAnalytics'\n", '').replace('<PagesAnalytics/>', '')
     .replace(/const sans = Poppins\([\s\S]*?(?=export default function App)/,'')
     .replace(/className=\{`\$\{sans.variable\}[^`]+`\}/,'className={FONT}')
     .replace('className={siteFontClassName}','className={FONT}').replace(/\s+/g,' ').trim()

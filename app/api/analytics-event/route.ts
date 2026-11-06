@@ -1,17 +1,19 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { PRODUCTION_ANALYTICS_HOSTS, analyticsRequestHost, isAnalyticsBot, isAnalyticsPath } from '@/lib/analytics-policy'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const PRODUCTION_HOSTS = new Set(['jnqjourney.com', 'www.jnqjourney.com'])
-const BOT_PATTERN = /bot|crawler|spider|crawl|slurp|facebookexternalhit|preview|validator|lighthouse|pagespeed|headless|python-requests|curl|wget|uptime|monitor|semrush|ahrefs|mj12bot|bytespider|petalbot|yandex|duckduckbot|bingpreview|mediapartners-google/i
 const ALLOWED_EVENTS = new Set([
+  'related_guide_click',
+  'spot_navigation_click',
   'social_link_click',
   'package_view',
   'package_whatsapp_click',
   'package_cta_click',
   'package_brochure_view',
+  'package_gallery_open',
   'package_comparison_view',
   'package_option_view',
   'package_option_select',
@@ -35,12 +37,6 @@ function normalizeNumber(value: unknown) {
   return Number.isFinite(number) && number > 0 ? number : null
 }
 
-function requestHost(request: Request) {
-  const forwardedHost = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim()
-  const rawHost = forwardedHost || request.headers.get('host') || new URL(request.url).hostname
-  return rawHost.split(':')[0].toLowerCase()
-}
-
 function sanitizeParams(value: unknown): Record<string, string | number | boolean | null> {
   const output: Record<string, string | number | boolean | null> = {}
   if (!value || typeof value !== 'object' || Array.isArray(value)) return output
@@ -58,13 +54,8 @@ function sanitizeParams(value: unknown): Record<string, string | number | boolea
 }
 
 export async function POST(request: Request) {
-  if (!PRODUCTION_HOSTS.has(requestHost(request))) {
+  if (!PRODUCTION_ANALYTICS_HOSTS.has(analyticsRequestHost(request)) || (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production')) {
     return NextResponse.json({ ok: true, skipped: 'non-production' })
-  }
-
-  const supabase = getSupabaseAdminClient()
-  if (!supabase) {
-    return NextResponse.json({ ok: false, error: 'Missing Supabase configuration.' }, { status: 500 })
   }
 
   try {
@@ -74,7 +65,7 @@ export async function POST(request: Request) {
     const sessionId = normalizeText(body?.sessionId, 120)
     const visitorId = normalizeText(body?.visitorId, 120)
     const visitId = normalizeText(body?.visitId, 120)
-    const userAgent = normalizeText(body?.userAgent, 500)
+    const userAgent = normalizeText(request.headers.get('user-agent') || body?.userAgent, 500)
     const deviceType = normalizeText(body?.deviceType, 30)
     const trafficSource = normalizeText(body?.trafficSource, 120)
     const trafficMedium = normalizeText(body?.trafficMedium, 120)
@@ -84,10 +75,13 @@ export async function POST(request: Request) {
     if (!ALLOWED_EVENTS.has(eventName)) {
       return NextResponse.json({ ok: true, skipped: 'event-not-recorded' })
     }
-    if (BOT_PATTERN.test(userAgent)) {
+    if (!isAnalyticsPath(path)) return NextResponse.json({ ok: true, skipped: 'excluded-path' })
+    if (isAnalyticsBot(userAgent)) {
       return NextResponse.json({ ok: true, skipped: 'bot' })
     }
 
+    const supabase = getSupabaseAdminClient()
+    if (!supabase) return NextResponse.json({ ok: false, error: 'Missing Supabase configuration.' }, { status: 500 })
     const { error } = await supabase.from('analytics_events').insert({
       event_name: eventName,
       path: path || null,
