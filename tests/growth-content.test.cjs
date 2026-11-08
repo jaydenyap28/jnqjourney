@@ -15,6 +15,37 @@ test('notes resolve explicit reverse references, not region-only matches or draf
   const notes = [{ slug: 'draft', title: 'Draft', published: false, relatedSpotIds: [449] }, { slug: 'regional', title: 'Regional', published: true, relatedRegionIds: [69] }, { slug: 'direct', title: 'Direct', published: true, relatedSpotIds: [449] }]
   assert.deepEqual(notesForSpot({ id: 449 }, notes).map(n => n.slug), ['direct'])
 })
+test('curated Shanghai ferry links apply only to 449 and 452 without changing inputs or quality', () => {
+  const { evaluateSpotQuality } = load('lib/spot-quality.ts')
+  const ferry = Object.freeze({
+    slug: 'shanghai-2-yuan-ferry-dongjin-dongfu-taigong', title: 'Shanghai ferry',
+    published: true, relatedSpotIds: Object.freeze([]), blocks: Object.freeze([]),
+  })
+  const notes = Object.freeze([ferry])
+  for (const id of [449, 452, 447, 448, 458, 608]) {
+    const spot = Object.freeze({ id, related_note_slugs: null, description: 'a'.repeat(180), images: Object.freeze(['a', 'b']) })
+    const quality = evaluateSpotQuality(spot)
+    assert.deepEqual(notesForSpot(spot, notes).map(note => note.slug), [449, 452].includes(id) ? [ferry.slug] : [])
+    assert.deepEqual(evaluateSpotQuality(spot), quality)
+    assert.equal(quality.indexable, false)
+  }
+  assert.deepEqual(ferry.relatedSpotIds, [])
+})
+test('curated links retain publication filtering, deduplication and saved relation priority', () => {
+  const ferry = { slug: 'shanghai-2-yuan-ferry-dongjin-dongfu-taigong', aliases: ['ferry-alias'], published: true, relatedSpotIds: [449] }
+  for (const id of [449, 452]) {
+    assert.deepEqual(notesForSpot({ id }, []), [])
+    assert.deepEqual(notesForSpot({ id }, [{ ...ferry, published: false }]), [])
+    assert.deepEqual(notesForSpot({ id, related_note_slugs: ['ferry-alias', ferry.slug] }, [ferry]).map(note => note.slug), [ferry.slug])
+    const existing = [
+      { slug: 'manual', published: true },
+      { slug: 'reverse', published: true, relatedSpotIds: [id] },
+      { slug: 'embedded', published: true, blocks: [{ spotId: id }] },
+    ]
+    assert.deepEqual(notesForSpot({ id, related_note_slugs: ['manual'] }, [...existing, ferry]).map(note => note.slug), ['manual', 'reverse', 'embedded'])
+    assert.deepEqual(notesForSpot({ id, related_note_slugs: ['manual'] }, [...existing.slice(0, 2), ferry]).map(note => note.slug), ['manual', 'reverse', ferry.slug])
+  }
+})
 test('nearby places exclude self, distant points and other regions and sort by distance', () => {
   const spot = { id: 449, region_id: 69, latitude: 31.24, longitude: 121.49 }
   const loc = (id, latitude, region = 69) => ({ id, latitude, longitude: 121.49, region: { id: region } })

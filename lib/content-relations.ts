@@ -28,11 +28,16 @@ export function selectRelatedNotes(slugs: string[] | null | undefined, notes: Lo
   })
 }
 
-// A saved reverse reference is equally useful; geography alone is not evidence.
+const curatedSpotNoteSlugs: Partial<Record<number, string[]>> = {
+  449: ['shanghai-2-yuan-ferry-dongjin-dongfu-taigong'],
+  452: ['shanghai-2-yuan-ferry-dongjin-dongfu-taigong'],
+}
+
+// Saved relations keep priority over the small editorial selection.
 export function notesForSpot(spot: { id: number; related_note_slugs?: string[] | null }, notes: LongformNote[]) {
   const slugs = [...(spot.related_note_slugs || []), ...notes.filter(note => note.published && (
     note.relatedSpotIds?.includes(spot.id) || note.blocks?.some(block => block.spotId === spot.id)
-  )).map(note => note.slug)]
+  )).map(note => note.slug), ...(curatedSpotNoteSlugs[spot.id] || [])]
   return selectRelatedNotes(slugs, notes).slice(0, 3)
 }
 
