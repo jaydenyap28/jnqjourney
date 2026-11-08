@@ -1,5 +1,7 @@
 # 第三阶段：真实免费 Preview 验收
 
+**后续结果：用户已批准共享 Fail closed 设置；该阻塞已解除。修正版真实 HTTP 小图闭环通过，但 10 MiB 上传实测 CPU 74 ms，当前仍 HOLD。最新完整结果见 [PHASE3-RESULTS.md](PHASE3-RESULTS.md)。下文是授权前的历史记录。**
+
 当前 **HOLD**。沿用 `codex/cloudflare-free-migration`；尚无 Preview 部署或真实浏览器闭环验收结果。
 
 ## 已核实与已建立

@@ -1,0 +1,35 @@
+{
+  "status": "HOLD",
+  "uploadImplementationVerdict": "NO-GO: current buffered 10 MiB upload exceeds Free CPU budget",
+  "previewUrl": "https://62dbbd59.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "publicSpotUrl": "https://62dbbd59.jnqjourney-spot-loop-migration-candidate.pages.dev/spot/cloudflare-loop-fixture-1",
+  "requestChecks": 22,
+  "httpStatusesPassed": 22,
+  "cpuObservedChecks": 21,
+  "nativeTraceEventCount": 22,
+  "ordinaryCpuMsRange": [
+    0,
+    3
+  ],
+  "smallImage": {
+    "inputBytes": 68,
+    "status": 201,
+    "cpuMs": 2
+  },
+  "maximumImage": {
+    "configuredInputBytes": 10485760,
+    "status": 201,
+    "cpuMs": 74,
+    "runtimeWallMs": 1334
+  },
+  "smallSpotHttpLoopPassed": true,
+  "browserLoopPassed": false,
+  "unobservedCpuChecks": [
+    {
+      "name": "withdrawn_representation_denied",
+      "path": "/spot/cloudflare-loop-fixture-1.html"
+    }
+  ],
+  "stopReason": "NATIVE_CPU_LIMIT_EXCEEDED",
+  "productionBoundariesPassed": true
+}

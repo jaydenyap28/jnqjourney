@@ -1,0 +1,17 @@
+// Read-only control-plane checks after acceptance has stopped. No Worker calls.
+import {readFile,writeFile} from 'node:fs/promises'
+import {cloudflareClient,PROJECT,BRANCH,BUCKET} from './candidate-cloudflare.mjs'
+const cf=await cloudflareClient(),project=await cf(),deployments=await cf('/deployments')
+const prod=project.deployment_configs.production,preview=project.deployment_configs.preview
+const boundaries={project:PROJECT,checkedAt:new Date().toISOString(),canonicalDeploymentEmpty:!project.canonical_deployment,productionEnvironmentVariableCount:Object.keys(prod.env_vars||{}).length,productionR2BindingCount:Object.keys(prod.r2_buckets||{}).length,productionDeploymentCount:deployments.filter(item=>item.environment==='production').length,previewDeploymentCount:deployments.filter(item=>item.environment==='preview').length,allDeploymentsPreview:deployments.every(item=>item.environment==='preview'&&item.deployment_trigger?.metadata?.branch===BRANCH),productionFailOpen:prod.fail_open,previewFailOpen:preview.fail_open,previewConfiguredCpuLimitMs:preview.limits?.cpu_ms??null,verifiedFreePlanCpuBudgetMs:10,previewBucket:preview.r2_buckets?.TEST_MEDIA?.name,formalDomainBound:(project.domains||[]).some(domain=>/jnqjourney\.com$/.test(domain)),noPaidUpgradeRequested:true}
+boundaries.passed=boundaries.canonicalDeploymentEmpty&&boundaries.productionEnvironmentVariableCount===0&&boundaries.productionR2BindingCount===0&&boundaries.productionDeploymentCount===0&&boundaries.allDeploymentsPreview&&prod.fail_open===false&&preview.fail_open===false&&boundaries.previewBucket===BUCKET&&!boundaries.formalDomainBound
+await writeFile('artifacts/cloudflare-phase3/post-native-boundaries.json',JSON.stringify(boundaries,null,2))
+const native=JSON.parse(await readFile('artifacts/cloudflare-phase3/native-acceptance.json','utf8'))
+const tail=JSON.parse(await readFile('artifacts/cloudflare-phase3/runtime-events.json','utf8'))
+const maximum=native.checks.find(check=>check.name==='maximum_10mib_native_r2_upload')
+const small=native.checks.find(check=>check.name==='small_native_r2_upload')
+const cpu=native.checks.filter(check=>typeof check.cpuTimeMs==='number')
+const summary={status:'HOLD',uploadImplementationVerdict:maximum?.cpuTimeMs>10?'NO-GO: current buffered 10 MiB upload exceeds Free CPU budget':'UNVERIFIED',previewUrl:native.url,publicSpotUrl:`${native.url}/spot/cloudflare-loop-fixture-1`,requestChecks:native.requestCount,httpStatusesPassed:native.checks.filter(check=>check.passed).length,cpuObservedChecks:cpu.length,nativeTraceEventCount:tail.events.length,ordinaryCpuMsRange:cpu.filter(check=>check!==maximum).reduce((range,check)=>[Math.min(range[0],check.cpuTimeMs),Math.max(range[1],check.cpuTimeMs)],[Infinity,-Infinity]),smallImage:{inputBytes:native.smallImageBytes,status:small?.status,cpuMs:small?.cpuTimeMs},maximumImage:{configuredInputBytes:10*1024*1024,status:maximum?.status,cpuMs:maximum?.cpuTimeMs,runtimeWallMs:maximum?.runtimeWallTimeMs},smallSpotHttpLoopPassed:native.nativeSmallSpotLoopPassed===true,browserLoopPassed:false,unobservedCpuChecks:native.checks.filter(check=>typeof check.cpuTimeMs!=='number').map(check=>({name:check.name,path:check.path})),stopReason:native.error,productionBoundariesPassed:boundaries.passed}
+await writeFile('artifacts/cloudflare-phase3/final-summary.json',JSON.stringify(summary,null,2))
+console.log(JSON.stringify({boundaries,summary},null,2))
+if(!boundaries.passed)process.exitCode=1

@@ -15,6 +15,7 @@
     "test:cloudflare": "node --test tests/cloudflare-publication.test.mjs tests/admin-locations.test.cjs",
     "cf:spot:package": "node scripts/cloudflare/package-spot-loop.mjs",
     "test:cloudflare-spot": "node --test tests/cloudflare-spot-loop.test.mjs",
+    "test:cloudflare-native-transport": "node --test tests/cloudflare-native-transport.test.mjs",
     "cf:inventory": "node scripts/cloudflare/inspect-full-sources.mjs",
     "test:guide-budget": "node --experimental-strip-types --test tests/guide-budget-contract.test.ts tests/guide-trip-cost-taxonomy.test.ts tests/guide-budget-display.test.ts tests/guide-trip-cost-source.test.ts tests/public-guide-trip-cost.test.ts",
     "test:public-data": "node --experimental-strip-types --test tests/public-data-contract.test.ts tests/public-note-snapshot-contract.test.ts tests/spot-media-contract.test.ts tests/guide-media-resolver.test.ts tests/public-media-contract.test.ts",

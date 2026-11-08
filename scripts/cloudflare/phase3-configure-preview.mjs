@@ -30,7 +30,7 @@ try {
     report.emptyCandidateProductionConfigModified=true
   }
   const config={name:PROJECT,pages_build_output_dir:'./out',compatibility_date:'2026-11-08',vars,r2_buckets:[{binding:'TEST_MEDIA',bucket_name:BUCKET,preview_bucket_name:BUCKET}]}
-  await writeFile('artifacts/cloudflare-spot-loop/deploy.wrangler.json',JSON.stringify(config,null,2))
+  await writeFile('artifacts/cloudflare-spot-loop/wrangler.jsonc',JSON.stringify(config,null,2))
   report.previewFailOpen=false;report.cpuLimitMs=preview.limits?.cpu_ms;report.privateBucket=BUCKET;report.fixtureId=fixture.fixtureId;report.readyForPreviewDeployment=true
 }catch(error){report.error=/^[A-Z0-9_]+$/.test(error.message)?error.message:'PREVIEW_CONFIG_FAILED';if(error.candidateReason)report.reason=error.candidateReason}
 await writeFile('artifacts/cloudflare-phase3/preview-config.json',JSON.stringify(report,null,2))

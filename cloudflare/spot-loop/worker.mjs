@@ -51,7 +51,15 @@ async function bodyJson(request) {
 }
 async function remote(transport,url,init={}) {
   let response
-  try { response=await transport(url,{...init,cache:'no-store',redirect:'error',signal:AbortSignal.timeout(5000)}) } catch {fail(503,'Upstream unavailable')}
+  // Native Workers supports manual redirects. Refuse every 3xx ourselves so
+  // credentials can never be forwarded to an unexpected redirect destination.
+  try { response=await transport(url,{...init,cache:'no-store',redirect:'manual',signal:AbortSignal.timeout(5000)}) } catch(error) {
+    const message=String(error?.message||'')
+    // Fixed diagnostic codes only: never echo URLs, headers or token values.
+    const code=/Illegal invocation/i.test(message)?'FETCH_RECEIVER':/cache/i.test(message)?'FETCH_CACHE_MODE':/redirect/i.test(message)?'FETCH_REDIRECT_MODE':/timeout|abort/i.test(message)?'UPSTREAM_TIMEOUT':'UPSTREAM_TRANSPORT'
+    fail(503,`Upstream unavailable [${code}]`)
+  }
+  if(response.status>=300&&response.status<400)fail(503,'Upstream redirect refused')
   return response
 }
 async function verifiedUser(env,settings,token,transport) {
@@ -218,7 +226,7 @@ async function responseFor(request,env,transport) {
   if(url.pathname.startsWith('/api/'))fail(404,'Candidate endpoint not found')
   return env.ASSETS.fetch(request)
 }
-export function createWorker(transport=fetch) {
+export function createWorker(transport=(...args)=>globalThis.fetch(...args)) {
   return {async fetch(request,env) {
     try {
       const response=await responseFor(request,env,transport)

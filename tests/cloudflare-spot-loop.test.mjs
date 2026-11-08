@@ -19,7 +19,7 @@ function fixture() {
   const transport=async(input,init={})=>{
     const url=new URL(input)
     assert.equal(url.origin,env.SUPABASE_URL,'No network operation may target Production')
-    assert.equal(init.redirect,'error');assert.equal(init.cache,'no-store')
+    assert.equal(init.redirect,'manual');assert.equal(init.cache,'no-store')
     calls.push({url,...init})
     if(url.pathname.startsWith('/auth/')) {
       assert.equal(init.headers.apikey,'fixture-anon')
