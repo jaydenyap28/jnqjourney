@@ -1,0 +1,11 @@
+{
+  "name": "jnqjourney-publication-candidate",
+  "main": "publication-worker.mjs",
+  "compatibility_date": "2026-11-08",
+  "workers_dev": false,
+  "triggers": { "crons": ["*/30 * * * *"] },
+  "vars": {
+    "PUBLICATION_ENABLED": "false",
+    "CF_PAGES_PROJECT": "jnqjourney-migration-candidate"
+  }
+}

@@ -98,6 +98,18 @@ const allFields = {
   redirect_url: null, redirect_type: 301,
 }
 
+test('missing or mismatched admin allowlist fails closed before any write', async (t) => {
+  const f = fixture(); t.after(() => f.restore())
+  delete process.env.ADMIN_EMAILS
+  const missing = await f.mutate('POST', { data: allFields })
+  assert.ok(missing.error)
+  assert.equal(f.writes.length, 0)
+  process.env.ADMIN_EMAILS = 'different@example.test'
+  const mismatch = await f.mutate('POST', { data: allFields })
+  assert.ok(mismatch.error)
+  assert.equal(f.writes.length, 0)
+})
+
 test('create Spot through admin API preserves every field and save result', async (t) => {
   const f = fixture(); t.after(() => f.restore())
   f.setToken(null)

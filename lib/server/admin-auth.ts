@@ -44,7 +44,8 @@ export async function requireAdminRequest(request: Request) {
   const adminEmails = getAdminEmails()
   const email = String(data.user.email || '').trim().toLowerCase()
 
-  if (adminEmails.length && (!email || !adminEmails.includes(email))) {
+  // A missing allowlist must never grant administrative access to every user.
+  if (!adminEmails.length || !email || !adminEmails.includes(email)) {
     return {
       ok: false as const,
       response: NextResponse.json({ error: '这个账号没有后台权限。' }, { status: 403 }),

@@ -1,0 +1,6 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "jnqjourney-migration-candidate",
+  "pages_build_output_dir": "../artifacts/cloudflare-candidate/source/out",
+  "compatibility_date": "2026-11-08"
+}
