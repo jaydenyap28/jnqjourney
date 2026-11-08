@@ -1,0 +1,17 @@
+{
+  "name": "jnqjourney-spot-loop-migration-candidate",
+  "pages_build_output_dir": "../../artifacts/cloudflare-spot-loop/out",
+  "compatibility_date": "2026-11-08",
+  "vars": {
+    "ENVIRONMENT": "isolated-candidate",
+    "CANDIDATE_WRITES_ENABLED": "false",
+    "CANDIDATE_SUPABASE_REF": "USER_MUST_CONFIGURE_ISOLATED_PROJECT",
+    "SUPABASE_URL": "https://candidate.invalid",
+    "CANDIDATE_SPOTS": "{\"910001\":\"cloudflare-loop-fixture-910001\"}"
+  },
+  "r2_buckets": [{
+    "binding": "TEST_MEDIA",
+    "bucket_name": "jnqjourney-spot-loop-isolated-media",
+    "preview_bucket_name": "jnqjourney-spot-loop-isolated-media"
+  }]
+}

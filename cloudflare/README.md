@@ -5,6 +5,8 @@
 基线：2026-11-08 拉取的 `origin/main`，`7cee63d00a603992456eba71cc4b526a80d8ab25`。
 独立分支：`codex/cloudflare-free-migration`。没有提交、推送、Production 部署、DNS 改动或数据库写入。
 
+后续更新：阶段 1 已按第二阶段要求提交并推送（`4cad4f5`），没有合并 `main`。第二阶段代码和授权交接见 [Spot 闭环验收记录](spot-loop/ACCEPTANCE.md)。下文保留阶段 1 的原始验收边界。
+
 ## 已实现及验收
 
 - 在 `artifacts/cloudflare-candidate/source` 生成独立 Next.js `output: export` 样本。原 `app/api`、Pages API、Middleware、后台、公开内容和正式配置都保留在原仓库；样本输出单独排除无法静态执行的服务器入口。这不是删除功能的正式迁移方案。
