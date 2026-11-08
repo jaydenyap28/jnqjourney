@@ -3,12 +3,13 @@ import {spawn} from 'node:child_process'
 import {readFile,writeFile} from 'node:fs/promises'
 import path from 'node:path'
 import {PROJECT} from './candidate-cloudflare.mjs'
-const deployment=JSON.parse(await readFile('artifacts/cloudflare-phase3/deployment.json','utf8'))
+const deployment=JSON.parse(await readFile(process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/deployment.json':'artifacts/cloudflare-phase3/deployment.json','utf8'))
 if(deployment.environment!=='preview'||!deployment.success)throw new Error('VERIFIED_PREVIEW_REQUIRED')
 const child=spawn(process.execPath,[process.env.JNQ_WRANGLER_CLI,'pages','deployment','tail',deployment.deploymentId,'--project-name',PROJECT,'--environment','preview','--format','json'],{cwd:path.resolve('artifacts/cloudflare-spot-loop'),windowsHide:true,stdio:['ignore','pipe','pipe']})
 const records=[];let buffer='',started=false,depth=0,quoted=false,escaped=false,current='',seenKeys=false
+const output=process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/direct-runtime-events.json':process.argv.includes('--upload-fix')?'artifacts/cloudflare-upload-fix/runtime-events.json':'artifacts/cloudflare-phase3/runtime-events.json'
 let write=Promise.resolve()
-function save(){const data=JSON.stringify({deploymentId:deployment.deploymentId,count:records.length,events:records},null,2);write=write.then(()=>writeFile('artifacts/cloudflare-phase3/runtime-events.json',data))}
+function save(){const data=JSON.stringify({deploymentId:deployment.deploymentId,count:records.length,events:records},null,2);write=write.then(()=>writeFile(output,data))}
 function event(payload){
   if(!payload.event&&!payload.outcome)return
   if(!seenKeys){seenKeys=true;console.log(JSON.stringify({eventFieldNames:Object.keys(payload)}))}

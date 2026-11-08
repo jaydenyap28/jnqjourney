@@ -6,7 +6,10 @@ const MAX_IMAGE = 10 * 1024 * 1024
 const COOKIE = '__Host-jnq-candidate'
 const REFRESH = '__Host-jnq-candidate-refresh'
 const HEADERS = {'Cache-Control':'private, no-store, max-age=0','X-Robots-Tag':'noindex, nofollow','X-Content-Type-Options':'nosniff','Referrer-Policy':'same-origin'}
-const CSP = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+const R2_ACCOUNT='41feff7cd62964f2eb33bb82508509a1'
+const R2_TEST_BUCKET='jnqjourney-spot-loop-isolated-media'
+const UPLOAD_ORIGIN='https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev'
+const CSP = `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self' https://${R2_ACCOUNT}.r2.cloudflarestorage.com/${R2_TEST_BUCKET}/_candidate-staging/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`
 class Failure extends Error { constructor(status, message) { super(message); this.status = status } }
 const fail = (status, message) => { throw new Failure(status, message) }
 const json = (data, status=200, extra={}) => Response.json(data,{status,headers:{...HEADERS,...extra}})
@@ -113,23 +116,147 @@ async function mutationData(body,id,env) {
     if(key==='name'&&(typeof value!=='string'||!value.trim()))fail(400,'Name required')
   }
   for(const media of [body.data.image_url,...(body.data.images||[])].filter(Boolean)) {
-    if(!await env.TEST_MEDIA.head(media.slice(1)))fail(400,'Uploaded image no longer exists')
+    if(!await verifiedMedia(env,media.slice(1),id))fail(400,'Uploaded image is missing or unverified')
   }
   return body
 }
 async function upload(request,env,id) {
+  if(env.CANDIDATE_UPLOAD_MODE!=='stream')fail(503,'Stream upload is on HOLD; use verified direct upload')
   const type=(request.headers.get('content-type')||'').split(';')[0]
   const ext={'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'}[type]
   if(!ext)fail(415,'JPEG, PNG, WebP or GIF required')
-  const blob=await limitedBody(request,MAX_IMAGE)
-  if(!blob.size)fail(400,'Empty image')
-  const bytes=new Uint8Array(await blob.slice(0,12).arrayBuffer())
-  const ascii=String.fromCharCode(...bytes)
-  const valid=type==='image/png'?bytes.slice(0,8).join(',')==='137,80,78,71,13,10,26,10':type==='image/jpeg'?bytes[0]===255&&bytes[1]===216&&bytes[2]===255:type==='image/gif'?/^GIF8[79]a/.test(ascii):ascii.startsWith('RIFF')&&ascii.slice(8,12)==='WEBP'
-  if(!valid)fail(415,'Image signature does not match type')
+  const declared=request.headers.get('content-length')
+  if(!declared)fail(411,'Known image length required')
+  if(!/^[0-9]{1,8}$/.test(declared)||Number(declared)>MAX_IMAGE)fail(413,'Image size exceeds 10 MiB')
+  const length=Number(declared)
+  if(length<12||!request.body)fail(400,'Empty or truncated image')
+  const reader=request.body.getReader(),prefix=[]
+  const bytes=new Uint8Array(12);let copied=0,consumed=0
+  try {
+    while(copied<12) {
+      const {value,done}=await reader.read()
+      if(done)fail(400,'Truncated image')
+      consumed+=value.byteLength
+      if(consumed>length)fail(400,'Image length mismatch')
+      prefix.push(value)
+      const take=Math.min(12-copied,value.byteLength)
+      bytes.set(value.subarray(0,take),copied);copied+=take
+    }
+  }catch(error){await reader.cancel().catch(()=>{});throw error}
+  finally{reader.releaseLock()}
+  const valid=imageSignature(bytes,type)
+  if(!valid){await request.body.cancel().catch(()=>{});fail(415,'Image signature does not match type')}
   const key=`media/candidate/${id}/${crypto.randomUUID()}.${ext}`
-  try { await env.TEST_MEDIA.put(key,blob,{httpMetadata:{contentType:type},customMetadata:{fixtureId:id}}) } catch {fail(503,'R2 upload unavailable')}
-  return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:blob.size},201)
+  const receipt=mediaReceiptKey(key),fixed=new FixedLengthStream(length),abort=new AbortController()
+  let writer
+  try {
+    const store=env.TEST_MEDIA.put(key,fixed.readable,{httpMetadata:{contentType:type},customMetadata:{fixtureId:id}}).catch(error=>{
+      abort.abort(error)
+      if(writer)void writer.abort(error).catch(()=>{})
+      throw error
+    })
+    const pump=(async()=>{
+      writer=fixed.writable.getWriter()
+      try {for(const chunk of prefix)await writer.write(chunk)}
+      finally{writer.releaseLock();writer=null}
+      // The remaining payload stays in the native stream pipeline. No JS loop,
+      // arrayBuffer(), Blob, compression, or whole-file copy is used here.
+      await request.body.pipeTo(fixed.writable,{signal:abort.signal})
+    })()
+    const results=await Promise.allSettled([store,pump])
+    if(results.some(result=>result.status==='rejected'))throw new Error('Stream failed')
+    const object=results[0].value
+    if(!object||object.size!==length||!object.etag||!object.version||object.httpMetadata?.contentType!==type)throw new Error('R2 verification failed')
+    // Receipt is deliberately separate: a partial/failed put can never make
+    // itself publishable by having an optimistic metadata flag on its object.
+    const proof={schemaVersion:1,key,fixtureId:id,size:length,etag:object.etag,version:object.version,contentType:type,signatureChecked:true}
+    if(!await env.TEST_MEDIA.put(receipt,JSON.stringify(proof),{httpMetadata:{contentType:'application/json'}}))throw new Error('Receipt write failed')
+  }catch {
+    try {await env.TEST_MEDIA.delete([receipt,key])}catch{fail(503,'Upload failed; private cleanup requires retry')}
+    fail(503,'R2 stream failed; incomplete upload removed')
+  }
+  return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:length,validated:true},201)
+}
+function imageSignature(bytes,type){
+  if(bytes.length<12)return false
+  const ascii=String.fromCharCode(...bytes.subarray(0,12))
+  return type==='image/png'?bytes.subarray(0,8).join(',')==='137,80,78,71,13,10,26,10':type==='image/jpeg'?bytes[0]===255&&bytes[1]===216&&bytes[2]===255:type==='image/gif'?/^GIF8[79]a/.test(ascii):type==='image/webp'&&ascii.startsWith('RIFF')&&ascii.slice(8,12)==='WEBP'
+}
+const awsEncode=value=>encodeURIComponent(value).replace(/[!'()*]/g,char=>`%${char.charCodeAt(0).toString(16).toUpperCase()}`)
+const hex=bytes=>Array.from(new Uint8Array(bytes),byte=>byte.toString(16).padStart(2,'0')).join('')
+const encode=value=>new TextEncoder().encode(value)
+async function hmac(key,value){const imported=await crypto.subtle.importKey('raw',typeof key==='string'?encode(key):key,{name:'HMAC',hash:'SHA-256'},false,['sign']);return crypto.subtle.sign('HMAC',imported,encode(value))}
+// A browser receives only this scoped, short-lived capability, never the key.
+export async function signCandidatePut(env,key,type,size,copySource=null,now=new Date()) {
+  if(!env.CANDIDATE_R2_ACCESS_KEY_ID||!env.CANDIDATE_R2_SECRET_ACCESS_KEY)fail(503,'Isolated Preview signing credentials are not configured')
+  if(!/^(_candidate-staging|media\/candidate)\/[1-9]\d*\/[a-f0-9-]+\.(png|jpg|webp|gif)$/.test(key)||!['image/png','image/jpeg','image/webp','image/gif'].includes(type)||!Number.isSafeInteger(size)||size<0||size>MAX_IMAGE)fail(400,'Invalid upload capability')
+  if(key.startsWith('media/candidate/')&&(!copySource||copySource!==stagingKey(key)||size!==0))fail(400,'Final objects require a verified server copy')
+  const host=`${R2_ACCOUNT}.r2.cloudflarestorage.com`,path=`/${R2_TEST_BUCKET}/${key.split('/').map(awsEncode).join('/')}`
+  const date=now.toISOString().replace(/[:-]|\.\d{3}/g,''),day=date.slice(0,8),scope=`${day}/auto/s3/aws4_request`
+  const headers={'content-length':String(size),'content-type':type,host}
+  if(copySource)headers['x-amz-copy-source']=`/${R2_TEST_BUCKET}/${copySource}`
+  const names=Object.keys(headers).sort(),signed=names.join(';')
+  const query={'X-Amz-Algorithm':'AWS4-HMAC-SHA256','X-Amz-Content-Sha256':'UNSIGNED-PAYLOAD','X-Amz-Credential':`${env.CANDIDATE_R2_ACCESS_KEY_ID}/${scope}`,'X-Amz-Date':date,'X-Amz-Expires':'120','X-Amz-SignedHeaders':signed}
+  const canonicalQuery=Object.keys(query).sort().map(name=>`${awsEncode(name)}=${awsEncode(query[name])}`).join('&')
+  const canonical=['PUT',path,canonicalQuery,names.map(name=>`${name}:${headers[name].trim()}\n`).join(''),signed,'UNSIGNED-PAYLOAD'].join('\n')
+  const toSign=`AWS4-HMAC-SHA256\n${date}\n${scope}\n${hex(await crypto.subtle.digest('SHA-256',encode(canonical)))}`
+  let signingKey=await hmac(`AWS4${env.CANDIDATE_R2_SECRET_ACCESS_KEY}`,day)
+  for(const part of ['auto','s3','aws4_request'])signingKey=await hmac(signingKey,part)
+  const signature=hex(await hmac(signingKey,toSign))
+  return {url:`https://${host}${path}?${canonicalQuery}&X-Amz-Signature=${signature}`,headers:Object.fromEntries(Object.entries(headers).filter(([name])=>name!=='host'))}
+}
+const ticketKey=key=>`_candidate-tickets/${key.slice('media/candidate/'.length)}.json`
+const stagingKey=key=>key.replace('media/candidate/','_candidate-staging/')
+async function smallJsonObject(env,key){const object=await env.TEST_MEDIA.get(key);if(!object||object.size>1024)return null;try{return await object.json()}catch{return null}}
+async function eraseUpload(env,key,includeFinal=true){await env.TEST_MEDIA.delete([stagingKey(key),ticketKey(key),...(includeFinal?[mediaReceiptKey(key),key]:[])])}
+async function issueDirect(request,env,id,user) {
+  if(new URL(request.url).origin!==UPLOAD_ORIGIN)fail(403,'Use the approved candidate upload origin')
+  // Fail before creating tickets if the operator has not provisioned secrets.
+  if(!env.CANDIDATE_R2_ACCESS_KEY_ID||!env.CANDIDATE_R2_SECRET_ACCESS_KEY)fail(503,'Isolated Preview signing credentials are not configured')
+  const body=await bodyJson(request),ext={'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'}[body?.type]
+  if(!body||Object.keys(body).some(name=>!['size','type'].includes(name))||!ext||!Number.isSafeInteger(body.size)||body.size<12||body.size>MAX_IMAGE)fail(400,'Valid image type and size up to 10 MiB required')
+  const key=`media/candidate/${id}/${crypto.randomUUID()}.${ext}`
+  const signed=await signCandidatePut(env,stagingKey(key),body.type,body.size)
+  const ticket={schemaVersion:1,key,fixtureId:id,userId:user.id,size:body.size,type:body.type,expiresAt:Date.now()+120000}
+  await env.TEST_MEDIA.put(ticketKey(key),JSON.stringify(ticket),{httpMetadata:{contentType:'application/json'}})
+  return json({key,putUrl:signed.url,method:'PUT',headers:{'Content-Type':body.type},expiresIn:120,requiredBytes:body.size},201)
+}
+async function completeDirect(request,env,id,user,transport,cancel=false) {
+  const body=await bodyJson(request),key=body?.key
+  if(typeof key!=='string'||!imagePath(`/${key}`,id)||Object.keys(body).some(name=>name!=='key'))fail(400,'Invalid upload key')
+  const ticket=await smallJsonObject(env,ticketKey(key))
+  if(!ticket||ticket.schemaVersion!==1||ticket.key!==key||ticket.fixtureId!==id||ticket.userId!==user.id)fail(403,'Upload ticket unavailable')
+  if(cancel){await eraseUpload(env,key);return json({cancelled:true})}
+  try {
+    if(ticket.expiresAt<Date.now())fail(410,'Upload ticket expired')
+    const object=await env.TEST_MEDIA.get(stagingKey(key),{range:{offset:0,length:12}})
+    if(!object||object.size!==ticket.size||object.size>MAX_IMAGE||object.httpMetadata?.contentType!==ticket.type)fail(400,'Uploaded size or type does not match authorization')
+    if(!imageSignature(new Uint8Array(await object.arrayBuffer()),ticket.type))fail(415,'Uploaded signature does not match type')
+    // R2-to-R2 copy is performed by S3, not by reading a 10 MiB body in JS.
+    const copy=await signCandidatePut(env,key,ticket.type,0,stagingKey(key))
+    const result=await remote(transport,copy.url,{method:'PUT',headers:copy.headers})
+    if(!result.ok||/<Error[>\s]/.test(await result.text()))fail(503,'R2 verified copy failed')
+    const final=await env.TEST_MEDIA.get(key,{range:{offset:0,length:12}})
+    if(!final||final.size!==ticket.size||final.httpMetadata?.contentType!==ticket.type||!imageSignature(new Uint8Array(await final.arrayBuffer()),ticket.type))fail(400,'Copied object verification failed')
+    const proof={schemaVersion:1,key,fixtureId:id,size:final.size,etag:final.etag,version:final.version,contentType:ticket.type,signatureChecked:true}
+    if(!await env.TEST_MEDIA.put(mediaReceiptKey(key),JSON.stringify(proof),{httpMetadata:{contentType:'application/json'}}))fail(503,'Upload receipt unavailable')
+    await eraseUpload(env,key,false)
+    return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:final.size,validated:true},201)
+  }catch(error){try{await eraseUpload(env,key)}catch{fail(503,'Upload rejected; private cleanup requires retry')}throw error}
+}
+function mediaReceiptKey(key){return `_candidate-validation/${key.slice('media/candidate/'.length)}.json`}
+async function verifiedMedia(env,key,id,body=false) {
+  const proofObject=await env.TEST_MEDIA.get(mediaReceiptKey(key))
+  if(!proofObject||proofObject.size>1024)return null
+  let proof
+  try {proof=await proofObject.json()}catch{return null}
+  if(!proof||proof.schemaVersion!==1||proof.key!==key||proof.fixtureId!==id||proof.signatureChecked!==true||!Number.isSafeInteger(proof.size)||proof.size<12||proof.size>MAX_IMAGE||!['image/png','image/jpeg','image/webp','image/gif'].includes(proof.contentType))return null
+  const object=await env.TEST_MEDIA[body?'get':'head'](key)
+  if(!object||object.size!==proof.size||object.etag!==proof.etag||object.version!==proof.version||object.httpMetadata?.contentType!==proof.contentType) {
+    if(object?.body)await object.body.cancel().catch(()=>{})
+    return null
+  }
+  return object
 }
 function document(row,slug,locale) {
   const name=locale==='en'?row.name:(row.name_cn||row.name)
@@ -177,14 +304,16 @@ async function responseFor(request,env,transport) {
     response.headers.append('Set-Cookie',`${REFRESH}=${session.refresh_token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`)
     return response
   }
-  const edit=url.pathname.match(/^\/api\/candidate\/spots\/([1-9]\d*)(\/image)?$/)
+  const edit=url.pathname.match(/^\/api\/candidate\/spots\/([1-9]\d*)(\/image(?:\/(presign|complete|cancel))?)?$/)
   if(edit) {
-    await admin(request,env,settings,transport)
+    const user=await admin(request,env,settings,transport)
     const id=checkedId(edit[1],settings)
     if(edit[2]) {
       if(request.method!=='POST')fail(405,'Method not allowed')
       if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
       await location(env,id,transport)
+      if(edit[3]==='presign')return issueDirect(request,env,id,user)
+      if(edit[3]==='complete'||edit[3]==='cancel')return completeDirect(request,env,id,user,transport,edit[3]==='cancel')
       return upload(request,env,id)
     }
     if(request.method==='GET')return json({spot:await location(env,id,transport),publicPath:`/spot/${settings.fixtures[id]}`})
@@ -209,8 +338,9 @@ async function responseFor(request,env,transport) {
       else fail(404,'Spot not found')
     }
     if(media) {
-      const object=await env.TEST_MEDIA.get(url.pathname.slice(1))
+      const object=await verifiedMedia(env,url.pathname.slice(1),id,true)
       if(!object)fail(404,'Image not found')
+      if(request.method==='HEAD')await object.body.cancel().catch(()=>{})
       return new Response(request.method==='HEAD'?null:object.body,{headers:{...HEADERS,'Content-Type':object.httpMetadata?.contentType||'application/octet-stream'}})
     }
     if(row.redirect_url) {

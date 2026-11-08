@@ -1,0 +1,11 @@
+{
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "operation": "read account token permission groups",
+  "httpStatus": 403,
+  "success": false,
+  "tokenCreated": false,
+  "secretsPrinted": false,
+  "errorCodes": [
+    9109
+  ]
+}

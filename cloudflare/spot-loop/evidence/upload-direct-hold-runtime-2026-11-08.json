@@ -1,0 +1,46 @@
+{
+  "deploymentId": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+  "count": 4,
+  "events": [
+    {
+      "timestamp": 1794149462550,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794149461072-0",
+      "wallTime": 1074,
+      "cpuTime": 7
+    },
+    {
+      "timestamp": 1794149464333,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794149462995-1",
+      "wallTime": 505,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794149465063,
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794149463709-2",
+      "wallTime": 320,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794149465480,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794149464185-3",
+      "wallTime": 1,
+      "cpuTime": 1
+    }
+  ]
+}

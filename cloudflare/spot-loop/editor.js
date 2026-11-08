@@ -40,11 +40,16 @@ $('#upload').addEventListener('click',async()=>{
   const file=$('#photo').files[0]
   if(!file){status('请选择照片');return}
   if(file.size>10*1024*1024){status('照片不能超过 10 MiB');return}
+  let ticket
   try {
-    const result=await api(`/api/candidate/spots/${row.id}/image`,{method:'POST',headers:{'Content-Type':file.type},body:file})
+    const base=`/api/candidate/spots/${row.id}/image`
+    ticket=await api(`${base}/presign`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({size:file.size,type:file.type})})
+    const upload=await fetch(ticket.putUrl,{method:'PUT',headers:ticket.headers,body:file,credentials:'omit',redirect:'error'})
+    if(!upload.ok)throw new Error('照片上传失败，请重试。')
+    const result=await api(`${base}/complete`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:ticket.key})})
     uploadedImage=result.url;$('#image').src=result.url;$('#image').hidden=false
     $('#photo-state').textContent='已上传到测试 R2。保存 Spot 后更新公开页面。'
-  }catch(error){status(error.message)}
+  }catch(error){if(ticket)await api(`/api/candidate/spots/${row.id}/image/cancel`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key:ticket.key})}).catch(()=>{});status(error.message)}
 })
 $('#save').addEventListener('submit',async event=>{
   event.preventDefault()

@@ -1,5 +1,7 @@
 # 第三阶段结果：HOLD / 当前 10 MiB 上传实现 NO-GO
 
+续测见 [10 MiB 上传修复报告](UPLOAD-CPU-RESULTS.md)：流式独立重复 12 ms，已部署直传后备候选，等待测试 bucket 的 Preview 签名 Secrets，仍为 HOLD。下文保留此前原实现的历史验收记录。
+
 **配置 HOLD 已解除，真实云端验收仍未通过。** 10 MiB 图片上传的原生 CPU 为 **74 ms**，超过已核实的 Workers Free **10 ms/request** 预算。收到该请求的原生 trace 后立即停止，没有继续 logout、浏览器功能测试或整站迁移。
 
 ## 可访问的 Preview

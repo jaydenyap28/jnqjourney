@@ -1,0 +1,30 @@
+[
+  {
+    "file": "artifacts/cloudflare-upload-fix/images/1mib.png",
+    "bytes": 1048576,
+    "width": 1024,
+    "height": 340,
+    "sha256": "43244a802e80f6bb6d4225c237eabbc7c882b67c5a1e2a1d6b6aa55b6ae94761"
+  },
+  {
+    "file": "artifacts/cloudflare-upload-fix/images/5mib.png",
+    "bytes": 5242880,
+    "width": 1024,
+    "height": 1705,
+    "sha256": "0bbecab8846d02f0903ecaf89d21c6aee5833b574713a16464fc0b90fad26776"
+  },
+  {
+    "file": "artifacts/cloudflare-upload-fix/images/10mib.png",
+    "bytes": 10485760,
+    "width": 1024,
+    "height": 3411,
+    "sha256": "689f02aa123802753fef40b875be6f917e0433f4e90459847c7151de79ad19eb"
+  },
+  {
+    "file": "artifacts/cloudflare-upload-fix/images/10mib-independent.png",
+    "bytes": 10485760,
+    "width": 1024,
+    "height": 3411,
+    "sha256": "f895c4a808b3d1ff4b6d71d4adbebc7a564bad546a40be36384ffc70bfb60221"
+  }
+]

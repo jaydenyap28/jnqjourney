@@ -1,0 +1,11 @@
+{
+  "rules": [{
+    "allowed": {
+      "origins": ["https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev"],
+      "methods": ["PUT"],
+      "headers": ["Content-Type"]
+    },
+    "exposeHeaders": ["ETag"],
+    "maxAgeSeconds": 120
+  }]
+}

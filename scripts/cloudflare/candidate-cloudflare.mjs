@@ -6,7 +6,7 @@ export const ACCOUNT='41feff7cd62964f2eb33bb82508509a1'
 export const PROJECT='jnqjourney-spot-loop-migration-candidate'
 export const BUCKET='jnqjourney-spot-loop-isolated-media'
 export const BRANCH='codex/cloudflare-free-migration'
-export async function cloudflareClient() {
+export async function privateWranglerToken() {
   if(!process.env.JNQ_WRANGLER_CLI)throw new Error('WRANGLER_CLI_PATH_REQUIRED')
   let result,auth
   try {
@@ -15,6 +15,10 @@ export async function cloudflareClient() {
   }catch{throw new Error('WRANGLER_PRIVATE_AUTH_FAILED')}
   const token=auth.token||auth.access_token||auth.api_token
   if(typeof token!=='string'||!token)throw new Error('WRANGLER_PRIVATE_AUTH_FORMAT_UNSUPPORTED')
+  return token
+}
+export async function cloudflareClient() {
+  const token=await privateWranglerToken()
   return async function cf(suffix='',options={}) {
     if(suffix && !/^\/deployments(?:\/[a-zA-Z0-9-]+)?(?:\?.*)?$/.test(suffix))throw new Error('CANDIDATE_API_SCOPE_REQUIRED')
     const response=await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects/${PROJECT}${suffix}`,{...options,redirect:'error',signal:AbortSignal.timeout(15000),headers:{Authorization:`Bearer ${token}`,'Content-Type':'application/json',...options.headers}})

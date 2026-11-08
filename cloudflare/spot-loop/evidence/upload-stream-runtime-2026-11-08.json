@@ -1,0 +1,66 @@
+{
+  "deploymentId": "50f3962e-5eb5-47a6-8662-319d992b4113",
+  "count": 6,
+  "events": [
+    {
+      "timestamp": 1794148254216,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794148252640-0",
+      "wallTime": 1853,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794148256948,
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794148255559-1",
+      "wallTime": 1872,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794148259373,
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794148257822-2",
+      "wallTime": 1392,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794148261013,
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794148259610-3",
+      "wallTime": 1280,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794148272517,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794148270850-4",
+      "wallTime": 1125,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794148274441,
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794148272914-5",
+      "wallTime": 2705,
+      "cpuTime": 12
+    }
+  ]
+}

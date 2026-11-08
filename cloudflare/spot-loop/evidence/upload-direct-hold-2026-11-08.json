@@ -1,0 +1,55 @@
+{
+  "url": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "deploymentId": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+  "workerSha256": "656e5e7b23d80143e3b810055e1e572462b5ac6867dc20b581c8131bfad8029c",
+  "checks": [
+    {
+      "name": "session_hold",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "status": 200,
+      "expected": 200,
+      "acceptanceId": "1794149461072-0",
+      "wallTimeMs": 1368,
+      "cpuTimeMs": 7,
+      "runtimeWallTimeMs": 1074
+    },
+    {
+      "name": "missing_signing_secrets_fail_closed",
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "status": 503,
+      "expected": 503,
+      "acceptanceId": "1794149462995-1",
+      "wallTimeMs": 587,
+      "cpuTimeMs": 6,
+      "runtimeWallTimeMs": 505
+    },
+    {
+      "name": "unsafe_stream_disabled",
+      "path": "/api/candidate/spots/1/image",
+      "method": "POST",
+      "status": 503,
+      "expected": 503,
+      "acceptanceId": "1794149463709-2",
+      "wallTimeMs": 418,
+      "cpuTimeMs": 5,
+      "runtimeWallTimeMs": 320
+    },
+    {
+      "name": "unauthenticated_grant_denied",
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "status": 401,
+      "expected": 401,
+      "acceptanceId": "1794149464185-3",
+      "wallTimeMs": 45,
+      "cpuTimeMs": 1,
+      "runtimeWallTimeMs": 1
+    }
+  ],
+  "uploads": [],
+  "hold": true,
+  "holdGatePassed": true,
+  "finishedAt": "2026-11-08T14:51:04.294Z"
+}

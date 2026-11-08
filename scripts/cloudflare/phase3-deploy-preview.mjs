@@ -41,6 +41,7 @@ try {
   report.deploymentId=deployment.id;report.url=deployment.url;report.environment=deployment.environment
   report.canonicalAfter=null;report.productionSecretsAfter=0;report.productionR2BindingsAfter=0;report.failClosedBothEnvironments=true;report.success=true
 }catch(error){report.error=/^[A-Z0-9_]+$/.test(error.message)?error.message:'PREVIEW_DEPLOY_CHECK_FAILED';if(error.candidateReason)report.reason=error.candidateReason}
-await writeFile('artifacts/cloudflare-phase3/deployment.json',JSON.stringify(report,null,2))
+const output=process.argv.includes('--upload-fix')?'artifacts/cloudflare-upload-fix/deployment.json':'artifacts/cloudflare-phase3/deployment.json'
+await writeFile(output,JSON.stringify(report,null,2))
 console.log(JSON.stringify(report,null,2))
 if(report.error)process.exitCode=1

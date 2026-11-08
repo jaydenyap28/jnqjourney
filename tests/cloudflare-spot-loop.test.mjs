@@ -2,6 +2,8 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {readFile} from 'node:fs/promises'
 import {createWorker,config} from '../cloudflare/spot-loop/worker.mjs'
+import {FixtureFixedLengthStream} from './helpers/cloudflare-fixed-length.mjs'
+globalThis.FixedLengthStream=FixtureFixedLengthStream
 
 const origin='https://isolated.jnqjourney-spot-loop-migration-candidate.pages.dev'
 const id='910001',slug=`cloudflare-loop-fixture-${id}`
@@ -11,9 +13,10 @@ function fixture() {
   const objects=new Map(),calls=[],writes=[]
   let outage=false,invalidUser=false,badResponse=false
   const media={
-    async put(key,blob,options){objects.set(key,{bytes:await blob.arrayBuffer(),options});return {key}},
-    async head(key){return objects.has(key)?{key}:null},
-    async get(key){const entry=objects.get(key);return entry?{body:entry.bytes,httpMetadata:entry.options.httpMetadata}:null},
+    async put(key,value,options){objects.set(key,{bytes:await new Response(value).arrayBuffer(),options,version:crypto.randomUUID()});return this.head(key)},
+    async head(key){const entry=objects.get(key);return entry?{key,size:entry.bytes.byteLength,etag:entry.version,version:entry.version,httpMetadata:entry.options.httpMetadata}:null},
+    async get(key){const entry=objects.get(key);return entry?{...await this.head(key),body:new Blob([entry.bytes]).stream(),json:async()=>JSON.parse(new TextDecoder().decode(entry.bytes))}:null},
+    async delete(keys){for(const key of Array.isArray(keys)?keys:[keys])objects.delete(key)},
   }
   const env={ENVIRONMENT:'isolated-candidate',CANDIDATE_SUPABASE_REF:'abcdefghijklmnopqrst',SUPABASE_URL:'https://abcdefghijklmnopqrst.supabase.co',SUPABASE_ANON_KEY:'fixture-anon',SUPABASE_SERVICE_ROLE_KEY:'fixture-service-role',ADMIN_EMAILS:'admin@fixture.invalid',CANDIDATE_SPOTS:JSON.stringify({[id]:slug}),CANDIDATE_WRITES_ENABLED:'true',TEST_MEDIA:media,ASSETS:{fetch:async()=>new Response('static',{headers:{'Content-Type':'text/plain'}})}}
   const transport=async(input,init={})=>{
@@ -45,9 +48,11 @@ function fixture() {
     return Response.json(badResponse?[{...row,publication_status:undefined}]:[row])
   }
   const worker=createWorker(transport)
+  env.CANDIDATE_UPLOAD_MODE='stream'
   let session=''
   const request=(route,options={})=>{
     const headers=new Headers(options.headers)
+    if(route.endsWith('/image')&&options.body&&!headers.has('Content-Length'))headers.set('Content-Length',String(new Blob([options.body]).size))
     if(session)headers.set('Cookie',session)
     if(options.method&&!['GET','HEAD'].includes(options.method)&&!headers.has('Origin'))headers.set('Origin',origin)
     return worker.fetch(new Request(`${origin}${route}`,{...options,headers}),env)
@@ -131,7 +136,7 @@ test('unverified source or outage never falls back to stale HTML or media',async
 test('only validated image types under fixture keys can be uploaded and saved',async()=>{
   const f=fixture();await f.login()
   assert.equal((await f.request(`/api/candidate/spots/${id}/image`,{method:'POST',headers:{'Content-Type':'image/svg+xml'},body:'<svg/>'})).status,415)
-  assert.equal((await f.request(`/api/candidate/spots/${id}/image`,{method:'POST',headers:{'Content-Type':'image/png'},body:'not a png'})).status,415)
+  assert.equal((await f.request(`/api/candidate/spots/${id}/image`,{method:'POST',headers:{'Content-Type':'image/png'},body:'not a valid png signature'})).status,415)
   assert.equal((await f.request(`/api/candidate/spots/${id}/image`,{method:'POST',headers:{'Content-Type':'image/png','Content-Length':String(11*1024*1024)},body:png})).status,413)
   assert.equal((await f.save({image_url:'https://production.invalid/secret.png'})).status,400)
   assert.equal((await f.save({id:5})).status,400)

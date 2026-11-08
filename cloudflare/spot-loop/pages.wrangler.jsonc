@@ -5,6 +5,7 @@
   "vars": {
     "ENVIRONMENT": "isolated-candidate",
     "CANDIDATE_WRITES_ENABLED": "false",
+    "CANDIDATE_UPLOAD_MODE": "presigned",
     "CANDIDATE_SUPABASE_REF": "USER_MUST_CONFIGURE_ISOLATED_PROJECT",
     "SUPABASE_URL": "https://candidate.invalid",
     "CANDIDATE_SPOTS": "{\"910001\":\"cloudflare-loop-fixture-910001\"}"
