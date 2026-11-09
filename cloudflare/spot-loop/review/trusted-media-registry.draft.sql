@@ -20,7 +20,7 @@ create table jnq_media_private.enabled_spots (
 
 create function jnq_media_private.valid_key(p_spot bigint, p_key text)
 returns boolean language sql immutable strict security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
   select p_spot between 1 and 9007199254740991
     and p_key ~ ('^media/candidate/' || p_spot::text ||
@@ -29,14 +29,14 @@ $$;
 
 create table jnq_media_private.registry (
   spot_id bigint not null references jnq_media_private.enabled_spots(spot_id) on delete cascade,
-  object_key text not null,
+  object_key text collate pg_catalog."C" not null,
   object_size bigint not null check (object_size between 12 and 10485760),
-  mime text not null,
-  object_etag text not null check (octet_length(object_etag) between 1 and 128),
-  object_version text not null check (octet_length(object_version) between 1 and 128),
+  mime text collate pg_catalog."C" not null,
+  object_etag text collate pg_catalog."C" not null check (octet_length(object_etag) between 1 and 128),
+  object_version text collate pg_catalog."C" not null check (octet_length(object_version) between 1 and 128),
   receipt_size bigint not null check (receipt_size between 1 and 1024),
-  receipt_etag text not null check (octet_length(receipt_etag) between 1 and 128),
-  receipt_version text not null check (octet_length(receipt_version) between 1 and 128),
+  receipt_etag text collate pg_catalog."C" not null check (octet_length(receipt_etag) between 1 and 128),
+  receipt_version text collate pg_catalog."C" not null check (octet_length(receipt_version) between 1 and 128),
   verified_at timestamptz not null default clock_timestamp(),
   revoked_at timestamptz,
   primary key (spot_id, object_key),
@@ -52,6 +52,22 @@ create table jnq_media_private.registry (
 );
 -- Row existence represents verification. revoked_at is a terminal tombstone.
 -- PK prefix covers the FK and Spot lookup. No secondary index until measured.
+create function jnq_media_private.guard_registry_update()
+returns trigger language plpgsql security invoker
+set search_path = pg_catalog, pg_temp
+as $$
+begin
+  if (to_jsonb(new) - 'revoked_at') is distinct from (to_jsonb(old) - 'revoked_at')
+    or (old.revoked_at is not null and new.revoked_at is distinct from old.revoked_at) then
+    raise exception using errcode = 'PT409', message = 'JNQ_REGISTRY_IDENTITY_OR_REVOCATION_IMMUTABLE';
+  end if;
+  return new;
+end
+$$;
+create trigger jnq_registry_terminal
+  before update on jnq_media_private.registry
+  for each row execute function jnq_media_private.guard_registry_update();
+
 alter table jnq_media_private.enabled_spots enable row level security;
 alter table jnq_media_private.registry enable row level security;
 revoke all on table jnq_media_private.enabled_spots, jnq_media_private.registry
@@ -66,7 +82,7 @@ grant update (revoked_at) on jnq_media_private.registry to service_role;
 
 create function jnq_media_private.require_service()
 returns void language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 begin
   if current_user <> 'service_role' then
@@ -77,7 +93,7 @@ $$;
 
 create function jnq_media_private.lock_spot(p_spot bigint)
 returns public.locations language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_row public.locations;
@@ -102,7 +118,7 @@ $$;
 
 create function jnq_media_private.media_keys(p_spot bigint, p_cover text, p_images text[])
 returns text[] language plpgsql immutable security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_keys text[];
@@ -133,7 +149,7 @@ $$;
 
 create function jnq_media_private.spot_projection(p_row public.locations)
 returns jsonb language sql stable security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
   select jsonb_object_agg(f.key, f.value)
   from jsonb_each(to_jsonb(p_row)) as f
@@ -160,7 +176,7 @@ create function public.jnq_media_register(
   p_can_insert boolean
 )
 returns boolean language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_entry jnq_media_private.registry;
@@ -188,6 +204,9 @@ begin
     p_spot, p_key, p_size, p_mime, p_etag, p_version,
     p_receipt_size, p_receipt_etag, p_receipt_version
   );
+  if not found then
+    raise exception using errcode = 'PT503', message = 'JNQ_REGISTRATION_NOT_APPLIED';
+  end if;
   return true;
 end
 $$;
@@ -199,7 +218,7 @@ create function public.jnq_media_save(
   p_spot bigint, p_expected_updated_at timestamptz, p_patch jsonb, p_observed jsonb
 )
 returns jsonb language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_before public.locations;
@@ -260,6 +279,8 @@ begin
     raise exception using errcode = 'PT409', message = 'JNQ_MEDIA_NOT_VERIFIED';
   end if;
   -- Keep a millisecond-aligned version so the Worker can round-trip it without loss.
+  v_after.updated_at := greatest(date_trunc('milliseconds', clock_timestamp()),
+    date_trunc('milliseconds', v_before.updated_at) + interval '1 millisecond');
   update public.locations as l set
     name = v_after.name,
     name_cn = v_after.name_cn,
@@ -294,10 +315,16 @@ begin
     experience_en = v_after.experience_en,
     redirect_url = v_after.redirect_url,
     redirect_type = v_after.redirect_type,
-    updated_at = greatest(date_trunc('milliseconds', clock_timestamp()),
-      date_trunc('milliseconds', l.updated_at) + interval '1 millisecond')
+    updated_at = v_after.updated_at
     where l.id = p_spot
-    returning l.* into v_after;
+    returning l.* into v_before;
+  if not found then
+    raise exception using errcode = 'PT503', message = 'JNQ_SPOT_SAVE_NOT_APPLIED';
+  end if;
+  select l.* into v_before from public.locations l where l.id = p_spot;
+  if not found or to_jsonb(v_before) is distinct from to_jsonb(v_after) then
+    raise exception using errcode = 'PT503', message = 'JNQ_SPOT_SAVE_NOT_APPLIED';
+  end if;
   return jnq_media_private.spot_projection(v_after);
 end
 $$;
@@ -306,30 +333,40 @@ $$;
 -- media mutations and can still work when R2 is down or a receipt has vanished.
 create function public.jnq_media_withdraw(p_spot bigint, p_expected_updated_at timestamptz)
 returns jsonb language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_spot public.locations;
+  v_expected_version timestamptz;
 begin
   v_spot := jnq_media_private.lock_spot(p_spot);
   if v_spot.updated_at is distinct from p_expected_updated_at then
     raise exception using errcode = 'PT409', message = 'JNQ_SPOT_VERSION_CONFLICT';
   end if;
-  update public.locations as l set publication_status = 'hidden',
-    updated_at = greatest(date_trunc('milliseconds', clock_timestamp()),
-      date_trunc('milliseconds', l.updated_at) + interval '1 millisecond')
+  v_expected_version := greatest(date_trunc('milliseconds', clock_timestamp()),
+    date_trunc('milliseconds', v_spot.updated_at) + interval '1 millisecond');
+  update public.locations as l set publication_status = 'hidden', updated_at = v_expected_version
     where l.id = p_spot returning l.* into v_spot;
+  if not found then
+    raise exception using errcode = 'PT503', message = 'JNQ_SPOT_WITHDRAW_NOT_APPLIED';
+  end if;
+  select l.* into v_spot from public.locations l where l.id = p_spot;
+  if not found or v_spot.publication_status is distinct from 'hidden'
+    or v_spot.updated_at is distinct from v_expected_version then
+    raise exception using errcode = 'PT503', message = 'JNQ_SPOT_WITHDRAW_NOT_APPLIED';
+  end if;
   return jnq_media_private.spot_projection(v_spot);
 end
 $$;
 
 create function public.jnq_media_revoke(p_spot bigint, p_key text)
 returns boolean language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_spot public.locations;
   v_entry jnq_media_private.registry;
+  v_revoked_at timestamptz;
 begin
   v_spot := jnq_media_private.lock_spot(p_spot);
   select * into v_entry from jnq_media_private.registry
@@ -340,13 +377,13 @@ begin
   if v_entry.revoked_at is not null then return true; end if;
   update jnq_media_private.registry
     set revoked_at = greatest(clock_timestamp(), verified_at)
-    where spot_id = p_spot and object_key = p_key;
+    where spot_id = p_spot and object_key = p_key returning revoked_at into v_revoked_at;
+  if not found or v_revoked_at is null then
+    raise exception using errcode = 'PT503', message = 'JNQ_MEDIA_REVOKE_NOT_APPLIED';
+  end if;
   if v_spot.image_url = '/' || p_key
     or ('/' || p_key) = any(coalesce(v_spot.images, '{}'::text[])) then
-    update public.locations as l set publication_status = 'hidden',
-      updated_at = greatest(date_trunc('milliseconds', clock_timestamp()),
-        date_trunc('milliseconds', l.updated_at) + interval '1 millisecond')
-      where l.id = p_spot;
+    perform public.jnq_media_withdraw(p_spot, v_spot.updated_at);
   end if;
   return true;
 end
@@ -354,7 +391,7 @@ $$;
 
 create function public.jnq_media_delete(p_spot bigint, p_expected_updated_at timestamptz)
 returns boolean language plpgsql security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_spot public.locations;
@@ -364,6 +401,9 @@ begin
     raise exception using errcode = 'PT409', message = 'JNQ_SPOT_VERSION_CONFLICT';
   end if;
   delete from public.locations where id = p_spot;
+  if not found or exists (select 1 from public.locations l where l.id = p_spot) then
+    raise exception using errcode = 'PT503', message = 'JNQ_SPOT_DELETE_NOT_APPLIED';
+  end if;
   -- Registry cascades remove enrollment and registry rows. Existing locations
   -- foreign keys also apply. Enroll only dependency-checked synthetic fixtures.
   return true;
@@ -374,7 +414,7 @@ $$;
 -- The Worker keeps separate server-verified admin and anonymous gates.
 create function public.jnq_media_lookup(p_spot bigint, p_key text)
 returns jsonb language plpgsql stable security invoker
-set search_path = pg_catalog
+set search_path = pg_catalog, pg_temp
 as $$
 declare
   v_result jsonb;
@@ -398,7 +438,10 @@ $$;
 -- Explicitly clear grants inherited through creation defaults for these objects.
 -- Keep all grants in this transaction so no public exposure window exists.
 revoke all on all functions in schema jnq_media_private from public, anon, authenticated, service_role;
-grant execute on all functions in schema jnq_media_private to service_role;
+grant execute on function jnq_media_private.valid_key(bigint,text),
+  jnq_media_private.require_service(), jnq_media_private.lock_spot(bigint),
+  jnq_media_private.media_keys(bigint,text,text[]),
+  jnq_media_private.spot_projection(public.locations) to service_role;
 -- The private schema is dedicated to this draft. Do not add it to PostgREST's exposed schemas.
 revoke all on function public.jnq_media_register(bigint,text,bigint,text,text,text,bigint,text,text,boolean) from public, anon, authenticated, service_role;
 grant execute on function public.jnq_media_register(bigint,text,bigint,text,text,text,bigint,text,text,boolean) to service_role;

@@ -26,11 +26,24 @@ test('draft save allowlist, assignments and projection match the Spot contract',
   const save = body('public.jnq_media_save')
   const expected = SPOT_FIELDS.filter(field => !['id', 'created_at', 'updated_at'].includes(field)).sort()
   assert.deepEqual(quoted(save.match(/k\.field <> all\(array\[([\s\S]*?)\]\)/)[1]).sort(), expected)
-  assert.deepEqual([...save.matchAll(/^\s+(\w+) = v_after\.\1,?$/gm)].map(match => match[1]).sort(), expected)
+  const assignments = [...save.matchAll(/^\s+(\w+) = v_after\.\1,?$/gm)].map(match => match[1]).sort()
+  assert.deepEqual(assignments, [...expected, 'updated_at'].sort())
+  assert.match(save, /v_after\.updated_at := greatest\(/)
   assert.deepEqual(quoted(body('jnq_media_private.spot_projection').match(/any\(array\[([\s\S]*?)\]\)/)[1]).sort(), [...SPOT_FIELDS].sort())
   assert.match(save, /v_before\.updated_at is distinct from p_expected_updated_at/)
   assert.match(save, /count\(distinct o\.key\)/)
   assert.match(save, /r\.revoked_at is null/)
+})
+
+test('draft pins namespaces and rejects un-revocation and suppressed or altered writes', () => {
+  assert.equal([...draft.matchAll(/create function /g)].length,
+    [...draft.matchAll(/set search_path = pg_catalog, pg_temp/g)].length)
+  assert.match(body('jnq_media_private.guard_registry_update'), /old\.revoked_at is not null and new\.revoked_at is distinct from old\.revoked_at/)
+  assert.match(draft, /before update on jnq_media_private\.registry/)
+  assert.match(body('public.jnq_media_save'), /to_jsonb\(v_before\) is distinct from to_jsonb\(v_after\)/)
+  for (const [rpc, error] of [['save','SPOT_SAVE'], ['withdraw','SPOT_WITHDRAW'], ['delete','SPOT_DELETE'], ['revoke','MEDIA_REVOKE']]) {
+    assert.match(body('public.jnq_media_'+rpc), new RegExp('JNQ_'+error+'_NOT_APPLIED'))
+  }
 })
 
 for (const failure of ['before commit', 'after commit', 'receipt write']) {

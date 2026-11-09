@@ -1,0 +1,19 @@
+{
+  "baseCommit": "3b0d9ab",
+  "staticReview": "PASS",
+  "node": "v24.13.0",
+  "staticAndSyntheticPassed": 34,
+  "failed": 0,
+  "originalCasesPassed": 33,
+  "newStaticCasesPassed": 1,
+  "runnerSyntaxChecked": true,
+  "sqlExecuted": false,
+  "postgresLocksAndAcl": "PENDING",
+  "postgrest": "PENDING",
+  "cloudflareNativeCpu": "PENDING",
+  "supabaseFreeCapacity": "PENDING",
+  "remoteDatabaseAccessed": false,
+  "previewDeployed": false,
+  "candidateWorkerRequests": 0,
+  "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1"
+}
