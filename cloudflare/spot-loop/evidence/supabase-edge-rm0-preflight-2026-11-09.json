@@ -1,0 +1,64 @@
+{
+  "baseline": "5bb6fde82a2c75aa959a5aa502a98d47a02f2a73",
+  "decision": "NOT_FEASIBLE",
+  "decisionScope": "Current authorized credential state",
+  "blocker": "ISOLATED_R2_CREDENTIALS_NOT_AVAILABLE_TO_EDGE_FUNCTION",
+  "platformRuntimeFeasibility": "UNKNOWN",
+  "formalMigration": "HOLD",
+  "project": {
+    "ref": "rnamstwwbzknwbjwdgrf",
+    "name": "jnqjourney-preview",
+    "status": "ACTIVE_HEALTHY",
+    "postgresVersion": "17.11.0.011",
+    "organization": "JNQ Media",
+    "organizationPlan": "free",
+    "organizationTier": "tier_free",
+    "edgeFunctionsListed": 0,
+    "source": "Official Supabase get_project, get_organization, list_edge_functions with explicit isolated project ID"
+  },
+  "credentials": {
+    "source": "Explicit-project Supabase CLI secrets list, name metadata only",
+    "customSecretMetadataCount": 0,
+    "r2RelatedSecretNames": [],
+    "candidateR2AccessKeyNamePresent": false,
+    "candidateR2SecretKeyNamePresent": false,
+    "localProcessCandidateCredentialPairPresent": false,
+    "secretValuesRead": false,
+    "secretValuesPrinted": false,
+    "builtinSupabaseRuntimeVariables": "Supabase provides default runtime variables, independent of custom Secrets list"
+  },
+  "publishedFreeLimits": {
+    "monthlyInvocations": 500000,
+    "cpuSecondsPerRequest": 2,
+    "memoryMb": 256,
+    "workerWallClockSeconds": 150,
+    "actualAccountRemainingQuota": "UNKNOWN"
+  },
+  "r2Identity": {
+    "nativeWorkerVersionRequiredByFrozenSql": true,
+    "officialS3CopyObjectVersionHeaderDocumented": true,
+    "actualHeadGetVersionEqualityWithRegistry": "UNKNOWN",
+    "actualPrivateS3RequestsThisTrial": 0,
+    "simulatedResultsUsed": false
+  },
+  "trial": {
+    "edgeFunctionsDeployed": 0,
+    "edgeInvocations": 0,
+    "measuredCpu": "UNKNOWN",
+    "measuredDuration": "UNKNOWN",
+    "newFixtureCount": 0,
+    "sqlWrites": 0,
+    "r2Writes": 0,
+    "cloudflareCandidateRequests": 0,
+    "secretsConfigured": 0,
+    "stoppedBeforeDeployment": true
+  },
+  "sourceUrls": [
+    "https://supabase.com/docs/guides/functions/pricing",
+    "https://supabase.com/docs/guides/functions/limits",
+    "https://supabase.com/docs/guides/functions/secrets",
+    "https://developers.cloudflare.com/r2/api/workers/workers-api-reference/",
+    "https://developers.cloudflare.com/r2/platform/release-notes/",
+    "https://developers.cloudflare.com/r2/api/s3/api/"
+  ]
+}
