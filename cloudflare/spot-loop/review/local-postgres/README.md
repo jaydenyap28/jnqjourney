@@ -15,7 +15,9 @@
 
 ## 独立 PostgREST 权限测试
 
-SQL 会话的 `SET ROLE` 不能代表 HTTP 身份切换和 schema cache。数据库真验通过后，如果要批准隔离部署，再准备一个本机 PostgREST 测试栈。先审核与目标版本匹配的镜像，在 Docker 内部网络连接新的合成数据库，HTTP 端口仅映射到 `127.0.0.1`。使用本机临时生成并销毁的 JWT Secret。创建独立 `authenticator`，仅授予测试所需角色切换权限。`db-schemas` 仅暴露 `public`，`db-anon-role` 使用 `anon`。配置和容器的生命周期与合成数据库一起清理。[PostgREST 角色切换](https://docs.postgrest.org/en/stable/references/auth.html)
+本机 PostgREST 14.12 HTTP 验收已通过。复验使用 `node cloudflare/spot-loop/review/local-postgres/postgrest.mjs --approved-local-http`，并预置脚本中的两个固定镜像。脚本用专属内部 Docker 网络及 Windows 回环转发。PostgreSQL 和 PostgREST 均不发布 Docker 端口。[实际结果、镜像摘要与清理](../../MEDIA-REGISTRY-LOCAL-POSTGREST-2026-11-09.md)
+
+SQL 会话的 `SET ROLE` 与 HTTP 身份切换和 schema cache 分别验证。复验时在 Docker 内部网络连接新的合成数据库。HTTP 入口只监听 `127.0.0.1`。使用本机临时生成并销毁的 JWT Secret。创建独立 `authenticator`，仅授予测试所需角色切换权限。`db-schemas` 仅暴露 `public`，`db-anon-role` 使用 `anon`。配置和容器的生命周期与合成数据库一起清理。[PostgREST 角色切换](https://docs.postgrest.org/en/stable/references/auth.html)
 
 | HTTP 场景 | 应验证的结果 |
 | --- | --- |

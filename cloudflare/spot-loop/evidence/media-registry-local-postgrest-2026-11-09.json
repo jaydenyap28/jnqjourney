@@ -1,0 +1,1019 @@
+{
+  "baseline": "4b9723da7b47f59429a461fecc0d8908714951e7",
+  "finalRun": {
+    "runId": "568a8879-9052-466f-bd5e-640424f26c26",
+    "status": "POSTGREST_LOCAL_PASS",
+    "images": {
+      "postgres": {
+        "tag": "docker.io/library/postgres:17",
+        "id": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+        "digest": "postgres@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+        "platform": "linux/amd64"
+      },
+      "postgrest": {
+        "tag": "docker.io/postgrest/postgrest:v14.12",
+        "id": "sha256:54000f24847d01a2c2302e0041cf0618b875c57fb48507d743cfa9aaa50bf43c",
+        "digest": "postgrest/postgrest@sha256:54000f24847d01a2c2302e0041cf0618b875c57fb48507d743cfa9aaa50bf43c",
+        "platform": "linux/amd64"
+      }
+    },
+    "http": [
+      {
+        "scenario": "cache_before_sql",
+        "status": 404,
+        "code": "PGRST202",
+        "pass": true
+      },
+      {
+        "scenario": "cache_stale_after_sql",
+        "status": 404,
+        "code": "PGRST202",
+        "pass": true
+      },
+      {
+        "scenario": "cache_after_notify",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "exact_signature_extra_argument",
+        "status": 404,
+        "code": "PGRST202",
+        "pass": true
+      },
+      {
+        "scenario": "exact_signature_missing_argument",
+        "status": 404,
+        "code": "PGRST202",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_register",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_save",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_withdraw",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_revoke",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_delete",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_no_jwt_lookup",
+        "status": 401,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_register",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_save",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_withdraw",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_revoke",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_delete",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_lookup",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_register",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_save",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_withdraw",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_revoke",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_delete",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_wrong_signature_lookup",
+        "status": 401,
+        "code": "PGRST301",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_register",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_save",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_withdraw",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_revoke",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_delete",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_expired_lookup",
+        "status": 401,
+        "code": "PGRST303",
+        "pass": true
+      },
+      {
+        "scenario": "acl_signed_ungranted_postgres_role",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticator_self_has_no_rpc_grant",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_role_claim_in_body",
+        "status": 404,
+        "code": "PGRST202",
+        "pass": true
+      },
+      {
+        "scenario": "acl_spoof_role_headers",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "acl_authenticated_direct_spot_patch",
+        "status": 403,
+        "code": "42501",
+        "pass": true
+      },
+      {
+        "scenario": "private_table_anon",
+        "status": 404,
+        "code": "PGRST205",
+        "pass": true
+      },
+      {
+        "scenario": "private_accept_profile_anon",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "private_content_profile_anon",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "private_table_authenticated",
+        "status": 404,
+        "code": "PGRST205",
+        "pass": true
+      },
+      {
+        "scenario": "private_accept_profile_authenticated",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "private_content_profile_authenticated",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "private_table_service",
+        "status": 404,
+        "code": "PGRST205",
+        "pass": true
+      },
+      {
+        "scenario": "private_accept_profile_service",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "private_content_profile_service",
+        "status": 406,
+        "code": "PGRST106",
+        "pass": true
+      },
+      {
+        "scenario": "service_lookup_unregistered_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_register_first",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_register_confirm",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_register_identity_conflict",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_REGISTRATION_CONFLICT"
+      },
+      {
+        "scenario": "service_register_confirm_without_entry",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_REGISTRATION_UNCONFIRMED"
+      },
+      {
+        "scenario": "service_lookup_unreferenced",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_save_explicit_null_version",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_save_wrong_legacy_media_path",
+        "status": 400,
+        "code": "PT400",
+        "pass": true,
+        "message": "JNQ_INVALID_MEDIA_REFERENCE"
+      },
+      {
+        "scenario": "service_save_old_null_version",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_SPOT_VERSION_CONFLICT"
+      },
+      {
+        "scenario": "service_save_missing_snapshot",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_MEDIA_SNAPSHOT_INCOMPLETE"
+      },
+      {
+        "scenario": "service_lookup_referenced_public",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_withdraw_stale",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_SPOT_VERSION_CONFLICT"
+      },
+      {
+        "scenario": "service_withdraw",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_lookup_withdrawn",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "anon_hidden_spot_filtered",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_republish",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_revoke",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_revoke_idempotent",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_lookup_revoked_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_register_after_revoke",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_REGISTRATION_CONFLICT"
+      },
+      {
+        "scenario": "service_republish_revoked_denied",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_MEDIA_NOT_VERIFIED"
+      },
+      {
+        "scenario": "service_delete_stale",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_SPOT_VERSION_CONFLICT"
+      },
+      {
+        "scenario": "service_delete",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_delete_already_absent",
+        "status": 404,
+        "code": "PT404",
+        "pass": true,
+        "message": "JNQ_SPOT_NOT_ENABLED"
+      },
+      {
+        "scenario": "service_lookup_deleted_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_1_register_1",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_1_first_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_1_unchanged",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_register_1",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_register_2",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_register_3",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_register_4",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_register_5",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_first_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_5_unchanged",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_1",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_2",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_3",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_4",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_5",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_6",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_7",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_8",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_9",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_10",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_11",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_12",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_13",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_14",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_15",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_16",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_register_17",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_first_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_17_unchanged",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_1",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_2",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_3",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_4",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_5",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_6",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_7",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_8",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_9",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_10",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_11",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_12",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_13",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_14",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_15",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_16",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_17",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_18",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_19",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_20",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_21",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_22",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_23",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_24",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_25",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_26",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_27",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_28",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_29",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_register_30",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_first_null",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "gallery_30_unchanged",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "service_trigger_skip_rollback",
+        "status": 503,
+        "code": "PT503",
+        "pass": true,
+        "message": "JNQ_SPOT_SAVE_NOT_APPLIED"
+      },
+      {
+        "scenario": "service_bad_json_patch_shape",
+        "status": 400,
+        "code": "PT400",
+        "pass": true,
+        "message": "JNQ_INVALID_SAVE_PAYLOAD"
+      },
+      {
+        "scenario": "service_forged_observed_identity",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_MEDIA_NOT_VERIFIED"
+      },
+      {
+        "scenario": "database_statement_timeout",
+        "status": 500,
+        "code": "57014",
+        "pass": true
+      },
+      {
+        "scenario": "timeout_confirm_missing",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_REGISTRATION_UNCONFIRMED"
+      },
+      {
+        "scenario": "timeout_fresh_request_recovers",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "register_response_body_discarded",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "lost_response_confirm_only_retry",
+        "status": 200,
+        "code": null,
+        "pass": true
+      },
+      {
+        "scenario": "lost_response_retry_changed_version",
+        "status": 409,
+        "code": "PT409",
+        "pass": true,
+        "message": "JNQ_REGISTRATION_CONFLICT"
+      }
+    ],
+    "database": {
+      "authenticatorCanSet": [
+        "anon",
+        "authenticated",
+        "service_role"
+      ],
+      "exactRpcSignatures": [
+        "jnq_media_delete(p_spot bigint, p_expected_updated_at timestamp with time zone)",
+        "jnq_media_lookup(p_spot bigint, p_key text)",
+        "jnq_media_register(p_spot bigint, p_key text, p_size bigint, p_mime text, p_etag text, p_version text, p_receipt_size bigint, p_receipt_etag text, p_receipt_version text, p_can_insert boolean)",
+        "jnq_media_revoke(p_spot bigint, p_key text)",
+        "jnq_media_save(p_spot bigint, p_expected_updated_at timestamp with time zone, p_patch jsonb, p_observed jsonb)",
+        "jnq_media_withdraw(p_spot bigint, p_expected_updated_at timestamp with time zone)"
+      ],
+      "deniedRequestsStateUnchanged": {
+        "before": "5d557f0a683dd0e07122674460b7e913",
+        "after": "5d557f0a683dd0e07122674460b7e913"
+      },
+      "revokeAndCascadeVerified": true,
+      "failedSaveStateUnchanged": true,
+      "timeoutRolledBack": true,
+      "responseBodyLossIdempotent": true
+    },
+    "cleanup": {
+      "postgrestRemoved": true,
+      "postgresRemoved": true,
+      "networkRemoved": true,
+      "loopbackPortClosed": true
+    },
+    "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+    "postgresVersion": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "isolation": {
+      "dbContainer": "1fad1d5ab38c16ca1c7bfde27a369415670333df09c75d69849e4ce7d1943661",
+      "httpContainer": "f50cfd42c37deeab5477f1577555e30b8a29a2c1c8585b830c3f3f07aed8565a",
+      "network": "6655273445f241430b7f2029e499f11c5f6117f263074f901b9ed4cb626e8c78",
+      "networkInternal": true,
+      "postgresPublishedPorts": 0,
+      "postgrestPublishedPorts": 0,
+      "httpBinding": "127.0.0.1:62973",
+      "httpTransport": "loopback TCP relay via local docker exec",
+      "postgresDataMount": "tmpfs",
+      "persistentMounts": 0
+    },
+    "postgrestVersion": "PostgREST 14.12"
+  },
+  "independentCleanup": {
+    "checkedRunLabels": [
+      "24b04e0c-8e00-4bb0-981c-e8cc854f5cd2",
+      "649cc7bb-1e01-490d-9ce2-b94f5f9bd568",
+      "dbe3c896-de30-41fc-a99b-4e04846db587",
+      "85434704-81bd-48f8-a352-1fbaf8c3deb6",
+      "df705759-6f1f-426c-bac0-a58dad1366e3",
+      "568a8879-9052-466f-bd5e-640424f26c26"
+    ],
+    "containersRemaining": 0,
+    "networksRemaining": 0
+  },
+  "responseLossMode": "Application-level loss after actual HTTP response. Raw TCP abort was not accepted.",
+  "earlierDiagnostics": [
+    {
+      "runId": "24b04e0c-8e00-4bb0-981c-e8cc854f5cd2",
+      "status": "POSTGREST_LOCAL_FAIL",
+      "attemptedHttpChecks": 0,
+      "failure": "no public port '3000/tcp' published for d93471e04b2e03399ca993776ac2f1f99dbd88959467a4d36eecca5e2c64518c\n",
+      "failedHttp": null,
+      "cleanup": {
+        "postgrestRemoved": true,
+        "postgresRemoved": true,
+        "networkRemoved": true
+      }
+    },
+    {
+      "runId": "649cc7bb-1e01-490d-9ce2-b94f5f9bd568",
+      "status": "POSTGREST_LOCAL_FAIL",
+      "attemptedHttpChecks": 137,
+      "failure": "lost_response_confirm_only_retry returned HTTP 400 / null",
+      "failedHttp": {
+        "scenario": "lost_response_confirm_only_retry",
+        "status": 400,
+        "code": null,
+        "pass": false
+      },
+      "cleanup": {
+        "postgrestRemoved": true,
+        "postgresRemoved": true,
+        "networkRemoved": true,
+        "loopbackPortClosed": true
+      }
+    },
+    {
+      "runId": "dbe3c896-de30-41fc-a99b-4e04846db587",
+      "status": "POSTGREST_LOCAL_FAIL",
+      "attemptedHttpChecks": 6,
+      "failure": "acl_no_jwt_register returned HTTP 400 / null",
+      "failedHttp": {
+        "scenario": "acl_no_jwt_register",
+        "status": 400,
+        "code": null,
+        "pass": false,
+        "bodyBytes": 51,
+        "postgrestServer": true
+      },
+      "cleanup": {
+        "postgrestRemoved": true,
+        "postgresRemoved": true,
+        "networkRemoved": true,
+        "loopbackPortClosed": true
+      }
+    },
+    {
+      "runId": "85434704-81bd-48f8-a352-1fbaf8c3deb6",
+      "status": "POSTGREST_LOCAL_FAIL",
+      "attemptedHttpChecks": 6,
+      "failure": "acl_no_jwt_register returned HTTP 400 / null",
+      "failedHttp": {
+        "scenario": "acl_no_jwt_register",
+        "status": 400,
+        "code": null,
+        "pass": false,
+        "bodyBytes": 51,
+        "postgrestServer": true,
+        "diagnostic": ""
+      },
+      "cleanup": {
+        "postgrestRemoved": true,
+        "postgresRemoved": true,
+        "networkRemoved": true,
+        "loopbackPortClosed": true
+      }
+    },
+    {
+      "runId": "df705759-6f1f-426c-bac0-a58dad1366e3",
+      "status": "POSTGREST_LOCAL_FAIL",
+      "attemptedHttpChecks": 6,
+      "failure": "acl_no_jwt_register returned HTTP 400 / null",
+      "failedHttp": {
+        "scenario": "acl_no_jwt_register",
+        "status": 400,
+        "code": null,
+        "pass": false,
+        "bodyBytes": 51,
+        "postgrestServer": true,
+        "diagnostic": "{\"code\":\"\",\"details\":null,\"hint\":null,\"message\":\"\"}"
+      },
+      "cleanup": {
+        "postgrestRemoved": true,
+        "postgresRemoved": true,
+        "networkRemoved": true,
+        "loopbackPortClosed": true
+      }
+    }
+  ],
+  "remoteDatabaseAccessed": false,
+  "previewDeployed": false
+}
