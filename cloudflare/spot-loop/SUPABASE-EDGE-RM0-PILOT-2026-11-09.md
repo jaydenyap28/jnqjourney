@@ -1,5 +1,7 @@
 # Supabase Edge Functions 有界试点前置结果
 
+后续用户已配置隔离 R2 Secrets，单次真实托管身份探针返回 **S3_IDENTITY_NO_GO**。最新结论为 **SUPABASE_EDGE_RM0_NOT_FEASIBLE**，证据与范围见[真实 S3 试点报告](SUPABASE-EDGE-S3-IDENTITY-2026-11-09.md)。下文保留配置前的历史凭据阻塞记录。
+
 **NOT_FEASIBLE，当前凭据条件阻塞。正式迁移 HOLD。** 基线 `5bb6fde82a2c75aa959a5aa502a98d47a02f2a73`。隔离项目 `rnamstwwbzknwbjwdgrf` 的自定义 Edge Secrets 数量为 **0**，本机进程也没有隔离 R2 凭据对。依照本轮“需要新授权或新凭据时停止”的要求，试点停在部署前。平台上的实际保存可行性仍为 **UNKNOWN**。[脱敏预检证据](evidence/supabase-edge-rm0-preflight-2026-11-09.json)
 
 官方 Supabase 连接确认项目为 `jnqjourney-preview`、`ACTIVE_HEALTHY`、PostgreSQL 17.11，所属 `JNQ Media` 组织的 `plan=free`、`tier=tier_free`。该项目当前 Edge Functions 数量为 **0**。官方 Free 配额为每月 **500,000 次函数调用**，每请求 CPU 上限 **2 秒**、内存 **256 MB**、Free worker wall clock 上限 **150 秒**。实际账户剩余调用量、egress 和数据库余量为 **UNKNOWN**。本轮 Edge 请求数为 **0**，实际 CPU 和请求耗时均为 **UNKNOWN**。[调用额度](https://supabase.com/docs/guides/functions/pricing) · [运行限制](https://supabase.com/docs/guides/functions/limits)

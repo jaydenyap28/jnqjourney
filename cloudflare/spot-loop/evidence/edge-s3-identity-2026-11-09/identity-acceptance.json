@@ -1,0 +1,59 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "functionId": "195ebca6-8cb9-4173-98ec-5e97947097ae",
+  "functionVersion": 1,
+  "sourceSha256": "f2b6f999b7048487b3294716e0b744178201e8f0d464362f858baff744adadfc",
+  "functionName": "jnq-registry-rm0-pilot",
+  "key": "media/candidate/92005/7acc5bad-5ae2-435e-8b57-03037e9f2f4e.png",
+  "edgeInvocations": 1,
+  "saveRpcCalls": 0,
+  "cpuMs": "UNKNOWN",
+  "verdict": "S3_IDENTITY_NO_GO",
+  "hold": true,
+  "authenticatedExistingFixture": true,
+  "httpStatus": 409,
+  "clientElapsedMs": 3332,
+  "final": {
+    "status": 200,
+    "size": 68,
+    "etag": "a75db2c3e1deed40d807e8d2656674cd",
+    "version": null,
+    "mime": "image/png"
+  },
+  "receipt": {
+    "status": 200,
+    "size": null,
+    "etag": "e7790da1126b8f2bbc4caf5b65f68716",
+    "version": null,
+    "mime": "application/json"
+  },
+  "expected": {
+    "size": 68,
+    "etag": "a75db2c3e1deed40d807e8d2656674cd",
+    "version": "7e5e3faee1294321eeae0bc34e0cff53",
+    "mime": "image/png",
+    "receiptSize": 257,
+    "receiptEtag": "e7790da1126b8f2bbc4caf5b65f68716",
+    "receiptVersion": "7e5e3faed7a07d838d46a6f3463922f0"
+  },
+  "comparisons": {
+    "finalStatus": true,
+    "receiptStatus": true,
+    "finalSize": true,
+    "finalEtag": true,
+    "finalVersion": false,
+    "finalMime": true,
+    "receiptSize": false,
+    "receiptEtag": true,
+    "receiptVersion": false,
+    "receiptMime": true
+  },
+  "s3Requests": 2,
+  "registryRpc": 1,
+  "serverElapsedMs": 2335,
+  "expectedRegistryIdentityMatchesHistoricalNativeRecord": true,
+  "stageOnePassed": false,
+  "authSessionClosed": true,
+  "totalElapsedMs": 5263,
+  "finishedAt": "2026-11-09T15:27:37.036Z"
+}

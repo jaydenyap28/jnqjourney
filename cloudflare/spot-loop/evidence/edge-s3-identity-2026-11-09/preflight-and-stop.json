@@ -1,0 +1,46 @@
+{
+  "baseline": "bd7f1f39b155939f0cd00e60ad655b8379ec2f74",
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "secretMetadata": {
+    "count": 2,
+    "names": [
+      "CANDIDATE_R2_ACCESS_KEY_ID",
+      "CANDIDATE_R2_SECRET_ACCESS_KEY"
+    ],
+    "plaintextReadOutsideRuntimeExportedOrPrinted": false,
+    "source": "Official Supabase CLI secrets list with explicit project ID"
+  },
+  "functionsBefore": 0,
+  "functionsAfter": 1,
+  "functionName": "jnq-registry-rm0-pilot",
+  "functionVersion": 1,
+  "verifyJwt": true,
+  "phaseOneRuntimeProbeNeededForSecretIsolation": true,
+  "phaseTwoSaveImplementationEnabled": false,
+  "edgeRequests": 1,
+  "realS3HeadRequests": 2,
+  "realS3GetRequests": 0,
+  "registryLookupRpc": 1,
+  "saveRpc": 0,
+  "result": "SUPABASE_EDGE_RM0_NOT_FEASIBLE",
+  "reason": "S3_IDENTITY_NO_GO",
+  "stopOnIdentityFailure": true,
+  "authSessionLoggedOut": true,
+  "cpuMs": "UNKNOWN",
+  "actualFreeInvocationHeadroom": "UNKNOWN",
+  "fixturesCreated": 0,
+  "registryMutations": 0,
+  "r2Writes": 0,
+  "cloudflareRequests": 0,
+  "frozenSqlModified": false,
+  "oldWorkerModified": false,
+  "productionResourcesTouched": false,
+  "remainingTests": [
+    "5/17/30 image save and repeat",
+    "missing/replaced/revoked/forged media rejection",
+    "transaction conflict/rollback/repeat submission",
+    "live save CPU"
+  ],
+  "formalMigration": "HOLD"
+}

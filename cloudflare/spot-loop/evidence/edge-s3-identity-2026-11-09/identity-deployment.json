@@ -1,0 +1,11 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "name": "jnq-registry-rm0-pilot",
+  "stage": "identity-only",
+  "verifyJwt": true,
+  "sourceSha256": "f2b6f999b7048487b3294716e0b744178201e8f0d464362f858baff744adadfc",
+  "success": true,
+  "functionId": "195ebca6-8cb9-4173-98ec-5e97947097ae",
+  "version": 1,
+  "status": "ACTIVE"
+}
