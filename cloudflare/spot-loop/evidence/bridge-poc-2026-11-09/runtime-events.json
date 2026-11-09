@@ -1,0 +1,56 @@
+{
+  "deploymentId": "ebd1f8ea-1892-43b9-a77f-4e3cb07f6b41",
+  "count": 4,
+  "diagnostics": {
+    "parsedFrames": 4,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794239414930,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794239414523-0",
+      "wallTime": 0,
+      "cpuTime": 0
+    },
+    {
+      "timestamp": 1794239415664,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794239415620-1",
+      "wallTime": 1,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794239416225,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 403,
+      "acceptanceId": "1794239416182-2",
+      "wallTime": 0,
+      "cpuTime": 0
+    },
+    {
+      "timestamp": 1794239421161,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794239418201-3",
+      "wallTime": 470,
+      "cpuTime": 2
+    }
+  ]
+}

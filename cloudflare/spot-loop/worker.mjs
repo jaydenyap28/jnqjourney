@@ -1,6 +1,7 @@
 // Isolated Spot proof only. No Next.js, Node APIs, AWS SDK, SQL, or cache.
 // This file and its pure contract module are packaged for Pages.
 import {SPOT_FIELDS, validVersion, validSpotRow, validateSpotFields, publishedSpot, resolveCandidateRedirect} from './spot-contract.mjs'
+import {mediaIdentity} from './media-identity.mjs'
 const PRODUCTION_REF = 'vrufunuomioczocdsoer'
 const REGISTRY_REF = 'rnamstwwbzknwbjwdgrf'
 const REGISTRY_KEY = /^media\/candidate\/([1-9]\d*)\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\.(?:png|jpg|webp|gif)$/
@@ -362,14 +363,6 @@ async function registryRpc(env,name,args,transport) {
     fail(status,registryMessages[status])
   }
   return data
-}
-function mediaIdentity(key,object,receipt) {
-  if(!object||!receipt||!Number.isSafeInteger(object.size)||object.size<12||object.size>MAX_IMAGE||
-    !Number.isSafeInteger(receipt.size)||receipt.size<1||receipt.size>1024||receipt.httpMetadata?.contentType!=='application/json'||
-    !['image/png','image/jpeg','image/webp','image/gif'].includes(object.httpMetadata?.contentType)||
-    ![object.etag,object.version,receipt.etag,receipt.version].every(value=>typeof value==='string'&&value.length>0))return null
-  return {key,size:object.size,mime:object.httpMetadata.contentType,etag:object.etag,version:object.version,
-    receipt_size:receipt.size,receipt_etag:receipt.etag,receipt_version:receipt.version}
 }
 async function registerMedia(env,id,object,receipt,transport,canInsert) {
   const identity=mediaIdentity(object.key,object,receipt)

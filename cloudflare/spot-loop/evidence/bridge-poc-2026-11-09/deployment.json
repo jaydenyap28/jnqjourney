@@ -1,0 +1,35 @@
+{
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "branch": "codex/r2-identity-bridge",
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "environment": "preview",
+  "success": true,
+  "secretName": "CANDIDATE_IDENTITY_BRIDGE_KEY",
+  "existingDeploymentIds": [
+    "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+    "5332ce56-643d-4c5c-9882-4487c516c563",
+    "bd7af17d-0d90-4781-90df-d409ba376428",
+    "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+    "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+    "50f3962e-5eb5-47a6-8662-319d992b4113",
+    "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+    "730e582e-530a-4026-9478-5ccebd5fd248",
+    "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95"
+  ],
+  "expiresAt": 1794241097,
+  "credentialProvisionedAutomatically": true,
+  "productionUnchangedBeforeDeploy": true,
+  "deploymentId": "ebd1f8ea-1892-43b9-a77f-4e3cb07f6b41",
+  "url": "https://ebd1f8ea.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "workerSha256": "d53942592382d1375491cd4d8cc9e2ab79a4e3399b21a14bcaa9ebe4226acba6",
+  "productionCanonicalEmpty": true,
+  "productionEnvironmentCount": 0,
+  "productionR2Count": 0,
+  "productionUnchanged": true,
+  "edge": {
+    "name": "jnq-registry-rm0-pilot",
+    "id": "195ebca6-8cb9-4173-98ec-5e97947097ae",
+    "version": 3,
+    "verifyJwt": true
+  }
+}

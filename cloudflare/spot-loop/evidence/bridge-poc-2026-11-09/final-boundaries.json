@@ -1,0 +1,39 @@
+{
+  "checkedAt": "2026-11-09T15:52:03.060Z",
+  "productionCanonicalEmpty": true,
+  "productionConfigurationUnchanged": true,
+  "productionEnvironmentCount": 0,
+  "productionR2Count": 0,
+  "previewFailClosed": true,
+  "productionFailClosed": true,
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "fixture": "92005",
+  "localTemporaryKeyDeleted": true,
+  "supabaseProjectSharedSecretRemoved": true,
+  "pagesPreviewProjectSharedSecretRemoved": true,
+  "fixedDeploymentRetained": true,
+  "immutablePreviewSnapshotHasHardExpiry": 1794241097,
+  "caveat": "Existing Preview snapshots and already-loaded Edge runtimes may retain the temporary key until their fixed hard deadline. No further traffic is sent.",
+  "registryWrites": 0,
+  "r2Writes": 0,
+  "sqlModified": false,
+  "oldWorkerRedeployed": false,
+  "metadataQueryCount": 1,
+  "finalVerdict": "BRIDGE_POC_PASS",
+  "formalMigration": "HOLD",
+  "remainingSupabaseSecretMetadataNames": [
+    "CANDIDATE_R2_ACCESS_KEY_ID",
+    "CANDIDATE_R2_SECRET_ACCESS_KEY",
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_DB_URL",
+    "SUPABASE_JWKS",
+    "SUPABASE_PUBLISHABLE_KEYS",
+    "SUPABASE_SECRET_KEYS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+  ],
+  "tailProcessCheck": {
+    "source": "Windows Win32_Process filtered to this script or ebd1f8ea Tail",
+    "matchingOwnedProcesses": 0
+  }
+}

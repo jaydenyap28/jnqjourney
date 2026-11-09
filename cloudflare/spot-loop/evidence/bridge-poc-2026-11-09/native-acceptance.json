@@ -1,0 +1,93 @@
+{
+  "deploymentId": "ebd1f8ea-1892-43b9-a77f-4e3cb07f6b41",
+  "edgeVersion": 3,
+  "expiresAt": 1794241097,
+  "startedAt": "2026-11-09T15:50:14.522Z",
+  "cloudflareRequestBudget": 5,
+  "cloudflareRequests": 4,
+  "edgeRequests": 1,
+  "totalHttpTestRequests": 5,
+  "checks": [
+    {
+      "name": "anonymous_refused",
+      "acceptanceId": "1794239414523-0",
+      "expected": 401,
+      "method": "POST",
+      "path": "/internal/r2-identity",
+      "httpStatus": 401,
+      "corsHeaderPresent": false,
+      "metadataReturned": false,
+      "cpuTimeMs": 0,
+      "runtimeWallTimeMs": 0,
+      "nativeStatus": 401,
+      "outcome": "ok"
+    },
+    {
+      "name": "forged_signature_refused",
+      "acceptanceId": "1794239415620-1",
+      "expected": 401,
+      "method": "POST",
+      "path": "/internal/r2-identity",
+      "httpStatus": 401,
+      "corsHeaderPresent": false,
+      "metadataReturned": false,
+      "cpuTimeMs": 1,
+      "runtimeWallTimeMs": 1,
+      "nativeStatus": 401,
+      "outcome": "ok"
+    },
+    {
+      "name": "signed_browser_origin_refused",
+      "acceptanceId": "1794239416182-2",
+      "expected": 403,
+      "method": "POST",
+      "path": "/internal/r2-identity",
+      "httpStatus": 403,
+      "corsHeaderPresent": false,
+      "metadataReturned": false,
+      "cpuTimeMs": 0,
+      "runtimeWallTimeMs": 0,
+      "nativeStatus": 403,
+      "outcome": "ok"
+    },
+    {
+      "name": "edge_to_cloudflare_native_identity",
+      "acceptanceId": "1794239418201-3",
+      "method": "POST",
+      "path": "/internal/r2-identity",
+      "expected": 200,
+      "edgeHttpStatus": 200,
+      "clientElapsedMs": 3520,
+      "identity": {
+        "key": "media/candidate/92005/7acc5bad-5ae2-435e-8b57-03037e9f2f4e.png",
+        "size": 68,
+        "mime": "image/png",
+        "etag": "a75db2c3e1deed40d807e8d2656674cd",
+        "version": "7e5e3faee1294321eeae0bc34e0cff53",
+        "receipt_size": 257,
+        "receipt_etag": "e7790da1126b8f2bbc4caf5b65f68716",
+        "receipt_version": "7e5e3faed7a07d838d46a6f3463922f0"
+      },
+      "matches": {
+        "key": true,
+        "size": true,
+        "mime": true,
+        "etag": true,
+        "version": true,
+        "receipt_size": true,
+        "receipt_etag": true,
+        "receipt_version": true
+      },
+      "serverElapsedMs": 2470,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 470,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    }
+  ],
+  "verdict": "BRIDGE_POC_PASS",
+  "hold": true,
+  "authSessionClosed": true,
+  "localSharedKeyFileDeleted": true,
+  "finishedAt": "2026-11-09T15:50:22.580Z"
+}
