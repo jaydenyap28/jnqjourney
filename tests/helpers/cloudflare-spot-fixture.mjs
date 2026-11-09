@@ -4,9 +4,9 @@ import {createWorker} from '../../cloudflare/spot-loop/worker.mjs'
 const origin='https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev'
 const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aF5kAAAAASUVORK5CYII=','base64')
 const base='/api/candidate/spots/1'
-export function fixture({workerFactory=createWorker}={}) {
+export function fixture({workerFactory=createWorker,upstream,ids=[1,2,3]}={}) {
   const objects=new Map(),calls=[],deletes=[]
-  const rows=new Map([1,2,3].map(id=>[String(id),{
+  const rows=new Map(ids.map(id=>[String(id),{
     id,name:`Synthetic ${id}`,name_cn:`合成 ${id}`,status:'active',publication_status:null,
     updated_at:'2026-11-09T00:00:00Z',images:[],image_url:null,redirect_url:null,
   }]))
@@ -47,8 +47,10 @@ export function fixture({workerFactory=createWorker}={}) {
       return new Response('<CopyObjectResult/>')
     }
     assert.equal(url.origin,env.SUPABASE_URL)
-    if(url.pathname.endsWith('/auth/v1/user'))return Response.json({id:'synthetic-admin',email:'admin@fixture.invalid',email_confirmed_at:'2026-01-01'})
+    if(url.pathname.endsWith('/auth/v1/user'))return init.headers.Authorization==='Bearer synthetic-token'?
+      Response.json({id:'synthetic-admin',email:'admin@fixture.invalid',email_confirmed_at:'2026-01-01'}):new Response(null,{status:401})
     calls.push({method:init.method,url})
+    if(upstream)return upstream(url,init)
     const id=url.searchParams.get('id').slice(3),row=rows.get(id)
     if(!row)return Response.json([])
     if(['PATCH','DELETE'].includes(init.method)){
@@ -59,14 +61,14 @@ export function fixture({workerFactory=createWorker}={}) {
     }
     return Response.json([row])
   })
-  const call=(route,{method='GET',body,auth=true}={})=>worker.fetch(new Request(origin+route,{method,headers:{Origin:origin,'Content-Type':'application/json',...(auth?{Cookie:'__Host-jnq-candidate=synthetic-token'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})}),env)
+  const call=(route,{method='GET',body,auth=true,requestOrigin=origin}={})=>worker.fetch(new Request(origin+route,{method,headers:{Origin:requestOrigin,'Content-Type':'application/json',...(auth?{Cookie:'__Host-jnq-candidate=synthetic-token'}:{})},...(body===undefined?{}:{body:JSON.stringify(body)})}),env)
   const save=(data,expected=rows.get('1')?.updated_at)=>call(base,{method:'PATCH',body:{expectedUpdatedAt:expected,data}})
-  async function seedMedia(count) {
+  async function seedMedia(count,id=1) {
     const paths=[]
     for(let i=0;i<count;i++){
-      const key=`media/candidate/1/${crypto.randomUUID()}.png`
+      const key=`media/candidate/${id}/${crypto.randomUUID()}.png`
       const object=await media.put(key,png,{httpMetadata:{contentType:'image/png'}})
-      await media.put(`_candidate-validation/1/${key.split('/').at(-1)}.json`,JSON.stringify({schemaVersion:1,key,fixtureId:'1',size:png.length,etag:object.etag,version:object.version,contentType:'image/png',signatureChecked:true}))
+      await media.put(`_candidate-validation/${id}/${key.split('/').at(-1)}.json`,JSON.stringify({schemaVersion:1,key,fixtureId:String(id),size:png.length,etag:object.etag,version:object.version,contentType:'image/png',signatureChecked:true}),{httpMetadata:{contentType:'application/json'}})
       paths.push('/'+key)
     }
     return paths

@@ -7,7 +7,8 @@ import {setTimeout as delay} from 'node:timers/promises'
 import {promisify} from 'node:util'
 import {SPOT_FIELDS} from '../../spot-contract.mjs'
 
-assert.deepEqual(process.argv.slice(2), ['--approved-local-http'])
+const workerOnly=process.argv[3]==='--worker-registry-only'
+assert.deepEqual(process.argv.slice(2), workerOnly?['--approved-local-http','--worker-registry-only']:['--approved-local-http'])
 assert.equal(process.platform, 'win32')
 const engine = ['--host','npipe:////./pipe/docker_engine']
 const childEnv = {...process.env}
@@ -19,7 +20,7 @@ const images = {
 const uuid = randomUUID()
 const owner = 'jnq-postgrest-'+uuid
 const label = 'jnq.local-postgrest.run='+uuid
-const report = {runId:uuid, status:'POSTGREST_LOCAL_FAIL', images:{}, http:[], database:{}, cleanup:{}}
+const report = {runId:uuid, status:workerOnly?'REGISTRY_WORKER_LOCAL_FAIL':'POSTGREST_LOCAL_FAIL', images:{}, http:[], database:{}, cleanup:{}}
 const secrets = [randomBytes(32).toString('hex'), randomBytes(32).toString('hex'), randomBytes(32).toString('hex')]
 const [rootPassword, authPassword, signingKey] = secrets
 const exec = promisify(execFile)
@@ -328,6 +329,11 @@ async function stack() {
     return value.status===200 ? value : false
   },'Schema cache did not refresh')
   assert.equal(check('cache_after_notify',ready,200),null)
+  if(workerOnly){
+    const {workerRegistryIntegration}=await import('./worker-registry-integration.mjs')
+    await workerRegistryIntegration({sql,http,authenticated:token('authenticated'),report})
+    return
+  }
   await rpcCall('exact_signature_extra_argument','lookup',{...byKey(1),unknown_argument:true},404,'PGRST202')
   await rpcCall('exact_signature_missing_argument','save',{p_spot:1,p_patch:{name:'missing version'},p_observed:[]},404,'PGRST202')
   report.database.exactRpcSignatures=(await sql("select p.proname || '(' || pg_get_function_identity_arguments(p.oid) || ')' from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname like 'jnq_media_%' order by 1;")).split(/\r?\n/)
@@ -384,9 +390,9 @@ catch(error){
 }
 finally {
   try {await cleanup()}catch(error){report.cleanup.failure=sanitize(error.message);passed=false;process.exitCode=1}
-  if(passed)report.status='POSTGREST_LOCAL_PASS'
+  if(passed)report.status=workerOnly?'REGISTRY_WORKER_LOCAL_PASS':'POSTGREST_LOCAL_PASS'
   await mkdir('artifacts/cloudflare-local-postgrest',{recursive:true})
   const evidence='artifacts/cloudflare-local-postgrest/'+uuid+'.json'
   await writeFile(evidence,JSON.stringify(report,null,2)+'\n',{flag:'wx'})
-  console.log(JSON.stringify({status:report.status,httpChecks:report.http.length,evidence,cleanup:report.cleanup,failure:report.failure}))
+  console.log(JSON.stringify({status:report.status,httpChecks:report.http.length,workerChecks:report.worker?.length,evidence,cleanup:report.cleanup,failure:report.failure}))
 }

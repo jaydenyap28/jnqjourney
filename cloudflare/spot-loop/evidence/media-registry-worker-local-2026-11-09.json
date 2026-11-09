@@ -1,0 +1,219 @@
+{
+  "runId": "94c43a0b-a333-4122-9b9b-9dad96b46823",
+  "status": "REGISTRY_WORKER_LOCAL_PASS",
+  "images": {
+    "postgres": {
+      "tag": "docker.io/library/postgres:17",
+      "id": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+      "digest": "postgres@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+      "platform": "linux/amd64"
+    },
+    "postgrest": {
+      "tag": "docker.io/postgrest/postgrest:v14.12",
+      "id": "sha256:54000f24847d01a2c2302e0041cf0618b875c57fb48507d743cfa9aaa50bf43c",
+      "digest": "postgrest/postgrest@sha256:54000f24847d01a2c2302e0041cf0618b875c57fb48507d743cfa9aaa50bf43c",
+      "platform": "linux/amd64"
+    }
+  },
+  "http": [
+    {
+      "scenario": "cache_before_sql",
+      "status": 404,
+      "code": "PGRST202",
+      "pass": true
+    },
+    {
+      "scenario": "cache_stale_after_sql",
+      "status": 404,
+      "code": "PGRST202",
+      "pass": true
+    },
+    {
+      "scenario": "cache_after_notify",
+      "status": 200,
+      "code": null,
+      "pass": true
+    }
+  ],
+  "database": {
+    "authenticatorCanSet": [
+      "anon",
+      "authenticated",
+      "service_role"
+    ]
+  },
+  "cleanup": {
+    "postgrestRemoved": true,
+    "postgresRemoved": true,
+    "networkRemoved": true,
+    "loopbackPortClosed": true
+  },
+  "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "postgresVersion": "17.11 (Debian 17.11-1.pgdg13+2)",
+  "isolation": {
+    "dbContainer": "cc63a230f7fb9ad8eee703382f6c766d1e086da762f509720754afb058aa883b",
+    "httpContainer": "2572b422f519d461c96152d66080c81343846d43d8b1c8b73adf6ff95ca0230d",
+    "network": "2f83c1ec604a72981b334dcb926bb6e42b6bad40aa821d462950f23d36adc924",
+    "networkInternal": true,
+    "postgresPublishedPorts": 0,
+    "postgrestPublishedPorts": 0,
+    "httpBinding": "127.0.0.1:63780",
+    "httpTransport": "loopback TCP relay via local docker exec",
+    "postgresDataMount": "tmpfs",
+    "persistentMounts": 0
+  },
+  "postgrestVersion": "PostgREST 14.12",
+  "worker": [
+    {
+      "name": "auth_origin_and_legacy_fixture_boundaries",
+      "pass": true,
+      "directAnonRpc": {
+        "status": 401,
+        "code": "42501"
+      },
+      "directAuthenticatedRpc": {
+        "status": 403,
+        "code": "42501"
+      },
+      "anonRlsSelect": 200
+    },
+    {
+      "name": "first_and_unchanged_1_image_save",
+      "pass": true,
+      "first": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "repeated": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "registered": 1,
+      "saveRpcPerRequest": 1,
+      "distinctSnapshotKeys": 1
+    },
+    {
+      "name": "first_and_unchanged_5_image_save",
+      "pass": true,
+      "first": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "repeated": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "registered": 5,
+      "saveRpcPerRequest": 1,
+      "distinctSnapshotKeys": 5
+    },
+    {
+      "name": "first_and_unchanged_17_image_save",
+      "pass": true,
+      "first": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "repeated": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "registered": 17,
+      "saveRpcPerRequest": 1,
+      "distinctSnapshotKeys": 17
+    },
+    {
+      "name": "first_and_unchanged_30_image_save",
+      "pass": true,
+      "first": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "repeated": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "registered": 30,
+      "saveRpcPerRequest": 1,
+      "distinctSnapshotKeys": 30
+    },
+    {
+      "name": "complete_cas_duplicate_cancel_and_confirm_only",
+      "pass": true,
+      "copies": 1,
+      "insertAttempts": 1,
+      "confirmOnly": 1
+    },
+    {
+      "name": "registry_failure_and_committed_response_loss",
+      "pass": true,
+      "registry": [
+        {
+          "rpc": "register",
+          "status": 409,
+          "code": "PT409",
+          "canInsert": false
+        },
+        {
+          "rpc": "register",
+          "status": 200,
+          "code": null,
+          "canInsert": true
+        },
+        {
+          "rpc": "register",
+          "status": 200,
+          "code": null,
+          "canInsert": false
+        }
+      ],
+      "applicationResponseLoss": true
+    },
+    {
+      "name": "receipt_object_identity_and_unregistered_fail_closed",
+      "pass": true,
+      "bytesMatched": true,
+      "forgedReceiptCannotPublish": true
+    },
+    {
+      "name": "replacement_after_save_snapshot_still_cannot_serve_bytes",
+      "pass": true,
+      "saveObservedPriorSnapshot": true,
+      "replacementDenied": true
+    },
+    {
+      "name": "truncated_list_fallback_and_hard_head_budget",
+      "pass": true,
+      "fallback": {
+        "get": 0,
+        "head": 2,
+        "list": 2
+      },
+      "exhausted": {
+        "get": 0,
+        "head": 8,
+        "list": 2
+      },
+      "saveRpcOnExhaustion": 0
+    },
+    {
+      "name": "version_race_withdraw_republish_revoke_delete",
+      "pass": true,
+      "concurrentSave": [
+        200,
+        409
+      ],
+      "withdrawR2Reads": 0,
+      "revocationTerminal": true,
+      "deleteCascaded": true
+    }
+  ]
+}

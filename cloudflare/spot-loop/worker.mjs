@@ -2,6 +2,8 @@
 // This file and its pure contract module are packaged for Pages.
 import {SPOT_FIELDS, validVersion, validSpotRow, validateSpotFields, publishedSpot, resolveCandidateRedirect} from './spot-contract.mjs'
 const PRODUCTION_REF = 'vrufunuomioczocdsoer'
+const REGISTRY_REF = 'rnamstwwbzknwbjwdgrf'
+const REGISTRY_KEY = /^media\/candidate\/([1-9]\d*)\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\.(?:png|jpg|webp|gif)$/
 const SELECT = SPOT_FIELDS.join(',')
 const MAX_IMAGE = 10 * 1024 * 1024
 const COOKIE = '__Host-jnq-candidate'
@@ -26,7 +28,12 @@ export function config(env) {
   let fixtures
   try { fixtures=JSON.parse(env.CANDIDATE_SPOTS||'{}') } catch { fail(503,'Invalid fixture mapping') }
   if (!fixtures || Array.isArray(fixtures) || !Object.keys(fixtures).length || Object.entries(fixtures).some(([id,slug])=>!/^[1-9]\d*$/.test(id)||!Number.isSafeInteger(Number(id))||typeof slug!=='string'||!new RegExp(`^cloudflare-loop-[a-z0-9-]+-${id}$`).test(slug))) fail(503,'Explicit fixture IDs and slugs required')
-  return {emails,fixtures}
+  const registry=env.CANDIDATE_MEDIA_REGISTRY==='true'
+  if((registry&&ref!==REGISTRY_REF)||Object.entries(fixtures).some(([id,slug])=>{
+    const reservedId=Number(id)>=92000&&Number(id)<93000
+    return registry ? !reservedId||slug!==`cloudflare-loop-registry-${id}` : reservedId||slug.startsWith('cloudflare-loop-registry-')
+  }))fail(503,'Registry fixtures require a dedicated isolated scope')
+  return {emails,fixtures,registry}
 }
 function cookie(request,name) {
   const raw=(request.headers.get('cookie')||'').split(';').map(s=>s.trim()).find(s=>s.startsWith(`${name}=`))?.slice(name.length+1)
@@ -102,9 +109,13 @@ const visible = publishedSpot
 function imagePath(value,id) {
   return typeof value==='string' && new RegExp(`^/media/candidate/${id}/[a-f0-9-]+\\.(?:png|jpg|webp|gif)$`).test(value)
 }
-async function mutationData(body,id,env) {
+async function mutationData(body,id,env,registry) {
   if(!body||typeof body!=='object'||Array.isArray(body)||!Object.hasOwn(body,'expectedUpdatedAt')||!validVersion(body.expectedUpdatedAt))fail(400,'Save version and fields required')
   try {validateSpotFields(body.data)} catch {fail(400,'Invalid Spot fields')}
+  if(registry){
+    if(Object.keys(body).some(key=>key!=='expectedUpdatedAt'&&key!=='data'))fail(400,'Unexpected save parameters')
+    return body
+  }
   const mediaPaths=[...new Set([body.data.image_url,...(body.data.images||[])].filter(Boolean))]
   if(mediaPaths.some(path=>!imagePath(path,id)))fail(400,'Only verified isolated media can be saved')
   if(!await verifiedSaveMedia(env,mediaPaths,id))fail(400,'Uploaded image is missing or unverified')
@@ -228,15 +239,23 @@ async function issueDirect(request,env,id,user) {
   await env.TEST_MEDIA.put(ticketKey(key),JSON.stringify(ticket),{httpMetadata:{contentType:'application/json'}})
   return json({key,putUrl:signed.url,method:'PUT',headers:{'Content-Type':body.type},expiresIn:120,requiredBytes:body.size},201)
 }
-async function completeDirect(request,env,id,user,transport,cancel=false) {
+async function completeDirect(request,env,id,user,transport,registry,cancel=false) {
   const body=await bodyJson(request),key=body?.key
-  if(typeof key!=='string'||!imagePath(`/${key}`,id)||Object.keys(body).some(name=>name!=='key'))fail(400,'Invalid upload key')
+  if(!(registry?registryKey(key,id):typeof key==='string'&&imagePath(`/${key}`,id))||Object.keys(body).some(name=>name!=='key'))fail(400,'Invalid upload key')
   const ticketObject=await env.TEST_MEDIA.get(ticketKey(key))
   let ticket
   if(ticketObject&&ticketObject.size<=1024){try{ticket=await ticketObject.json()}catch{fail(503,'Upload ticket cannot be verified')}}
   if(!ticket||ticket.schemaVersion!==1||ticket.key!==key||ticket.fixtureId!==id||ticket.userId!==user.id)fail(403,'Upload ticket unavailable')
   if(typeof ticketObject.etag!=='string'||!ticketObject.etag)fail(503,'Upload ticket version unavailable')
   if(ticket.state==='processing') {
+    if(registry){
+      if(cancel)fail(409,'Upload is processing or already verified')
+      const existing=await receiptProof(env,key,id)
+      const object=existing&&await env.TEST_MEDIA.head(key)
+      if(!existing||!matchesMediaProof(object,existing.proof))fail(409,'Upload registration cannot be confirmed')
+      await registerMedia(env,id,object,existing.receipt,transport,false)
+      return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:object.size,validated:true},201)
+    }
     const existing=await verifiedMedia(env,key,id)
     if(!existing||cancel)fail(409,'Upload is processing or already verified')
     return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:existing.size,validated:true},201)
@@ -264,7 +283,9 @@ async function completeDirect(request,env,id,user,transport,cancel=false) {
     if(!final||final.size!==ticket.size||final.httpMetadata?.contentType!==ticket.type||!imageSignature(new Uint8Array(await final.arrayBuffer()),ticket.type))fail(400,'Copied object verification failed')
     const proof={schemaVersion:1,key,fixtureId:id,size:final.size,etag:final.etag,version:final.version,contentType:ticket.type,signatureChecked:true}
     receiptAttempted=true
-    if(!await env.TEST_MEDIA.put(mediaReceiptKey(key),JSON.stringify(proof),{httpMetadata:{contentType:'application/json'}}))fail(503,'Upload receipt unavailable')
+    const receipt=await env.TEST_MEDIA.put(mediaReceiptKey(key),JSON.stringify(proof),{httpMetadata:{contentType:'application/json'}})
+    if(!receipt)fail(503,'Upload receipt unavailable')
+    if(registry)await registerMedia(env,id,final,receipt,transport,true)
     // The ticket and staging prefixes already have lifecycle cleanup. Failure
     // to clean staging must never revoke or delete a verified final object.
     await env.TEST_MEDIA.delete(stagingKey(key)).catch(()=>{})
@@ -277,15 +298,16 @@ async function completeDirect(request,env,id,user,transport,cancel=false) {
   }
 }
 function mediaReceiptKey(key){return `_candidate-validation/${key.slice('media/candidate/'.length)}.json`}
-async function mediaProof(env,key,id) {
+async function receiptProof(env,key,id) {
   const proofObject=await env.TEST_MEDIA.get(mediaReceiptKey(key))
   if(!proofObject)return null
   if(proofObject.size>1024){await proofObject.body?.cancel().catch(()=>{});return null}
   let proof
   try {proof=await proofObject.json()}catch{return null}
   if(!proof||proof.schemaVersion!==1||proof.key!==key||proof.fixtureId!==id||proof.signatureChecked!==true||!Number.isSafeInteger(proof.size)||proof.size<12||proof.size>MAX_IMAGE||!['image/png','image/jpeg','image/webp','image/gif'].includes(proof.contentType))return null
-  return proof
+  return {receipt:proofObject,proof}
 }
+async function mediaProof(env,key,id){return (await receiptProof(env,key,id))?.proof}
 function matchesMediaProof(object,proof) {
   return !!object&&object.size===proof.size&&object.etag===proof.etag&&object.version===proof.version&&object.httpMetadata?.contentType===proof.contentType
 }
@@ -325,6 +347,92 @@ async function verifiedMedia(env,key,id,body=false) {
     return null
   }
   return object
+}
+function registryKey(key,id){
+  return typeof key==='string'&&REGISTRY_KEY.exec(key)?.[1]===id
+}
+const registryMessages={400:'Invalid Registry request',404:'Spot or media not found',409:'Spot or media changed; reload before retrying',503:'Registry unavailable; verify the result before retrying'}
+async function registryRpc(env,name,args,transport) {
+  const response=await remote(transport,`${env.SUPABASE_URL}/rest/v1/rpc/jnq_media_${name}`,{
+    method:'POST',headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(args),
+  })
+  const data=await response.json().catch(()=>fail(503,registryMessages[503]))
+  if(!response.ok){
+    const status=Object.hasOwn(registryMessages,response.status)&&data?.code===`PT${response.status}`?response.status:503
+    fail(status,registryMessages[status])
+  }
+  return data
+}
+function mediaIdentity(key,object,receipt) {
+  if(!object||!receipt||!Number.isSafeInteger(object.size)||object.size<12||object.size>MAX_IMAGE||
+    !Number.isSafeInteger(receipt.size)||receipt.size<1||receipt.size>1024||receipt.httpMetadata?.contentType!=='application/json'||
+    !['image/png','image/jpeg','image/webp','image/gif'].includes(object.httpMetadata?.contentType)||
+    ![object.etag,object.version,receipt.etag,receipt.version].every(value=>typeof value==='string'&&value.length>0))return null
+  return {key,size:object.size,mime:object.httpMetadata.contentType,etag:object.etag,version:object.version,
+    receipt_size:receipt.size,receipt_etag:receipt.etag,receipt_version:receipt.version}
+}
+async function registerMedia(env,id,object,receipt,transport,canInsert) {
+  const identity=mediaIdentity(object.key,object,receipt)
+  if(!identity||!registryKey(identity.key,id))fail(503,'Verified upload identity unavailable')
+  const params=Object.fromEntries(Object.entries(identity).map(([field,value])=>[`p_${field}`,value]))
+  if(await registryRpc(env,'register',{p_spot:id,...params,p_can_insert:canInsert},transport)!==true)fail(503,registryMessages[503])
+}
+async function registrySnapshot(env,id,fields) {
+  const paths=[...new Set([fields.image_url,...(fields.images??[])].filter(path=>path!=null))]
+  const keys=paths.map(path=>{
+    if(typeof path!=='string'||!path.startsWith('/')||!registryKey(path.slice(1),id))fail(400,'Only verified isolated media can be saved')
+    return path.slice(1)
+  })
+  if(!keys.length)return []
+  const prefixes=[`media/candidate/${id}/`,`_candidate-validation/${id}/`]
+  const listings=await Promise.all(prefixes.map(prefix=>env.TEST_MEDIA.list({prefix,limit:Math.max(32,keys.length*2),include:['httpMetadata']})))
+  const maps=listings.map(list=>new Map(list.objects.map(object=>[object.key,object])))
+  let heads=0
+  async function find(key,index){
+    if(maps[index].has(key))return maps[index].get(key)
+    if(!listings[index].truncated)return null
+    if(heads>=8)fail(503,'Media snapshot HEAD budget exhausted')
+    heads++
+    return env.TEST_MEDIA.head(key)
+  }
+  const observed=[]
+  for(const key of keys){
+    const object=await find(key,0),receipt=await find(mediaReceiptKey(key),1)
+    const identity=mediaIdentity(key,object,receipt)
+    if(!identity)fail(409,'Uploaded image is missing or unverified')
+    observed.push(identity)
+  }
+  return observed
+}
+async function registrySave(env,id,body,transport,current) {
+  const args={p_spot:id,p_expected_updated_at:body.expectedUpdatedAt}
+  const patch=body.data
+  const withdraw=patch.publication_status==='hidden'&&Object.keys(patch).length===1
+  if(!withdraw){
+    if(!Object.hasOwn(patch,'image_url')||!Object.hasOwn(patch,'images'))current??=await location(env,id,transport)
+    args.p_patch=patch
+    args.p_observed=await registrySnapshot(env,id,{...current,...patch})
+  }
+  const row=await registryRpc(env,withdraw?'withdraw':'save',args,transport)
+  if(!validSpotRow(row,id)||SPOT_FIELDS.some(field=>!Object.hasOwn(row,field)))fail(503,'Unverified Registry Spot response')
+  return row
+}
+async function registryImage(request,env,settings,id,key,transport) {
+  if(!registryKey(key,id))fail(404,'Image not found')
+  const expected=await registryRpc(env,'lookup',{p_spot:id,p_key:key},transport)
+  if(expected===null)fail(404,'Image not found')
+  if(expected?.key!==key||typeof expected.publiclyReferenced!=='boolean')fail(503,'Unverified Registry media response')
+  if(!expected.publiclyReferenced)await admin(request,env,settings,transport)
+  const verified=await receiptProof(env,key,id)
+  if(!verified||verified.receipt.httpMetadata?.contentType!=='application/json'||verified.receipt.size!==expected.receiptSize||verified.receipt.etag!==expected.receiptEtag||verified.receipt.version!==expected.receiptVersion||
+    verified.proof.size!==expected.size||verified.proof.contentType!==expected.mime||verified.proof.etag!==expected.etag||verified.proof.version!==expected.version)fail(404,'Image not found')
+  const head=request.method==='HEAD'
+  const object=await env.TEST_MEDIA[head?'head':'get'](key)
+  if(!matchesMediaProof(object,verified.proof)){
+    if(object?.body)await object.body.cancel().catch(()=>{})
+    fail(404,'Image not found')
+  }
+  return new Response(head?null:object.body,{headers:{...HEADERS,'Content-Type':expected.mime}})
 }
 function document(row,slug,locale,englishCurrent=false) {
   const name=locale==='en'?row.name:(row.name_cn||row.name)
@@ -374,16 +482,24 @@ async function responseFor(request,env,transport) {
     response.headers.append('Set-Cookie',`${REFRESH}=${session.refresh_token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=604800`)
     return response
   }
-  const edit=url.pathname.match(/^\/api\/candidate\/spots\/([1-9]\d*)(\/image(?:\/(presign|complete|cancel))?)?$/)
+  const edit=url.pathname.match(/^\/api\/candidate\/spots\/([1-9]\d*)(\/image(?:\/(presign|complete|cancel|revoke))?)?$/)
   if(edit) {
     const user=await admin(request,env,settings,transport)
     const id=checkedId(edit[1],settings)
     if(edit[2]) {
       if(request.method!=='POST')fail(405,'Method not allowed')
       if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
+      if(edit[3]==='revoke'){
+        if(!settings.registry)fail(404,'Candidate endpoint not found')
+        const body=await bodyJson(request,1024)
+        if(!registryKey(body?.key,id)||Object.keys(body).length!==1)fail(400,'Invalid media key')
+        if(await registryRpc(env,'revoke',{p_spot:id,p_key:body.key},transport)!==true)fail(503,registryMessages[503])
+        return json({revoked:true})
+      }
+      if(settings.registry&&!edit[3])fail(503,'Registry media requires verified direct upload')
       await location(env,id,transport)
       if(edit[3]==='presign')return issueDirect(request,env,id,user)
-      if(edit[3]==='complete'||edit[3]==='cancel')return completeDirect(request,env,id,user,transport,edit[3]==='cancel')
+      if(edit[3]==='complete'||edit[3]==='cancel')return completeDirect(request,env,id,user,transport,settings.registry,edit[3]==='cancel')
       return upload(request,env,id)
     }
     if(request.method==='GET')return json({spot:await location(env,id,transport),publicPath:`/spot/${settings.fixtures[id]}`})
@@ -392,16 +508,19 @@ async function responseFor(request,env,transport) {
     if(request.method==='DELETE') {
       const body=await bodyJson(request)
       if(!body||!Object.hasOwn(body,'expectedUpdatedAt')||!validVersion(body.expectedUpdatedAt)||Object.keys(body).some(key=>key!=='expectedUpdatedAt'))fail(400,'Delete version required')
-      await location(env,id,transport,body,true)
+      if(settings.registry){
+        if(await registryRpc(env,'delete',{p_spot:id,p_expected_updated_at:body.expectedUpdatedAt},transport)!==true)fail(503,registryMessages[503])
+      }else await location(env,id,transport,body,true)
       return json({deleted:true,id,buildsTriggered:0})
     }
-    const body=await mutationData(await bodyJson(request,262144),id,env)
+    const body=await mutationData(await bodyJson(request,262144),id,env,settings.registry)
+    let current
     if(body.data.redirect_url){
-      const current=await location(env,id,transport)
+      current=await location(env,id,transport)
       const result=await routing(id,{...current,...body.data},settings,env,transport)
       if(!result.destination)fail(400,'Redirect target is not public')
     }
-    const saved=await location(env,id,transport,body)
+    const saved=settings.registry?await registrySave(env,id,body,transport,current):await location(env,id,transport,body)
     return json({spot:saved,publicPath:`/spot/${settings.fixtures[id]}`,publication:visible(saved)?'live':'withdrawn',buildsTriggered:0})
   }
   const media=url.pathname.match(/^\/media\/candidate\/([1-9]\d*)\/[a-f0-9-]+\.(?:png|jpg|webp|gif)$/)
@@ -412,6 +531,7 @@ async function responseFor(request,env,transport) {
     if(!['GET','HEAD'].includes(request.method))fail(405,'Method not allowed')
     const raw=media?.[1]||data?.[1]||(page?.[2]||legacyData?.[1]).match(/-(\d+)$/)?.[1]
     const id=checkedId(raw,settings)
+    if(media&&settings.registry)return registryImage(request,env,settings,id,url.pathname.slice(1),transport)
     const row=await location(env,id,transport)
     if(!media){
       const result=await routing(id,row,settings,env,transport)

@@ -27,3 +27,7 @@ SQL 会话的 `SET ROLE` 与 HTTP 身份切换和 schema cache 分别验证。�
 | schema cache 加载与异常重试 | 暂未加载时失败，刷新后仅发布预期签名。截断或丢失响应的登记只能使用同一身份确认，不产生新登记。 |
 
 只有 PostgreSQL 真验和角色边界获得实际结果后，才能重新讨论远端隔离 DDL。PostgREST 真验需要独立记录，Cloudflare CPU 及 Supabase 额度仍各有后续验证。
+
+## Registry Worker 定点集成
+
+在同样的固定镜像和隔离边界下运行 `node cloudflare/spot-loop/review/local-postgres/postgrest.mjs --approved-local-http --worker-registry-only`。入口加载同一审核草案，使用合成 R2 与 Auth，Registry 调用经过本机 PostgREST 和 PostgreSQL。此模式独立于 138 项 HTTP 验收，产出另一个证据文件，并按容器 ID 和专属网络清理。 [本机适配器结果](../../MEDIA-REGISTRY-WORKER-LOCAL-2026-11-09.md)
