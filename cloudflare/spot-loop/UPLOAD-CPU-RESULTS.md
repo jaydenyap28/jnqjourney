@@ -1,5 +1,7 @@
 # 10 MiB 上传修复：HOLD（2026-11-08）
 
+2026-11-09 续测：[真实直传 Preview 验收](DIRECT-PREVIEW-2026-11-09.md)。Preview Secrets 已就绪，四个尺寸与兼容检查通过；安全回归有一个原生 CPU 事件未收到，仍为 HOLD。下文为前一轮历史记录。
+
 仅 `codex/cloudflare-free-migration` 隔离 Preview。此前 Auth、Spot 保存、即时读取、下架和重新发布的通过结果保留；本轮没有 Next 全站构建、完整套件重测或浏览器完整闭环。
 
 当前 [Preview 后台](https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev/admin/cloudflare-spot)，固定部署 [97cb9bd0](https://97cb9bd0.jnqjourney-spot-loop-migration-candidate.pages.dev)。后备直传已部署，**尚未通过真实上传验收**。缺少签名 Secrets 时返回 503；已知不可靠的流式入口默认停用，没有压缩或降低 10 MiB 上限。

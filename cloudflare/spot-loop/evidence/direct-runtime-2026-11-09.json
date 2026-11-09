@@ -1,0 +1,236 @@
+{
+  "deploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+  "count": 23,
+  "events": [
+    {
+      "timestamp": 1794187481532,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187479102-0",
+      "wallTime": 1943,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187484154,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187481855-1",
+      "wallTime": 803,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187485265,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187482971-3",
+      "wallTime": 1106,
+      "cpuTime": 10
+    },
+    {
+      "timestamp": 1794187486469,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187484181-4",
+      "wallTime": 423,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187487308,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187485027-6",
+      "wallTime": 1665,
+      "cpuTime": 8
+    },
+    {
+      "timestamp": 1794187489065,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187486784-7",
+      "wallTime": 439,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794187490064,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187487769-9",
+      "wallTime": 1916,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794187500016,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187497578-10",
+      "wallTime": 966,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794187501426,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187499125-11",
+      "wallTime": 1310,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794187504247,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187501951-13",
+      "wallTime": 1912,
+      "cpuTime": 7
+    },
+    {
+      "timestamp": 1794187555869,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187553246-14",
+      "wallTime": 799,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187557318,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187555008-15",
+      "wallTime": 1022,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794187558875,
+      "path": "/api/candidate/spots/1/image/cancel",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187556559-21",
+      "wallTime": 523,
+      "cpuTime": 7
+    },
+    {
+      "timestamp": 1794187559532,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794187557198-22",
+      "wallTime": 1,
+      "cpuTime": 0
+    },
+    {
+      "timestamp": 1794187559651,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 400,
+      "acceptanceId": "1794187557336-23",
+      "wallTime": 324,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794187560075,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 400,
+      "acceptanceId": "1794187557787-24",
+      "wallTime": 334,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187560518,
+      "path": "/api/candidate/spots/1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187558207-25",
+      "wallTime": 329,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794187560965,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794187558653-26",
+      "wallTime": 485,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794187562167,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 400,
+      "acceptanceId": "1794187559853-28",
+      "wallTime": 197,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794187562441,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 415,
+      "acceptanceId": "1794187560156-29",
+      "wallTime": 556,
+      "cpuTime": 8
+    },
+    {
+      "timestamp": 1794187563075,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794187560791-30",
+      "wallTime": 202,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794187563359,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 403,
+      "acceptanceId": "1794187561071-31",
+      "wallTime": 362,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794187563803,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794187561518-32",
+      "wallTime": 578,
+      "cpuTime": 6
+    }
+  ]
+}
