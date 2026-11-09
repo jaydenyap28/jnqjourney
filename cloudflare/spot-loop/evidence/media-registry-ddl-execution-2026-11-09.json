@@ -1,0 +1,1517 @@
+{
+  "project": "rnamstwwbzknwbjwdgrf",
+  "baseline": "ae2b4b58cdc69599529639f7f819e41a3832cd68",
+  "status": "DDL_EXECUTION_PASS",
+  "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "execution": {
+    "tool": "Supabase apply_migration",
+    "account": "JNQ Media",
+    "name": "trusted_media_registry_isolated",
+    "version": "20261109115152",
+    "calls": 1,
+    "completeFrozenTransaction": true,
+    "returnedSuccess": true,
+    "manualCacheNotification": false,
+    "automaticCacheReloadVerified": true
+  },
+  "preflight": {
+    "projectIdExplicitlyVerified": true,
+    "postgresVersion": "17.11",
+    "currentUser": "postgres",
+    "sessionUser": "postgres",
+    "columnCount": 36,
+    "privateSchemaAbsent": true,
+    "rpcConflicts": [],
+    "reservedCount": 0,
+    "creatorRights": {
+      "delete": true,
+      "select": true,
+      "update": true,
+      "db_create": true,
+      "references": true,
+      "public_create": true
+    },
+    "snapshot": {
+      "rows_md5": "5ddae432cf21a614863e7115c064631e",
+      "row_count": 11
+    },
+    "locations": {
+      "rls": true,
+      "owner": "postgres",
+      "force_rls": false
+    },
+    "roles": [
+      {
+        "rolname": "anon",
+        "rolsuper": false,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "authenticated",
+        "rolsuper": false,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "authenticator",
+        "rolsuper": false,
+        "rolinherit": false,
+        "rolcanlogin": true,
+        "rolbypassrls": false
+      },
+      {
+        "rolname": "service_role",
+        "rolsuper": false,
+        "rolinherit": true,
+        "rolcanlogin": false,
+        "rolbypassrls": true
+      }
+    ],
+    "effectiveRoleMembership": [
+      {
+        "member": "authenticator",
+        "can_set": true,
+        "granted_role": "authenticated",
+        "inherits_now": false
+      },
+      {
+        "member": "authenticator",
+        "can_set": true,
+        "granted_role": "anon",
+        "inherits_now": false
+      },
+      {
+        "member": "authenticator",
+        "can_set": true,
+        "granted_role": "service_role",
+        "inherits_now": false
+      }
+    ],
+    "locationsAccess": [
+      {
+        "role": "authenticated",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false
+      },
+      {
+        "role": "anon",
+        "delete": false,
+        "insert": false,
+        "select": true,
+        "update": false
+      },
+      {
+        "role": "service_role",
+        "delete": true,
+        "insert": true,
+        "select": true,
+        "update": true
+      },
+      {
+        "role": "authenticator",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false
+      }
+    ],
+    "defaultAcl": [
+      {
+        "scope": "public",
+        "grants": [
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          }
+        ],
+        "creator": "supabase_admin",
+        "object_type": "r"
+      },
+      {
+        "scope": "public",
+        "grants": [
+          {
+            "grantee": "postgres",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "anon",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "authenticated",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "supabase_admin",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "creator": "supabase_admin",
+        "object_type": "f"
+      },
+      {
+        "scope": "public",
+        "grants": [
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          }
+        ],
+        "creator": "postgres",
+        "object_type": "r"
+      },
+      {
+        "scope": "public",
+        "grants": [
+          {
+            "grantee": "postgres",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantor": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "creator": "postgres",
+        "object_type": "f"
+      }
+    ],
+    "ddlEventTriggers": [
+      {
+        "name": "issue_graphql_placeholder",
+        "event": "sql_drop",
+        "enabled": "O",
+        "handler": "set_graphql_placeholder()"
+      },
+      {
+        "name": "pgrst_ddl_watch",
+        "event": "ddl_command_end",
+        "enabled": "O",
+        "handler": "pgrst_ddl_watch()"
+      },
+      {
+        "name": "pgrst_drop_watch",
+        "event": "sql_drop",
+        "enabled": "O",
+        "handler": "pgrst_drop_watch()"
+      },
+      {
+        "name": "issue_pg_cron_access",
+        "event": "ddl_command_end",
+        "enabled": "O",
+        "handler": "grant_pg_cron_access()"
+      },
+      {
+        "name": "issue_pg_net_access",
+        "event": "ddl_command_end",
+        "enabled": "O",
+        "handler": "grant_pg_net_access()"
+      },
+      {
+        "name": "issue_pg_graphql_access",
+        "event": "ddl_command_end",
+        "enabled": "O",
+        "handler": "grant_pg_graphql_access()"
+      }
+    ]
+  },
+  "postflight": {
+    "tables": [
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "SELECT"
+          }
+        ],
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "relname": "enabled_spots",
+        "relrowsecurity": true,
+        "relforcerowsecurity": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "INSERT"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "SELECT"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "UPDATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "DELETE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "TRUNCATE"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "REFERENCES"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "TRIGGER"
+          },
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "MAINTAIN"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "SELECT"
+          }
+        ],
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "relname": "registry",
+        "relrowsecurity": true,
+        "relforcerowsecurity": false
+      }
+    ],
+    "identity": {
+      "current_user": "postgres",
+      "session_user": "postgres"
+    },
+    "policies": [],
+    "snapshot": {
+      "rows_md5": "5ddae432cf21a614863e7115c064631e",
+      "row_count": 11
+    },
+    "triggers": [
+      {
+        "name": "jnq_registry_terminal",
+        "table": "registry",
+        "internal": false,
+        "definition": "CREATE TRIGGER jnq_registry_terminal BEFORE UPDATE ON jnq_media_private.registry FOR EACH ROW EXECUTE FUNCTION jnq_media_private.guard_registry_update()"
+      }
+    ],
+    "functions": [
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "guard_registry_update",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "lock_spot",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_cover text, p_images text[]",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "media_keys",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "require_service",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_row locations",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "spot_projection",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_key text",
+        "owner": "postgres",
+        "nspname": "jnq_media_private",
+        "proname": "valid_key",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_expected_updated_at timestamp with time zone",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_delete",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_key text",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_lookup",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_key text, p_size bigint, p_mime text, p_etag text, p_version text, p_receipt_size bigint, p_receipt_etag text, p_receipt_version text, p_can_insert boolean",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_register",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_key text",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_revoke",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_expected_updated_at timestamp with time zone, p_patch jsonb, p_observed jsonb",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_save",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      },
+      {
+        "acl": [
+          {
+            "grantee": "postgres",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          },
+          {
+            "grantee": "service_role",
+            "grantable": false,
+            "privilege": "EXECUTE"
+          }
+        ],
+        "args": "p_spot bigint, p_expected_updated_at timestamp with time zone",
+        "owner": "postgres",
+        "nspname": "public",
+        "proname": "jnq_media_withdraw",
+        "proconfig": [
+          "search_path=pg_catalog, pg_temp"
+        ],
+        "prosecdef": false
+      }
+    ],
+    "column_acl": [
+      {
+        "table": "registry",
+        "column": "spot_id",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "object_key",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "object_size",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "mime",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "object_etag",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "object_version",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "receipt_size",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "receipt_etag",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "receipt_version",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "INSERT"
+      },
+      {
+        "table": "registry",
+        "column": "revoked_at",
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "UPDATE"
+      }
+    ],
+    "schema_acl": [
+      {
+        "grantee": "postgres",
+        "grantable": false,
+        "privilege": "USAGE"
+      },
+      {
+        "grantee": "postgres",
+        "grantable": false,
+        "privilege": "CREATE"
+      },
+      {
+        "grantee": "service_role",
+        "grantable": false,
+        "privilege": "USAGE"
+      }
+    ],
+    "constraints": [
+      {
+        "name": "enabled_spots_spot_id_fkey",
+        "type": "f",
+        "table": "enabled_spots",
+        "validated": true,
+        "definition": "FOREIGN KEY (spot_id) REFERENCES locations(id) ON DELETE CASCADE"
+      },
+      {
+        "name": "enabled_spots_safe_id",
+        "type": "c",
+        "table": "enabled_spots",
+        "validated": true,
+        "definition": "CHECK (((spot_id >= 1) AND (spot_id <= '9007199254740991'::bigint)))"
+      },
+      {
+        "name": "enabled_spots_pkey",
+        "type": "p",
+        "table": "enabled_spots",
+        "validated": true,
+        "definition": "PRIMARY KEY (spot_id)"
+      },
+      {
+        "name": "registry_object_size_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((object_size >= 12) AND (object_size <= 10485760)))"
+      },
+      {
+        "name": "registry_object_etag_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((octet_length(object_etag) >= 1) AND (octet_length(object_etag) <= 128)))"
+      },
+      {
+        "name": "registry_object_version_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((octet_length(object_version) >= 1) AND (octet_length(object_version) <= 128)))"
+      },
+      {
+        "name": "registry_receipt_size_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((receipt_size >= 1) AND (receipt_size <= 1024)))"
+      },
+      {
+        "name": "registry_receipt_etag_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((octet_length(receipt_etag) >= 1) AND (octet_length(receipt_etag) <= 128)))"
+      },
+      {
+        "name": "registry_receipt_version_check",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((octet_length(receipt_version) >= 1) AND (octet_length(receipt_version) <= 128)))"
+      },
+      {
+        "name": "registry_object_scope",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (jnq_media_private.valid_key(spot_id, object_key))"
+      },
+      {
+        "name": "registry_mime_suffix",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK ((NOT (mime IS DISTINCT FROM\nCASE \"right\"(object_key, 4)\n    WHEN '.png'::text THEN 'image/png'::text\n    WHEN '.jpg'::text THEN 'image/jpeg'::text\n    WHEN '.gif'::text THEN 'image/gif'::text\n    WHEN 'webp'::text THEN 'image/webp'::text\n    ELSE NULL::text\nEND)))"
+      },
+      {
+        "name": "registry_revocation_order",
+        "type": "c",
+        "table": "registry",
+        "validated": true,
+        "definition": "CHECK (((revoked_at IS NULL) OR (revoked_at >= verified_at)))"
+      },
+      {
+        "name": "registry_pkey",
+        "type": "p",
+        "table": "registry",
+        "validated": true,
+        "definition": "PRIMARY KEY (spot_id, object_key)"
+      },
+      {
+        "name": "registry_spot_id_fkey",
+        "type": "f",
+        "table": "registry",
+        "validated": true,
+        "definition": "FOREIGN KEY (spot_id) REFERENCES jnq_media_private.enabled_spots(spot_id) ON DELETE CASCADE"
+      }
+    ],
+    "enabled_count": 0,
+    "registry_count": 0,
+    "reserved_count": 0,
+    "effective_tables": [
+      {
+        "role": "authenticated",
+        "table": "enabled_spots",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "anon",
+        "table": "enabled_spots",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "service_role",
+        "table": "enabled_spots",
+        "delete": false,
+        "insert": false,
+        "select": true,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "authenticator",
+        "table": "enabled_spots",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "authenticated",
+        "table": "registry",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "anon",
+        "table": "registry",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "service_role",
+        "table": "registry",
+        "delete": false,
+        "insert": false,
+        "select": true,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      },
+      {
+        "role": "authenticator",
+        "table": "registry",
+        "delete": false,
+        "insert": false,
+        "select": false,
+        "update": false,
+        "trigger": false,
+        "truncate": false,
+        "references": false
+      }
+    ],
+    "effective_functions": [
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.guard_registry_update"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.guard_registry_update"
+      },
+      {
+        "role": "service_role",
+        "execute": false,
+        "function": "jnq_media_private.guard_registry_update"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.guard_registry_update"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.valid_key"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.valid_key"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "jnq_media_private.valid_key"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.valid_key"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.lock_spot"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.lock_spot"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "jnq_media_private.lock_spot"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.lock_spot"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.require_service"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.require_service"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "jnq_media_private.require_service"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.require_service"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.media_keys"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.media_keys"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "jnq_media_private.media_keys"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.media_keys"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "jnq_media_private.spot_projection"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "jnq_media_private.spot_projection"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "jnq_media_private.spot_projection"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "jnq_media_private.spot_projection"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_register"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_register"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_register"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_register"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_save"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_save"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_save"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_save"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_withdraw"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_withdraw"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_withdraw"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_withdraw"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_revoke"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_revoke"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_revoke"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_revoke"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_delete"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_delete"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_delete"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_delete"
+      },
+      {
+        "role": "authenticated",
+        "execute": false,
+        "function": "public.jnq_media_lookup"
+      },
+      {
+        "role": "anon",
+        "execute": false,
+        "function": "public.jnq_media_lookup"
+      },
+      {
+        "role": "service_role",
+        "execute": true,
+        "function": "public.jnq_media_lookup"
+      },
+      {
+        "role": "authenticator",
+        "execute": false,
+        "function": "public.jnq_media_lookup"
+      }
+    ],
+    "functionSourcesComparedToDraft": [
+      {
+        "function": "jnq_media_private.valid_key",
+        "sourceMatches": true
+      },
+      {
+        "function": "jnq_media_private.guard_registry_update",
+        "sourceMatches": true
+      },
+      {
+        "function": "jnq_media_private.require_service",
+        "sourceMatches": true
+      },
+      {
+        "function": "jnq_media_private.lock_spot",
+        "sourceMatches": true
+      },
+      {
+        "function": "jnq_media_private.media_keys",
+        "sourceMatches": true
+      },
+      {
+        "function": "jnq_media_private.spot_projection",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_register",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_save",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_withdraw",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_revoke",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_delete",
+        "sourceMatches": true
+      },
+      {
+        "function": "public.jnq_media_lookup",
+        "sourceMatches": true
+      }
+    ],
+    "locationsOriginalDataAclRlsColumnsDefaultsAndMembershipUnchanged": true
+  },
+  "finalState": {
+    "locations_snapshot": {
+      "rows_md5": "5ddae432cf21a614863e7115c064631e",
+      "row_count": 11
+    },
+    "enabled_count": 0,
+    "registry_count": 0,
+    "reserved_count": 0,
+    "locations_columns": 36
+  },
+  "httpEvidence": "media-registry-ddl-http-corrected-2026-11-09.json",
+  "initialHttpFailureEvidence": "media-registry-ddl-http-2026-11-09.json",
+  "httpFailureResolution": {
+    "initialStatus": 401,
+    "initialApiKeyRole": "anon",
+    "initialBearerRole": "service_role",
+    "matchingServiceKeyDiagnosticStatus": 200,
+    "matchingServiceKeyVerification": "HTTP_VERIFICATION_PASS",
+    "ddlRetried": false,
+    "sqlStateCheckedReadOnlyBeforeContinuing": true
+  },
+  "boundaries": {
+    "fixturesCreated": 0,
+    "r2Writes": 0,
+    "cloudflareDeployments": 0,
+    "candidateWorkerRequests": 0,
+    "productionResourcesTouched": false,
+    "localAcceptanceSuitesRerun": false
+  },
+  "nextStage": {
+    "isolatedFixtureAndNativeCpuTechnicallyReady": true,
+    "requiresSeparateUserAuthorization": true,
+    "formalMigration": "HOLD",
+    "actualAccountFreeHeadroom": "UNKNOWN",
+    "cloudflareRegistryCpu": "NOT_MEASURED"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "checkedAt": "2026-11-09T11:54:39.398Z",
+  "status": "HTTP_VERIFICATION_FAIL",
+  "steps": [
+    {
+      "name": "service_openapi",
+      "status": 401,
+      "signatures": {
+        "jnq_media_register": [],
+        "jnq_media_save": [],
+        "jnq_media_withdraw": [],
+        "jnq_media_revoke": [],
+        "jnq_media_delete": [],
+        "jnq_media_lookup": []
+      },
+      "pass": false
+    }
+  ],
+  "authSessionClosed": false,
+  "failureStage": "service_openapi"
+}

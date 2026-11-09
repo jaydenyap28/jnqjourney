@@ -1,0 +1,90 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "checkedAt": "2026-11-09T11:55:50.668Z",
+  "status": "HTTP_VERIFICATION_PASS",
+  "steps": [
+    {
+      "name": "service_openapi",
+      "status": 200,
+      "version": "14.18",
+      "signatures": {
+        "jnq_media_register": [
+          "p_can_insert",
+          "p_etag",
+          "p_key",
+          "p_mime",
+          "p_receipt_etag",
+          "p_receipt_size",
+          "p_receipt_version",
+          "p_size",
+          "p_spot",
+          "p_version"
+        ],
+        "jnq_media_save": [
+          "p_expected_updated_at",
+          "p_observed",
+          "p_patch",
+          "p_spot"
+        ],
+        "jnq_media_withdraw": [
+          "p_expected_updated_at",
+          "p_spot"
+        ],
+        "jnq_media_revoke": [
+          "p_key",
+          "p_spot"
+        ],
+        "jnq_media_delete": [
+          "p_expected_updated_at",
+          "p_spot"
+        ],
+        "jnq_media_lookup": [
+          "p_key",
+          "p_spot"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "name": "service_lookup",
+      "status": 200,
+      "code": null,
+      "resultNull": true,
+      "pass": true
+    },
+    {
+      "name": "anon_lookup",
+      "status": 401,
+      "code": "42501",
+      "resultNull": false,
+      "pass": true
+    },
+    {
+      "name": "existing_fixture_login",
+      "status": 200,
+      "existingUserMatched": true,
+      "pass": true
+    },
+    {
+      "name": "authenticated_lookup",
+      "status": 403,
+      "code": "42501",
+      "resultNull": false,
+      "pass": true
+    },
+    {
+      "name": "private_schema_accept-profile",
+      "status": 406,
+      "code": "PGRST106",
+      "pass": true
+    },
+    {
+      "name": "private_schema_content-profile",
+      "status": 406,
+      "code": "PGRST106",
+      "pass": true
+    }
+  ],
+  "authSessionClosed": true,
+  "previousFailureEvidence": "media-registry-ddl-http-2026-11-09.json"
+}

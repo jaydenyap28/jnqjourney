@@ -2,6 +2,8 @@
 
 **DDL_PRECHECK_READY。正式迁移 HOLD。** 审批对象是隔离 Supabase 项目 `rnamstwwbzknwbjwdgrf`。本轮以审批包提交 `03c94c573f3be1cad814f75f30cb93e3f4154151` 为检查点。已通过本机验证的 DDL 草案 LF 规范化 SHA-256 已重新核对，为 `b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1`。目录摘要和后续权限确认均符合前置条件。建议下一阶段单独批准隔离 DDL 及必要的 cache 刷新，实际执行仍须通过即时复核。[SQL 草案](review/trusted-media-registry.draft.sql) · [脱敏证据](evidence/media-registry-ddl-approval-2026-11-09.json)
 
+后续已获得仅隔离 DDL 的用户授权，并完成单次事务与托管只读验收。最新执行状态为 **DDL_EXECUTION_PASS**。Fixture 和 Cloudflare 部署等待独立授权。[隔离执行报告](MEDIA-REGISTRY-DDL-EXECUTION-2026-11-09.md)
+
 ## 前置条件比对
 
 | 前置条件 | 来源与结论 |
