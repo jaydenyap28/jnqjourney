@@ -1,0 +1,84 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "sourceSha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15",
+  "media": [
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/57bf9254-9616-4d7c-85bb-b71a83f93754.png",
+      "receipt": "_candidate-validation/92005/57bf9254-9616-4d7c-85bb-b71a83f93754.png.json",
+      "registered": false
+    },
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/7acc5bad-5ae2-435e-8b57-03037e9f2f4e.png",
+      "receipt": "_candidate-validation/92005/7acc5bad-5ae2-435e-8b57-03037e9f2f4e.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3faee1294321eeae0bc34e0cff53",
+      "receiptSize": 257,
+      "receiptEtag": "e7790da1126b8f2bbc4caf5b65f68716",
+      "receiptVersion": "7e5e3faed7a07d838d46a6f3463922f0",
+      "bytesReadBackMatched": true
+    },
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/f2ed3725-733d-40bb-acdd-4dd552258d0f.png",
+      "receipt": "_candidate-validation/92005/f2ed3725-733d-40bb-acdd-4dd552258d0f.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3faecabbb19e317afd7c334ea613",
+      "receiptSize": 257,
+      "receiptEtag": "58e6ef3546ef78b684df12813e1b124f",
+      "receiptVersion": "7e5e3faebf9dbeed9d3ecdcb75ea568f",
+      "bytesReadBackMatched": true
+    },
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/0033f810-d3bc-4088-bc03-235399e6501b.png",
+      "receipt": "_candidate-validation/92005/0033f810-d3bc-4088-bc03-235399e6501b.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3faeb23138e7b8c5d407ce00435e",
+      "receiptSize": 257,
+      "receiptEtag": "4eeb8c96ec7dabbcdbd245705720f7f7",
+      "receiptVersion": "7e5e3faea93033147feb66e2dacf8680",
+      "bytesReadBackMatched": true
+    },
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/5f48b611-a123-4418-aaa6-cf98d17b7737.png",
+      "receipt": "_candidate-validation/92005/5f48b611-a123-4418-aaa6-cf98d17b7737.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3fae9dc981661c87b3a487ed10d2",
+      "receiptSize": 257,
+      "receiptEtag": "24d51f5673314f28623b38d046aec3b3",
+      "receiptVersion": "7e5e3fae95608365048120d314b3946b",
+      "bytesReadBackMatched": true
+    },
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/a9ec583f-e17d-47f9-9098-7fa70ca1f986.png",
+      "receipt": "_candidate-validation/92005/a9ec583f-e17d-47f9-9098-7fa70ca1f986.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3fae891e4857c78f42008575b46e",
+      "receiptSize": 257,
+      "receiptEtag": "83b202d0255422aee4cf10cf372b50fd",
+      "receiptVersion": "7e5e3fae80ba5b659064af8416841c79",
+      "bytesReadBackMatched": true
+    }
+  ],
+  "counts": {
+    "put": 12,
+    "get": 12,
+    "register": 5,
+    "lookup": 5
+  }
+}

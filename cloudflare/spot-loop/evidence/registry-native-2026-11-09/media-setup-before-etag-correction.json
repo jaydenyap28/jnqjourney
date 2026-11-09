@@ -1,0 +1,19 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "sourceSha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15",
+  "media": [
+    {
+      "spot": 92005,
+      "key": "media/candidate/92005/57bf9254-9616-4d7c-85bb-b71a83f93754.png",
+      "receipt": "_candidate-validation/92005/57bf9254-9616-4d7c-85bb-b71a83f93754.png.json",
+      "registered": false
+    }
+  ],
+  "counts": {
+    "put": 2,
+    "get": 2,
+    "register": 0,
+    "lookup": 0
+  }
+}

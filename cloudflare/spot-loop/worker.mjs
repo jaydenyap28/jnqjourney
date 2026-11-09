@@ -564,8 +564,26 @@ async function responseFor(request,env,transport) {
 }
 export function createWorker(transport=(...args)=>globalThis.fetch(...args)) {
   return {async fetch(request,env) {
+    // Test-only native counters. Their runtime overhead is included in Tail CPU.
+    const marker=request.headers.get('X-JnQ-Acceptance')
+    const measured=env.CANDIDATE_NATIVE_METRICS==='true'&&env.CANDIDATE_MEDIA_REGISTRY==='true'&&/^[0-9-]+$/.test(marker||'')
+    let counts,upstream=transport
+    if(measured){
+      const bucket=env.TEST_MEDIA,media={}
+      counts={r2:{list:0,get:0,head:0,put:0,delete:0},supabaseRpc:0,supabaseRead:0,auth:0,copy:0}
+      for(const name of Object.keys(counts.r2))media[name]=(...args)=>{counts.r2[name]++;return bucket[name](...args)}
+      env={...env,TEST_MEDIA:media}
+      upstream=(url,init)=>{
+        const target=String(url)
+        if(target.startsWith(env.SUPABASE_URL+'/rest/v1/rpc/'))counts.supabaseRpc++
+        else if(target.startsWith(env.SUPABASE_URL+'/rest/v1/'))counts.supabaseRead++
+        else if(target.startsWith(env.SUPABASE_URL+'/auth/'))counts.auth++
+        else if(target.includes('.r2.cloudflarestorage.com/'))counts.copy++
+        return transport(url,init)
+      }
+    }
     try {
-      const response=await responseFor(request,env,transport)
+      const response=await responseFor(request,env,upstream)
       // _headers does not apply to Function responses: set preview protection here.
       const safe=new Response(response.body,response)
       for(const [key,value] of Object.entries(HEADERS))safe.headers.set(key,value)
@@ -573,6 +591,8 @@ export function createWorker(transport=(...args)=>globalThis.fetch(...args)) {
       return safe
     } catch(error) {
       return json({error:error instanceof Failure?error.message:'Candidate service unavailable'},error instanceof Failure?error.status:503)
+    } finally {
+      if(measured)console.log(JSON.stringify({type:'jnq-registry-native-operations',acceptanceId:marker,...counts}))
     }
   }}
 }

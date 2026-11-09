@@ -1,0 +1,30 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "created": true,
+  "fixtures": [
+    {
+      "id": 92001,
+      "slug": "cloudflare-loop-registry-92001",
+      "updatedAt": null,
+      "media": []
+    },
+    {
+      "id": 92005,
+      "slug": "cloudflare-loop-registry-92005",
+      "updatedAt": null,
+      "media": []
+    },
+    {
+      "id": 92017,
+      "slug": "cloudflare-loop-registry-92017",
+      "updatedAt": null,
+      "media": []
+    },
+    {
+      "id": 92030,
+      "slug": "cloudflare-loop-registry-92030",
+      "updatedAt": null,
+      "media": []
+    }
+  ]
+}

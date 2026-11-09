@@ -1,0 +1,99 @@
+{
+  "checkedAt": "2026-11-09T12:31:15.202Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "canonicalEmpty": true,
+  "productionEnvCount": 0,
+  "productionR2Count": 0,
+  "productionDeployments": 0,
+  "failClosedBoth": true,
+  "formalDomainAttached": false,
+  "previewBucket": "jnqjourney-spot-loop-isolated-media",
+  "secrets": {
+    "SUPABASE_ANON_KEY": "secret_text",
+    "SUPABASE_SERVICE_ROLE_KEY": "secret_text",
+    "CANDIDATE_R2_ACCESS_KEY_ID": "secret_text",
+    "CANDIDATE_R2_SECRET_ACCESS_KEY": "secret_text"
+  },
+  "legacy": [
+    {
+      "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+      "fixtureIds": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "5332ce56-643d-4c5c-9882-4487c516c563",
+      "fixtureIds": [
+        "8",
+        "9"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "50f3962e-5eb5-47a6-8662-319d992b4113",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "730e582e-530a-4026-9478-5ccebd5fd248",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    },
+    {
+      "id": "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95",
+      "fixtureIds": [
+        "1"
+      ],
+      "bucket": "jnqjourney-spot-loop-isolated-media",
+      "isolatedSupabase": true
+    }
+  ],
+  "bucketPrivate": true,
+  "sqlLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "newPreviewFixtureIds": [
+    "92001",
+    "92005",
+    "92017",
+    "92030"
+  ],
+  "newDeploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+  "passed": true
+}

@@ -1,0 +1,226 @@
+{
+  "startedAt": "2026-11-09T12:31:44.853Z",
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+  "workerSha256": "d32efe2006508a4345deb44d52a8d96a7f2ac1ea7543a6122d2cf08609137890",
+  "origin": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "budget": 40,
+  "checks": [
+    {
+      "name": "prepare_presign_tail_probe",
+      "path": "/api/candidate/spots/92001/image/presign",
+      "method": "POST",
+      "acceptanceId": "1794227507003-0",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "issuedAt": "2026-11-09T12:31:47.003Z",
+      "expected": 201,
+      "status": 201,
+      "cpuTimeMs": 6,
+      "runtimeWallTimeMs": 1760,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 1,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "name": "complete_first",
+      "path": "/api/candidate/spots/92001/image/complete",
+      "method": "POST",
+      "acceptanceId": "1794227509891-1",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "issuedAt": "2026-11-09T12:31:49.891Z",
+      "expected": 201,
+      "status": 201,
+      "cpuTimeMs": 7,
+      "runtimeWallTimeMs": 2194,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 3,
+          "head": 0,
+          "put": 2,
+          "delete": 1
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 1
+      }
+    },
+    {
+      "name": "complete_confirm_only",
+      "path": "/api/candidate/spots/92001/image/complete",
+      "method": "POST",
+      "acceptanceId": "1794227512199-2",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "issuedAt": "2026-11-09T12:31:52.199Z",
+      "expected": 201,
+      "status": 201,
+      "cpuTimeMs": 5,
+      "runtimeWallTimeMs": 719,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 2,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "name": "verified_unreferenced_media_denied",
+      "path": "/media/candidate/92001/b41bcc0d-72b9-4dea-9b30-175abd9d63ce.png",
+      "method": "GET",
+      "acceptanceId": "1794227695993-3",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "expected": 401,
+      "issuedAt": "2026-11-09T12:34:55.993Z",
+      "requestBytes": 0,
+      "status": 401,
+      "responseBytes": 28,
+      "cpuTimeMs": 5,
+      "runtimeWallTimeMs": 767,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "name": "save_1_first",
+      "path": "/api/candidate/spots/92001",
+      "method": "PATCH",
+      "acceptanceId": "1794227697626-4",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "expected": 200,
+      "issuedAt": "2026-11-09T12:34:57.626Z",
+      "albumCount": 1,
+      "first": true,
+      "requestBytes": 382,
+      "status": 200,
+      "responseBytes": 1181,
+      "cpuTimeMs": 10,
+      "runtimeWallTimeMs": 1214,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 2,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      },
+      "critical": true
+    },
+    {
+      "name": "save_1_unchanged",
+      "path": "/api/candidate/spots/92001",
+      "method": "PATCH",
+      "acceptanceId": "1794227698983-5",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "expected": 200,
+      "issuedAt": "2026-11-09T12:34:58.983Z",
+      "albumCount": 1,
+      "first": false,
+      "requestBytes": 409,
+      "status": 200,
+      "responseBytes": 1180,
+      "cpuTimeMs": 5,
+      "runtimeWallTimeMs": 413,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 2,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "name": "public_1_read",
+      "path": "/api/candidate/public/spots/92001",
+      "method": "GET",
+      "acceptanceId": "1794227699525-6",
+      "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+      "expected": 200,
+      "issuedAt": "2026-11-09T12:34:59.525Z",
+      "requestBytes": 0,
+      "status": 200,
+      "responseBytes": 1047,
+      "cpuTimeMs": 4,
+      "runtimeWallTimeMs": 197,
+      "outcome": "ok",
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 0,
+        "copy": 0
+      }
+    }
+  ],
+  "directOperations": [
+    {
+      "name": "staging_put",
+      "status": 200,
+      "workerInvocations": 0,
+      "bytes": 68
+    }
+  ],
+  "verdict": "FREE_REGISTRY_CPU_NO_GO",
+  "hold": true,
+  "tailAssociationProved": true,
+  "firstMedia": {
+    "path": "/media/candidate/92001/b41bcc0d-72b9-4dea-9b30-175abd9d63ce.png",
+    "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15",
+    "bytes": 68
+  },
+  "completeGatePassed": true,
+  "authSessionClosed": true,
+  "finishedAt": "2026-11-09T12:35:00.336Z",
+  "albumStageStarted": true,
+  "error": "PUBLIC_ALBUM_MISMATCH"
+}

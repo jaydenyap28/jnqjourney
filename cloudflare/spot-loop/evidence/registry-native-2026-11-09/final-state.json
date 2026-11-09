@@ -1,0 +1,48 @@
+{
+  "source": "Explicit isolated Supabase read-only SQL after CPU stop",
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "fixtureCount": 4,
+  "enabledCount": 4,
+  "registryCount": 6,
+  "revokedCount": 0,
+  "fixtureStates": [
+    {
+      "id": 92001,
+      "imageCount": 1,
+      "updatedAt": "2026-11-09T12:34:59.630Z"
+    },
+    {
+      "id": 92005,
+      "imageCount": 5,
+      "updatedAt": "2026-11-09T12:38:52.718Z"
+    },
+    {
+      "id": 92017,
+      "imageCount": 0,
+      "updatedAt": null
+    },
+    {
+      "id": 92030,
+      "imageCount": 0,
+      "updatedAt": null
+    }
+  ],
+  "originalSnapshot": {
+    "count": 11,
+    "md5": "5ddae432cf21a614863e7115c064631e"
+  },
+  "stop": {
+    "candidateTrafficStopped": true,
+    "testAuthSessionLoggedOut": true,
+    "tailSessionInterrupted": true,
+    "ownedTailProcessesRemaining": 0,
+    "tailSnapshotClosedFlag": false,
+    "tailFlagNote": "Interrupted process snapshot retained verbatim. Separate Win32_Process check found no matching test Tail process."
+  },
+  "retention": {
+    "fixturesDeleted": 0,
+    "registryRowsDeleted": 0,
+    "r2ObjectsDeletedAfterStop": 0,
+    "unregisteredPreseedPairPreserved": 1
+  }
+}

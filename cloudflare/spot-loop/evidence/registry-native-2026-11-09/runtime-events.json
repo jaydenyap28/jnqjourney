@@ -1,0 +1,200 @@
+{
+  "deploymentId": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+  "count": 8,
+  "diagnostics": {
+    "parsedFrames": 8,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794227507442,
+      "path": "/api/candidate/spots/92001/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794227507003-0",
+      "wallTime": 1760,
+      "cpuTime": 6,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 1,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227510158,
+      "path": "/api/candidate/spots/92001/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794227509891-1",
+      "wallTime": 2194,
+      "cpuTime": 7,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 3,
+          "head": 0,
+          "put": 2,
+          "delete": 1
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 1
+      }
+    },
+    {
+      "timestamp": 1794227512474,
+      "path": "/api/candidate/spots/92001/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794227512199-2",
+      "wallTime": 719,
+      "cpuTime": 5,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 2,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227696356,
+      "path": "/media/candidate/92001/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794227695993-3",
+      "wallTime": 767,
+      "cpuTime": 5,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227697923,
+      "path": "/api/candidate/spots/92001",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794227697626-4",
+      "wallTime": 1214,
+      "cpuTime": 10,
+      "operations": {
+        "r2": {
+          "list": 2,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227699277,
+      "path": "/api/candidate/spots/92001",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794227698983-5",
+      "wallTime": 413,
+      "cpuTime": 5,
+      "operations": {
+        "r2": {
+          "list": 2,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227699827,
+      "path": "/api/candidate/public/spots/92001",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794227699525-6",
+      "wallTime": 197,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794227931204,
+      "path": "/api/candidate/spots/92005",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794227930841-7",
+      "wallTime": 1550,
+      "cpuTime": 11,
+      "operations": {
+        "r2": {
+          "list": 2,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    }
+  ]
+}
