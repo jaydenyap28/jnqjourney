@@ -1,0 +1,120 @@
+{
+  "baseline": "fd5ec908efc7554c7f662b5d8799ce3db12f2e1d",
+  "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "docker": {
+    "desktop": "4.98.0 (245422)",
+    "cli": "29.9.2",
+    "engine": "29.9.2",
+    "enginePlatform": "linux/amd64",
+    "endpoint": "npipe:////./pipe/docker_engine"
+  },
+  "image": {
+    "source": "docker.io/library/postgres:17",
+    "localId": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "repoDigest": "docker.io/library/postgres@sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "platform": "linux/amd64"
+  },
+  "initialRun": {
+    "status": "PASS_LOCAL_POSTGRES",
+    "containerId": "d552e9e438fee835027f17bac2e6a85cb43365dbae81309e7dfd07fde52eaa17",
+    "galleryCoverage": "Sequential expansion in one Spot; independent initial saves verified in final run",
+    "cleanupIndependentlyVerified": true
+  },
+  "finalRun": {
+    "exitCode": 0,
+    "events": [
+      {
+        "event": "container_isolated",
+        "containerId": "5e8879d13719141bfde4483190d49b92f470ca2b0e5816082e5af9301b134195",
+        "network": "none",
+        "publishedPorts": 0,
+        "dataMount": "/var/lib/postgresql/data",
+        "dataMountType": "tmpfs",
+        "persistentMounts": 0,
+        "autoRemove": true
+      },
+      {
+        "event": "postgres_ready",
+        "serverVersion": "17.11 (Debian 17.11-1.pgdg13+2)",
+        "serverVersionNum": "170011"
+      },
+      {
+        "event": "ddl_rejected",
+        "sqlstate": "42501",
+        "message": "JNQ_RPC_EXECUTE_EXPOSED"
+      },
+      {
+        "event": "gallery_pass",
+        "spotId": 14,
+        "count": 1,
+        "firstVersionWasNull": true,
+        "first": "PASS",
+        "unchanged": "PASS"
+      },
+      {
+        "event": "gallery_pass",
+        "spotId": 17,
+        "count": 5,
+        "firstVersionWasNull": true,
+        "first": "PASS",
+        "unchanged": "PASS"
+      },
+      {
+        "event": "gallery_pass",
+        "spotId": 18,
+        "count": 17,
+        "firstVersionWasNull": true,
+        "first": "PASS",
+        "unchanged": "PASS"
+      },
+      {
+        "event": "gallery_pass",
+        "spotId": 19,
+        "count": 30,
+        "firstVersionWasNull": true,
+        "first": "PASS",
+        "unchanged": "PASS"
+      },
+      {
+        "event": "container_cleanup_verified",
+        "containerId": "5e8879d13719141bfde4483190d49b92f470ca2b0e5816082e5af9301b134195",
+        "remainingContainers": 0,
+        "persistentDataMounts": 0
+      },
+      {
+        "status": "PASS_LOCAL_POSTGRES",
+        "serverVersion": "17.11 (Debian 17.11-1.pgdg13+2)",
+        "serverVersionNum": "170011",
+        "containerId": "5e8879d13719141bfde4483190d49b92f470ca2b0e5816082e5af9301b134195",
+        "observedSqlstates": {
+          "23514": 1,
+          "42501": 27,
+          "00000": 154,
+          "PT404": 2,
+          "PT409": 12,
+          "PT503": 5,
+          "PT400": 1,
+          "55P03": 1,
+          "40P01": 1
+        },
+        "covered": [
+          "six RPCs",
+          "real role ACL",
+          "inherited default ACL rollback",
+          "read committed lock waits",
+          "save/revoke/delete/registration",
+          "null and stale versions",
+          "1/5/17/30 first and repeated saves",
+          "timeout",
+          "deadlock recovery",
+          "trigger suppression and rewrite rollback"
+        ]
+      }
+    ],
+    "cleanupIndependentlyVerified": true
+  },
+  "remoteDatabaseAccessed": false,
+  "previewDeployed": false,
+  "postgrestTested": false,
+  "cloudflareCpuTested": false
+}

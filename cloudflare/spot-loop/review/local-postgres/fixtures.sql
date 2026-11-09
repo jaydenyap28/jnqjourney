@@ -32,7 +32,7 @@ create table public.synthetic_location_children (
 );
 insert into public.locations (id,name,latitude,longitude,status,publication_status)
 select n, 'Synthetic Spot ' || n, 0, 0, 'active', 'published'
-from generate_series(1,16) as n;
+from generate_series(1,19) as n;
 insert into public.synthetic_location_children values (7);
 
 -- Failure injection is switched on only in the test session.

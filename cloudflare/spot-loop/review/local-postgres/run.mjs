@@ -21,7 +21,13 @@ const psql = ['psql','-X','-q','-A','-t','-w','-h','/var/run/postgresql','-U','p
 const draft = await readFile(new URL('../trusted-media-registry.draft.sql', import.meta.url), 'utf8')
 const fixtures = await readFile(new URL('./fixtures.sql', import.meta.url), 'utf8')
 const sessions = new Set()
+const sqlstates = new Map()
 let container
+let result
+
+function recordState(state) {
+  sqlstates.set(state, (sqlstates.get(state) || 0) + 1)
+}
 
 async function until(check, message, limitMs=10000) {
   const deadline = Date.now() + limitMs
@@ -33,7 +39,7 @@ async function until(check, message, limitMs=10000) {
 }
 
 async function batch(sql, expectedError) {
-  const child = launch(['exec','-i',container,...psql,'-v','ON_ERROR_STOP=1','-f','-'])
+  const child = launch(['exec','-i',container,...psql,'-v','ON_ERROR_STOP=1','-v','VERBOSITY=verbose','-f','-'])
   let diagnostic = ''
   child.stderr.setEncoding('utf8').on('data', value => {diagnostic += value})
   child.stdout.resume()
@@ -49,6 +55,9 @@ async function batch(sql, expectedError) {
     if (expectedError) {
       assert.notEqual(code, 0)
       assert.ok(diagnostic.includes(expectedError), diagnostic)
+      assert.match(diagnostic, /ERROR:\s+42501:/)
+      recordState('42501')
+      console.log(JSON.stringify({event:'ddl_rejected',sqlstate:'42501',message:expectedError}))
     } else assert.equal(code, 0, diagnostic)
   } finally {clearTimeout(timer)}
 }
@@ -64,6 +73,7 @@ function session() {
     const match = output.match(new RegExp('^'+active.marker+' ([A-Z0-9]{5})\\r?\\n','m'))
     if (!match) return
     const result = {state:match[1], value:output.slice(0,match.index).trim()}
+    recordState(result.state)
     const {finish} = active
     active = undefined
     output = output.slice(match.index+match[0].length)
@@ -124,7 +134,16 @@ try {
     '-e','POSTGRES_HOST_AUTH_METHOD=trust',image,'-c','listen_addresses=',
     '-c','statement_timeout=15000','-c','idle_in_transaction_session_timeout=20000')
   assert.match(container,/^[a-f0-9]{64}$/)
-  assert.equal(await docker('inspect','--format','{{.HostConfig.NetworkMode}}',container),'none')
+  const [info] = JSON.parse(await docker('inspect',container))
+  assert.equal(info.Id,container)
+  assert.equal(info.HostConfig.NetworkMode,'none')
+  assert.equal(info.HostConfig.PublishAllPorts,false)
+  assert.equal(Object.keys(info.HostConfig.PortBindings || {}).length,0)
+  assert.deepEqual(Object.keys(info.HostConfig.Tmpfs || {}),['/var/lib/postgresql/data'])
+  assert.ok(info.Mounts.every(mount=>mount.Type==='tmpfs'&&mount.Destination==='/var/lib/postgresql/data'))
+  assert.equal(info.HostConfig.AutoRemove,true)
+  console.log(JSON.stringify({event:'container_isolated',containerId:container,network:'none',publishedPorts:0,
+    dataMount:'/var/lib/postgresql/data',dataMountType:'tmpfs',persistentMounts:0,autoRemove:true}))
   await until(async()=>{
     try {
       return await docker('exec',container,'cat','/proc/1/comm')==='postgres'
@@ -133,6 +152,8 @@ try {
   },'PostgreSQL startup timeout',20000)
   const version = await docker('exec',container,...psql,'-c','show server_version_num')
   assert.match(version,/^17\d{4}$/)
+  const serverVersion = await docker('exec',container,...psql,'-c','show server_version')
+  console.log(JSON.stringify({event:'postgres_ready',serverVersion,serverVersionNum:version}))
   await batch(fixtures)
   const monitor = session()
   // Adversarial inherited default EXECUTE must reject the entire draft.
@@ -141,7 +162,7 @@ try {
   assert.equal(await q(monitor,"select to_regnamespace('jnq_media_private') is null and to_regprocedure('public.jnq_media_lookup(bigint,text)') is null;"),'t')
   await batch('alter default privileges revoke execute on functions from jnq_test_acl_parent; drop role jnq_test_acl_parent;')
   await batch(draft)
-  await batch('insert into jnq_media_private.enabled_spots select id from public.locations where id < 16;')
+  await batch('insert into jnq_media_private.enabled_spots select id from public.locations where id <> 16;')
 
   for (const role of ['anon','authenticated','jnq_public_only']) {
     if (role==='jnq_public_only') await q(monitor,'create role jnq_public_only nologin;')
@@ -225,18 +246,18 @@ try {
   assert.equal(await q(a,"select name from public.locations where id = 10;"),'Synthetic Spot 10')
   await q(a,withdraw(10,spot10.updated_at))
 
-  const galleryKeys=Array.from({length:30},(_,index)=>media(14,index+1))
-  for(const key of galleryKeys) await q(a,register(14,key))
-  let galleryVersion=null
-  for(const count of [1,5,17,30]) {
-    const keys=galleryKeys.slice(0,count)
+  for(const [spot,count] of [[14,1],[17,5],[18,17],[19,30]]) {
+    const keys=Array.from({length:count},(_,index)=>media(spot,index+1))
+    for(const key of keys) await q(a,register(spot,key))
+    let galleryVersion=null
     const patch={image_url:'/'+keys[0],images:keys.map(key=>'/'+key)}
     for(const phase of ['first','unchanged']) {
-      const saved=JSON.parse(await q(a,save(14,galleryVersion,patch,keys.map(entry))))
+      const saved=JSON.parse(await q(a,save(spot,galleryVersion,patch,keys.map(entry))))
       assert.deepEqual(saved.images,patch.images,phase)
       assert.notEqual(saved.updated_at,galleryVersion)
       galleryVersion=saved.updated_at
     }
+    console.log(JSON.stringify({event:'gallery_pass',spotId:spot,count,firstVersionWasNull:true,first:'PASS',unchanged:'PASS'}))
   }
   await q(a,save(15,null,{images:['/legacy.jpg']}),'PT400')
   await q(a,save(15,null,attach(media(15)),[entry(media(15))]),'PT409')
@@ -264,14 +285,20 @@ try {
   }
   assert.deepEqual((await Promise.all([settle(a,aWait),settle(b,bWait)])).sort(),['00000','40P01'])
   await q(a,save(12,null,{name:'usable after deadlock'}))
-  console.log(JSON.stringify({status:'PASS_LOCAL_POSTGRES',serverVersionNum:version,
+  result={status:'PASS_LOCAL_POSTGRES',serverVersion,serverVersionNum:version,containerId:container,
+    observedSqlstates:Object.fromEntries(sqlstates),
     covered:['six RPCs','real role ACL','inherited default ACL rollback','read committed lock waits',
-      'save/revoke/delete/registration','null and stale versions','timeout','deadlock recovery','trigger suppression rollback']}))
+      'save/revoke/delete/registration','null and stale versions','1/5/17/30 first and repeated saves',
+      'timeout','deadlock recovery','trigger suppression and rewrite rollback']}
 } finally {
   for (const child of sessions) child.stdin.end()
   if (/^[a-f0-9]{64}$/.test(container || '')) {
     await docker('rm','-f',container).catch(error=>{
       if(!String(error.stderr).includes('No such container'))throw error
     })
+    const remaining = await docker('ps','-a','-q','--no-trunc','--filter','id='+container)
+    assert.equal(remaining,'')
+    console.log(JSON.stringify({event:'container_cleanup_verified',containerId:container,remainingContainers:0,persistentDataMounts:0}))
   }
 }
+console.log(JSON.stringify(result))

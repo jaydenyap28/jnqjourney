@@ -1,6 +1,6 @@
 # 独立 PostgreSQL 真验准备
 
-**状态：脚本待运行。** 本轮只做准备。取得下一阶段本地真验授权后，由 Windows 本机 Docker Engine 启动临时 PostgreSQL 17。所需镜像必须提前存在，由操作者核对官方来源、版本、架构和镜像 ID。本轮环境未发现 Docker、psql 或 pg_ctl 可执行文件。原始版本、镜像来源和最终运行结果需要另行记录。
+**状态：本机 PostgreSQL 17.11 真验通过。** 复验使用 Windows 本机 Docker Engine。所需镜像须已存在，由操作者核对官方来源、版本、架构和镜像 ID。若当前终端找不到 `docker`，只需将已安装 Docker Desktop 的 `resources/bin` 目录加入本次进程 PATH。[版本、镜像与真实结果](../../MEDIA-REGISTRY-LOCAL-POSTGRES-2026-11-09.md)
 
 1. 核对本机 Docker Desktop 处于 Linux containers 模式。确认本机 `docker_engine` 命名管道可用，并记录已审核的官方 PostgreSQL 17 镜像 ID。运行脚本要求该镜像 ID，使用 `--pull=never`。
 2. 阅读 `fixtures.sql`、上一层的 `trusted-media-registry.draft.sql` 和 `run.mjs`。脚本只接受 Windows 本机命名管道，以无网络容器、无端口映射、临时内存数据目录启动。容器内 `psql` 走 Unix socket。本地临时角色使用合成数据和容器内信任认证。连接参数由脚本固定，运行时不接收数据库 URL。
