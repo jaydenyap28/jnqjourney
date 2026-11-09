@@ -1,0 +1,210 @@
+{
+  "scope": "LOCAL_SYNTHETIC_ONLY",
+  "database": "In-memory serial transaction model; not Postgres or RLS validation",
+  "nativeCpuMeasured": false,
+  "remoteSqlExecuted": false,
+  "previewDeployed": false,
+  "albumCases": [
+    {
+      "images": 1,
+      "phase": "first",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 1,
+      "phase": "unchanged",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 5,
+      "phase": "first",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 5,
+      "phase": "unchanged",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 17,
+      "phase": "first",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 17,
+      "phase": "unchanged",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 30,
+      "phase": "first",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    },
+    {
+      "images": 30,
+      "phase": "unchanged",
+      "r2SimulatedCalls": {
+        "get": 0,
+        "head": 0,
+        "list": 2
+      },
+      "databaseSimulatedCalls": {
+        "register": 0,
+        "commit": 1,
+        "readSpot": 0,
+        "mediaAccess": 0,
+        "revoke": 0,
+        "delete": 0
+      },
+      "remoteOperationModel": 3,
+      "nativeCpuMs": null
+    }
+  ],
+  "failureCases": [
+    "INVALID_SAVE_ENVELOPE",
+    "INVALID_SAVE_ENVELOPE",
+    "ADMIN_OR_SERVICE_REQUIRED",
+    "ADMIN_OR_SERVICE_REQUIRED",
+    "MEDIA_NOT_REGISTERED_OR_ACTIVE",
+    "R2_OBJECT_MISSING",
+    "MEDIA_NOT_REGISTERED_OR_ACTIVE",
+    "MEDIA_NOT_REGISTERED_OR_ACTIVE",
+    "MEDIA_NOT_ACTIVE",
+    "MEDIA_EXPIRED_AT_COMMIT",
+    "MEDIA_NOT_ACTIVE",
+    "REGISTRATION_IDENTITY_CONFLICT",
+    "INVALID_MEDIA_REFERENCE",
+    "SPOT_VERSION_CONFLICT",
+    "MEDIA_NOT_REGISTERED_OR_ACTIVE",
+    "MEDIA_NOT_ACTIVE",
+    "MEDIA_NOT_ACTIVE",
+    "LIVE_RECEIPT_CHANGED",
+    "LIVE_OBJECT_CHANGED",
+    "LIVE_OBJECT_CHANGED",
+    "MEDIA_PRIVATE",
+    "MEDIA_PRIVATE",
+    "SPOT_MISSING",
+    "R2_OBJECT_MISSING"
+  ],
+  "completeModel": {
+    "baselineR2Reads": {
+      "get": 3,
+      "head": 0,
+      "list": 0
+    },
+    "pocR2Reads": {
+      "get": 3,
+      "head": 0,
+      "list": 0
+    },
+    "additionalDatabaseCalls": 1,
+    "nativeCpuMs": null
+  },
+  "networkAttempts": 0,
+  "testSummary": {
+    "command": "node --test tests/cloudflare-registry-poc.test.mjs",
+    "tests": 27,
+    "passed": 27,
+    "failed": 0,
+    "environment": "Local Node v24.13.0"
+  },
+  "remoteCallCaveat": "Counts are injected local ports; no real R2 or Supabase operation was performed. Auth and historical uploader calls are excluded from album commit counts."
+}
