@@ -10,7 +10,7 @@ export function registryModel(rows,{clock=()=>Date.now()}={}){
   function entryActive(entry){return entry&&entry.state==='verified'&&(entry.validUntil===null||entry.validUntil>clock())}
   const db={
     now:clock,
-    async registerVerified(proof,principal){
+    async registerVerified(proof,principal,{canInsert=true}={}){
       authorize(principal);calls.register++
       return transaction(async()=>{
         if(failBefore){failBefore=false;refuse('REGISTRY_UNAVAILABLE')}
@@ -20,7 +20,10 @@ export function registryModel(rows,{clock=()=>Date.now()}={}){
         if(prior){
           if(!entryActive(prior))refuse('REGISTRATION_TERMINAL')
           if(prior.fixtureId!==proof.fixtureId||!sameObject({key:prior.key,size:prior.size,etag:prior.etag,version:prior.version,httpMetadata:{contentType:prior.contentType}},proof)||!sameReceipt(prior.receipt,proof.receipt))refuse('REGISTRATION_IDENTITY_CONFLICT')
-        }else entries.set(proof.key,{...structuredClone(proof),state:'verified',generation:1,verifiedAt:clock(),validUntil:null})
+        }else {
+          if(!canInsert)refuse('REGISTRATION_UNCONFIRMED')
+          entries.set(proof.key,{...structuredClone(proof),state:'verified',generation:1,verifiedAt:clock(),validUntil:null})
+        }
         if(failAfter){failAfter=false;refuse('AMBIGUOUS_REGISTRATION')}
         return structuredClone(entries.get(proof.key))
       })

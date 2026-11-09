@@ -30,7 +30,14 @@ export function registryFixture(options={}){
         if(!context.retryProof)refuse('TRUSTED_RETRY_PROOF_MISSING')
         // Existing processing-ticket replay already read receipt + HEAD and
         // verified the immutable tuple. Reconcile; never blindly upsert/revive.
-        try{await poc.registerVerified(context.retryProof,context.retryReceipt,model.principal)}catch(error){return Response.json({error:error.code||'REGISTRATION_FAILED'},{status:503})}
+        try {
+          if(options.confirmOnlyRetry){
+            // SQL draft retry policy. The legacy replay has already checked the
+            // live object tuple. Only an existing DB identity can confirm it.
+            const {key,size,etag,version}=context.retryReceipt
+            await model.db.registerVerified({...context.retryProof,receipt:{key,size,etag,version}},model.principal,{canInsert:false})
+          }else await poc.registerVerified(context.retryProof,context.retryReceipt,model.principal)
+        } catch(error){return Response.json({error:error.code||'REGISTRATION_FAILED'},{status:503})}
       }
       return result
     })

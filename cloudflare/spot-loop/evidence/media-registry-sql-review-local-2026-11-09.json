@@ -1,0 +1,19 @@
+{
+  "sourcePoc": "fb4c596",
+  "scope": "LOCAL_STATIC_AND_SYNTHETIC",
+  "command": "node --test tests/cloudflare-registry-poc.test.mjs tests/cloudflare-registry-sql-review.test.mjs",
+  "node": "v24.13.0",
+  "passed": 33,
+  "failed": 0,
+  "originalSyntheticCases": 27,
+  "addedStaticSqlCases": 2,
+  "addedConfirmOnlyRetryCases": 4,
+  "draftSha256": "1f873db267098d1dabbfe4678690e4fc1b5c7428dc56723dc2a9cd60f361d638",
+  "ddlExecuted": false,
+  "databaseEngineValidated": false,
+  "remoteDatabaseAccessed": false,
+  "previewDeployed": false,
+  "candidateWorkerRequests": 0,
+  "nativeCpuSamples": [],
+  "remoteDdlRecommendation": "HOLD_PENDING_LOCAL_POSTGRES_AND_ACL_VALIDATION"
+}
