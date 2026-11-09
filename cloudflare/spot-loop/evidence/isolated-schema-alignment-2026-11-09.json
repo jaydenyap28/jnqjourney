@@ -1,0 +1,176 @@
+{
+  "checkedAt": "2026-11-09T06:30:16.031Z",
+  "isolatedProjectRef": "rnamstwwbzknwbjwdgrf",
+  "existingRows": 3,
+  "originalColumnCount": 33,
+  "nonNullOpeningHours": 0,
+  "openingHours": {
+    "name": "opening_hours",
+    "type": "jsonb",
+    "default": null,
+    "identity": "",
+    "not_null": false,
+    "generated": ""
+  },
+  "missingColumns": [
+    "review_jayden",
+    "review_qing",
+    "is_visited"
+  ],
+  "openingHoursDependencies": [],
+  "customTriggers": [],
+  "inboundForeignKeys": [
+    "FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE"
+  ],
+  "constraints": [
+    {
+      "name": "locations_image_metadata_check",
+      "columns": [
+        31
+      ],
+      "definition": "CHECK ((jsonb_typeof(image_metadata) = 'object'::text))"
+    },
+    {
+      "name": "locations_pkey",
+      "columns": [
+        1
+      ],
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "locations_publication_status_check",
+      "columns": [
+        23
+      ],
+      "definition": "CHECK ((publication_status = ANY (ARRAY['published'::text, 'draft'::text, 'hidden'::text])))"
+    },
+    {
+      "name": "locations_redirect_type_check",
+      "columns": [
+        33
+      ],
+      "definition": "CHECK ((redirect_type = ANY (ARRAY[301, 302])))"
+    },
+    {
+      "name": "locations_region_id_fkey",
+      "columns": [
+        8
+      ],
+      "definition": "FOREIGN KEY (region_id) REFERENCES regions(id) ON DELETE SET NULL"
+    }
+  ],
+  "rls": {
+    "acl": [
+      "postgres=arwdDxtm/postgres",
+      "service_role=arwdDxtm/postgres",
+      "anon=r/postgres"
+    ],
+    "forced": false,
+    "enabled": true
+  },
+  "policies": [
+    {
+      "cmd": "SELECT",
+      "qual": "((status = 'active'::text) AND (publication_status = 'published'::text))",
+      "roles": [
+        "anon"
+      ],
+      "tablename": "locations",
+      "permissive": "PERMISSIVE",
+      "policyname": "fixture_spot_read",
+      "schemaname": "public",
+      "with_check": null
+    }
+  ],
+  "authCounts": {
+    "users": 1,
+    "sessions": 0
+  },
+  "authStructureHash": "1c9cc471fe37aab09734c60b73f4b9e8",
+  "rowsHash": "fddd394725dc87f4bd072235c4fcfc9b",
+  "backup": {
+    "path": "cloudflare/spot-loop/.dev.vars.compatibility-schema-backup.json",
+    "gitIgnored": true,
+    "sha256": "8a30d70f1896d95ae42858d75babfa4b8def8c31394d44d661850ceff377fc3c",
+    "containsOriginalRowsAndCatalog": true,
+    "restorePerformed": false
+  },
+  "environmentPreflight": {
+    "checkedAt": "2026-11-09T06:30:05.001Z",
+    "sourceCommit": "4e443f48f1cad5c652f0480c0f676d5c0c983b51",
+    "checkedHead": "6ce695432a37426018b98e0fad94589a9d388799",
+    "project": "jnqjourney-spot-loop-migration-candidate",
+    "branch": "codex/cloudflare-free-migration",
+    "isolatedSupabaseRef": "rnamstwwbzknwbjwdgrf",
+    "candidateWorkerRequests": 0,
+    "sqlExecuted": false,
+    "productionDataAccessed": false,
+    "boundaries": {
+      "canonicalEmpty": true,
+      "productionEnvironmentCount": 0,
+      "productionR2BindingCount": 0,
+      "productionDeploymentCount": 0,
+      "failClosedBoth": true,
+      "previewBucketMatches": true,
+      "previewSupabaseMatches": true,
+      "formalDomainAttached": false,
+      "secrets": {
+        "SUPABASE_ANON_KEY": true,
+        "SUPABASE_SERVICE_ROLE_KEY": true,
+        "CANDIDATE_R2_ACCESS_KEY_ID": true,
+        "CANDIDATE_R2_SECRET_ACCESS_KEY": true
+      },
+      "oldFixedDeployment": {
+        "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+        "url": "https://c592d40c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+        "environment": "preview",
+        "status": "success"
+      },
+      "latestDeploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535"
+    },
+    "boundariesPassed": true,
+    "testBucket": {
+      "name": "jnqjourney-spot-loop-isolated-media",
+      "managedPublicAccessEnabled": false,
+      "customDomainCount": 0
+    },
+    "package": {
+      "workerSha256": "168496a4c55263d1e404fc1f59707b295b933316bad260665cc373f339d1963b",
+      "contractSha256": "bed2b522c19f0863ae5b846e50ad2cbd66cdd287041bdcd9aa9453ccfcea99cf",
+      "workerMatches": true,
+      "contractMatches": true,
+      "topLevelFiles": 10
+    },
+    "schema": {
+      "actualColumnCount": 33,
+      "requiredColumnCount": 36,
+      "missingColumns": [
+        "review_jayden",
+        "review_qing",
+        "is_visited"
+      ],
+      "openingHoursType": "jsonb",
+      "expectedOpeningHoursType": "text",
+      "readProbeHttpStatus": 400,
+      "readProbeErrorCode": "42703"
+    },
+    "schemaCompatible": false,
+    "error": "ISOLATED_SCHEMA_CONTRACT_MISMATCH",
+    "verdict": "NO_GO_HOLD",
+    "previewDeployed": false,
+    "finishedAt": "2026-11-09T06:30:16.031Z"
+  },
+  "ddl": {
+    "attempted": true,
+    "executed": false,
+    "reason": "Automatic approval review could not complete due to usage limit. This was not an unsafe-action determination. Supabase connector then became unavailable.",
+    "alternateExecutionAttempted": false
+  },
+  "afterDdlVerification": "NOT_RUN_DDL_NOT_EXECUTED",
+  "fixturesCreated": 0,
+  "previewDeployed": false,
+  "candidateWorkerRequests": 0,
+  "requestBudget": 40,
+  "nativeCpuSamples": [],
+  "verdict": "NO_GO_HOLD_TOOLING_BLOCKED"
+}

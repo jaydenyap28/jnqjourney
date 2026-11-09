@@ -1,5 +1,81 @@
 # 新版兼容 Preview 原生验收 · NO-GO / HOLD
 
+## 获批隔离结构修复：2026-11-09 14:30 SGT 续验
+
+当前检查 HEAD 为 `6ce6954`，产品源码保持 `4e443f4`。用户已授权仅修改隔离 Supabase `rnamstwwbzknwbjwdgrf` 的四项字段定义；这项授权已经具备，无需重新批准相同 DDL。
+
+**本轮停在执行工具，DDL 未执行。** `apply_migration` 的自动审批审核因用量限制未完成，明确返回 action not executed，并说明这不是安全性否决。随后连接工具从当前会话消失。未改用 CLI 或其他通道绕过审批。以下状态为执行前实测，不冒充迁移后验收。[本轮脱敏证据](evidence/isolated-schema-alignment-2026-11-09.json)
+
+| 阶段 | 实际结果 |
+| --- | --- |
+| 隔离结构复核 | 3 条记录、33 列；`opening_hours` nullable JSONB、无默认值，非 SQL NULL 数为 0。三项新增列仍不存在。 |
+| 转换依赖 | opening_hours 的列依赖为空，自定义触发器为空。现有 CHECK 涉及 image_metadata、publication_status、redirect_type；没有 opening_hours 约束。另有 location_id 外键引用 locations，带 DELETE CASCADE；后续 DELETE 验收只能使用新专属 fixture。 |
+| 可恢复快照 | 已保存原始三条完整记录、字段/默认值/identity、约束、索引、触发器、RLS/policy/ACL 和入站外键。存于 Git 忽略的 `cloudflare/spot-loop/.dev.vars.compatibility-schema-backup.json`，不提交数据内容。未执行恢复演练。 |
+| 数据校验 | 原始行集 MD5 `fddd394725dc87f4bd072235c4fcfc9b`；备份文件 SHA-256 `8a30d70f1896d95ae42858d75babfa4b8def8c31394d44d661850ceff377fc3c`。行集 MD5 仅用于事务内变更检测，不作为安全签名。 |
+| RLS / Auth 基线 | locations RLS enabled、非 forced，anon 只有 SELECT grant 和 fixture_spot_read policy；Auth users 1、sessions 0。Auth 结构 hash 与 policy 摘要已存证。DDL 后未核验，不能标记为修复后通过。 |
+| Cloudflare 边界 | 四个 Preview Secrets 均为 secret_text；Production canonical 空，变量/Secrets 0、R2 binding 0、部署 0。双方 Fail closed；仅隔离 bucket，managed public access false、custom domains 0，未绑定正式域名。 |
+| 现有结构预检 | 仍为 33/36 列，PostgREST 400 / 42703。新版 worker 与 contract 打包 hash 仍匹配。 |
+| 部署 / fixtures / 原生测试 | 全部未执行。候选 Worker 请求 **0/40**，没有新增 CPU 或 R2 操作量实测，也没有重复历史上传或 Chrome 测试。固定旧版 c592d40c 仍为成功 Preview。 |
+
+### 已准备但未执行的事务
+
+下面是供恢复执行时复核的事务正文，不是自动执行入口，不应加入正式项目的 migrations。只能通过恢复后的获准连接对指定隔离项目执行。执行前重新读表并核对快照；若已有任何数据或依赖变化，停止并重新评估快照，不能机械替换校验值。正式项目禁止使用。
+
+```sql
+BEGIN;
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '15s';
+LOCK TABLE public.locations IN ACCESS EXCLUSIVE MODE;
+DO $isolated_alignment$
+DECLARE opening_att record;
+BEGIN
+  IF (SELECT count(*) FROM public.locations) <> 3
+    OR (SELECT md5(jsonb_agg(to_jsonb(l) ORDER BY id)::text)
+        FROM public.locations l) IS DISTINCT FROM 'fddd394725dc87f4bd072235c4fcfc9b'
+    THEN RAISE EXCEPTION 'ISOLATED_SNAPSHOT_CHANGED'; END IF;
+  IF EXISTS (SELECT 1 FROM public.locations WHERE opening_hours IS NOT NULL)
+    THEN RAISE EXCEPTION 'NON_NULL_OPENING_HOURS_REFUSED'; END IF;
+  SELECT a.attnum, a.atttypid, a.attnotnull, a.attgenerated,
+    EXISTS(SELECT 1 FROM pg_attrdef d
+      WHERE d.adrelid=a.attrelid AND d.adnum=a.attnum) AS has_default
+    INTO STRICT opening_att FROM pg_attribute a
+    WHERE a.attrelid='public.locations'::regclass
+      AND a.attname='opening_hours' AND NOT a.attisdropped;
+  IF opening_att.atttypid <> 'jsonb'::regtype OR opening_att.attnotnull
+    OR opening_att.has_default OR opening_att.attgenerated <> ''
+    THEN RAISE EXCEPTION 'UNEXPECTED_OPENING_HOURS_DEFINITION'; END IF;
+  IF EXISTS(SELECT 1 FROM pg_depend
+      WHERE refobjid='public.locations'::regclass AND refobjsubid=opening_att.attnum)
+    OR EXISTS(SELECT 1 FROM pg_trigger
+      WHERE tgrelid='public.locations'::regclass AND NOT tgisinternal)
+    THEN RAISE EXCEPTION 'UNREVIEWED_DEPENDENCY'; END IF;
+  IF EXISTS(SELECT 1 FROM pg_attribute WHERE attrelid='public.locations'::regclass
+    AND attname IN ('review_jayden','review_qing','is_visited') AND NOT attisdropped)
+    THEN RAISE EXCEPTION 'UNEXPECTED_EXISTING_COLUMNS'; END IF;
+  ALTER TABLE public.locations
+    ADD COLUMN review_jayden text NULL,
+    ADD COLUMN review_qing text NULL,
+    ADD COLUMN is_visited boolean NULL,
+    ALTER COLUMN opening_hours TYPE text USING opening_hours::text;
+  IF EXISTS(SELECT 1 FROM public.locations WHERE opening_hours IS NOT NULL)
+    THEN RAISE EXCEPTION 'NULL_PRESERVATION_FAILED'; END IF;
+END $isolated_alignment$;
+NOTIFY pgrst, 'reload schema';
+COMMIT;
+```
+
+同一事务持有排他表锁，先核验行集及 SQL NULL，再转换；SQL NULL 的 text cast 保留 NULL。任何断言或 DDL 错误都应回滚整个事务，不得忽略后继续。快照中的原结构和原记录支持人工恢复；在原三条数据且新增列全 NULL 的阶段，可经复核反向转换并移除新增列。创建测试数据后应基于快照逐项恢复，不能自动覆盖整个表或触发外键级联。
+
+### 恢复条件与结论
+
+1. 恢复 Supabase 连接及自动审批审核可用性，沿用既有授权，仅执行上述隔离 DDL。
+2. 重读 36 列类型；比较原三条记录（剔除新增三列后的 JSON 行集）、NULL、RLS/policies/ACL 与 Auth 结构；PostgREST SELECT 必须成功。重新确认 Cloudflare 边界后才创建独立 fixture。
+3. 继续新版小型 Preview 与最多 40 次请求的原生 Tail 验收；任一超过 10 ms、Tail 缺失或保护失败立即 HOLD。17/30 图、CAS、编辑器等均仍待验证。
+
+本轮 **P0 未关闭**：隔离 schema 对齐仍未执行；正式旧媒体保护、SELECT/RLS、发布队列/cron、路由/SEO/跨模块契约、备份/恢复和切换授权等原 P0 保留。当前新版结论为 **NO-GO / HOLD（工具阻塞，尚未完成技术验收）**；历史技术 GO 不变，正式迁移继续 HOLD。没有新增免费额度可靠性证据，历史 10 ms 临界记录保留。
+
+以下保留上一轮预检记录，DDL 等待授权的描述属于当时状态，已由本轮授权覆盖。
+
 `4e443f4` 在隔离环境预检被现有测试库的结构差异阻断。36 列零行 SELECT 实际返回 **400 / `42703`**。修正版的云端原生验收停在部署之前，候选 Worker 请求预算使用 **0/40**。历史 `3603644` 技术 GO 和固定 `c592d40c` 验收记录保留。[本轮脱敏预检证据](evidence/compatibility-native-preflight-2026-11-09.json)
 
 ## 各阶段实际结果
