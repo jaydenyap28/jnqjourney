@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "400b513",
+  "environment": "Local Node v24.13.0",
+  "command": "node --test tests/cloudflare-gallery-validation.test.mjs tests/cloudflare-compatibility.test.mjs tests/cloudflare-presigned-upload.test.mjs tests/cloudflare-spot-loop.test.mjs tests/cloudflare-native-transport.test.mjs",
+  "tests": 47,
+  "passed": 47,
+  "failed": 0,
+  "nativeCpuEvidence": false,
+  "coverage": [
+    "1/5/17/30 first and unchanged galleries",
+    "cover deduplication",
+    "missing/corrupt/oversized/foreign receipt",
+    "size/MIME/etag/version/signature mismatch and deletion",
+    "truncated LIST fallback HEAD",
+    "unreferenced media and withdrawal",
+    "stale CAS save version",
+    "concurrent complete/complete and complete/cancel",
+    "ambiguous receipt write cleanup",
+    "privileged out-of-band TOCTOU mutation fails closed at media serving"
+  ],
+  "testHarnessChanges": "Extracted shared synthetic fixture. Corrected pre-existing staging anonymous response assertion from 404 to 401: unreferenced media requires Auth before receipt lookup, as in f584cd4. No authorization behavior changed."
+}

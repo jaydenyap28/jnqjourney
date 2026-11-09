@@ -1,0 +1,22 @@
+{
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "branch": "codex/cloudflare-free-migration",
+  "productionDeploymentCreated": false,
+  "canonicalBefore": null,
+  "productionSecretsBefore": 0,
+  "productionR2BindingsBefore": 0,
+  "workerSha256": "0970dccdb8b1a2855955155bd25ccb755ee437a6706cc7666a2d2dd978f7be3a",
+  "contractSha256": "bed2b522c19f0863ae5b846e50ad2cbd66cdd287041bdcd9aa9453ccfcea99cf",
+  "cliUrls": [
+    "https://5332ce56.jnqjourney-spot-loop-migration-candidate.pages.dev",
+    "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev"
+  ],
+  "deploymentId": "5332ce56-643d-4c5c-9882-4487c516c563",
+  "url": "https://5332ce56.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "environment": "preview",
+  "canonicalAfter": null,
+  "productionSecretsAfter": 0,
+  "productionR2BindingsAfter": 0,
+  "failClosedBothEnvironments": true,
+  "success": true
+}

@@ -1,0 +1,78 @@
+{
+  "deploymentId": "5332ce56-643d-4c5c-9882-4487c516c563",
+  "count": 6,
+  "diagnostics": {
+    "parsedFrames": 6,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": true,
+    "incompleteFrame": false,
+    "exitCode": 4294967295,
+    "exitSignal": null
+  },
+  "events": [
+    {
+      "timestamp": 1794209849984,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794209849949-0",
+      "wallTime": 1419,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794209852160,
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794209852355-1",
+      "wallTime": 1252,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794209853536,
+      "path": "/media/candidate/8/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794209853726-2",
+      "wallTime": 171,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794209853819,
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794209854015-3",
+      "wallTime": 1325,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794209855246,
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794209855464-4",
+      "wallTime": 752,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794209856081,
+      "path": "/api/candidate/spots/9",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794209856278-5",
+      "wallTime": 2229,
+      "cpuTime": 19
+    }
+  ]
+}

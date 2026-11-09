@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-11-09T07:38:36.887Z",
+  "canonicalEmpty": true,
+  "productionEnvironmentCount": 0,
+  "productionR2BindingCount": 0,
+  "productionDeploymentCount": 0,
+  "failClosedBoth": true,
+  "previewSecrets": {
+    "SUPABASE_ANON_KEY": "secret_text",
+    "SUPABASE_SERVICE_ROLE_KEY": "secret_text",
+    "CANDIDATE_R2_ACCESS_KEY_ID": "secret_text",
+    "CANDIDATE_R2_SECRET_ACCESS_KEY": "secret_text"
+  },
+  "previewFixtureIds": [
+    "8",
+    "9"
+  ],
+  "testBucket": "jnqjourney-spot-loop-isolated-media",
+  "formalDomainAttached": false,
+  "preservedDeployments": [
+    {
+      "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "status": "success",
+      "environment": "preview"
+    },
+    {
+      "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+      "status": "success",
+      "environment": "preview"
+    }
+  ],
+  "lifecycle": {
+    "httpStatus": 200,
+    "success": true,
+    "rules": [
+      {
+        "id": "Default Multipart Abort Rule",
+        "enabled": true
+      },
+      {
+        "id": "candidate-staging-expiry",
+        "enabled": true,
+        "prefix": "_candidate-staging/",
+        "deleteObjectsTransition": {
+          "condition": {
+            "type": "Age",
+            "maxAge": 86400
+          }
+        }
+      },
+      {
+        "id": "candidate-ticket-expiry",
+        "enabled": true,
+        "prefix": "_candidate-tickets/",
+        "deleteObjectsTransition": {
+          "condition": {
+            "type": "Age",
+            "maxAge": 86400
+          }
+        }
+      }
+    ]
+  }
+}

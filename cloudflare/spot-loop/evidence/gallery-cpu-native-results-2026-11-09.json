@@ -1,0 +1,111 @@
+{
+  "startedAt": "2026-11-09T07:37:29.947Z",
+  "deploymentId": "5332ce56-643d-4c5c-9882-4487c516c563",
+  "workerSha256": "0970dccdb8b1a2855955155bd25ccb755ee437a6706cc7666a2d2dd978f7be3a",
+  "url": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "budget": 40,
+  "priorCompatibilityRequests": 2,
+  "checks": [
+    {
+      "name": "login",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "expected": 200,
+      "acceptanceId": "1794209849949-0",
+      "issuedAt": "2026-11-09T07:37:29.949Z",
+      "status": 200,
+      "cpuTimeMs": 3,
+      "runtimeWallTimeMs": 1419,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_1_first",
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794209852355-1",
+      "r2Expected": {
+        "receiptGet": 1,
+        "objectHead": 1,
+        "objectList": 0,
+        "measurement": "Code-path count, not native operation telemetry"
+      },
+      "issuedAt": "2026-11-09T07:37:32.355Z",
+      "status": 200,
+      "cpuTimeMs": 6,
+      "runtimeWallTimeMs": 1252,
+      "outcome": "ok"
+    },
+    {
+      "name": "unreferenced_verified_denied",
+      "path": "/media/candidate/8/97d72268-ffce-4389-86f6-a12b9c077e85.png",
+      "method": "GET",
+      "expected": 401,
+      "acceptanceId": "1794209853726-2",
+      "issuedAt": "2026-11-09T07:37:33.726Z",
+      "status": 401,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 171,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_5_first",
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794209854015-3",
+      "r2Expected": {
+        "receiptGet": 5,
+        "objectHead": 0,
+        "objectList": 1,
+        "measurement": "Code-path count, not native operation telemetry"
+      },
+      "issuedAt": "2026-11-09T07:37:34.015Z",
+      "status": 200,
+      "cpuTimeMs": 6,
+      "runtimeWallTimeMs": 1325,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_5_unchanged",
+      "path": "/api/candidate/spots/8",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794209855464-4",
+      "r2Expected": {
+        "receiptGet": 5,
+        "objectHead": 0,
+        "objectList": 1,
+        "measurement": "Code-path count, not native operation telemetry"
+      },
+      "issuedAt": "2026-11-09T07:37:35.464Z",
+      "status": 200,
+      "cpuTimeMs": 4,
+      "runtimeWallTimeMs": 752,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_17_first_full_fields",
+      "path": "/api/candidate/spots/9",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794209856278-5",
+      "r2Expected": {
+        "receiptGet": 17,
+        "objectHead": 0,
+        "objectList": 1,
+        "measurement": "Code-path count, not native operation telemetry"
+      },
+      "issuedAt": "2026-11-09T07:37:36.278Z",
+      "status": 200,
+      "cpuTimeMs": 19,
+      "runtimeWallTimeMs": 2229,
+      "outcome": "ok"
+    }
+  ],
+  "assertions": [],
+  "hold": true,
+  "error": "NATIVE_CPU_LIMIT_EXCEEDED",
+  "verdict": "NO_GO_HOLD",
+  "finishedAt": "2026-11-09T07:37:38.624Z"
+}

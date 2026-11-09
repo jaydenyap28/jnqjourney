@@ -1,0 +1,22 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "fixtures": [
+    {
+      "id": 8,
+      "role": "small",
+      "mediaCount": 5,
+      "slug": "cloudflare-loop-cpu-small-8"
+    },
+    {
+      "id": 9,
+      "role": "gallery",
+      "mediaCount": 30,
+      "slug": "cloudflare-loop-cpu-gallery-9"
+    }
+  ],
+  "r2PutAttempts": 70,
+  "allFixturePutsConfirmed": true,
+  "bytesPerImage": 68,
+  "imageSha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+}
