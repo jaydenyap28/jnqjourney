@@ -1,4 +1,45 @@
-# Presigned PUT Preview 验收：HOLD / NO-GO
+# Presigned PUT Preview 验收 · 候选技术 GO
+
+安全回归补测与真实 Chrome 闭环均已通过。技术 GO 仅适用于当前隔离 Preview 的 Spot 发布流程，正式迁移仍待单独授权。
+
+## 断点续验（2026-11-09，新加坡时间）
+
+### 原生尾流调查
+
+原始验收 ID `1794187562183-33` 的 409 在 HTTP 记录中保留，归档的 23 条尾流事件里没有该 ID，也没有未关联的 409 可供核对。原采集进程已关闭，Preview 元数据没有持久观测或 Logpush 配置。Pages 实时尾流不保存历史事件，因此原始 CPU 无法恢复。 [Cloudflare Pages 日志文档](https://developers.cloudflare.com/pages/functions/debugging-and-logging/)
+
+检查了本机 Wrangler 与旧采集器。旧命令未设显式采样率或状态过滤，旧解析器静默吞掉 JSON 解析异常，只检查三种 header 拼写，并直接覆盖文件。它在 `exit` 时收尾，不能确认 stdout 已排空。已有证据不足以区分上游尾流丢失、采样、解析或写入问题。
+
+新采集器按验收 header 过滤，不添加采样率，使用 UTF-8 流解码和不区分大小写的 header 查找，原子写入独立快照，并记录解析失败、截断、关联失败和告警计数。续验以单次 journal 保护 409 补测，等待匹配的原生事件后才继续。新尾流 **30/30** 条请求均关联，解析错误、截断、未关联请求和告警计数均为零。
+
+### 安全回归补齐
+
+登录与读取 fixture 的原生 CPU 分别为 4 ms 和 2 ms。检查到当前版本 `2026-11-09T01:26:04.195+00:00`、公开状态及既有已验证图片后，仅发出一次使用旧版本的 PATCH。新请求 `1794188154311-2` 返回 **409，CPU 3 ms**。原始请求的 CPU 字段仍为空。
+
+| 新补测 | HTTP | 原生 CPU |
+| --- | ---: | ---: |
+| 匿名读回已验证图片，SHA-256 与原输入一致 | 200 | 3 ms |
+| 下架 | 200 | 2 ms |
+| 下架后的匿名页面 | 404 | 1 ms |
+| 下架后的匿名图片 | 401 | 1 ms |
+| 重新发布 | 200 | 2 ms |
+| 重新发布后的页面和图片，图片 SHA-256 复核 | 各 200 | 各 2 ms |
+
+安全阶段共 10 个新 Worker 请求，CPU 1–4 ms。四次历史尺寸上传与 S3 兼容检查原样保留。 [安全补测记录](evidence/direct-resume-acceptance-2026-11-09.json)
+
+### Chrome 完整闭环
+
+在本机无头 Chrome `157.0.8103.38` 中，以独立管理员和匿名浏览器上下文操作原有 UI。真实登录、空文件提示、选择并上传 128 KiB 有效 PNG、上传成功提示与预览解码、Spot 保存、新标题和图片的匿名读取、下架、重新发布、登出均通过。浏览器实际 PUT 到 R2 返回 200，CORS 允许该 Preview origin。下架后的匿名页面和图片分别返回 404 和 401，重新发布后恢复。登出返回 200，会话复查返回 401。浏览器页面异常计数为零。
+
+20 个浏览器 Worker 请求全部关联原生 Tail，CPU 为 0–7 ms。上传授权 3 ms，完成验证 7 ms，保存 4 ms。测试结束时隔离 fixture 已重新发布，标题恢复为原值，保留本次验证图片。 [浏览器脱敏记录](evidence/direct-browser-acceptance-2026-11-09.json) · [新原生尾流](evidence/direct-closure-runtime-2026-11-09.json)
+
+### 边界与判断
+
+停测后复核 Production canonical 为空，部署、环境变量和 R2 binding 均为零，两个环境均 Fail closed。整个续验使用原 Preview、隔离 Supabase 和测试 R2，保留原 Presigned PUT Worker。 [停测后边界](evidence/direct-closure-boundaries-2026-11-09.json)
+
+当前 Spot 候选通过技术验收。历史 1 MiB 的完成验证 **10 ms** 仍是已观测最高值，正好碰到门槛。本次证据涵盖有限的隔离样本，长期流量、并发及完整网站配额仍未验证。正式迁移仍为 HOLD。
+
+## 首次验收记录（保留）
 
 2026-11-09（新加坡时间）。代码基线 `9a0af83`，分支 `codex/cloudflare-free-migration`。只重新打包、部署原有小型 Preview；没有改 Worker 架构或做全站构建。当前 [Preview 后台](https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev/admin/cloudflare-spot)，固定部署 [c592d40c](https://c592d40c.jnqjourney-spot-loop-migration-candidate.pages.dev)。
 

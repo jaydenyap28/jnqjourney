@@ -1,0 +1,18 @@
+{
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "checkedAt": "2026-11-09T01:39:24.670Z",
+  "canonicalDeploymentEmpty": true,
+  "productionEnvironmentVariableCount": 0,
+  "productionR2BindingCount": 0,
+  "productionDeploymentCount": 0,
+  "allDeploymentsIsolatedPreview": true,
+  "failClosedBothEnvironments": true,
+  "previewBucket": "jnqjourney-spot-loop-isolated-media",
+  "formalDomainBound": false,
+  "signingSecretPresence": {
+    "CANDIDATE_R2_ACCESS_KEY_ID": true,
+    "CANDIDATE_R2_SECRET_ACCESS_KEY": true
+  },
+  "boundariesPassed": true,
+  "directUploadCredentialsReady": true
+}

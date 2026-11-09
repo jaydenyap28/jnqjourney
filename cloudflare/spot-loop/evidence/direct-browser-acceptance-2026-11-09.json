@@ -1,0 +1,215 @@
+{
+  "url": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "deploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+  "workerSha256": "656e5e7b23d80143e3b810055e1e572462b5ac6867dc20b581c8131bfad8029c",
+  "steps": [
+    "open",
+    "login",
+    "missing_file_feedback",
+    "browser_upload",
+    "save",
+    "anonymous_read",
+    "withdraw",
+    "anonymous_protection",
+    "republish",
+    "logout"
+  ],
+  "checks": [
+    {
+      "stage": "open",
+      "acceptanceId": "1794188321438-1000",
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "status": 401,
+      "cpuTimeMs": 1,
+      "outcome": "ok"
+    },
+    {
+      "stage": "login",
+      "acceptanceId": "1794188322144-1001",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "login",
+      "acceptanceId": "1794188323630-1002",
+      "path": "/api/candidate/spots/1",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 3,
+      "outcome": "ok"
+    },
+    {
+      "stage": "login",
+      "acceptanceId": "1794188324431-1003",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_upload",
+      "acceptanceId": "1794188324859-1004",
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "status": 201,
+      "cpuTimeMs": 3,
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_upload",
+      "acceptanceId": "1794188326208-1005",
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "status": 201,
+      "cpuTimeMs": 7,
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_upload",
+      "acceptanceId": "1794188327134-1006",
+      "path": "/media/candidate/1/7111fee5-313f-4691-9b3e-6ce2023be4a2.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 1,
+      "outcome": "ok"
+    },
+    {
+      "stage": "save",
+      "acceptanceId": "1794188327516-1007",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "status": 200,
+      "cpuTimeMs": 4,
+      "outcome": "ok"
+    },
+    {
+      "stage": "anonymous_read",
+      "acceptanceId": "1794188328076-1008",
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "anonymous_read",
+      "acceptanceId": "1794188328929-1009",
+      "path": "/media/candidate/1/7111fee5-313f-4691-9b3e-6ce2023be4a2.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 6,
+      "outcome": "ok"
+    },
+    {
+      "stage": "anonymous_read",
+      "acceptanceId": "1794188329654-1010",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "withdraw",
+      "acceptanceId": "1794188330080-1011",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "anonymous_protection",
+      "acceptanceId": "1794188330462-1012",
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "status": 404,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "anonymous_protection",
+      "acceptanceId": "1794188330952-1013",
+      "path": "/media/candidate/1/7111fee5-313f-4691-9b3e-6ce2023be4a2.png",
+      "method": "GET",
+      "status": 401,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "republish",
+      "acceptanceId": "1794188331266-1014",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "republish",
+      "acceptanceId": "1794188331952-1015",
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "republish",
+      "acceptanceId": "1794188332490-1016",
+      "path": "/media/candidate/1/7111fee5-313f-4691-9b3e-6ce2023be4a2.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 3,
+      "outcome": "ok"
+    },
+    {
+      "stage": "republish",
+      "acceptanceId": "1794188333338-1017",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTimeMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "logout",
+      "acceptanceId": "1794188333673-1018",
+      "path": "/api/candidate/session",
+      "method": "DELETE",
+      "status": 200,
+      "cpuTimeMs": 1,
+      "outcome": "ok"
+    },
+    {
+      "stage": "logout",
+      "acceptanceId": "1794188333909-1019",
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "status": 401,
+      "cpuTimeMs": 0,
+      "outcome": "ok"
+    }
+  ],
+  "r2": [
+    {
+      "method": "PUT",
+      "status": 200,
+      "corsOriginMatches": true
+    }
+  ],
+  "browserErrors": 0,
+  "hold": false,
+  "browserVersion": "157.0.8103.38",
+  "image": {
+    "bytes": 131072,
+    "sha256": "41448c0fbbe145f6788bc616f989f54c81949cca224e442831adee7c7f465aad"
+  },
+  "browserPassed": true,
+  "finishedAt": "2026-11-09T01:38:54.318Z"
+}

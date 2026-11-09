@@ -1,0 +1,140 @@
+{
+  "url": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "deploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+  "workerSha256": "656e5e7b23d80143e3b810055e1e572462b5ac6867dc20b581c8131bfad8029c",
+  "checks": [
+    {
+      "name": "session_resume",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "expected": 200,
+      "acceptanceId": "1794188151333-0",
+      "status": 200,
+      "wallTimeMs": 1854,
+      "cpuTimeMs": 4,
+      "runtimeWallTimeMs": 1480,
+      "outcome": "ok"
+    },
+    {
+      "name": "resume_current_fixture",
+      "path": "/api/candidate/spots/1",
+      "method": "GET",
+      "expected": 200,
+      "acceptanceId": "1794188153738-1",
+      "status": 200,
+      "wallTimeMs": 513,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 477,
+      "outcome": "ok"
+    },
+    {
+      "name": "version_conflict_recheck",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "expected": 409,
+      "acceptanceId": "1794188154311-2",
+      "status": 409,
+      "wallTimeMs": 919,
+      "cpuTimeMs": 3,
+      "runtimeWallTimeMs": 886,
+      "outcome": "ok"
+    },
+    {
+      "name": "published_verified_media",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "expected": 200,
+      "acceptanceId": "1794188155290-3",
+      "status": 200,
+      "wallTimeMs": 288,
+      "cpuTimeMs": 3,
+      "runtimeWallTimeMs": 252,
+      "outcome": "ok"
+    },
+    {
+      "name": "withdraw_for_image_guard",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794188155699-4",
+      "status": 200,
+      "wallTimeMs": 625,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 604,
+      "outcome": "ok"
+    },
+    {
+      "name": "withdrawn_spot_denied",
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "expected": 404,
+      "acceptanceId": "1794188156391-5",
+      "status": 404,
+      "wallTimeMs": 198,
+      "cpuTimeMs": 1,
+      "runtimeWallTimeMs": 157,
+      "outcome": "ok"
+    },
+    {
+      "name": "withdrawn_image_denied",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "expected": 401,
+      "acceptanceId": "1794188156654-6",
+      "status": 401,
+      "wallTimeMs": 488,
+      "cpuTimeMs": 1,
+      "runtimeWallTimeMs": 456,
+      "outcome": "ok"
+    },
+    {
+      "name": "republish_fixture",
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794188157196-7",
+      "status": 200,
+      "wallTimeMs": 355,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 319,
+      "outcome": "ok"
+    },
+    {
+      "name": "republished_spot_read",
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "expected": 200,
+      "acceptanceId": "1794188157615-8",
+      "status": 200,
+      "wallTimeMs": 196,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 159,
+      "outcome": "ok"
+    },
+    {
+      "name": "republished_image_read",
+      "path": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+      "method": "GET",
+      "expected": 200,
+      "acceptanceId": "1794188157878-9",
+      "status": 200,
+      "wallTimeMs": 279,
+      "cpuTimeMs": 2,
+      "runtimeWallTimeMs": 261,
+      "outcome": "ok"
+    }
+  ],
+  "uploads": [],
+  "hold": true,
+  "originalMissingAcceptanceId": "1794187562183-33",
+  "fixtureAtResume": {
+    "version": "2026-11-09T01:26:04.195+00:00",
+    "publicationStatus": "published",
+    "mediaPath": "/media/candidate/1/a0e63ca1-bbef-4ca2-951b-968db26ea2d3.png",
+    "publicPath": "/spot/cloudflare-loop-fixture-1"
+  },
+  "versionConflictRecheckAcceptanceId": "1794188154311-2",
+  "readbackSha256": "43244a802e80f6bb6d4225c237eabbc7c882b67c5a1e2a1d6b6aa55b6ae94761",
+  "securityPassed": true,
+  "finishedAt": "2026-11-09T01:35:58.224Z"
+}

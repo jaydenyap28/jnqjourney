@@ -1,0 +1,316 @@
+{
+  "deploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+  "count": 30,
+  "diagnostics": {
+    "parsedFrames": 30,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794188151675,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188151333-0",
+      "wallTime": 1480,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794188153768,
+      "path": "/api/candidate/spots/1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188153738-1",
+      "wallTime": 477,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188154340,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 409,
+      "acceptanceId": "1794188154311-2",
+      "wallTime": 886,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794188155321,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188155290-3",
+      "wallTime": 252,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794188155714,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188155699-4",
+      "wallTime": 604,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188156428,
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794188156391-5",
+      "wallTime": 157,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794188156682,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794188156654-6",
+      "wallTime": 456,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794188157222,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188157196-7",
+      "wallTime": 319,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188157648,
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188157615-8",
+      "wallTime": 159,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188157892,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188157878-9",
+      "wallTime": 261,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188321477,
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794188321438-1000",
+      "wallTime": 1,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794188322230,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188322144-1001",
+      "wallTime": 1338,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188323666,
+      "path": "/api/candidate/spots/1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188323630-1002",
+      "wallTime": 710,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794188324466,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188324431-1003",
+      "wallTime": 233,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188324880,
+      "path": "/api/candidate/spots/1/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794188324859-1004",
+      "wallTime": 403,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794188326239,
+      "path": "/api/candidate/spots/1/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794188326208-1005",
+      "wallTime": 840,
+      "cpuTime": 7
+    },
+    {
+      "timestamp": 1794188327170,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188327134-1006",
+      "wallTime": 239,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794188327536,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188327516-1007",
+      "wallTime": 487,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794188328122,
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188328076-1008",
+      "wallTime": 451,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188328971,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188328929-1009",
+      "wallTime": 583,
+      "cpuTime": 6
+    },
+    {
+      "timestamp": 1794188329705,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188329654-1010",
+      "wallTime": 246,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188330097,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188330080-1011",
+      "wallTime": 309,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188330480,
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794188330462-1012",
+      "wallTime": 422,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188330969,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794188330952-1013",
+      "wallTime": 168,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188331301,
+      "path": "/api/candidate/spots/1",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188331266-1014",
+      "wallTime": 598,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188331990,
+      "path": "/spot/cloudflare-loop-fixture-1",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188331952-1015",
+      "wallTime": 445,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188332526,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188332490-1016",
+      "wallTime": 733,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794188333372,
+      "path": "/media/candidate/1/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188333338-1017",
+      "wallTime": 236,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794188333696,
+      "path": "/api/candidate/session",
+      "method": "DELETE",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794188333673-1018",
+      "wallTime": 158,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794188333943,
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794188333909-1019",
+      "wallTime": 0,
+      "cpuTime": 0
+    }
+  ]
+}
