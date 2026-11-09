@@ -1,7 +1,8 @@
 {
   "baseline": "1377b9ec7f0264d29b5cca6a95aa5217b54845c6",
+  "approvalCheckpoint": "03c94c573f3be1cad814f75f30cb93e3f4154151",
   "draftLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
-  "decision": "DDL_BLOCKED",
+  "decision": "DDL_PRECHECK_READY",
   "productionMigration": "HOLD",
   "supabase": {
     "projectRef": "rnamstwwbzknwbjwdgrf",
@@ -18,6 +19,38 @@
       "publicDefaultFunctionExecuteIncludes": ["anon", "authenticated"],
       "constraintsForeignKeysPoliciesAndDefaultAclExtractedUpstream": true,
       "rawDefinitionsProvidedInThisSession": false
+    },
+    "latestOfficialCatalogSummarySuppliedByUser": {
+      "query": "review/trusted-media-registry-preflight.read-only.sql",
+      "projectRef": "rnamstwwbzknwbjwdgrf",
+      "postgresVersion": "17.11",
+      "locationsColumns": 36,
+      "locationsRlsEnabled": true,
+      "locationsPolicies": [{"role": "anon", "command": "SELECT"}],
+      "locationsDirectPrivileges": {
+        "anon": ["SELECT"],
+        "authenticated": [],
+        "authenticator": [],
+        "service_role": ["SELECT", "INSERT", "UPDATE", "DELETE"]
+      },
+      "serviceRoleBypassRls": true,
+      "authenticatorSetRolesReported": ["anon", "authenticated", "service_role"],
+      "authenticatorInheritsReportedRoles": false,
+      "privateSchemaExists": false,
+      "rpcNameConflicts": [],
+      "reservedIdCount": 0,
+      "primaryKeyIncomingOutgoingForeignKeysAndDeleteActionsReviewed": true,
+      "locationsUserTriggers": 0,
+      "supabaseBuiltInDdlEventTriggersPresent": true,
+      "sqlCurrentUser": "postgres",
+      "sqlSessionUser": "postgres",
+      "postgresCreateDatabaseScopeAndPublicSchema": true,
+      "postgresLocationsPrivilegesVerified": ["REFERENCES", "SELECT", "UPDATE", "DELETE"],
+      "databaseSizeBytes": 11744947,
+      "followUpUserConfirmationFromOfficialCatalogReview": {
+        "ordinaryRolesCanInheritOrSetElevatedRole": false,
+        "postgresGlobalOrPublicDefaultAclAddsOtherAppRolePath": false
+      }
     },
     "directDataApiReadOnly": {
       "checkedAt": "2026-11-09T11:21:25.829Z",
@@ -69,12 +102,8 @@
     "catalogSqlRunThisSession": false,
     "nominalFreeProjectDatabaseQuotaMb": 500,
     "actualAccountHeadroom": "UNKNOWN",
-    "remainingReviewEvidence": [
-      "locations exact constraints and incoming/outgoing foreign key actions",
-      "locations RLS write predicates and effective write permissions for ordinary API roles",
-      "DDL creator and its CREATE and REFERENCES privileges, actual default ACL grantors and grantees",
-      "effective inherited and SET ROLE paths, and DDL event triggers"
-    ]
+    "remainingReviewEvidence": [],
+    "requiresImmediatePreExecutionRecheck": true
   },
   "cloudflare": {
     "projectAndBucketCheckedAt": "2026-11-09T11:20:41.511Z",
@@ -119,5 +148,5 @@
       {"idPrefix": "ed4e084d", "fixtureIds": [1]}
     ]
   },
-  "actions": {"ddlExecuted": false, "fixturesCreated": false, "deploymentsCreated": false, "workerRequests": 0, "previousHttpOrWorkerSuiteRerun": false}
+  "actions": {"ddlAuthorized": false, "ddlExecuted": false, "fixturesCreated": false, "deploymentsCreated": false, "workerRequests": 0, "previousSqlHttpOrWorkerSuiteRerun": false}
 }
