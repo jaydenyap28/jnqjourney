@@ -172,5 +172,23 @@
   "candidateWorkerRequests": 0,
   "requestBudget": 40,
   "nativeCpuSamples": [],
-  "verdict": "NO_GO_HOLD_TOOLING_BLOCKED"
+  "verdict": "NO_GO_HOLD_TOOLING_BLOCKED",
+  "toolAvailabilityChecks": [
+    {
+      "checkedAt": "2026-11-09T06:47:16.962Z",
+      "checkpoint": "2a435b8",
+      "method": "Current session ALL_TOOLS name discovery",
+      "executeSqlToolAvailable": false,
+      "applyMigrationToolAvailable": false,
+      "approvalChannelStatus": "NOT_TESTABLE_TOOL_UNAVAILABLE",
+      "newApprovalRejectionObserved": false,
+      "remoteSnapshotComparisonPerformed": false,
+      "localBackupHashMatchesPriorEvidence": true,
+      "ddlExecuted": false,
+      "alternateExecutionAttempted": false,
+      "candidateWorkerRequests": 0,
+      "previewDeployed": false,
+      "verdict": "HOLD_TOOL_UNAVAILABLE"
+    }
+  ]
 }
