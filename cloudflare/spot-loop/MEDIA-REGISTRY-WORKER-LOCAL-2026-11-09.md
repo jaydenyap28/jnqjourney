@@ -2,6 +2,8 @@
 
 基线 `5cbd5fa283b821564bb535e8c5e65c38a9d33425`。**Registry DDL BLOCKED，正式迁移 HOLD。** Worker 本机集成通过。尚无 Registry 路径的 Cloudflare 原生 CPU 数据，本轮没有部署 Preview 或执行云端写入。[隔离预检](evidence/media-registry-isolated-preflight-2026-11-09.json) · [本机验收](evidence/media-registry-worker-local-2026-11-09.json)
 
+后续审批轮次已补充隔离数据库目录摘要、库大小及八个旧 Preview 的实际绑定。最新判定和剩余证据以独立审批包为准。[隔离 DDL 审批包](MEDIA-REGISTRY-DDL-APPROVAL-2026-11-09.md)
+
 ## 隔离 Supabase 预检
 
 | 检查项 | 结果 |
