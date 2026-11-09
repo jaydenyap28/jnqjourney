@@ -107,9 +107,7 @@ async function mutationData(body,id,env) {
   try {validateSpotFields(body.data)} catch {fail(400,'Invalid Spot fields')}
   const mediaPaths=[...new Set([body.data.image_url,...(body.data.images||[])].filter(Boolean))]
   if(mediaPaths.some(path=>!imagePath(path,id)))fail(400,'Only verified isolated media can be saved')
-  for(const media of mediaPaths) {
-    if(!await verifiedMedia(env,media.slice(1),id))fail(400,'Uploaded image is missing or unverified')
-  }
+  if(!await verifiedSaveMedia(env,mediaPaths,id))fail(400,'Uploaded image is missing or unverified')
   return body
 }
 function redirectTarget(path,settings,env) {
@@ -279,14 +277,50 @@ async function completeDirect(request,env,id,user,transport,cancel=false) {
   }
 }
 function mediaReceiptKey(key){return `_candidate-validation/${key.slice('media/candidate/'.length)}.json`}
-async function verifiedMedia(env,key,id,body=false) {
+async function mediaProof(env,key,id) {
   const proofObject=await env.TEST_MEDIA.get(mediaReceiptKey(key))
-  if(!proofObject||proofObject.size>1024)return null
+  if(!proofObject)return null
+  if(proofObject.size>1024){await proofObject.body?.cancel().catch(()=>{});return null}
   let proof
   try {proof=await proofObject.json()}catch{return null}
   if(!proof||proof.schemaVersion!==1||proof.key!==key||proof.fixtureId!==id||proof.signatureChecked!==true||!Number.isSafeInteger(proof.size)||proof.size<12||proof.size>MAX_IMAGE||!['image/png','image/jpeg','image/webp','image/gif'].includes(proof.contentType))return null
+  return proof
+}
+function matchesMediaProof(object,proof) {
+  return !!object&&object.size===proof.size&&object.etag===proof.etag&&object.version===proof.version&&object.httpMetadata?.contentType===proof.contentType
+}
+async function verifiedSaveMedia(env,paths,id) {
+  // Every submitted reference is checked, including first-save/new and unchanged
+  // media. No browser proof, persisted row, cache or "already saved" shortcut.
+  if(paths.length<2||typeof env.TEST_MEDIA.list!=='function') {
+    for(const path of paths)if(!await verifiedMedia(env,path.slice(1),id))return false
+    return true
+  }
+  const proofs=[]
+  // Bound live R2 bodies/connections. Parse the authoritative receipt bodies;
+  // never replace them with an optimistic flag or custom metadata projection.
+  for(let start=0;start<paths.length;start+=4) {
+    const batch=await Promise.all(paths.slice(start,start+4).map(path=>mediaProof(env,path.slice(1),id)))
+    if(batch.some(proof=>!proof))return false
+    proofs.push(...batch)
+  }
+  // List returns current object size/etag/version + HTTP metadata in one native
+  // operation. Read after receipts, just as the old per-object HEAD did.
+  // Keep listing bounded; exact-key HEAD handles keys beyond this first page.
+  const listed=await env.TEST_MEDIA.list({prefix:`media/candidate/${id}/`,limit:Math.max(32,paths.length*2),include:['httpMetadata']})
+  const objects=new Map(listed.objects.map(object=>[object.key,object]))
+  for(const proof of proofs) {
+    let object=objects.get(proof.key)
+    if(!object&&listed.truncated)object=await env.TEST_MEDIA.head(proof.key)
+    if(!matchesMediaProof(object,proof))return false
+  }
+  return true
+}
+async function verifiedMedia(env,key,id,body=false) {
+  const proof=await mediaProof(env,key,id)
+  if(!proof)return null
   const object=await env.TEST_MEDIA[body?'get':'head'](key)
-  if(!object||object.size!==proof.size||object.etag!==proof.etag||object.version!==proof.version||object.httpMetadata?.contentType!==proof.contentType) {
+  if(!matchesMediaProof(object,proof)) {
     if(object?.body)await object.body.cancel().catch(()=>{})
     return null
   }

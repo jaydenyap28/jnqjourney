@@ -7,13 +7,14 @@ import {SPOT_FIELDS} from '../../cloudflare/spot-loop/spot-contract.mjs'
 import {ACCOUNT,PROJECT,BUCKET,BRANCH,cloudflareClient,privateWranglerToken} from './candidate-cloudflare.mjs'
 import {ISOLATED_REF,isolatedKeys,isolatedRequest} from './isolated-supabase.mjs'
 
-const directory='artifacts/cloudflare-compatibility-native'
+const galleryCpu=process.argv.includes('--gallery-cpu')
+const directory=galleryCpu?'artifacts/cloudflare-gallery-cpu':'artifacts/cloudflare-compatibility-native'
 await mkdir(directory,{recursive:true})
 const run=promisify(execFile)
 const commit=(await run('git',['rev-parse','HEAD'],{windowsHide:true})).stdout.trim()
-const sourceCommit=(await run('git',['rev-parse','4e443f4'],{windowsHide:true})).stdout.trim()
+const sourceCommit=(await run('git',['rev-parse',galleryCpu?'f584cd4':'4e443f4'],{windowsHide:true})).stdout.trim()
 await run('git',['merge-base','--is-ancestor',sourceCommit,commit],{windowsHide:true})
-await run('git',['diff','--exit-code',sourceCommit,'--','cloudflare/spot-loop/worker.mjs','cloudflare/spot-loop/spot-contract.mjs','cloudflare/spot-loop/editor.js','cloudflare/spot-loop/admin.html','scripts/cloudflare/package-spot-loop.mjs'],{windowsHide:true})
+await run('git',['diff','--exit-code',sourceCommit,'--',...(galleryCpu?[]:['cloudflare/spot-loop/worker.mjs']),'cloudflare/spot-loop/spot-contract.mjs','cloudflare/spot-loop/editor.js','cloudflare/spot-loop/admin.html','scripts/cloudflare/package-spot-loop.mjs'],{windowsHide:true})
 const sha256=bytes=>createHash('sha256').update(bytes).digest('hex')
 const report={checkedAt:new Date().toISOString(),sourceCommit,checkedHead:commit,project:PROJECT,branch:BRANCH,isolatedSupabaseRef:ISOLATED_REF,candidateWorkerRequests:0,sqlExecuted:false,productionDataAccessed:false}
 

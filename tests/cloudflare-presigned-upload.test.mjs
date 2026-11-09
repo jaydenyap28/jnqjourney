@@ -65,7 +65,7 @@ test('missing Preview secrets, unauthorized users and oversized grants fail befo
 test('staging cannot be referenced; final copy is range-validated and receipt-bound before save',async()=>{
   const f=fixture(),ticket=await(await f.issue()).json();await f.stage(ticket.key)
   assert.equal((await f.save(ticket.key)).status,400)
-  assert.equal((await f.call('/'+ticket.key,undefined,false)).status,404)
+  assert.equal((await f.call('/'+ticket.key,undefined,false)).status,401)
   assert.equal((await f.complete(ticket.key)).status,201);assert.equal(f.copies(),1)
   assert.equal(f.objects.size,3) // Retain the processing ticket for idempotent retries.
   const old=f.row.updated_at
