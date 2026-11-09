@@ -1,0 +1,564 @@
+{
+  "auditDateSingapore": "2026-11-09",
+  "baseline": {
+    "candidate": "3603644e0d378cc85bd788f4a13ef2588db47248",
+    "remoteMain": "7cee63d00a603992456eba71cc4b526a80d8ab25",
+    "frozenGitBlobs": {
+      "cloudflare/spot-loop/worker.mjs": "b9838e6022b41e1b7b90ac8f99188ce66cf21459",
+      "cloudflare/spot-loop/editor.js": "2b3a1d76ab909cf501c533dcc33c46646d934ad9",
+      "cloudflare/spot-loop/evidence/direct-acceptance-2026-11-09.json": "113b9271100f10633b4f27a94f76ef24be428c5b",
+      "cloudflare/spot-loop/evidence/direct-resume-acceptance-2026-11-09.json": "c7d23f95feb962935484cabbd5cb2beb925bbdd8",
+      "cloudflare/spot-loop/evidence/direct-browser-acceptance-2026-11-09.json": "9227a01e2cf6b2b4e27cf1afbc65e60b572e00ea",
+      "cloudflare/spot-loop/evidence/direct-closure-runtime-2026-11-09.json": "54242bce66e70b1946e954b46a8536d5f80b46ad"
+    }
+  },
+  "public": {
+    "checkedAt": "2026-11-09T01:46:32.442Z",
+    "site": [
+      {
+        "path": "/",
+        "status": 402,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      },
+      {
+        "path": "/sitemap.xml",
+        "status": 402,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      },
+      {
+        "path": "/robots.txt",
+        "status": 200,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      },
+      {
+        "path": "/spot/101-premier-foodcourt-408",
+        "status": 402,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      },
+      {
+        "path": "/en/spot/101-premier-foodcourt-408",
+        "status": 402,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      },
+      {
+        "path": "/api/spot-routing/101-premier-foodcourt-408",
+        "status": 402,
+        "platformError": "DEPLOYMENT_DISABLED",
+        "server": "cloudflare",
+        "robots": null
+      }
+    ],
+    "snapshots": [
+      {
+        "name": "locations",
+        "status": 200,
+        "count": 582,
+        "bytes": 542184,
+        "etag": "\"6da5adfa79d5768359ebfd535e13bebc\"",
+        "lastModified": "Thu, 05 Nov 2026 07:01:06 GMT",
+        "generatedAt": "2026-11-05T07:01:01.737Z",
+        "thumbnailHosts": {
+          "r2.dev": 582
+        },
+        "uniqueIds": 582
+      },
+      {
+        "name": "index",
+        "status": 200,
+        "count": 582,
+        "bytes": 12038,
+        "etag": "\"23ffabc2367510df7f0e5d3f8f340833\"",
+        "lastModified": "Thu, 05 Nov 2026 07:01:06 GMT",
+        "generatedAt": "2026-11-05T07:01:01.737Z",
+        "uniqueSlugs": 582,
+        "includesWithdrawn450": false
+      },
+      {
+        "name": "english",
+        "status": 200,
+        "count": 405,
+        "bytes": 1469692,
+        "etag": "\"135616a52020fa56bf2ee70a77b008de\"",
+        "lastModified": "Tue, 29 Sep 2026 03:33:09 GMT",
+        "generatedAt": null,
+        "spotStatus": {
+          "partial": 85,
+          "complete": 246
+        }
+      },
+      {
+        "name": "spotExample",
+        "status": 200,
+        "count": null,
+        "bytes": 4878,
+        "etag": "\"fe0905005adc88d10b17340440c304ec\"",
+        "lastModified": "Thu, 15 Oct 2026 20:51:26 GMT",
+        "generatedAt": "2026-10-15T20:51:12.306Z",
+        "fields": [
+          "publication_status",
+          "seo_title_zh",
+          "seo_description_zh",
+          "seo_title_en",
+          "seo_description_en",
+          "experience_zh",
+          "experience_en",
+          "related_note_slugs",
+          "image_metadata",
+          "id",
+          "name",
+          "name_cn",
+          "category",
+          "latitude",
+          "longitude",
+          "image_url",
+          "images",
+          "description",
+          "tags",
+          "video_url",
+          "facebook_video_url",
+          "visit_date",
+          "opening_hours",
+          "price_info",
+          "address",
+          "region_id",
+          "regions",
+          "slug"
+        ],
+        "galleryCount": 8,
+        "coverHost": "r2.dev"
+      }
+    ]
+  },
+  "account": {
+    "checkedAt": "2026-11-09T01:47:49.022Z",
+    "timeWindows": {
+      "utcDayStart": "2026-11-09T00:00:00.000Z",
+      "utcMonthStart": "2026-11-01T00:00:00.000Z",
+      "end": "2026-11-09T01:47:49.022Z"
+    },
+    "r2": {
+      "ok": true,
+      "status": 200,
+      "storage": {
+        "infrequentAccess": {
+          "uploaded": {
+            "objects": 0,
+            "payloadSize": 0,
+            "metadataSize": 0
+          },
+          "published": {
+            "objects": 0,
+            "payloadSize": 0,
+            "metadataSize": 0
+          }
+        },
+        "standard": {
+          "uploaded": {
+            "objects": 0,
+            "payloadSize": 0,
+            "metadataSize": 0
+          },
+          "published": {
+            "objects": 5984,
+            "payloadSize": 7475803277,
+            "metadataSize": 466208
+          }
+        }
+      }
+    },
+    "candidateBucket": {
+      "ok": true,
+      "status": 200,
+      "storageClass": "Standard"
+    },
+    "subscriptions": {
+      "ok": false,
+      "status": 403,
+      "errorCode": 10000,
+      "errorType": "Authentication"
+    },
+    "workersAnalytics": {
+      "ok": true,
+      "status": 200,
+      "values": []
+    },
+    "pagesAnalytics": {
+      "ok": true,
+      "status": 200,
+      "values": [
+        {
+          "sum": {
+            "requests": 54
+          }
+        }
+      ]
+    },
+    "r2OperationsAnalytics": {
+      "ok": false,
+      "status": 200,
+      "errorCode": "budget"
+    },
+    "zone": {
+      "ok": true,
+      "status": "active",
+      "found": true,
+      "dns": {
+        "ok": false,
+        "status": 403,
+        "errorCode": 10000,
+        "errorType": "Authentication"
+      },
+      "routes": {
+        "ok": true,
+        "status": 200,
+        "count": 0,
+        "spotMatches": 0
+      }
+    },
+    "candidate": {
+      "project": "jnqjourney-spot-loop-migration-candidate",
+      "canonicalEmpty": true,
+      "prodEnvCount": 0,
+      "prodBucketCount": 0,
+      "prodDeploys": 0,
+      "previewDeploys": 6,
+      "customDomainAttached": false,
+      "sourceType": null,
+      "latestDeployment": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "returnedDeployments": 6,
+      "failOpenProduction": false,
+      "failOpenPreview": false
+    }
+  },
+  "bundled": {
+    "source": "checked-in public-data/spots, not the live inventory",
+    "detailFiles": 547,
+    "indexSlugs": 547,
+    "indexMissingDetails": 0,
+    "rows": 547,
+    "distinctIds": 547,
+    "coverReferencesByHost": {
+      "r2.dev": 546,
+      "scontent.fmkz1-2.fna.fbcdn.net": 1
+    },
+    "galleryReferencesByHost": {
+      "r2.dev": 546,
+      "scontent.fmkz1-2.fna.fbcdn.net": 1
+    },
+    "missingCover": 0,
+    "uniqueCoverOrGalleryUrls": 547,
+    "gallerySize": {
+      "p50": 1,
+      "p95": 1,
+      "max": 1
+    },
+    "detailJsonBytes": {
+      "p50": 1296,
+      "p95": 1454,
+      "max": 3980
+    },
+    "routingSnapshot": {
+      "generatedAt": "2026-10-13",
+      "published": 582,
+      "unpublished": 4,
+      "redirects": 0
+    },
+    "spotFixtureMapEstimate": {
+      "source": "archived public R2 Spot index matching observed ETag",
+      "slugs": 582,
+      "minifiedIdMapBytes": 15366
+    }
+  },
+  "supabase": {
+    "ok": true,
+    "production": true,
+    "query": "aggregate SELECT and catalog metadata",
+    "data": {
+      "columnTypes": {
+        "address": {
+          "nullable": true,
+          "type": "text"
+        },
+        "category": {
+          "nullable": true,
+          "type": "text"
+        },
+        "created_at": {
+          "nullable": false,
+          "type": "timestamptz"
+        },
+        "description": {
+          "nullable": true,
+          "type": "text"
+        },
+        "experience_en": {
+          "nullable": true,
+          "type": "text"
+        },
+        "experience_zh": {
+          "nullable": true,
+          "type": "text"
+        },
+        "facebook_video_url": {
+          "nullable": true,
+          "type": "text"
+        },
+        "google_maps_url": {
+          "nullable": true,
+          "type": "text"
+        },
+        "id": {
+          "nullable": false,
+          "type": "int8"
+        },
+        "image_metadata": {
+          "nullable": true,
+          "type": "jsonb"
+        },
+        "image_url": {
+          "nullable": true,
+          "type": "text"
+        },
+        "images": {
+          "nullable": true,
+          "type": "_text"
+        },
+        "is_visited": {
+          "nullable": true,
+          "type": "bool"
+        },
+        "latitude": {
+          "nullable": false,
+          "type": "float8"
+        },
+        "longitude": {
+          "nullable": false,
+          "type": "float8"
+        },
+        "name": {
+          "nullable": false,
+          "type": "text"
+        },
+        "name_cn": {
+          "nullable": true,
+          "type": "text"
+        },
+        "opening_hours": {
+          "nullable": true,
+          "type": "text"
+        },
+        "price_info": {
+          "nullable": true,
+          "type": "jsonb"
+        },
+        "publication_status": {
+          "nullable": true,
+          "type": "text"
+        },
+        "redirect_type": {
+          "nullable": true,
+          "type": "int4"
+        },
+        "redirect_url": {
+          "nullable": true,
+          "type": "text"
+        },
+        "region_id": {
+          "nullable": true,
+          "type": "int8"
+        },
+        "related_note_slugs": {
+          "nullable": true,
+          "type": "_text"
+        },
+        "review": {
+          "nullable": true,
+          "type": "text"
+        },
+        "review_jayden": {
+          "nullable": true,
+          "type": "text"
+        },
+        "review_qing": {
+          "nullable": true,
+          "type": "text"
+        },
+        "seo_description_en": {
+          "nullable": true,
+          "type": "text"
+        },
+        "seo_description_zh": {
+          "nullable": true,
+          "type": "text"
+        },
+        "seo_title_en": {
+          "nullable": true,
+          "type": "text"
+        },
+        "seo_title_zh": {
+          "nullable": true,
+          "type": "text"
+        },
+        "status": {
+          "nullable": true,
+          "type": "text"
+        },
+        "tags": {
+          "nullable": true,
+          "type": "_text"
+        },
+        "updated_at": {
+          "nullable": true,
+          "type": "timestamptz"
+        },
+        "video_url": {
+          "nullable": true,
+          "type": "text"
+        },
+        "visit_date": {
+          "nullable": true,
+          "type": "date"
+        }
+      },
+      "lastUpdated": "2026-11-05T07:00:08.057693+00:00",
+      "locationPolicies": [
+        {
+          "cmd": "SELECT",
+          "name": "Public can read locations",
+          "roles": [
+            "public"
+          ],
+          "unconditionalCheck": null,
+          "unconditionalUsing": true
+        }
+      ],
+      "locationTriggers": [
+        "locations_queue_publication_sync",
+        "locations_validate_spot_redirect",
+        "trigger_update_locations_updated_at"
+      ],
+      "mediaRefs": [
+        {
+          "host_type": "r2.dev",
+          "kind": "cover",
+          "refs": 582
+        },
+        {
+          "host_type": "other_http",
+          "kind": "gallery",
+          "refs": 2
+        },
+        {
+          "host_type": "r2.dev",
+          "kind": "gallery",
+          "refs": 4047
+        }
+      ],
+      "mediaStats": {
+        "distinctNonemptyRefs": 4623
+      },
+      "observedAt": "2026-11-09T01:51:34.713721+00:00",
+      "payloadShape": {
+        "descriptionMaxBytes": 7694,
+        "descriptionP50Bytes": 1171,
+        "descriptionP95Bytes": 2785,
+        "galleryMax": 30,
+        "galleryP95": 17,
+        "rows": 582
+      },
+      "redirects": [],
+      "rls": {
+        "affiliate_links": true,
+        "locations": true,
+        "regions": true,
+        "spot_description_optimization_queue": true,
+        "spot_publication_sync": true,
+        "travel_packages": true
+      },
+      "states": [
+        {
+          "publication_status": null,
+          "rows": 582,
+          "status": "active"
+        },
+        {
+          "publication_status": null,
+          "rows": 2,
+          "status": "permanently_closed"
+        },
+        {
+          "publication_status": null,
+          "rows": 2,
+          "status": "temporarily_closed"
+        }
+      ]
+    }
+  },
+  "supabase-publication": {
+    "ok": true,
+    "data": {
+      "anonLocationsSelect": true,
+      "authenticatedLocationsSelect": true,
+      "cronCatalogPresent": true,
+      "observedAt": "2026-11-09T01:52:20.864443+00:00",
+      "publicationQueue": {
+        "latestSyncedAt": "2026-11-05T07:01:08.319255+00:00",
+        "maxAttemptsPending": 4,
+        "pending": 4,
+        "rows": 586
+      },
+      "slugStorage": {
+        "isPublic": true,
+        "mapVariantsPresent": 1
+      },
+      "spot450Exists": false
+    }
+  },
+  "supabase-scheduler": {
+    "ok": true,
+    "data": {
+      "jobs": [
+        {
+          "active": true,
+          "callsSpotSync": true,
+          "schedule": "* * * * *"
+        }
+      ],
+      "lastSchedulerRun": "2026-11-09T01:53:00.016128+00:00",
+      "observedAt": "2026-11-09T01:53:06.811683+00:00",
+      "pendingByStatus": [
+        {
+          "rows": 2,
+          "state": "temporarily_closed"
+        },
+        {
+          "rows": 2,
+          "state": "permanently_closed"
+        }
+      ]
+    }
+  },
+  "dashboard": {
+    "workersPlan": "Free",
+    "r2": {
+      "periodLabel": "October 30 – November 30",
+      "classA": 85,
+      "classBApprox": 67220,
+      "totalStorageGBApprox": 7.48,
+      "billableUsageUSD": 0,
+      "formalBucketStorageGBApprox": 7.44,
+      "isolatedBucketStorageMBApprox": 37.75,
+      "isolatedBucketObjects": 10
+    }
+  }
+}
