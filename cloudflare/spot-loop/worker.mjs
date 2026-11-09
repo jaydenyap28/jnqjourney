@@ -1,7 +1,8 @@
 // Isolated Spot proof only. No Next.js, Node APIs, AWS SDK, SQL, or cache.
-// This file is copied unchanged to Pages _worker.js (module syntax).
+// This file and its pure contract module are packaged for Pages.
+import {SPOT_FIELDS, validVersion, validSpotRow, validateSpotFields, publishedSpot, resolveCandidateRedirect} from './spot-contract.mjs'
 const PRODUCTION_REF = 'vrufunuomioczocdsoer'
-const SELECT = 'id,name,name_cn,description,image_url,images,status,publication_status,seo_title_zh,seo_description_zh,seo_title_en,seo_description_en,experience_zh,experience_en,address,updated_at,redirect_url,redirect_type'
+const SELECT = SPOT_FIELDS.join(',')
 const MAX_IMAGE = 10 * 1024 * 1024
 const COOKIE = '__Host-jnq-candidate'
 const REFRESH = '__Host-jnq-candidate-refresh'
@@ -49,8 +50,8 @@ async function limitedBody(request,limit) {
   }
   return new Blob(chunks)
 }
-async function bodyJson(request) {
-  try { return JSON.parse(await (await limitedBody(request,65536)).text()) } catch(error) { if(error instanceof Failure)throw error;fail(400,'Invalid JSON') }
+async function bodyJson(request,limit=65536) {
+  try { return JSON.parse(await (await limitedBody(request,limit)).text()) } catch(error) { if(error instanceof Failure)throw error;fail(400,'Invalid JSON') }
 }
 async function remote(transport,url,init={}) {
   let response
@@ -81,44 +82,54 @@ function checkedId(value,settings) {
   if(!Object.hasOwn(settings.fixtures,String(value)))fail(404,'Fixture not found')
   return String(value)
 }
-async function location(env,id,transport,mutation) {
+async function location(env,id,transport,mutation,remove=false) {
   const url=new URL(`${env.SUPABASE_URL}/rest/v1/locations`)
   url.searchParams.set('id',`eq.${id}`);url.searchParams.set('select',SELECT)
-  if(mutation)url.searchParams.set('updated_at',`eq.${mutation.expectedUpdatedAt}`)
+  if(mutation)url.searchParams.set('updated_at',mutation.expectedUpdatedAt===null?'is.null':`eq.${mutation.expectedUpdatedAt}`)
   // Own the version column; no new database trigger/SQL is needed for this path.
-  const changes=mutation?{...mutation.data,updated_at:new Date(Math.max(Date.now(),Date.parse(mutation.expectedUpdatedAt)+1)).toISOString()}:undefined
-  const response=await remote(transport,url.href,{method:mutation?'PATCH':'GET',headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},...(mutation?{body:JSON.stringify(changes)}:{})})
+  const previous=mutation?.expectedUpdatedAt===null?0:Date.parse(mutation?.expectedUpdatedAt)
+  const changes=mutation?{...mutation.data,updated_at:new Date(Math.max(Date.now(),previous+1)).toISOString()}:undefined
+  const response=await remote(transport,url.href,{method:remove?'DELETE':mutation?'PATCH':'GET',headers:{apikey:env.SUPABASE_SERVICE_ROLE_KEY,Authorization:`Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},...(mutation&&!remove?{body:JSON.stringify(changes)}:{})})
   if(!response.ok)fail(503,mutation?'Save failed; reload before retry':'Spot source unavailable')
   const rows=await response.json()
   if(!Array.isArray(rows)||rows.length>1)fail(503,'Invalid Spot source')
   if(!rows.length)fail(mutation?409:404,mutation?'Spot changed; reload before saving':'Spot not found')
   const row=rows[0]
-  if(row.id!==Number(id)||typeof row.updated_at!=='string'||!['active','inactive'].includes(row.status)||!['published','draft','hidden',null].includes(row.publication_status))fail(503,'Unverified Spot source')
+  if(!validSpotRow(row,id))fail(503,'Unverified Spot source')
   return row
 }
-const visible = row => row.status==='active' && (row.publication_status===null||row.publication_status==='published')
+const visible = publishedSpot
 function imagePath(value,id) {
   return typeof value==='string' && new RegExp(`^/media/candidate/${id}/[a-f0-9-]+\\.(?:png|jpg|webp|gif)$`).test(value)
 }
 async function mutationData(body,id,env) {
-  if(!body||typeof body!=='object'||Array.isArray(body)||typeof body.expectedUpdatedAt!=='string'||!Number.isFinite(Date.parse(body.expectedUpdatedAt))||!body.data||Array.isArray(body.data)||typeof body.data!=='object')fail(400,'Save version and fields required')
-  const allowed=new Set(['name','name_cn','description','image_url','images','status','publication_status','seo_title_zh','seo_description_zh','seo_title_en','seo_description_en','experience_zh','experience_en','address','redirect_url','redirect_type'])
-  if(!Object.keys(body.data).length||Object.keys(body.data).some(k=>!allowed.has(k)))fail(400,'Unsupported Spot fields')
-  for(const [key,value] of Object.entries(body.data)) {
-    if(key==='images') {
-      if(!Array.isArray(value)||value.length>60||value.some(v=>!imagePath(v,id)))fail(400,'Invalid fixture gallery')
-    } else if(key==='publication_status') {if(!['published','draft','hidden'].includes(value))fail(400,'Invalid publication status')}
-    else if(key==='status') {if(!['active','inactive'].includes(value))fail(400,'Invalid Spot status')}
-    else if(key==='redirect_type') {if(![301,302,null].includes(value))fail(400,'Invalid redirect status')}
-    else if(key==='redirect_url') {if(value!==null&&value!=='')fail(400,'Fixture redirect editing is not enabled')}
-    else if(key==='image_url') {if(value!==null&&value!==''&&!imagePath(value,id))fail(400,'Invalid fixture image')}
-    else if(value!==null&&(typeof value!=='string'||value.length>20000))fail(400,'Invalid text field')
-    if(key==='name'&&(typeof value!=='string'||!value.trim()))fail(400,'Name required')
-  }
-  for(const media of [body.data.image_url,...(body.data.images||[])].filter(Boolean)) {
+  if(!body||typeof body!=='object'||Array.isArray(body)||!Object.hasOwn(body,'expectedUpdatedAt')||!validVersion(body.expectedUpdatedAt))fail(400,'Save version and fields required')
+  try {validateSpotFields(body.data)} catch {fail(400,'Invalid Spot fields')}
+  const mediaPaths=[...new Set([body.data.image_url,...(body.data.images||[])].filter(Boolean))]
+  if(mediaPaths.some(path=>!imagePath(path,id)))fail(400,'Only verified isolated media can be saved')
+  for(const media of mediaPaths) {
     if(!await verifiedMedia(env,media.slice(1),id))fail(400,'Uploaded image is missing or unverified')
   }
   return body
+}
+function redirectTarget(path,settings,env) {
+  if(typeof path!=='string'||!/^\/(?:en\/)?(?:spot|notes)\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(path))fail(400,'Invalid redirect target')
+  if(/\/(?:en\/)?spot\//.test(path)) {
+    const id=checkedId(path.match(/-([1-9]\d*)$/)?.[1],settings)
+    return {kind:'spot',id}
+  }
+  let notes
+  try {notes=JSON.parse(env.CANDIDATE_NOTE_PATHS||'[]')} catch {fail(503,'Invalid isolated Notes mapping')}
+  if(!Array.isArray(notes)||!notes.includes(path)||!/^\/(?:en\/)?notes\/cloudflare-loop-[a-z0-9-]+$/.test(path))fail(503,'Notes target requires an isolated visibility contract')
+  return {kind:'notes'}
+}
+async function routing(id,row,settings,env,transport) {
+  try {
+    return await resolveCandidateRedirect(id,async target=>{
+      if(target===id)return row
+      try{return await location(env,checkedId(target,settings),transport)}catch(error){if(error.status===404)return null;throw error}
+    },path=>redirectTarget(path,settings,env))
+  }catch(error){if(error instanceof Failure)throw error;fail(503,'Redirect chain cannot be verified')}
 }
 async function upload(request,env,id) {
   if(env.CANDIDATE_UPLOAD_MODE!=='stream')fail(503,'Stream upload is on HOLD; use verified direct upload')
@@ -207,8 +218,6 @@ export async function signCandidatePut(env,key,type,size,copySource=null,now=new
 }
 const ticketKey=key=>`_candidate-tickets/${key.slice('media/candidate/'.length)}.json`
 const stagingKey=key=>key.replace('media/candidate/','_candidate-staging/')
-async function smallJsonObject(env,key){const object=await env.TEST_MEDIA.get(key);if(!object||object.size>1024)return null;try{return await object.json()}catch{return null}}
-async function eraseUpload(env,key,includeFinal=true){await env.TEST_MEDIA.delete([stagingKey(key),ticketKey(key),...(includeFinal?[mediaReceiptKey(key),key]:[])])}
 async function issueDirect(request,env,id,user) {
   if(new URL(request.url).origin!==UPLOAD_ORIGIN)fail(403,'Use the approved candidate upload origin')
   // Fail before creating tickets if the operator has not provisioned secrets.
@@ -224,9 +233,26 @@ async function issueDirect(request,env,id,user) {
 async function completeDirect(request,env,id,user,transport,cancel=false) {
   const body=await bodyJson(request),key=body?.key
   if(typeof key!=='string'||!imagePath(`/${key}`,id)||Object.keys(body).some(name=>name!=='key'))fail(400,'Invalid upload key')
-  const ticket=await smallJsonObject(env,ticketKey(key))
+  const ticketObject=await env.TEST_MEDIA.get(ticketKey(key))
+  let ticket
+  if(ticketObject&&ticketObject.size<=1024){try{ticket=await ticketObject.json()}catch{fail(503,'Upload ticket cannot be verified')}}
   if(!ticket||ticket.schemaVersion!==1||ticket.key!==key||ticket.fixtureId!==id||ticket.userId!==user.id)fail(403,'Upload ticket unavailable')
-  if(cancel){await eraseUpload(env,key);return json({cancelled:true})}
+  if(typeof ticketObject.etag!=='string'||!ticketObject.etag)fail(503,'Upload ticket version unavailable')
+  if(ticket.state==='processing') {
+    const existing=await verifiedMedia(env,key,id)
+    if(!existing||cancel)fail(409,'Upload is processing or already verified')
+    return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:existing.size,validated:true},201)
+  }
+  if(ticket.state)fail(409,'Upload was already cancelled')
+  // R2 conditional writes atomically select one owner across isolates. Do not
+  // expire/reclaim processing tickets: ambiguous copy/receipt outcomes require
+  // reconciliation, never a second writer deleting a committed object.
+  const claimed=await env.TEST_MEDIA.put(ticketKey(key),JSON.stringify({...ticket,state:cancel?'cancelled':'processing'}),{
+    onlyIf:{etagMatches:ticketObject.etag},httpMetadata:{contentType:'application/json'},
+  })
+  if(!claimed)fail(409,'Upload operation already claimed')
+  if(cancel){await env.TEST_MEDIA.delete(stagingKey(key));return json({cancelled:true})}
+  let receiptAttempted=false
   try {
     if(ticket.expiresAt<Date.now())fail(410,'Upload ticket expired')
     const object=await env.TEST_MEDIA.get(stagingKey(key),{range:{offset:0,length:12}})
@@ -239,10 +265,18 @@ async function completeDirect(request,env,id,user,transport,cancel=false) {
     const final=await env.TEST_MEDIA.get(key,{range:{offset:0,length:12}})
     if(!final||final.size!==ticket.size||final.httpMetadata?.contentType!==ticket.type||!imageSignature(new Uint8Array(await final.arrayBuffer()),ticket.type))fail(400,'Copied object verification failed')
     const proof={schemaVersion:1,key,fixtureId:id,size:final.size,etag:final.etag,version:final.version,contentType:ticket.type,signatureChecked:true}
+    receiptAttempted=true
     if(!await env.TEST_MEDIA.put(mediaReceiptKey(key),JSON.stringify(proof),{httpMetadata:{contentType:'application/json'}}))fail(503,'Upload receipt unavailable')
-    await eraseUpload(env,key,false)
+    // The ticket and staging prefixes already have lifecycle cleanup. Failure
+    // to clean staging must never revoke or delete a verified final object.
+    await env.TEST_MEDIA.delete(stagingKey(key)).catch(()=>{})
     return json({url:`/${key}`,key,provider:'cloudflare-r2',bytes:final.size,validated:true},201)
-  }catch(error){try{await eraseUpload(env,key)}catch{fail(503,'Upload rejected; private cleanup requires retry')}throw error}
+  }catch(error){
+    if(!receiptAttempted){
+      try{await env.TEST_MEDIA.delete([stagingKey(key),mediaReceiptKey(key),key])}catch{fail(503,'Upload rejected; private cleanup requires reconciliation')}
+    }
+    throw error
+  }
 }
 function mediaReceiptKey(key){return `_candidate-validation/${key.slice('media/candidate/'.length)}.json`}
 async function verifiedMedia(env,key,id,body=false) {
@@ -258,7 +292,7 @@ async function verifiedMedia(env,key,id,body=false) {
   }
   return object
 }
-function document(row,slug,locale) {
+function document(row,slug,locale,englishCurrent=false) {
   const name=locale==='en'?row.name:(row.name_cn||row.name)
   const title=(locale==='en'?row.seo_title_en:row.seo_title_zh)||name
   const description=(locale==='en'?row.seo_description_en:row.seo_description_zh)||row.description||''
@@ -266,7 +300,9 @@ function document(row,slug,locale) {
   const prefix=locale==='en'?'/en':''
   const canonical=`https://www.jnqjourney.com${prefix}/spot/${slug}`
   const images=[...new Set([row.image_url,...(Array.isArray(row.images)?row.images:[])].filter(value=>imagePath(value,row.id)))]
-  return `<!doctype html><html lang="${locale==='en'?'en':'zh-Hans'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escape(title)} | JnQ Journey</title><meta name="description" content="${escape(description)}"><link rel="canonical" href="${canonical}"><link rel="stylesheet" href="/candidate.css"></head><body><main><p>JnQ Journey · 隔离发布候选</p><h1>${escape(name)}</h1><p>${escape(row.address)}</p><p class="narrative">${escape(narrative)}</p>${images.map((src,i)=>`<img src="${src}" alt="${escape(name)} ${i+1}" loading="${i?'lazy':'eager'}">`).join('')}<p>内容版本：<time>${escape(row.updated_at)}</time></p><a href="/admin/cloudflare-spot">返回测试后台</a></main></body></html>`
+  const chinese=`https://www.jnqjourney.com/spot/${slug}`
+  const languageLinks=`<link rel="alternate" hreflang="zh-Hans" href="${chinese}"><link rel="alternate" hreflang="x-default" href="${chinese}">${englishCurrent?`<link rel="alternate" hreflang="en" href="https://www.jnqjourney.com/en/spot/${slug}">`:''}`
+  return `<!doctype html><html lang="${locale==='en'?'en':'zh-Hans'}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>${escape(title)} | JnQ Journey</title><meta name="description" content="${escape(description)}"><link rel="canonical" href="${canonical}">${languageLinks}<link rel="stylesheet" href="/candidate.css"></head><body><main><p>JnQ Journey · 隔离发布候选</p><h1>${escape(name)}</h1><p>${escape(row.address)}</p><p class="narrative">${escape(narrative)}</p>${images.map((src,i)=>{const metadata=row.image_metadata?.[src]||{};return `<figure><img src="${src}" alt="${escape(metadata[locale==='en'?'alt_en':'alt_zh']||`${name} ${i+1}`)}" loading="${i?'lazy':'eager'}">${metadata.caption?`<figcaption>${escape(metadata.caption)}</figcaption>`:''}</figure>`}).join('')}<p>内容版本：<time>${escape(row.updated_at)}</time></p><a href="/admin/cloudflare-spot">返回测试后台</a></main></body></html>`
 }
 async function responseFor(request,env,transport) {
   const url=new URL(request.url)
@@ -317,9 +353,20 @@ async function responseFor(request,env,transport) {
       return upload(request,env,id)
     }
     if(request.method==='GET')return json({spot:await location(env,id,transport),publicPath:`/spot/${settings.fixtures[id]}`})
-    if(request.method!=='PATCH')fail(405,'Method not allowed')
+    if(!['PATCH','DELETE'].includes(request.method))fail(405,'Method not allowed')
     if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
-    const body=await mutationData(await bodyJson(request),id,env)
+    if(request.method==='DELETE') {
+      const body=await bodyJson(request)
+      if(!body||!Object.hasOwn(body,'expectedUpdatedAt')||!validVersion(body.expectedUpdatedAt)||Object.keys(body).some(key=>key!=='expectedUpdatedAt'))fail(400,'Delete version required')
+      await location(env,id,transport,body,true)
+      return json({deleted:true,id,buildsTriggered:0})
+    }
+    const body=await mutationData(await bodyJson(request,262144),id,env)
+    if(body.data.redirect_url){
+      const current=await location(env,id,transport)
+      const result=await routing(id,{...current,...body.data},settings,env,transport)
+      if(!result.destination)fail(400,'Redirect target is not public')
+    }
     const saved=await location(env,id,transport,body)
     return json({spot:saved,publicPath:`/spot/${settings.fixtures[id]}`,publication:visible(saved)?'live':'withdrawn',buildsTriggered:0})
   }
@@ -332,26 +379,31 @@ async function responseFor(request,env,transport) {
     const raw=media?.[1]||data?.[1]||(page?.[2]||legacyData?.[1]).match(/-(\d+)$/)?.[1]
     const id=checkedId(raw,settings)
     const row=await location(env,id,transport)
+    if(!media){
+      const result=await routing(id,row,settings,env,transport)
+      if(result.destination)return new Response(null,{status:result.status,headers:{...HEADERS,Location:result.destination}})
+      if(!result.visible)fail(404,'Spot not found')
+    }
     if(!visible(row)) {
       // Only authenticated editor image previews may view unpublished media.
       if(media)await admin(request,env,settings,transport)
       else fail(404,'Spot not found')
     }
     if(media) {
+      const referenced=[row.image_url,...(Array.isArray(row.images)?row.images:[])].includes(url.pathname)
+      if(visible(row)&&!referenced)await admin(request,env,settings,transport)
       const object=await verifiedMedia(env,url.pathname.slice(1),id,true)
       if(!object)fail(404,'Image not found')
       if(request.method==='HEAD')await object.body.cancel().catch(()=>{})
       return new Response(request.method==='HEAD'?null:object.body,{headers:{...HEADERS,'Content-Type':object.httpMetadata?.contentType||'application/octet-stream'}})
     }
-    if(row.redirect_url) {
-      if(!Object.values(settings.fixtures).some(slug=>row.redirect_url===`/spot/${slug}`||row.redirect_url===`/en/spot/${slug}`))fail(503,'Redirect target is outside isolated fixture scope')
-      if(row.redirect_url===url.pathname)fail(503,'Redirect cycle refused')
-      return new Response(null,{status:row.redirect_type===302?302:301,headers:{...HEADERS,Location:row.redirect_url}})
-    }
     const canonical=`/${page?.[1]||''}spot/${settings.fixtures[id]}`
     if(page&&(page[2]!==settings.fixtures[id]||page[3]||url.pathname.endsWith('/')))return new Response(null,{status:301,headers:{...HEADERS,Location:canonical}})
-    if(data||legacyData)return json({spot:{id:row.id,name:row.name,name_cn:row.name_cn,description:row.description,image_url:row.image_url,images:row.images,updated_at:row.updated_at}})
-    return new Response(request.method==='HEAD'?null:document(row,settings.fixtures[id],page?.[1]?'en':'zh'),{headers:{...HEADERS,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':CSP,'X-JnQ-Publication-Version':row.updated_at}})
+    if(data||legacyData)return json({spot:Object.fromEntries(SPOT_FIELDS.filter(field=>field!=='redirect_url'&&field!=='redirect_type').map(field=>[field,row[field]??null]))})
+    let englishVersions
+    try {englishVersions=JSON.parse(env.CANDIDATE_ENGLISH_VERSIONS||'{}')}catch{fail(503,'Invalid isolated translation versions')}
+    const englishCurrent=!!row.updated_at&&englishVersions[id]===row.updated_at
+    return new Response(request.method==='HEAD'?null:document(row,settings.fixtures[id],page?.[1]?'en':'zh',englishCurrent),{headers:{...HEADERS,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':CSP,...(row.updated_at?{'X-JnQ-Publication-Version':row.updated_at}:{})}})
   }
   if(url.pathname.startsWith('/api/'))fail(404,'Candidate endpoint not found')
   return env.ASSETS.fetch(request)

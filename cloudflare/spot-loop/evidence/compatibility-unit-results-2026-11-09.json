@@ -1,0 +1,29 @@
+{
+  "baseline": "3603644",
+  "auditBaseline": "a784a21",
+  "presignedPutAlgorithmSha256": "8399cfcca9029601c76f3d36ce14a117b845e3af3d3ccd0a6ffbfdbb928e7c4e",
+  "signingAlgorithmUnchanged": true,
+  "tests": {
+    "runtime": "local Node.js with synthetic Supabase/R2",
+    "passed": 12,
+    "names": [
+      "real statuses, nullable version and full editorial fields retain their types",
+      "safe numeric-string IDs are supported and missing/unknown source state fails closed",
+      "17-image gallery uses unique validation reads and preserves all metadata",
+      "30-image gallery uses unique validation reads and preserves all metadata",
+      "deleted fixtures and unreferenced private media are unavailable to anonymous clients",
+      "bounded redirects preserve first 302, reject cycles and block hidden final targets",
+      "complete owns one conditional ticket and competing complete/cancel cannot delete its result",
+      "cancel wins before complete and never runs an R2 copy",
+      "simultaneous same-ticket completion has one owner even before either sees processing",
+      "30-image metadata above 64 KiB fits the bounded save contract",
+      "ambiguous receipt write cannot erase a verified object; retry is idempotent",
+      "canonical bilingual aliases stay noindex and unconfigured Notes remain gated"
+    ],
+    "nativeCpuMeasured": false
+  },
+  "historicalNativeCpuMaximumMs": 10,
+  "newNativeCpuMaximumMs": null,
+  "patchedPreviewDeployed": false,
+  "formalMigration": "HOLD"
+}

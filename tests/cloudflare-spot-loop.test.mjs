@@ -160,7 +160,7 @@ test('refresh rotates HttpOnly cookies and logout clears them without exposing t
 })
 test('the deployable adapter has no Node/Next dependencies and no static Spot fallback',async()=>{
   const source=await readFile(new URL('../cloudflare/spot-loop/worker.mjs',import.meta.url),'utf8')
-  assert.ok(!/^import /m.test(source))
+  assert.ok(!/^import .*from ['"](?:node:|next|@aws-sdk)/m.test(source))
   const config=JSON.parse(await readFile(new URL('../cloudflare/spot-loop/pages.wrangler.jsonc',import.meta.url),'utf8'))
   assert.equal(config.r2_buckets[0].bucket_name,'jnqjourney-spot-loop-isolated-media')
   assert.equal(config.vars.CANDIDATE_WRITES_ENABLED,'false')

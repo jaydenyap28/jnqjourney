@@ -21,6 +21,9 @@ try {
   const sourceHash=hash(await readFile('cloudflare/spot-loop/worker.mjs'))
   if(sourceHash!==hash(await readFile('artifacts/cloudflare-spot-loop/out/_worker.js')))throw new Error('PACKAGE_SOURCE_MISMATCH')
   report.workerSha256=sourceHash
+  const contractHash=hash(await readFile('cloudflare/spot-loop/spot-contract.mjs'))
+  if(contractHash!==hash(await readFile('artifacts/cloudflare-spot-loop/out/spot-contract.mjs')))throw new Error('PACKAGE_CONTRACT_MISMATCH')
+  report.contractSha256=contractHash
   const commit=(await run('git',['rev-parse','HEAD'],{windowsHide:true})).stdout.trim()
   let deployed
   try {

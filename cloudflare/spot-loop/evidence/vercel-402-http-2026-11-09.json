@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-11-09T04:41:50.813Z",
+  "results": [
+    {
+      "host": "www.jnqjourney.com",
+      "status": 402,
+      "vercelError": "DEPLOYMENT_DISABLED",
+      "redirectsToVercelAuth": false
+    },
+    {
+      "host": "jnqjourney.vercel.app",
+      "status": 402,
+      "vercelError": "DEPLOYMENT_DISABLED",
+      "redirectsToVercelAuth": false
+    },
+    {
+      "host": "jnqjourney-53o08ljq8-jayden-yaps-projects.vercel.app",
+      "status": 402,
+      "vercelError": "DEPLOYMENT_DISABLED",
+      "redirectsToVercelAuth": false
+    },
+    {
+      "host": "jnqjourney-lmoqq2epa-jayden-yaps-projects.vercel.app",
+      "status": 402,
+      "vercelError": "DEPLOYMENT_DISABLED",
+      "redirectsToVercelAuth": false
+    },
+    {
+      "host": "jnqjourney-7456xqgmb-jayden-yaps-projects.vercel.app",
+      "status": 402,
+      "vercelError": "DEPLOYMENT_DISABLED",
+      "redirectsToVercelAuth": false
+    }
+  ]
+}

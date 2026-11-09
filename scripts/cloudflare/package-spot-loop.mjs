@@ -3,7 +3,7 @@ import { gzipSync } from 'node:zlib'
 import path from 'node:path'
 const out=path.resolve('artifacts/cloudflare-spot-loop/out')
 await mkdir(path.join(out,'admin'),{recursive:true})
-for(const [src,dest] of [['worker.mjs','_worker.js'],['admin.html','admin/cloudflare-spot.html'],['editor.js','candidate-editor.js'],['candidate.css','candidate.css']])await copyFile(`cloudflare/spot-loop/${src}`,path.join(out,dest))
+for(const [src,dest] of [['worker.mjs','_worker.js'],['spot-contract.mjs','spot-contract.mjs'],['admin.html','admin/cloudflare-spot.html'],['editor.js','candidate-editor.js'],['candidate.css','candidate.css']])await copyFile(`cloudflare/spot-loop/${src}`,path.join(out,dest))
 await writeFile(path.join(out,'404.html'),'<!doctype html><meta name="robots" content="noindex,nofollow"><title>404 · JnQ Journey candidate</title><h1>Not Found</h1>')
 await writeFile(path.join(out,'index.html'),'<!doctype html><meta name="robots" content="noindex,nofollow"><title>JnQ Journey candidate</title><a href="/admin/cloudflare-spot">Spot 隔离发布测试</a>')
 await writeFile(path.join(out,'robots.txt'),'User-agent: *\nDisallow: /\n')

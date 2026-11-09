@@ -1,0 +1,86 @@
+{
+  "observedAt": "2026-11-09T04:39:06.714Z",
+  "project": {
+    "id": "prj_ve8zzToXNgvKQZDhqZD1GLMM91ib",
+    "live": false
+  },
+  "production": {
+    "id": "dpl_Bek49CY6VcSSMN86hoZTNp2vLhtf",
+    "url": "jnqjourney-53o08ljq8-jayden-yaps-projects.vercel.app",
+    "readyState": "READY",
+    "target": "production",
+    "gitSha": "7cee63d00a603992456eba71cc4b526a80d8ab25",
+    "alias": [
+      "www.jnqjourney.com",
+      "jnqjourney.vercel.app",
+      "jnqjourney.com",
+      "jnqjourney-jayden-yaps-projects.vercel.app",
+      "jnqjourney-git-main-jayden-yaps-projects.vercel.app"
+    ]
+  },
+  "alias": {
+    "alias": "www.jnqjourney.com",
+    "deployment": {
+      "id": "dpl_Bek49CY6VcSSMN86hoZTNp2vLhtf",
+      "url": "jnqjourney-53o08ljq8-jayden-yaps-projects.vercel.app"
+    },
+    "projectId": "prj_ve8zzToXNgvKQZDhqZD1GLMM91ib"
+  },
+  "domains": [
+    {
+      "name": "jnqjourney.com",
+      "verified": true,
+      "redirect": "www.jnqjourney.com",
+      "projectId": "prj_ve8zzToXNgvKQZDhqZD1GLMM91ib"
+    },
+    {
+      "name": "www.jnqjourney.com",
+      "verified": true,
+      "redirect": null,
+      "projectId": "prj_ve8zzToXNgvKQZDhqZD1GLMM91ib"
+    },
+    {
+      "name": "jnqjourney.vercel.app",
+      "verified": true,
+      "redirect": null,
+      "projectId": "prj_ve8zzToXNgvKQZDhqZD1GLMM91ib"
+    }
+  ],
+  "pause": {
+    "reason": "Fluid Active CPU exceeded Hobby fair use limits",
+    "sinceDashboard": "Nov 8, 2026",
+    "endsDashboard": "Dec 8, 2026",
+    "usageWindowDashboard": "Oct 9, 10pm - Nov 8, 9pm",
+    "fluidActiveCpuDisplay": "11h 39m",
+    "limitDisplay": "12h",
+    "temporaryLimitsDisplay": "3x Until Dec 4"
+  },
+  "historicalProduction": [
+    {
+      "id": "dpl_Bek49CY6VcSSMN86hoZTNp2vLhtf",
+      "url": "jnqjourney-53o08ljq8-jayden-yaps-projects.vercel.app",
+      "state": "READY",
+      "sha": "7cee63d00a603992456eba71cc4b526a80d8ab25",
+      "isRollbackCandidate": true
+    },
+    {
+      "id": "dpl_5mab5eVHC4Zc2Qe6anfyTT2qPYus",
+      "url": "jnqjourney-lmoqq2epa-jayden-yaps-projects.vercel.app",
+      "state": "READY",
+      "sha": "c7c4e9655e88ff55c462863090ca363025045110",
+      "isRollbackCandidate": true
+    },
+    {
+      "id": "dpl_DEC7L9qwu2hCma2f3nS5bqqRRNXo",
+      "url": "jnqjourney-7456xqgmb-jayden-yaps-projects.vercel.app",
+      "state": "READY",
+      "sha": "dea655a1f117482b4f5fa8907d0336c9b3faf0d1",
+      "isRollbackCandidate": false
+    }
+  ],
+  "billing": {
+    "status": 404,
+    "error": "costs_not_found"
+  },
+  "recoveryActionsPerformed": 0
+}

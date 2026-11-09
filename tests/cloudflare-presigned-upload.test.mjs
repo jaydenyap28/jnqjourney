@@ -10,7 +10,7 @@ function fixture(){
   const row={id:1,name:'Isolated fixture',status:'active',publication_status:'published',updated_at:'2026-11-08T00:00:00Z',images:[]}
   const head=key=>{const item=objects.get(key);return item?{key,size:item.size??item.bytes.length,etag:item.etag,version:item.version,httpMetadata:item.metadata}:null}
   const media={
-    async put(key,value,options={}){const bytes=Buffer.from(await new Response(value).arrayBuffer());objects.set(key,{bytes,metadata:options.httpMetadata,version:crypto.randomUUID(),etag:createHash('sha256').update(bytes).digest('hex')});return head(key)},
+    async put(key,value,options={}){if(options.onlyIf&&objects.get(key)?.etag!==options.onlyIf.etagMatches)return null;const bytes=Buffer.from(await new Response(value).arrayBuffer());objects.set(key,{bytes,metadata:options.httpMetadata,version:crypto.randomUUID(),etag:createHash('sha256').update(bytes).digest('hex')});return head(key)},
     async head(key){return head(key)},
     async get(key,options={}){const meta=head(key);if(!meta)return null;const bytes=objects.get(key).bytes,body=options.range?bytes.subarray(options.range.offset,options.range.offset+options.range.length):bytes;return {...meta,body:new Blob([body]).stream(),arrayBuffer:async()=>Uint8Array.from(body).buffer,json:async()=>JSON.parse(bytes.toString())}},
     async delete(list){for(const key of Array.isArray(list)?list:[list])objects.delete(key)},
@@ -67,7 +67,7 @@ test('staging cannot be referenced; final copy is range-validated and receipt-bo
   assert.equal((await f.save(ticket.key)).status,400)
   assert.equal((await f.call('/'+ticket.key,undefined,false)).status,404)
   assert.equal((await f.complete(ticket.key)).status,201);assert.equal(f.copies(),1)
-  assert.equal(f.objects.size,2)
+  assert.equal(f.objects.size,3) // Retain the processing ticket for idempotent retries.
   const old=f.row.updated_at
   assert.equal((await f.save(ticket.key)).status,200)
   assert.equal((await f.save(ticket.key,old)).status,409)
@@ -79,13 +79,13 @@ for(const kind of ['signature','mime','size'])test(`rejected direct ${kind} is c
   await f.stage(ticket.key,kind==='signature'?Buffer.alloc(png.length):png,kind==='mime'?'image/jpeg':'image/png')
   if(kind==='size')f.objects.get(ticket.key.replace('media/candidate/','_candidate-staging/')).size=10485761
   assert.ok([400,415].includes((await f.complete(ticket.key)).status))
-  assert.equal(f.copies(),0);assert.equal(f.objects.size,0)
+  assert.equal(f.copies(),0);assert.equal(f.objects.size,1) // Claimed ticket is a terminal tombstone.
 })
 test('copy failure removes staging, ticket and partial final; expired tickets also clean',async()=>{
   const f=fixture(),ticket=await(await f.issue()).json();await f.stage(ticket.key);f.failCopy()
-  assert.equal((await f.complete(ticket.key)).status,503);assert.equal(f.objects.size,0)
+  assert.equal((await f.complete(ticket.key)).status,503);assert.equal(f.objects.size,1)
   const other=fixture(),expired=await(await other.issue()).json();await other.stage(expired.key)
   const entry=other.objects.get('_candidate-tickets/'+expired.key.slice('media/candidate/'.length)+'.json')
   const record=JSON.parse(entry.bytes);record.expiresAt=Date.now()-1;entry.bytes=Buffer.from(JSON.stringify(record))
-  assert.equal((await other.complete(expired.key)).status,410);assert.equal(other.objects.size,0)
+  assert.equal((await other.complete(expired.key)).status,410);assert.equal(other.objects.size,1)
 })
