@@ -1,0 +1,58 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "fixtures": [
+    {
+      "role": "editor",
+      "id": 2,
+      "slug": "cloudflare-loop-compat-editor-2",
+      "updatedAt": null
+    },
+    {
+      "role": "gallery",
+      "id": 3,
+      "slug": "cloudflare-loop-compat-gallery-3",
+      "updatedAt": null
+    },
+    {
+      "role": "redirect",
+      "id": 4,
+      "slug": "cloudflare-loop-compat-redirect-4",
+      "updatedAt": null
+    },
+    {
+      "role": "hidden",
+      "id": 5,
+      "slug": "cloudflare-loop-compat-hidden-5",
+      "updatedAt": null
+    },
+    {
+      "role": "delete",
+      "id": 6,
+      "slug": "cloudflare-loop-compat-delete-6",
+      "updatedAt": null
+    },
+    {
+      "role": "cycle",
+      "id": 7,
+      "slug": "cloudflare-loop-compat-cycle-7",
+      "updatedAt": null
+    }
+  ],
+  "mediaCount": 30,
+  "imageBytes": 68,
+  "imageSha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15",
+  "operations": {
+    "r2Put": 113,
+    "r2Get": 0,
+    "dbInsert": 6,
+    "dbPatch": 1
+  },
+  "operationsCaveat": "R2 PUT is attempt count, not billed aggregate; one interrupted operation may lack confirmed result. Final 30 media and 30 receipts succeeded. Initial invalid-CRC PNGs were overwritten before deployment. No native upload acceptance rerun.",
+  "complete": true,
+  "syntheticRepair": {
+    "reason": "Original 68-byte synthetic PNG IDAT CRC invalid; no Worker tests or deployment occurred",
+    "priorMediaCount": 26,
+    "startedAt": "2026-11-09T07:10:20.445Z"
+  }
+}

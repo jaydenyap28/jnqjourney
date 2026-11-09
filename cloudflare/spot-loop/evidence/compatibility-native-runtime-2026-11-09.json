@@ -1,0 +1,38 @@
+{
+  "deploymentId": "bd7af17d-0d90-4781-90df-d409ba376428",
+  "count": 2,
+  "diagnostics": {
+    "parsedFrames": 2,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": true,
+    "incompleteFrame": false,
+    "exitCode": 4294967295,
+    "exitSignal": null
+  },
+  "events": [
+    {
+      "timestamp": 1794208392400,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794208392388-0",
+      "wallTime": 1336,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794208394395,
+      "path": "/api/candidate/spots/3",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794208394627-1",
+      "wallTime": 6627,
+      "cpuTime": 29
+    }
+  ]
+}

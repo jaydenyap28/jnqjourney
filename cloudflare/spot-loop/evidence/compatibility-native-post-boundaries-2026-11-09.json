@@ -1,0 +1,30 @@
+{
+  "checkedAt": "2026-11-09T07:14:39.118Z",
+  "canonicalEmpty": true,
+  "productionEnvironmentCount": 0,
+  "productionBindingCount": 0,
+  "productionDeployments": 0,
+  "failClosedBoth": true,
+  "previewSecrets": {
+    "SUPABASE_ANON_KEY": "secret_text",
+    "SUPABASE_SERVICE_ROLE_KEY": "secret_text",
+    "CANDIDATE_R2_ACCESS_KEY_ID": "secret_text",
+    "CANDIDATE_R2_SECRET_ACCESS_KEY": "secret_text"
+  },
+  "previewFixtureIds": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+  ],
+  "isolatedBucket": "jnqjourney-spot-loop-isolated-media",
+  "formalDomainAttached": false,
+  "oldDeployment": {
+    "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+    "status": "success",
+    "environment": "preview"
+  },
+  "latestDeployment": "bd7af17d-0d90-4781-90df-d409ba376428"
+}

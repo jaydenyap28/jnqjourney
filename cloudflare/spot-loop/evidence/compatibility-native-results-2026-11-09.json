@@ -1,0 +1,40 @@
+{
+  "startedAt": "2026-11-09T07:13:12.386Z",
+  "deploymentId": "bd7af17d-0d90-4781-90df-d409ba376428",
+  "url": "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "budget": 40,
+  "checks": [
+    {
+      "name": "compat_login",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "expected": 200,
+      "acceptanceId": "1794208392388-0",
+      "issuedAt": "2026-11-09T07:13:12.388Z",
+      "status": 200,
+      "cpuTimeMs": 4,
+      "runtimeWallTimeMs": 1336,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_17_gallery_full_fields_null_version",
+      "path": "/api/candidate/spots/3",
+      "method": "PATCH",
+      "expected": 200,
+      "acceptanceId": "1794208394627-1",
+      "r2Expected": {
+        "receiptGet": 17,
+        "objectHead": 17
+      },
+      "issuedAt": "2026-11-09T07:13:14.627Z",
+      "status": 200,
+      "cpuTimeMs": 29,
+      "runtimeWallTimeMs": 6627,
+      "outcome": "ok"
+    }
+  ],
+  "assertions": [],
+  "hold": true,
+  "error": "NATIVE_CPU_LIMIT_EXCEEDED",
+  "finishedAt": "2026-11-09T07:13:21.374Z"
+}

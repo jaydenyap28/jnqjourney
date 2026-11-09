@@ -1,5 +1,47 @@
 # 新版兼容 Preview 原生验收 · NO-GO / HOLD
 
+## 工具恢复后实际执行：隔离结构 PASS，新版 CPU NO-GO
+
+**最新结论：新版 17 图保存的 Cloudflare 原生 CPU 为 29 ms，超过本轮 10 ms 门槛。已在第 2 次候选请求后停止；新版 NO-GO，正式迁移继续 HOLD。** HTTP 200 和 Tail outcome=ok 均不改变超额结论，未以重试或低值覆盖。历史 `3603644` 技术 GO、固定 `c592d40c` 和历史 10 ms 临界证据保留。
+
+### 获批数据库修改和结构验收
+
+安装连接 Supabase 后，`execute_sql` 与 `apply_migration` 均恢复。正常 MCP 重新读取隔离项目 `rnamstwwbzknwbjwdgrf`：行集 hash、3 条记录、33 列定义、约束、索引、依赖、RLS/ACL/policies、Auth 基线全部与本机快照一致。随后 **正常审批的 apply_migration 返回 success=true**，仅执行下方原有事务的四项隔离 DDL。没有使用 CLI 或其他通道绕过审批执行 SQL。
+
+迁移后实际 catalog 检查为 36 列：`review_jayden` / `review_qing` nullable text、`is_visited` nullable boolean，`opening_hours` nullable text、无默认值。原三条记录剔除新增三列后的 hash 仍为 `fddd394725dc87f4bd072235c4fcfc9b`，新增三列及 opening_hours 均保留 SQL NULL。约束、索引、RLS/ACL/policies、Auth 结构与迁移前相同；DDL 后、原生登录前的 Auth users/sessions 仍为 1/0。PostgREST 36 列零行 SELECT 返回 **200**，不再是 42703。[结构证据及保留的历史失败](evidence/isolated-schema-alignment-2026-11-09.json)、[结构对齐后预检](evidence/compatibility-schema-aligned-preflight-2026-11-09.json)
+
+原生验收停止后的只读查询再次确认：原三条记录数量 3、上述行集 hash 不变、调整字段非空数 0、RLS/ACL/policies 不变、Auth 用户数仍为 1、Auth 结构 hash 不变。测试登录会产生会话，本轮没有在超额后额外调用 Worker 登出。
+
+### Preview 与隔离资料
+
+- 新固定 Preview：[bd7af17d](https://bd7af17d.jnqjourney-spot-loop-migration-candidate.pages.dev)。真实请求使用既定分支别名，部署 ID `bd7af17d-0d90-4781-90df-d409ba376428`，Tail 与该部署关联。产品文件及包 hash 与 `4e443f4` 一致，部署 Git 元数据为 `a2442a4`；本轮只新增验收工具和报告，没有修改产品、上传架构或进行整站构建。
+- 部署前后 Production canonical 均为空；最终只读确认 Production 变量/Secrets 0、R2 binding 0、部署 0，双方 Fail closed。四个 Preview Secrets 均保持 secret_text。旧固定 c592d40c 仍 success / preview。没有正式域名绑定。[部署证据](evidence/compatibility-native-deployment-2026-11-09.json)、[部署后边界](evidence/compatibility-native-post-boundaries-2026-11-09.json)
+- 新建六个隔离合成 fixture：IDs 2–7，角色 editor/gallery/redirect/hidden/delete/cycle；不复用旧 fixture 1，不触及原三条记录。仅 Preview 的 allowlist 使用这些新 ID，私有 bucket 为既定测试 bucket。
+- 预置 30 个不同对象路径的 68 字节合成 PNG 及 receipt，receipt 的 etag/version 取自真实 R2 REST PUT 响应。最初 PNG 的 IDAT CRC 错误在部署前本机被发现，停止预置后修正；最终样本逐 chunk 校验 CRC 并成功解压 IDAT，原错误对象在新 fixture 路径内覆盖修复。没有发起额外 Worker 上传验证。[合成资料与操作尝试计数](evidence/compatibility-synthetic-fixtures-2026-11-09.json)
+
+### 逐请求原生证据与立即停止
+
+| Acceptance ID | 请求 | HTTP / outcome | 原生 CPU | 原生 wall time | 结果 |
+| --- | --- | --- | --- | --- | --- |
+| `1794208392388-0` | POST session，真实 Supabase Auth 登录 | 200 / ok | **4 ms** | 1336 ms | 通过 |
+| `1794208394627-1` | PATCH Spot 3，nullable 版本、完整可编辑字段、17 图相册 | 200 / ok | **29 ms** | 6627 ms | **超额，立即 HOLD** |
+
+计数 **2/40**。Tail 共 2 条原生事件，Acceptance ID、method/status 对应，parseErrors/unmatchedRequests/truncatedEvents 均为 0。超额后未再发送候选 Worker 请求，只停止该 Tail 并完成只读证据核对。Tail 的非零退出码来自停止本轮子进程，不是额外请求失败。[原生事件](evidence/compatibility-native-runtime-2026-11-09.json)、[请求日志及停止原因](evidence/compatibility-native-results-2026-11-09.json)
+
+17 图 PATCH 的 HTTP 成功已经观察到，但脚本在 CPU 门槛处停止，没有继续进行响应字段断言及公开读回，因此 **不能把 17 图保存/读取完整标记通过**。30 图、长元数据公开读取、原生 CAS、双 complete / complete-cancel、失败清理、图片匿名保护、301/302/循环/隐藏目标、双语/关闭/DELETE 及新版 Chrome 交互均未执行。本轮没有复测历史 1/5/10 MiB 上传或旧版 Chrome。
+
+### R2、免费额度与最小后续建议
+
+17 个不同媒体在源码成功路径上各执行 receipt GET 与 object HEAD，共 **34 次校验读取（按执行路径推断）**；Tail 没有提供逐请求 R2 操作计数，因此不能冒充原生计量或账单数据。没有发生 Worker 重试；30 图预期为 60 次校验读取，CPU 和实际操作量仍未知。
+
+合成预置工具记录 R2 PUT 尝试 113 次（包括被中断的错误样本预置及修正），DB INSERT 6 次、PATCH 1 次。PUT 尝试数不是账单数；中断点的一次操作结果未逐项确认。最终 30 张图片及其 30 个 receipt 的 PUT 均成功。测试数据仅为小型合成对象，没有正式媒体复制，未升级方案或新建服务。
+
+**新增实测风险是 17 图保存已经达到 29 ms，无法通过既定 Free 10 ms 预算。** 6.627 秒 wall time 与 CPU 不混用，也不根据 outcome=ok 推断平台长期会容许超额。当前不能声称新版在免费额度内可可靠运行。最低限度的下一步应单独定位相册校验循环与字段 JSON 处理的 CPU 消耗，评估能否减少未变动媒体的重复校验，同时维持签名、对象版本、私有存储和引用保护；本轮不自行重构、不删除功能、不重试测值。修复与新的有界复验需下一轮安排。
+
+**已关闭 P0：隔离 schema 与 36 列 SELECT 不兼容。仍阻塞：新版相册保存 CPU 超额及后续原生/Chrome 验收未完成。** 正式迁移的旧公开媒体保护、正式 SELECT/RLS、发布队列/cron 协调、完整后台/slug/SEO/跨模块契约、正式备份/恢复与路由切换仍未关闭，也未获正式实施授权。本轮未连接正式 Supabase，未修改正式 R2、Production、DNS、Vercel 或 main。到此停止。
+
+以下各节为按时间保留的历史记录，其中“DDL 未执行/工具不可用”已被本节的新实测结果覆盖。
+
 ## 检查点 2a435b8 后的工具恢复检查
 
 本次只检查了会话工具可用性：`execute_sql` 与 `apply_migration` 仍未出现在可调用工具清单中。**工具尚未恢复，正常审批通道无法检测**；这不是一次新的审批用量拒绝，也不能说明此前用量限制已解除。具体时间记入[原脱敏证据](evidence/isolated-schema-alignment-2026-11-09.json)的 `toolAvailabilityChecks`，此前观测结果保持原样。

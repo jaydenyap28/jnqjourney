@@ -172,7 +172,7 @@
   "candidateWorkerRequests": 0,
   "requestBudget": 40,
   "nativeCpuSamples": [],
-  "verdict": "NO_GO_HOLD_TOOLING_BLOCKED",
+  "verdict": "ISOLATED_SCHEMA_PASS_NEW_PREVIEW_CPU_NO_GO_HOLD",
   "toolAvailabilityChecks": [
     {
       "checkedAt": "2026-11-09T06:47:16.962Z",
@@ -190,5 +190,397 @@
       "previewDeployed": false,
       "verdict": "HOLD_TOOL_UNAVAILABLE"
     }
-  ]
+  ],
+  "recoveryRun": {
+    "checkedAt": "2026-11-09T07:16:22.287Z",
+    "checkpoint": "a2442a4",
+    "executeSqlToolAvailable": true,
+    "applyMigrationToolAvailable": true,
+    "normalApprovalSucceeded": true,
+    "preDdlSnapshotMatch": true,
+    "ddlExecuted": true,
+    "ddlScope": "isolated nullable review_jayden/review_qing/is_visited and NULL-only opening_hours jsonb-to-text",
+    "afterCatalog": {
+      "rls": {
+        "acl": [
+          "postgres=arwdDxtm/postgres",
+          "service_role=arwdDxtm/postgres",
+          "anon=r/postgres"
+        ],
+        "forced": false,
+        "enabled": true
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint",
+          "default": null,
+          "identity": "d",
+          "not_null": true,
+          "generated": ""
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": true,
+          "generated": ""
+        },
+        {
+          "name": "name_cn",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "category",
+          "type": "text",
+          "default": "'attraction'::text",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "address",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "latitude",
+          "type": "double precision",
+          "default": null,
+          "identity": "",
+          "not_null": true,
+          "generated": ""
+        },
+        {
+          "name": "longitude",
+          "type": "double precision",
+          "default": null,
+          "identity": "",
+          "not_null": true,
+          "generated": ""
+        },
+        {
+          "name": "region_id",
+          "type": "bigint",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "video_url",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "facebook_video_url",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "image_url",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "images",
+          "type": "text[]",
+          "default": "'{}'::text[]",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "description",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "review",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "tags",
+          "type": "text[]",
+          "default": "'{}'::text[]",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "visit_date",
+          "type": "date",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "opening_hours",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "price_info",
+          "type": "jsonb",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "google_maps_url",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "default": "'active'::text",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "default": "now()",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "publication_status",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "seo_title_zh",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "seo_description_zh",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "seo_title_en",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "seo_description_en",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "experience_zh",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "experience_en",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "related_note_slugs",
+          "type": "text[]",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "image_metadata",
+          "type": "jsonb",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "redirect_url",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "redirect_type",
+          "type": "integer",
+          "default": "301",
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "review_jayden",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "review_qing",
+          "type": "text",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        },
+        {
+          "name": "is_visited",
+          "type": "boolean",
+          "default": null,
+          "identity": "",
+          "not_null": false,
+          "generated": ""
+        }
+      ],
+      "indexes": [
+        "CREATE UNIQUE INDEX locations_pkey ON public.locations USING btree (id)"
+      ],
+      "policies": [
+        {
+          "cmd": "SELECT",
+          "qual": "((status = 'active'::text) AND (publication_status = 'published'::text))",
+          "roles": [
+            "anon"
+          ],
+          "tablename": "locations",
+          "permissive": "PERMISSIVE",
+          "policyname": "fixture_spot_read",
+          "schemaname": "public",
+          "with_check": null
+        }
+      ],
+      "triggers": [],
+      "row_count": 3,
+      "rows_hash": "fddd394725dc87f4bd072235c4fcfc9b",
+      "auth_counts": {
+        "users": 1,
+        "sessions": 0
+      },
+      "constraints": [
+        {
+          "name": "locations_image_metadata_check",
+          "columns": [
+            31
+          ],
+          "definition": "CHECK ((jsonb_typeof(image_metadata) = 'object'::text))"
+        },
+        {
+          "name": "locations_pkey",
+          "columns": [
+            1
+          ],
+          "definition": "PRIMARY KEY (id)"
+        },
+        {
+          "name": "locations_publication_status_check",
+          "columns": [
+            23
+          ],
+          "definition": "CHECK ((publication_status = ANY (ARRAY['published'::text, 'draft'::text, 'hidden'::text])))"
+        },
+        {
+          "name": "locations_redirect_type_check",
+          "columns": [
+            33
+          ],
+          "definition": "CHECK ((redirect_type = ANY (ARRAY[301, 302])))"
+        },
+        {
+          "name": "locations_region_id_fkey",
+          "columns": [
+            8
+          ],
+          "definition": "FOREIGN KEY (region_id) REFERENCES regions(id) ON DELETE SET NULL"
+        }
+      ],
+      "dependencies": [],
+      "auth_structure_hash": "1c9cc471fe37aab09734c60b73f4b9e8",
+      "inbound_foreign_keys": [
+        "FOREIGN KEY (location_id) REFERENCES locations(id) ON DELETE CASCADE"
+      ],
+      "non_null_opening_hours": 0
+    },
+    "originalRowsPreserved": true,
+    "originalThreeRowsFinalHash": "fddd394725dc87f4bd072235c4fcfc9b",
+    "originalAdjustedFieldsRemainSqlNull": true,
+    "postgrestReadProbe": {
+      "actualColumnCount": 36,
+      "requiredColumnCount": 36,
+      "missingColumns": [],
+      "openingHoursType": "text",
+      "expectedOpeningHoursType": "text",
+      "readProbeHttpStatus": 200
+    },
+    "authUserCountAfterNative": 1,
+    "authStructureHashAfterNative": "1c9cc471fe37aab09734c60b73f4b9e8",
+    "rlsAclPoliciesUnchangedAfterNative": true
+  }
 }

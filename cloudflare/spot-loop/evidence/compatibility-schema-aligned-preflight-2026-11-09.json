@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-11-09T07:06:24.101Z",
+  "sourceCommit": "4e443f48f1cad5c652f0480c0f676d5c0c983b51",
+  "checkedHead": "a2442a49033d5af69454de5a9e444372af6ab416",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "branch": "codex/cloudflare-free-migration",
+  "isolatedSupabaseRef": "rnamstwwbzknwbjwdgrf",
+  "candidateWorkerRequests": 0,
+  "sqlExecuted": false,
+  "productionDataAccessed": false,
+  "boundaries": {
+    "canonicalEmpty": true,
+    "productionEnvironmentCount": 0,
+    "productionR2BindingCount": 0,
+    "productionDeploymentCount": 0,
+    "failClosedBoth": true,
+    "previewBucketMatches": true,
+    "previewSupabaseMatches": true,
+    "formalDomainAttached": false,
+    "secrets": {
+      "SUPABASE_ANON_KEY": true,
+      "SUPABASE_SERVICE_ROLE_KEY": true,
+      "CANDIDATE_R2_ACCESS_KEY_ID": true,
+      "CANDIDATE_R2_SECRET_ACCESS_KEY": true
+    },
+    "oldFixedDeployment": {
+      "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "url": "https://c592d40c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+      "environment": "preview",
+      "status": "success"
+    },
+    "latestDeploymentId": "c592d40c-394e-4cbc-b842-f3cb2aa71535"
+  },
+  "boundariesPassed": true,
+  "testBucket": {
+    "name": "jnqjourney-spot-loop-isolated-media",
+    "managedPublicAccessEnabled": false,
+    "customDomainCount": 0
+  },
+  "package": {
+    "workerSha256": "168496a4c55263d1e404fc1f59707b295b933316bad260665cc373f339d1963b",
+    "contractSha256": "bed2b522c19f0863ae5b846e50ad2cbd66cdd287041bdcd9aa9453ccfcea99cf",
+    "workerMatches": true,
+    "contractMatches": true,
+    "topLevelFiles": 10
+  },
+  "schema": {
+    "actualColumnCount": 36,
+    "requiredColumnCount": 36,
+    "missingColumns": [],
+    "openingHoursType": "text",
+    "expectedOpeningHoursType": "text",
+    "readProbeHttpStatus": 200
+  },
+  "schemaCompatible": true,
+  "verdict": "READY_FOR_ISOLATED_FIXTURE_SETUP",
+  "previewDeployed": false,
+  "finishedAt": "2026-11-09T07:06:34.733Z"
+}

@@ -3,17 +3,18 @@ import {spawn} from 'node:child_process'
 import {readFile,rename,writeFile} from 'node:fs/promises'
 import path from 'node:path'
 import {PROJECT} from './candidate-cloudflare.mjs'
-const deployment=JSON.parse(await readFile(process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/deployment.json':'artifacts/cloudflare-phase3/deployment.json','utf8'))
+const compatibility=process.argv.includes('--compatibility')
+const deployment=JSON.parse(await readFile(compatibility?'artifacts/cloudflare-compatibility-native/deployment.json':process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/deployment.json':'artifacts/cloudflare-phase3/deployment.json','utf8'))
 if(deployment.environment!=='preview'||!deployment.success)throw new Error('VERIFIED_PREVIEW_REQUIRED')
 const resume=process.argv.includes('--resume-security')
 if(resume&&!process.argv.includes('--direct-upload'))throw new Error('DIRECT_PREVIEW_REQUIRED')
-const output=resume?'artifacts/cloudflare-upload-fix/direct-resume-runtime-events.json':process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/direct-runtime-events.json':process.argv.includes('--upload-fix')?'artifacts/cloudflare-upload-fix/runtime-events.json':'artifacts/cloudflare-phase3/runtime-events.json'
+const output=compatibility?'artifacts/cloudflare-compatibility-native/runtime-events.json':resume?'artifacts/cloudflare-upload-fix/direct-resume-runtime-events.json':process.argv.includes('--direct-upload')?'artifacts/cloudflare-upload-fix/direct-runtime-events.json':process.argv.includes('--upload-fix')?'artifacts/cloudflare-upload-fix/runtime-events.json':'artifacts/cloudflare-phase3/runtime-events.json'
 const diagnostics={parsedFrames:0,parseErrors:0,unmatchedRequests:0,truncatedEvents:0,warningFrames:0,stderrWarnings:0,closed:false,incompleteFrame:false}
 const records=[];let started=false,depth=0,quoted=false,escaped=false,current='',seenKeys=false
 const snapshot=()=>JSON.stringify({deploymentId:deployment.deploymentId,count:records.length,diagnostics,events:records},null,2)
-if(resume)await writeFile(output,snapshot(),{flag:'wx'})
+if(resume||compatibility)await writeFile(output,snapshot(),{flag:'wx'})
 const args=[process.env.JNQ_WRANGLER_CLI,'pages','deployment','tail',deployment.deploymentId,'--project-name',PROJECT,'--environment','preview','--format','json']
-if(resume)args.push('--header','X-JnQ-Acceptance')
+if(resume||compatibility)args.push('--header','X-JnQ-Acceptance')
 const child=spawn(process.execPath,args,{cwd:path.resolve('artifacts/cloudflare-spot-loop'),windowsHide:true,stdio:['ignore','pipe','pipe']})
 let write=Promise.resolve()
 function save(){
