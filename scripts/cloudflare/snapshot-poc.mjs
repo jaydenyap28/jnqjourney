@@ -1,20 +1,29 @@
 import assert from 'node:assert/strict'
-import { fork } from 'node:child_process'
 import { createHash } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { ROOT } from './snapshot-renderer.mjs'
 import { dataPath, releaseSession } from './snapshot-release.mjs'
+import { openSnapshotTail } from './snapshot-native-tail.mjs'
 import { EN, ORIGIN, SPOT_ID, SLUG, STATIC_EXCLUDES, ZH } from '../../cloudflare/spot-loop/snapshot-gateway.mjs'
 
 const report = { startedAt: new Date().toISOString(), verdict: 'SNAPSHOT_HOSTING_POC_BLOCKED', dynamic: [], static: [], browser: [], externalBlocked: 0, cap: 30, formalMigration: 'HOLD' }
 const resume = process.argv.includes('--resume-readback')
+const recover = process.argv.includes('--recover-tail')
+assert.ok(!(resume && recover))
+const recovery = recover ? JSON.parse(await readFile(path.join(ROOT, 'acceptance-resumed.json'), 'utf8')) : null
+if (recovery) {
+  assert.ok(recovery.failure?.reason === 'NATIVE_TAIL_MISSING' && recovery.fixtureRestoredHidden && recovery.dynamic.length === 1)
+  const [original] = recovery.dynamic
+  assert.ok(original.id === '1794299298797-0' && original.status === 200 && original.cpuMs === 'UNKNOWN')
+  report.originalRequest = original
+}
 const prior = resume ? JSON.parse(await readFile(path.join(ROOT, 'acceptance.json'), 'utf8')) : null
 if (prior) {
   assert.ok(prior.failure?.reason === 'PRIVATE_SNAPSHOT_READBACK_FAILED' && !prior.deployment && prior.dynamic.length === 0 && prior.fixtureRestoredHidden)
   report.priorFailure = prior.failure
 }
-const journal = path.join(ROOT, resume ? 'acceptance-resumed.json' : 'acceptance.json')
+const journal = path.join(ROOT, recover ? 'acceptance-tail-recovery.json' : resume ? 'acceptance-resumed.json' : 'acceptance.json')
 await writeFile(journal, JSON.stringify(report), { flag: 'wx' })
 const persist = () => writeFile(journal, JSON.stringify(report, null, 2) + '\n')
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -22,37 +31,33 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex')
 let session, tail, browser, stop, deployment
 let phase = 'boundary'
 
-async function observe(record, status) {
+async function observe(record, status, event) {
   record.status = status
-  let event
-  for (let attempt = 0; attempt < 240; attempt++) {
-    const value = JSON.parse(await readFile(path.join(ROOT, 'runtime-events.json'), 'utf8'))
-    assert.equal(value.deploymentId, deployment.deploymentId)
-    assert.ok(!value.diagnostics.truncatedEvents && !value.diagnostics.parseErrors, 'TAIL_INTEGRITY_FAILED')
-    event = value.events.find(item => item.acceptanceId === record.id)
-    if (event || value.diagnostics.closed) break
-    await sleep(100)
-  }
   record.cpuMs = event?.cpuTime ?? 'UNKNOWN'
   record.outcome = event?.outcome ?? 'UNKNOWN'
   await persist()
   assert.ok(event && Number.isFinite(event.cpuTime), 'NATIVE_TAIL_MISSING')
   assert.ok(event.cpuTime <= 10, 'NATIVE_CPU_OVER_10_MS')
+  assert.ok(!event.truncated, 'NATIVE_TAIL_TRUNCATED')
   const redacted = record.path.replace(/^(\/media\/candidate\/92061\/)[a-f0-9-]+(\.png)$/,'$1REDACTED$2')
   assert.ok(event.outcome === 'ok' && event.status === status && event.method === record.method && [record.path, redacted].includes(event.path), 'NATIVE_TAIL_CORRELATION_FAILED')
 }
 
 async function dispatch(via, url, method, send) {
   if (stop) throw stop
-  assert.ok(report.dynamic.length < report.cap, 'DYNAMIC_REQUEST_BUDGET_REACHED')
+  assert.ok(report.dynamic.length + Number(recover) < report.cap, 'DYNAMIC_REQUEST_BUDGET_REACHED')
   const record = { id: `${Date.now()}-${report.dynamic.length}`, via, phase, path: url.pathname, query: url.search, method }
+  const event = tail.track(record.id)
   report.dynamic.push(record)
   await persist()
   try {
     const response = await send(record.id)
-    await observe(record, typeof response.status === 'function' ? response.status() : response.status)
+    record.status = typeof response.status === 'function' ? response.status() : response.status
+    await persist()
+    await observe(record, record.status, await event.result())
     return response
   } catch (error) { stop = error; throw error }
+  finally { event.cancel() }
 }
 
 async function check(route, expected, options = {}) {
@@ -124,9 +129,11 @@ async function chrome(manifest) {
     await page.screenshot({ path: path.join(ROOT, 'home-desktop.png') })
     report.browser.push({ phase: 'home', status: 200, fixtureVisible: true })
     const link = page.locator(`a[href="${ZH}"]`).first()
+    const homeDocument = await page.evaluate(() => performance.timeOrigin)
     await link.click({ timeout: 10000 })
     await page.waitForURL(ORIGIN + ZH, { timeout: 15000 })
     await page.getByRole('heading', { name: /快照驗收甲|快照验收甲|Consumer Fixture/ }).first().waitFor({ timeout: 10000 })
+    assert.equal(await page.evaluate(() => performance.timeOrigin), homeDocument, 'APP_ROUTER_NAVIGATION_RELOADED_DOCUMENT')
     assert.ok(report.dynamic.some(record => record.path === ZH && record.representation?.startsWith('text/x-component') && record.status === 200), 'APP_ROUTER_NAVIGATION_DID_NOT_LOAD_RSC')
     report.browser.push({ phase: 'internal navigation', status: 200, rscObserved: true })
     await page.setViewportSize({ width: 390, height: 844 })
@@ -152,21 +159,33 @@ async function chrome(manifest) {
 }
 
 try {
-  session = await releaseSession(report, prior)
-  phase = 'render-and-deploy'
-  const media = await session.prepare()
-  await session.patch({ status: 'active', publication_status: 'published', name_cn: '快照验收甲', description: 'Synthetic snapshot revision A.', visit_date: '2026-11-08', image_url: media, images: [media] })
-  const first = await session.capture(resume ? 'revision-a-resumed' : 'revision-a')
-  deployment = await session.deploy()
+  session = await releaseSession(report, prior, recovery)
+  let first, media
+  if (recovery) {
+    phase = 'verify prior Preview and private objects'
+    deployment = await session.verifyRecovery()
+    first = recovery.releases[0]
+  } else {
+    phase = 'render-and-deploy'
+    media = await session.prepare()
+    await session.patch({ status: 'active', publication_status: 'published', name_cn: '快照验收甲', description: 'Synthetic snapshot revision A.', visit_date: '2026-11-08', image_url: media, images: [media] })
+    first = await session.capture(resume ? 'revision-a-resumed' : 'revision-a')
+    deployment = await session.deploy()
+  }
   report.deployment = deployment
   await persist()
-  tail = fork('scripts/cloudflare/phase3-runtime-tail.mjs', ['--snapshot-poc'], { stdio: ['ignore', 'pipe', 'pipe', 'ipc'], windowsHide: true })
-  tail.stdout.resume(); tail.stderr.resume()
-  await sleep(4500)
-  assert.equal(tail.exitCode, null, 'TAIL_PROCESS_EXITED')
-  phase = 'first native request'
-  const page = await check('/', 200)
-  assert.equal(hash(page.bytes), first.objects['home-html'].sha256)
+  phase = 'native Tail handshake'
+  tail = await openSnapshotTail(deployment, path.join(ROOT, recover ? 'runtime-events-recovery.json' : 'runtime-events-native.json'))
+  report.tailOpenedAt = tail.openedAt
+  phase = 'read-only native canary'
+  const page = await check(recovery ? ZH : '/', recovery ? 404 : 200)
+  if (!recovery) assert.equal(hash(page.bytes), first.objects['home-html'].sha256)
+  report.canary = report.dynamic.at(-1).id
+  if (recovery) {
+    phase = 'replay isolated revision A'
+    media = await session.prepare()
+    await session.replayPublished()
+  }
   phase = 'browser'
   await chrome(first)
   phase = 'representation checks'
@@ -211,16 +230,16 @@ try {
   process.exitCode = 1
 } finally {
   if (browser) await browser.close()
-  if (tail?.connected) {
-    const exited = new Promise(resolve => tail.once('exit', resolve))
-    tail.send('stop-tail')
-    await Promise.race([exited, sleep(6000)])
-    if (tail.exitCode === null && tail.signalCode === null) tail.kill()
+  if (tail) {
+    try { await tail.close(); report.tailDeleted = true }
+    catch { report.tailDeleted = false; report.verdict = 'SNAPSHOT_HOSTING_POC_BLOCKED'; process.exitCode = 1 }
   }
   if (session) {
     try { await session.cleanup() } catch { report.cleanup = 'FIXTURE_OR_BOUNDARY_NOT_CONFIRMED'; report.verdict = 'SNAPSHOT_HOSTING_POC_BLOCKED'; process.exitCode = 1 }
   }
   report.finishedAt = new Date().toISOString()
+  report.requestCounts = { original: Number(recover), probes: report.dynamic.filter(row => row.via === 'probe').length,
+    browserDynamic: report.dynamic.filter(row => row.via === 'browser').length, browserStatic: report.static.length }
   await persist()
   console.log(JSON.stringify({ verdict: report.verdict, phase, failure: report.failure, deployment, requests: report.dynamic.length, static: report.static.length, fixtureRestoredHidden: report.fixtureRestoredHidden }))
 }

@@ -17,9 +17,10 @@ export const dataPath = `/_next/data/${build.buildId}${EN}.json`
 const fixturePath = `/rest/v1/locations?id=eq.${SPOT_ID}`
 const digest = bytes => createHash('sha256').update(bytes).digest('hex')
 
-export async function releaseSession(report, prior) {
+export async function releaseSession(report, prior, recovery) {
   const [keys, token, cf] = await Promise.all([isolatedKeys(), privateWranglerToken(), cloudflareClient()])
-  const prefix = `snapshot-poc/${Date.now()}`
+  const prefix = recovery?.prefix ?? `snapshot-poc/${Date.now()}`
+  assert.match(prefix, /^snapshot-poc\/\d{13}$/)
   const expiresAt = Math.floor(Date.now() / 1000) + 7200
   report.prefix = prefix
   report.releases = []
@@ -66,12 +67,13 @@ export async function releaseSession(report, prior) {
   const original = await fixture()
   assert.equal(original.publication_status, 'hidden')
   assert.equal(original.status, 'active')
+  if (recovery) report.fixtureAlreadyHidden = true
   let version = original.updated_at
   let changed = false
   let renderer
 
-  async function patch(fields) {
-    const next = new Date(Math.max(Date.now(), Date.parse(version) + 1)).toISOString()
+  async function patch(fields, replay = null) {
+    const next = replay ?? new Date(Math.max(Date.now(), Date.parse(version) + 1)).toISOString()
     const response = await isolatedRequest(keys, `${fixturePath}&updated_at=eq.${encodeURIComponent(version)}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json', Prefer: 'return=representation' },
       body: JSON.stringify({ ...fields, updated_at: next }),
@@ -92,12 +94,13 @@ export async function releaseSession(report, prior) {
   }
 
   async function prepare() {
-    const assets = await createMediaPreparer({ root: ROOT + path.sep, keys, token, fixtureIds: [SPOT_ID], resume: Boolean(prior) })
+    const saved = recovery ?? prior
+    const assets = await createMediaPreparer({ root: ROOT + path.sep, keys, token, fixtureIds: [SPOT_ID], resume: Boolean(saved) })
     let mediaPath
-    if (prior) {
+    if (saved) {
       const [entry] = assets.report.media
-      assert.ok(assets.report.media.length === 1 && entry?.registered && entry.id === SPOT_ID && '/'+entry.key === prior.media.path)
-      mediaPath = prior.media.path
+      assert.ok(assets.report.media.length === 1 && entry?.registered && entry.id === SPOT_ID && '/'+entry.key === saved.media.path)
+      mediaPath = saved.media.path
     } else [mediaPath] = await assets.prepare(SPOT_ID, 1)
     report.media = { path: mediaPath, sha256: assets.report.sha256 }
     renderer = runNext(['start', '--hostname', '127.0.0.1', '--port', '4417'], 'ignore')
@@ -107,6 +110,82 @@ export async function releaseSession(report, prior) {
       await new Promise(resolve => setTimeout(resolve, 200))
     }
     throw Error('RENDERER_NOT_READY')
+  }
+
+  let replayRow
+  async function verifyRecovery() {
+    const deployment = recovery.deployment
+    assert.equal(deployment.origin, ORIGIN)
+    assert.equal(deployment.buildId, build.buildId)
+    const actual = await cf('/deployments/' + deployment.deploymentId)
+    assert.ok(actual.environment === 'preview' && actual.latest_stage?.status === 'success' && actual.aliases?.includes(ORIGIN))
+    const branch = actual.deployment_trigger?.metadata?.branch
+    const latest = (await cf('/deployments')).find(item => item.environment === 'preview' && item.deployment_trigger?.metadata?.branch === branch)
+    assert.equal(latest?.id, deployment.deploymentId, 'PREVIEW_ALIAS_CHANGED')
+    const vars = actual.env_vars
+    assert.equal(actual.r2_buckets.TEST_MEDIA.name, BUCKET)
+    assert.equal(vars.SUPABASE_SERVICE_ROLE_KEY.type, 'secret_text')
+    assert.equal(vars.SUPABASE_URL.value, ISOLATED_ORIGIN)
+    assert.equal(vars.SNAPSHOT_BUILD_ID.value, build.buildId)
+    assert.equal(vars.SNAPSHOT_PREFIX.value, prefix)
+    assert.equal(Number(vars.SNAPSHOT_EXPIRES_AT.value), deployment.expiresAt)
+    assert.ok(deployment.expiresAt * 1000 > Date.now() + 120000, 'PREVIEW_EXPIRED_OR_TOO_CLOSE')
+
+    const [release] = recovery.releases
+    assert.equal(recovery.releases.length, 1)
+    assert.match(release.revision, /^[a-f0-9]{64}$/)
+    const directory = `${prefix}/${release.revision}`
+    const manifestResponse = await r2(directory + '/manifest.json')
+    assert.ok(manifestResponse.ok, 'PRIVATE_MANIFEST_MISSING')
+    const { label: _, ...savedManifest } = release
+    assert.deepEqual(await manifestResponse.json(), savedManifest, 'PRIVATE_MANIFEST_CHANGED')
+    assert.equal(Object.keys(release.objects).length, 8)
+    for (const [name, entry] of Object.entries(release.objects)) {
+      assert.match(name, /^[a-z-]+$/)
+      assert.match(entry.sha256, /^[a-f0-9]{64}$/)
+      const response = await r2(`${directory}/${name}-${entry.sha256}`)
+      const bytes = Buffer.from(await response.arrayBuffer())
+      assert.ok(response.ok && response.headers.get('etag')?.replace(/^W\//, '').replaceAll('"', '') === entry.etag &&
+        bytes.length === entry.bytes && digest(bytes) === entry.sha256, 'PRIVATE_SNAPSHOT_IDENTITY_CHANGED')
+    }
+
+    replayRow = JSON.parse(await readFile(path.join(SITE, 'snapshot-row.json'), 'utf8'))
+    verifiedProjection([replayRow])
+    assert.equal(await projectionHash(replayRow), release.revision)
+    assert.equal(replayRow.updated_at, release.updatedAt)
+    assert.equal(replayRow.image_url, recovery.media.path)
+    const media = JSON.parse(await readFile(path.join(ROOT, 'media-setup.json'), 'utf8'))
+    const [entry] = media.media
+    assert.ok(media.media.length === 1 && entry.id === SPOT_ID && entry.registered && '/'+entry.key === recovery.media.path)
+    const lookup = await isolatedRequest(keys, '/rest/v1/rpc/jnq_media_lookup', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ p_spot: SPOT_ID, p_key: entry.key }),
+    })
+    assert.ok(lookup.ok, 'REGISTRY_LOOKUP_FAILED')
+    const identity = await lookup.json()
+    assert.ok(identity?.publiclyReferenced === false && identity.key === entry.key && identity.version === entry.version && identity.etag === entry.etag &&
+      identity.size === entry.size && identity.receiptVersion === entry.receiptVersion && identity.receiptEtag === entry.receiptEtag && identity.receiptSize === entry.receiptSize, 'REGISTRY_IDENTITY_CHANGED')
+    for (const [key, etag, size] of [[entry.key, entry.etag, entry.size], [entry.receiptKey, entry.receiptEtag, entry.receiptSize]]) {
+      assert.match(key, /^(?:media\/candidate|_candidate-validation)\/92061\/[a-f0-9-]{36}\.png(?:\.json)?$/)
+      const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/r2/buckets/${BUCKET}/objects/${key}`, {
+        headers: { Authorization: `Bearer ${token}` }, redirect: 'manual', signal: AbortSignal.timeout(15000),
+      })
+      const bytes = Buffer.from(await response.arrayBuffer())
+      assert.ok(response.ok && bytes.length === size && response.headers.get('etag')?.replace(/^W\//, '').replaceAll('"', '') === etag, 'PRIVATE_MEDIA_IDENTITY_CHANGED')
+      if (key === entry.key) assert.equal(digest(bytes), recovery.media.sha256)
+    }
+    report.recoveryPreflight = { sameBuild: true, sameDeployment: true, hardExpiry: deployment.expiresAt, verifiedObjects: 8, manifestMatched: true, mediaAndRegistryMatched: true }
+    report.releases.push(release)
+    return deployment
+  }
+
+  async function replayPublished() {
+    assert.ok(replayRow && version === original.updated_at && original.publication_status === 'hidden')
+    // Only this synthetic, hidden fixture is rewound by a CAS. The entire
+    // projection must match the previously captured A revision before use.
+    const { name_cn, status, publication_status, visit_date, description, image_url, images } = replayRow
+    await patch({ name_cn, status, publication_status, visit_date, description, image_url, images }, replayRow.updated_at)
+    assert.equal(await projectionHash(await readProjection()), recovery.releases[0].revision, 'REPLAY_PROJECTION_MISMATCH')
+    report.fixtureExactRevisionReplayed = true
   }
 
   async function put(key, bytes, contentType) {
@@ -251,5 +330,5 @@ export async function releaseSession(report, prior) {
     report.boundaryFinal = await boundary()
   }
 
-  return { prepare, patch, capture, deploy, revoke, cleanup }
+  return { prepare, patch, capture, deploy, revoke, cleanup, verifyRecovery, replayPublished }
 }

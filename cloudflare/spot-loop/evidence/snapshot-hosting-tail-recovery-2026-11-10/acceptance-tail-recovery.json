@@ -1,0 +1,938 @@
+{
+  "startedAt": "2026-11-10T08:40:58.645Z",
+  "verdict": "SNAPSHOT_HOSTING_POC_BLOCKED",
+  "dynamic": [
+    {
+      "id": "1794300078835-0",
+      "via": "probe",
+      "phase": "read-only native canary",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "query": "",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 1,
+      "outcome": "ok",
+      "bytes": 9
+    },
+    {
+      "id": "1794300082765-1",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/",
+      "query": "",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": 3,
+      "outcome": "ok",
+      "representation": "text/html; charset=utf-8",
+      "revision": "022fa375f347c425f524e13a297a6ae3b780d29a799994d04ec58403a60666c0"
+    },
+    {
+      "id": "1794300084469-2",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "query": "",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": 7,
+      "outcome": "ok",
+      "representation": "image/png",
+      "revision": null
+    },
+    {
+      "id": "1794300086567-3",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/_vercel/insights/script.js",
+      "query": "",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300086645-4",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/_vercel/speed-insights/script.js",
+      "query": "",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300086725-5",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/region",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300086783-6",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": 4,
+      "outcome": "ok",
+      "representation": "text/x-component; charset=utf-8",
+      "revision": "022fa375f347c425f524e13a297a6ae3b780d29a799994d04ec58403a60666c0"
+    },
+    {
+      "id": "1794300087490-7",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/guide",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300087567-8",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/notes",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300087620-9",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/packages",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300087683-10",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/region/malaysia",
+      "query": "?_rsc=19zvn",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 1,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300087733-11",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "query": "",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": 2,
+      "outcome": "ok",
+      "representation": "text/html; charset=utf-8",
+      "revision": "022fa375f347c425f524e13a297a6ae3b780d29a799994d04ec58403a60666c0"
+    },
+    {
+      "id": "1794300088207-12",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "query": "",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": 6,
+      "outcome": "ok",
+      "representation": "image/png",
+      "revision": null
+    },
+    {
+      "id": "1794300089874-13",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/_vercel/insights/script.js",
+      "query": "",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": 0,
+      "outcome": "ok",
+      "representation": "text/plain;charset=UTF-8",
+      "revision": null
+    },
+    {
+      "id": "1794300089955-14",
+      "via": "browser",
+      "phase": "browser",
+      "path": "/_vercel/speed-insights/script.js",
+      "query": "",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": "UNKNOWN",
+      "outcome": "UNKNOWN"
+    }
+  ],
+  "static": [
+    {
+      "path": "/_next/static/css/2036e4ec590eaf79.css",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/css/b9801684fcbca1a2.css",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/webpack-9ce0c5145314013d.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/b6261da7-e4890186557c6edf.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/146-e83667c09250b2a0.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/main-app-5b4444b26592fa64.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/1268-ff34f498aef0d067.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/app/layout-d5c5433c9259c3b1.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/4147-eaeb39ea2a3bbdfd.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/8097-dd981405f02d2697.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/5493-8f4cf6843f621eaa.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/8529-f2074ae6f9411c4f.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/4142-e6d27fb2aaee2869.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/6494-1af5c51acd98b07e.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/922-345376956409f0a7.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/app/page-295338242f5033d9.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/916d3686010a8de2.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/d869208648ca5469.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/376dd8dc38524313.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-117-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-118-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-latin-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/e149ed1307c6abe9.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-116-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-114-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-115-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-111-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-119-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-118-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-117-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-116-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-112-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-113-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-119-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/533d2ba6.d013fcc441dc6535.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-115-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-114-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-107-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-104-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/icon.png",
+      "query": "?v=3",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/icon.png",
+      "query": "?v=3",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/css/2036e4ec590eaf79.css",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/css/b9801684fcbca1a2.css",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/webpack-9ce0c5145314013d.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/b6261da7-e4890186557c6edf.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/146-e83667c09250b2a0.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/main-app-5b4444b26592fa64.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/4147-eaeb39ea2a3bbdfd.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/app/spot/%5Bslug%5D/error-73874fc370c3a8c5.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/1268-ff34f498aef0d067.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/app/layout-d5c5433c9259c3b1.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/8097-dd981405f02d2697.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/5493-8f4cf6843f621eaa.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/8948-ec96d9cd12d71f5d.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/6494-1af5c51acd98b07e.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/6175-5f26bb113cf968d3.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/8766-ce6951deef2a2c81.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/922-345376956409f0a7.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/chunks/app/spot/%5Bslug%5D/page-73908b4a71202788.js",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/916d3686010a8de2.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/376dd8dc38524313.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/d869208648ca5469.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/_next/static/media/e149ed1307c6abe9.p.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-119-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-118-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-117-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-serif-sc/5.3.1/noto-serif-sc-116-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-119-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-118-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-115-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-116-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-117-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-113-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-114-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-104-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    },
+    {
+      "path": "/fonts/noto-sans-sc/5.3.1/noto-sans-sc-112-wght-normal.woff2",
+      "query": "",
+      "method": "GET",
+      "via": "browser",
+      "status": 200,
+      "functionHeader": null
+    }
+  ],
+  "browser": [
+    {
+      "phase": "home",
+      "status": 200,
+      "fixtureVisible": true
+    }
+  ],
+  "externalBlocked": 5,
+  "cap": 30,
+  "formalMigration": "HOLD",
+  "originalRequest": {
+    "id": "1794299298797-0",
+    "via": "probe",
+    "phase": "first native request",
+    "path": "/",
+    "query": "",
+    "method": "GET",
+    "status": 200,
+    "cpuMs": "UNKNOWN",
+    "outcome": "UNKNOWN"
+  },
+  "prefix": "snapshot-poc/1794299242468",
+  "releases": [
+    {
+      "label": "revision-a-resumed",
+      "buildId": "7BrLBp7VG6kKxJ92ODa_n",
+      "spotId": 92061,
+      "revision": "022fa375f347c425f524e13a297a6ae3b780d29a799994d04ec58403a60666c0",
+      "updatedAt": "2026-11-10T08:27:26.248+00:00",
+      "objects": {
+        "home-html": {
+          "sha256": "762d0c2841decfc6f489d2532f8720dfb06e41f1430a13135e4b37cd554b0e79",
+          "bytes": 44124,
+          "etag": "360264db4fe50ab17529cf963b150f43",
+          "version": "7e5e3b6e3a267a801b4acaae0140eb8f"
+        },
+        "home-rsc": {
+          "sha256": "3355d348d279c132d859ce934768a025ddad70e4001c714f2153a4f664459bfd",
+          "bytes": 8866,
+          "etag": "117a4d645eb37f762a8b7f12c5fc4b54",
+          "version": "7e5e3b6e318e316fecffc922a3cc9d18"
+        },
+        "zh-html": {
+          "sha256": "7f4b81e68af70d4b19fac6ad2e61cc3cabdcae8442044f2ea831561d5a3fdcc9",
+          "bytes": 63910,
+          "etag": "8a63648af06d032a61a05155490a4fe0",
+          "version": "7e5e3b6e2610ce873f003398d7485645"
+        },
+        "zh-rsc": {
+          "sha256": "05ca4418761be964b2063320ac042bda3866288d601b8edd8f3bf30a4a6646b6",
+          "bytes": 24514,
+          "etag": "0b68aff0d5855330f4cdc58047b4ef0a",
+          "version": "7e5e3b6e1c450e26cc8235279c0c8852"
+        },
+        "en-html": {
+          "sha256": "2301e274f87b1036db55dd331a556eda4dbcf253a1685fe4cec79a0a5015db9d",
+          "bytes": 33142,
+          "etag": "863fa52e69340060bdadf52b854706cf",
+          "version": "7e5e3b6e1156c30502354872178bcee1"
+        },
+        "en-json": {
+          "sha256": "4c4ae715c5d9986b8ba666615fb5aa4cad460e4ab5657b9a1eb24c283b2bceda",
+          "bytes": 1224,
+          "etag": "b3b8dd6d024384edc150e585d1a29dd9",
+          "version": "7e5e3b6e08d5bf2729711fa8bd4fdc28"
+        },
+        "locations-json": {
+          "sha256": "45ebc7d6e5320644f9bc28993ab2ece52fec197de676bdd172daa217b78e1e4e",
+          "bytes": 353,
+          "etag": "be43bd3d40ba36d166f95ed04debee1d",
+          "version": "7e5e3b6dfedcf6d2af3bbaf922e1c7c0"
+        },
+        "spot-json": {
+          "sha256": "bdcccf4a4f6c21c4fc8afe1a049cc85f89dede76bcd095449c9f0926297862b5",
+          "bytes": 899,
+          "etag": "41c4ef6adef2f096d13173df3e1c8b94",
+          "version": "7e5e3b6df5cb1d69f2a1bf49cca1217d"
+        }
+      }
+    }
+  ],
+  "boundaryBefore": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "fixtureAlreadyHidden": true,
+  "recoveryPreflight": {
+    "sameBuild": true,
+    "sameDeployment": true,
+    "hardExpiry": 1794306442,
+    "verifiedObjects": 8,
+    "manifestMatched": true,
+    "mediaAndRegistryMatched": true
+  },
+  "deployment": {
+    "deploymentId": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+    "environment": "preview",
+    "success": true,
+    "origin": "https://codex-snapshot-poc.jnqjourney-spot-loop-migration-candidate.pages.dev",
+    "expiresAt": 1794306442,
+    "buildId": "7BrLBp7VG6kKxJ92ODa_n"
+  },
+  "tailOpenedAt": "2026-11-10T08:41:18.834Z",
+  "canary": "1794300078835-0",
+  "media": {
+    "path": "/media/candidate/92061/REDACTED.png",
+    "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+  },
+  "fixtureExactRevisionReplayed": true,
+  "chrome": "157.0.8103.40",
+  "browserErrors": [],
+  "failure": {
+    "phase": "browser",
+    "reason": "NATIVE_TAIL_MISSING"
+  },
+  "tailDeleted": true,
+  "fixtureRestoredHidden": true,
+  "boundaryFinal": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "finishedAt": "2026-11-10T08:41:59.132Z",
+  "requestCounts": {
+    "original": 1,
+    "probes": 1,
+    "browserDynamic": 14,
+    "browserStatic": 76
+  }
+}

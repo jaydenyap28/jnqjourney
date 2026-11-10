@@ -1,0 +1,135 @@
+{
+  "deploymentId": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+  "openedAt": "2026-11-10T08:41:18.834Z",
+  "deleted": true,
+  "ignoredEvents": 0,
+  "malformed": 0,
+  "events": [
+    {
+      "acceptanceId": "1794300078835-0",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 1,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300082765-1",
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 3,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300084469-2",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 7,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300086567-3",
+      "path": "/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300086645-4",
+      "path": "/_vercel/speed-insights/script.js",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300086725-5",
+      "path": "/region",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300086783-6",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 4,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300087490-7",
+      "path": "/guide",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300087567-8",
+      "path": "/notes",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300087620-9",
+      "path": "/packages",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300087683-10",
+      "path": "/region/malaysia",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 1,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300087733-11",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 2,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300088207-12",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 6,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794300089874-13",
+      "path": "/_vercel/insights/script.js",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    }
+  ]
+}
