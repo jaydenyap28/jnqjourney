@@ -1,0 +1,90 @@
+{
+  "deploymentId": "763e3adf-a713-4049-bb47-22322152df15",
+  "openedAt": "2026-11-10T09:47:56.095Z",
+  "deleted": true,
+  "ignoredEvents": 2,
+  "malformed": 0,
+  "events": [
+    {
+      "acceptanceId": "1794304076096-0",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 1,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304079781-1",
+      "path": "/",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 3,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304081036-2",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 5,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304081700-3",
+      "path": "/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 2,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304082814-4",
+      "path": "/api/affiliate-links",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 1,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304083172-5",
+      "path": "/en/spot/spot-92061",
+      "method": "GET",
+      "status": 301,
+      "cpuTime": 4,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304084418-6",
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 10,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304085433-7",
+      "path": "/api/affiliate-links",
+      "method": "GET",
+      "status": 404,
+      "cpuTime": 0,
+      "outcome": "ok",
+      "truncated": false
+    },
+    {
+      "acceptanceId": "1794304085616-8",
+      "path": "/en/spot/consumer-fixture-92061-92061",
+      "method": "GET",
+      "status": 200,
+      "cpuTime": 5,
+      "outcome": "ok",
+      "truncated": false
+    }
+  ]
+}

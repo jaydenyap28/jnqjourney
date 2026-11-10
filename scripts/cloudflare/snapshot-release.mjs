@@ -325,8 +325,9 @@ export async function releaseSession(report, prior, recovery) {
     if (changed) {
       const { name_cn, status, publication_status, visit_date, description, image_url, images } = original
       await patch({ name_cn, status, publication_status, visit_date, description, image_url, images })
-      report.fixtureRestoredHidden = (await fixture()).publication_status === 'hidden'
     }
+    assert.equal((await fixture()).publication_status, 'hidden', 'CLEANUP_FIXTURE_NOT_HIDDEN')
+    report.fixtureRestoredHidden = true
     report.boundaryFinal = await boundary()
   }
 

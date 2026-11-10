@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-11-10T09:35:51.665Z",
+  "verdict": "SNAPSHOT_HOSTING_POC_BLOCKED",
+  "dynamic": [],
+  "static": [],
+  "browser": [],
+  "blockedPrefetch": [],
+  "prefetchWarnings": [],
+  "externalBlocked": 0,
+  "cap": 36,
+  "formalMigration": "HOLD",
+  "history": {
+    "requests": 16,
+    "unknown": [
+      "1794299298797-0",
+      "1794300089955-14"
+    ]
+  },
+  "failure": {
+    "phase": "interrupted-before-deployment",
+    "reason": "EXECUTION_INTERRUPTED"
+  },
+  "fixtureRestoredHidden": true,
+  "finishedAt": "2026-11-10T09:43:36.042Z"
+}

@@ -1,0 +1,151 @@
+{
+  "startedAt": "2026-11-10T09:44:16.656Z",
+  "verdict": "SNAPSHOT_HOSTING_POC_BLOCKED",
+  "dynamic": [
+    {
+      "id": "1794303913693-0",
+      "via": "probe",
+      "phase": "read-only native canary",
+      "path": "/",
+      "query": "",
+      "method": "GET",
+      "status": 200,
+      "cpuMs": "UNKNOWN",
+      "outcome": "UNKNOWN"
+    }
+  ],
+  "static": [],
+  "browser": [],
+  "blockedPrefetch": [],
+  "prefetchWarnings": [],
+  "externalBlocked": 0,
+  "cap": 36,
+  "formalMigration": "HOLD",
+  "history": {
+    "requests": 16,
+    "unknown": [
+      "1794299298797-0",
+      "1794300089955-14"
+    ]
+  },
+  "interruptedAttempt": {
+    "requests": 0,
+    "noDeployment": true,
+    "fixtureRestoredHidden": true
+  },
+  "prefix": "snapshot-poc/1794303857621",
+  "releases": [
+    {
+      "label": "revision-a-navigation",
+      "buildId": "voTUxzUwYFr1dxq3Q-Ntv",
+      "spotId": 92061,
+      "revision": "eb45b5c8c14aa52ff6cab225782ce9e57445a720a0e540eaa3868282dab40e17",
+      "updatedAt": "2026-11-10T09:44:22.288+00:00",
+      "objects": {
+        "home-html": {
+          "sha256": "2860e54d11b6e802cbe8e385aba8d399ebeb32aa5497e347b7a9a6e48bd9c63f",
+          "bytes": 43937,
+          "etag": "f903dbd03ca8a31a40c81da732e027cd",
+          "version": "7e5e3b27c8c88499e3ea9257e474d093"
+        },
+        "home-rsc": {
+          "sha256": "1299abf93fc6534eeb50e6f3e09dc8a3156f50ebd4bab4c273472c1b757a580f",
+          "bytes": 8713,
+          "etag": "8e79ff06feb621d235c034fba6cde32d",
+          "version": "7e5e3b27be9679c31211625c9a63451a"
+        },
+        "zh-html": {
+          "sha256": "0d9e67b85c93af483edbc496bf9810b278b0449b7580a1783506f81f3a32fea1",
+          "bytes": 63723,
+          "etag": "b84f6e587422b1d8716a8c02885c43a6",
+          "version": "7e5e3b27b3b639788a500a4200f3e1e3"
+        },
+        "zh-rsc": {
+          "sha256": "78f7c075e8e583f9397731f2cf6f594fd9e8af2efc58170c543e153f9689afec",
+          "bytes": 24336,
+          "etag": "974772ec58e7b0757c5ca5add45bf3f9",
+          "version": "7e5e3b27aac35d5c7b7a322320466abf"
+        },
+        "en-html": {
+          "sha256": "590d466095bc68e799899b9a3b00c44ade466262c98520c04c1e91ae6ef099b4",
+          "bytes": 33125,
+          "etag": "008f2b1009d8da87233c6e59a12a9bf0",
+          "version": "7e5e3b279e9d893ba2f1b66a61bf3625"
+        },
+        "en-json": {
+          "sha256": "dd7c9dc22b7b851b46d99ede610f7391bf1595bdd091ab6f5b4794bacec3f3de",
+          "bytes": 1224,
+          "etag": "c69f383194897204182de001c28c16a4",
+          "version": "7e5e3b27942a64de56e4a1a99f8ac46f"
+        },
+        "locations-json": {
+          "sha256": "45ebc7d6e5320644f9bc28993ab2ece52fec197de676bdd172daa217b78e1e4e",
+          "bytes": 353,
+          "etag": "be43bd3d40ba36d166f95ed04debee1d",
+          "version": "7e5e3b278b7220e9e6c47352d1d06eb5"
+        },
+        "spot-json": {
+          "sha256": "30377d3c2d2d877dd38462a85c92aab10926e47884bb62dc48a7baea45313dfc",
+          "bytes": 899,
+          "etag": "01e0da999a9ee84e57530549567c5859",
+          "version": "7e5e3b27828796934cacf34c805641ac"
+        }
+      }
+    }
+  ],
+  "boundaryBefore": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "media": {
+    "path": "/media/candidate/92061/REDACTED.png",
+    "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+  },
+  "staticFiles": 335,
+  "staticBytes": 24330864,
+  "routes": {
+    "include": [
+      "/*"
+    ],
+    "exclude": [
+      "/_next/static/*",
+      "/fonts/*",
+      "/icon.png",
+      "/apple-icon.png",
+      "/favicon.ico"
+    ]
+  },
+  "boundaryAfterDeploy": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "deployment": {
+    "deploymentId": "763e3adf-a713-4049-bb47-22322152df15",
+    "environment": "preview",
+    "success": true,
+    "origin": "https://codex-snapshot-poc.jnqjourney-spot-loop-migration-candidate.pages.dev",
+    "expiresAt": 1794311057,
+    "buildId": "voTUxzUwYFr1dxq3Q-Ntv"
+  },
+  "tailOpenedAt": "2026-11-10T09:45:13.692Z",
+  "failure": {
+    "phase": "read-only native canary",
+    "reason": "NATIVE_TAIL_MISSING"
+  },
+  "tailDeleted": true,
+  "fixtureRestoredHidden": true,
+  "boundaryFinal": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "finishedAt": "2026-11-10T09:45:42.487Z",
+  "requestCounts": {
+    "original": 0,
+    "probes": 1,
+    "browserDynamic": 0,
+    "browserStatic": 0
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-11-10T09:43:32.521Z",
+  "before": "published",
+  "restoredHidden": true,
+  "branchDeployments": [
+    {
+      "id": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+      "environment": "preview",
+      "createdOn": "2026-11-10T08:28:05.858023Z"
+    }
+  ],
+  "noNewDeployment": true
+}

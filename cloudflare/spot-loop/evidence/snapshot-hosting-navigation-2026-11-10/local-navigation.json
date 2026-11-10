@@ -1,0 +1,114 @@
+{
+  "kind": "LOCAL_BROWSER_ONLY",
+  "attempts": [
+    {
+      "mode": "previous-content-type",
+      "errors": [],
+      "network": [
+        {
+          "path": "/",
+          "query": "",
+          "type": "document",
+          "rsc": null
+        },
+        {
+          "path": "/spot/consumer-fixture-92061-92061",
+          "query": "?_rsc=19zvn",
+          "type": "fetch",
+          "rsc": "1"
+        },
+        {
+          "path": "/spot/consumer-fixture-92061-92061",
+          "query": "",
+          "type": "document",
+          "rsc": null
+        }
+      ],
+      "blockedPrefetch": [
+        "/region",
+        "/guide",
+        "/notes",
+        "/packages",
+        "/region/malaysia"
+      ],
+      "prefetchWarnings": [
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/region. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/guide. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/notes. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/packages. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/region/malaysia. Falling back to browser navigation. TypeError: Failed to fetch"
+      ],
+      "before": {
+        "documentId": "f835cd44-429a-4a02-806c-33da3f4475f5",
+        "timeOrigin": 1794303192820.8,
+        "hydrated": {
+          "pathname": "/",
+          "routerReady": true,
+          "timeOrigin": 1794303192820.8
+        }
+      },
+      "after": {
+        "documentId": "ecaa5c8f-4720-4de6-8a28-bd5eb8a0b130",
+        "timeOrigin": 1794303193466.7,
+        "hydrated": {
+          "pathname": "/spot/consumer-fixture-92061-92061",
+          "routerReady": true,
+          "timeOrigin": 1794303193466.7
+        }
+      },
+      "sameDocument": false
+    },
+    {
+      "mode": "corrected-content-type",
+      "errors": [],
+      "network": [
+        {
+          "path": "/",
+          "query": "",
+          "type": "document",
+          "rsc": null
+        },
+        {
+          "path": "/spot/consumer-fixture-92061-92061",
+          "query": "?_rsc=19zvn",
+          "type": "fetch",
+          "rsc": "1"
+        }
+      ],
+      "blockedPrefetch": [
+        "/region",
+        "/guide",
+        "/notes",
+        "/packages",
+        "/region/malaysia"
+      ],
+      "prefetchWarnings": [
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/region. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/guide. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/notes. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/packages. Falling back to browser navigation. TypeError: Failed to fetch",
+        "Failed to fetch RSC payload for http://127.0.0.1:4419/region/malaysia. Falling back to browser navigation. TypeError: Failed to fetch"
+      ],
+      "before": {
+        "documentId": "41c873da-1025-434c-9738-c39700f031f7",
+        "timeOrigin": 1794303194217.9,
+        "hydrated": {
+          "pathname": "/",
+          "routerReady": true,
+          "timeOrigin": 1794303194217.9
+        }
+      },
+      "after": {
+        "documentId": "41c873da-1025-434c-9738-c39700f031f7",
+        "timeOrigin": 1794303194217.9,
+        "hydrated": {
+          "pathname": "/spot/consumer-fixture-92061-92061",
+          "routerReady": true,
+          "timeOrigin": 1794303194217.9
+        }
+      },
+      "sameDocument": true
+    }
+  ],
+  "pass": true
+}

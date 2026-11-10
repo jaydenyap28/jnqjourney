@@ -1,0 +1,83 @@
+{
+  "checkedAt": "2026-11-10T09:27:48.892Z",
+  "prefix": "snapshot-poc/1794299242468",
+  "releases": [
+    {
+      "label": "revision-a-resumed",
+      "buildId": "7BrLBp7VG6kKxJ92ODa_n",
+      "spotId": 92061,
+      "revision": "022fa375f347c425f524e13a297a6ae3b780d29a799994d04ec58403a60666c0",
+      "updatedAt": "2026-11-10T08:27:26.248+00:00",
+      "objects": {
+        "home-html": {
+          "sha256": "762d0c2841decfc6f489d2532f8720dfb06e41f1430a13135e4b37cd554b0e79",
+          "bytes": 44124,
+          "etag": "360264db4fe50ab17529cf963b150f43",
+          "version": "7e5e3b6e3a267a801b4acaae0140eb8f"
+        },
+        "home-rsc": {
+          "sha256": "3355d348d279c132d859ce934768a025ddad70e4001c714f2153a4f664459bfd",
+          "bytes": 8866,
+          "etag": "117a4d645eb37f762a8b7f12c5fc4b54",
+          "version": "7e5e3b6e318e316fecffc922a3cc9d18"
+        },
+        "zh-html": {
+          "sha256": "7f4b81e68af70d4b19fac6ad2e61cc3cabdcae8442044f2ea831561d5a3fdcc9",
+          "bytes": 63910,
+          "etag": "8a63648af06d032a61a05155490a4fe0",
+          "version": "7e5e3b6e2610ce873f003398d7485645"
+        },
+        "zh-rsc": {
+          "sha256": "05ca4418761be964b2063320ac042bda3866288d601b8edd8f3bf30a4a6646b6",
+          "bytes": 24514,
+          "etag": "0b68aff0d5855330f4cdc58047b4ef0a",
+          "version": "7e5e3b6e1c450e26cc8235279c0c8852"
+        },
+        "en-html": {
+          "sha256": "2301e274f87b1036db55dd331a556eda4dbcf253a1685fe4cec79a0a5015db9d",
+          "bytes": 33142,
+          "etag": "863fa52e69340060bdadf52b854706cf",
+          "version": "7e5e3b6e1156c30502354872178bcee1"
+        },
+        "en-json": {
+          "sha256": "4c4ae715c5d9986b8ba666615fb5aa4cad460e4ab5657b9a1eb24c283b2bceda",
+          "bytes": 1224,
+          "etag": "b3b8dd6d024384edc150e585d1a29dd9",
+          "version": "7e5e3b6e08d5bf2729711fa8bd4fdc28"
+        },
+        "locations-json": {
+          "sha256": "45ebc7d6e5320644f9bc28993ab2ece52fec197de676bdd172daa217b78e1e4e",
+          "bytes": 353,
+          "etag": "be43bd3d40ba36d166f95ed04debee1d",
+          "version": "7e5e3b6dfedcf6d2af3bbaf922e1c7c0"
+        },
+        "spot-json": {
+          "sha256": "bdcccf4a4f6c21c4fc8afe1a049cc85f89dede76bcd095449c9f0926297862b5",
+          "bytes": 899,
+          "etag": "41c4ef6adef2f096d13173df3e1c8b94",
+          "version": "7e5e3b6df5cb1d69f2a1bf49cca1217d"
+        }
+      }
+    }
+  ],
+  "boundaryBefore": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  },
+  "fixtureAlreadyHidden": true,
+  "recoveryPreflight": {
+    "sameBuild": true,
+    "sameDeployment": true,
+    "hardExpiry": 1794306442,
+    "verifiedObjects": 8,
+    "manifestMatched": true,
+    "mediaAndRegistryMatched": true
+  },
+  "pass": true,
+  "boundaryFinal": {
+    "productionEmpty": true,
+    "failClosed": true,
+    "bucketPrivate": true
+  }
+}

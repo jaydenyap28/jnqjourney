@@ -112,7 +112,7 @@ export function createSnapshotGateway(transport = (...args) => fetch(...args)) {
         const type = selected.name.endsWith('-rsc') ? 'text/x-component' : selected.name.endsWith('-json') ? 'application/json' : 'text/html'
         if (request.method === 'HEAD') await body.body.cancel()
         return new Response(request.method === 'HEAD' ? null : body.body, {
-          headers: { ...headers, 'Content-Type': `${type}; charset=utf-8`, 'Content-Length': String(body.size), 'X-JnQ-Snapshot-Revision': revision },
+          headers: { ...headers, 'Content-Type': selected.name.endsWith('-rsc') ? type : `${type}; charset=utf-8`, 'Content-Length': String(body.size), 'X-JnQ-Snapshot-Revision': revision },
         })
       } catch (error) {
         return error?.status === 404 ? response(404, 'Not Found') : unavailable()

@@ -1,0 +1,19 @@
+{
+  "verdict": "SNAPSHOT_HOSTING_POC_BLOCKED",
+  "historicalRequests": 16,
+  "newRoundRequests": 13,
+  "allRoundsRequests": 29,
+  "roundCap": 36,
+  "matchedNativeEvents": 9,
+  "maximumObservedNativeCpuMs": 10,
+  "criticalAcceptanceId": "1794304084418-6",
+  "browserDynamicTracked": 9,
+  "browserDynamicRedirectExtra": 1,
+  "browserStaticDispatched": 90,
+  "browserStatic200": 88,
+  "browserStaticUnconfirmed": 2,
+  "remainingGateChecksExecuted": false,
+  "revisionBGenerated": false,
+  "localGatewayTestsPassed": 3,
+  "formalMigration": "HOLD"
+}
