@@ -1,0 +1,15 @@
+[
+  {
+    "read_paths": {
+      "referencing_views": null,
+      "referencing_functions": [
+        {
+          "name": "public.validate_spot_redirect",
+          "anon_execute": true,
+          "security_definer": false,
+          "authenticated_execute": true
+        }
+      ]
+    }
+  }
+]

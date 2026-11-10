@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-11-10T02:34:40.420Z",
+  "method": "Read-only Cloudflare account bucket/domain API",
+  "result": [
+    {
+      "name": "jnqjourney-img",
+      "managedEnabled": true,
+      "managedDomain": "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev",
+      "customDomains": []
+    },
+    {
+      "name": "jnqjourney-spot-loop-isolated-media",
+      "managedEnabled": false,
+      "managedDomain": "pub-baa917b44c634ebe82b0a5a3f164353a.r2.dev",
+      "customDomains": []
+    }
+  ]
+}

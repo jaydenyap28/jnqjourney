@@ -1,0 +1,24 @@
+[
+  {
+    "final": {
+      "fixtures": [
+        {
+          "id": 92005,
+          "status": "active",
+          "publication_status": "hidden"
+        },
+        {
+          "id": 92017,
+          "status": "active",
+          "publication_status": "hidden"
+        }
+      ],
+      "rpc_anon": false,
+      "anon_select": false,
+      "rpc_service": true,
+      "registry_revoked": true,
+      "rpc_authenticated": false,
+      "authenticated_select": false
+    }
+  }
+]

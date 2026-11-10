@@ -1,0 +1,10 @@
+[
+  {
+    "locations": 586,
+    "eligible": 582,
+    "anon_select": true,
+    "authenticated_select": true,
+    "original_policy": "true",
+    "new_rpc_present": false
+  }
+]

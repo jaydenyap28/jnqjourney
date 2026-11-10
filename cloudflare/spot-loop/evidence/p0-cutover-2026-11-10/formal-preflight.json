@@ -1,0 +1,189 @@
+{
+  "audit": {
+    "acl": "{postgres=arwdDxtm/postgres,anon=rm/postgres,authenticated=rm/postgres,service_role=arwdDxtm/postgres}",
+    "rls": true,
+    "policies": [
+      {
+        "name": "Public can read locations",
+        "qual": "true",
+        "check": null,
+        "roles": [
+          "public"
+        ],
+        "command": "SELECT"
+      }
+    ],
+    "column_acl": [
+      {
+        "acl": null,
+        "column": "id"
+      },
+      {
+        "acl": null,
+        "column": "created_at"
+      },
+      {
+        "acl": null,
+        "column": "name"
+      },
+      {
+        "acl": null,
+        "column": "description"
+      },
+      {
+        "acl": null,
+        "column": "latitude"
+      },
+      {
+        "acl": null,
+        "column": "longitude"
+      },
+      {
+        "acl": null,
+        "column": "video_url"
+      },
+      {
+        "acl": null,
+        "column": "image_url"
+      },
+      {
+        "acl": null,
+        "column": "tags"
+      },
+      {
+        "acl": null,
+        "column": "is_visited"
+      },
+      {
+        "acl": null,
+        "column": "review_jayden"
+      },
+      {
+        "acl": null,
+        "column": "review_qing"
+      },
+      {
+        "acl": null,
+        "column": "visit_date"
+      },
+      {
+        "acl": null,
+        "column": "images"
+      },
+      {
+        "acl": null,
+        "column": "region_id"
+      },
+      {
+        "acl": null,
+        "column": "opening_hours"
+      },
+      {
+        "acl": null,
+        "column": "name_cn"
+      },
+      {
+        "acl": null,
+        "column": "category"
+      },
+      {
+        "acl": null,
+        "column": "address"
+      },
+      {
+        "acl": null,
+        "column": "status"
+      },
+      {
+        "acl": null,
+        "column": "google_maps_url"
+      },
+      {
+        "acl": null,
+        "column": "facebook_video_url"
+      },
+      {
+        "acl": null,
+        "column": "updated_at"
+      },
+      {
+        "acl": null,
+        "column": "review"
+      },
+      {
+        "acl": null,
+        "column": "price_info"
+      },
+      {
+        "acl": null,
+        "column": "publication_status"
+      },
+      {
+        "acl": null,
+        "column": "seo_title_zh"
+      },
+      {
+        "acl": null,
+        "column": "seo_description_zh"
+      },
+      {
+        "acl": null,
+        "column": "seo_title_en"
+      },
+      {
+        "acl": null,
+        "column": "seo_description_en"
+      },
+      {
+        "acl": null,
+        "column": "experience_zh"
+      },
+      {
+        "acl": null,
+        "column": "experience_en"
+      },
+      {
+        "acl": null,
+        "column": "related_note_slugs"
+      },
+      {
+        "acl": null,
+        "column": "image_metadata"
+      },
+      {
+        "acl": null,
+        "column": "redirect_url"
+      },
+      {
+        "acl": null,
+        "column": "redirect_type"
+      }
+    ],
+    "role_paths": null,
+    "permissions": [
+      {
+        "role": "anon",
+        "delete": false,
+        "insert": false,
+        "select": true,
+        "update": false
+      },
+      {
+        "role": "authenticated",
+        "delete": false,
+        "insert": false,
+        "select": true,
+        "update": false
+      },
+      {
+        "role": "service_role",
+        "delete": true,
+        "insert": true,
+        "select": true,
+        "update": true
+      }
+    ],
+    "total_count": 586,
+    "eligible_count": 582
+  }
+}

@@ -1,0 +1,327 @@
+{
+  "capturedInputs": "Public snapshots captured 2026-11-10; not a current private authoring export",
+  "bucket": "jnqjourney-img",
+  "origin": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev",
+  "owners": [
+    {
+      "kind": "guide",
+      "slug": "china-jiangnan-autumn-15d14n",
+      "directUrls": 1,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/china-jiangnan-autumn-15d14n/cover/2026-08-02/d70f7830-b1be-4c33-9dc7-da04f8757a2b-img_5709.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "malaysia-langkawi-5d4n",
+      "directUrls": 1,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/general/general/malaysia-langkawi-5d4n/cover/2026-09-23/22ef0530-cf39-4e3c-9eb1-6e1088e0600d-28ae771d-4827-4380-bff6-57f0bff332a5-sky-bridge7.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "malaysia-east-coast-route3-10d9n",
+      "directUrls": 0,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/232-1774857489816-62e10b06-4bff-4e56-b0ce-5f706fbe71bc-3-30-6--w-5105dd01-c679-4a62-819c-1646524e4e28.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "china-harbin-xuegu-changbai-beijing-11d10n",
+      "directUrls": 0,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/511-1775104327405-0653af07-0341-44fc-9fc3-70fa93006d79-597774876-b239be76-cfb2-48b1-bc2a-7953b9ad77cd.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "china-dali-shangri-la-lijiang-11d10n",
+      "directUrls": 0,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/516-1775183885418-93069da3-8e1d-4e34-92ca-e9e8a4ab5709-4-2-4--wa-795a6799-724d-4927-bad1-fef7a41319da.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "japan-hokkaido-yamagata-tokyo-10d9n",
+      "directUrls": 0,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/japan/hokkaido/ningle-terrace/images/2026-07-24/98f02614-d192-485e-af44-41f2064f9bd0-3.webp#focus=50,50",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "guide",
+      "slug": "china-guangzhou-8d7n",
+      "directUrls": 0,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/317-1774688564186-a82f3fac-b11b-4de9-abca-31017e7d0935-1-6fa2af87-2e2e-408e-abdf-3ba7b8500897.webp",
+      "evidence": "Stored guide fields passed to the existing public-content-media resolver and current captured location projection"
+    },
+    {
+      "kind": "note",
+      "slug": "balagezong-day-trip-shangri-la",
+      "directUrls": 12,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/balagezong-day-trip-shangri-la/cover/2026-09-29/697df3ef-5001-4d42-b5b4-af8b634bc905-chatgpt-image-sep-29-2026-11_29_31-am.webp",
+      "linkedSpotIds": [
+        558,
+        559
+      ],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    },
+    {
+      "kind": "note",
+      "slug": "malaysia-turtle-night-terengganu",
+      "directUrls": 13,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/malaysia-turtle-night-terengganu/cover/2026-09-23/b38d2900-1777-4942-ae62-db3b2d0b0f24-chatgpt-image-sep-23-2026-04_01_15-pm.webp",
+      "linkedSpotIds": [
+        217,
+        215,
+        636
+      ],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    },
+    {
+      "kind": "note",
+      "slug": "langkawi-mangrove-tour-kilim-geoforest-park",
+      "directUrls": 8,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/kilim-geoforest-park-langkawi-mangrove-tour-kilim-geoforest-park/cover/2026-09-24/61556330-f3e8-46d7-8519-622cd9bd3a49-chatgpt-image-sep-24-2026-02_32_42-pm.webp",
+      "linkedSpotIds": [],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    },
+    {
+      "kind": "note",
+      "slug": "wuzhen-xizha-2-day-1-night-stay-guide",
+      "directUrls": 15,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/wuzhen-xizha-2-day-1-night-stay-guide/cover/2026-09-23/4d7267ae-bbf5-4e71-a4e2-b0d4cc47c8bc-chatgpt-image-sep-23-2026-02_13_36-pm.webp",
+      "linkedSpotIds": [],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    },
+    {
+      "kind": "note",
+      "slug": "shanghai-2-yuan-ferry-dongjin-dongfu-taigong",
+      "directUrls": 7,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/shanghai-2-yuan-ferry-dongjin-dongfu-taigong/cover/2026-09-23/8977a001-8b24-49b5-8661-a91d3e83f854-chatgpt-image-sep-23-2026-03_30_59-pm.webp",
+      "linkedSpotIds": [],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    },
+    {
+      "kind": "note",
+      "slug": "shanghai-pudong-airport-night-bus",
+      "directUrls": 9,
+      "renderedCover": true,
+      "renderedCoverUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/shanghai-pudong-airport-night-bus/cover/2026-09-23/1ee75891-844b-425b-bfc8-1a5694ab1df1-chatgpt-image-sep-23-2026-03_03_00-pm.webp",
+      "linkedSpotIds": [],
+      "evidence": "Stored public note URLs, explicit relatedSpotIds/block.spotId, existing resolver"
+    }
+  ],
+  "locationIndexAffected": 582,
+  "derivedRoutes": [
+    "/",
+    "/en",
+    "/spot/*",
+    "/en/spot/*",
+    "/region/*",
+    "/guide",
+    "/en/guide",
+    "/guide/*",
+    "/en/guide/*",
+    "/notes",
+    "/en/notes",
+    "/notes/*",
+    "/en/notes/*",
+    "/packages/*",
+    "sitemap/openGraph/JSON-LD image URLs"
+  ],
+  "locationReaders": [
+    {
+      "file": "app/admin/affiliate/page.tsx",
+      "lines": [
+        179
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/edit/[id]/page.tsx",
+      "lines": [
+        17
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/guides/page.tsx",
+      "lines": [
+        583
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/klook-widgets/page.tsx",
+      "lines": [
+        101
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/notes/page.tsx",
+      "lines": [
+        438
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/page.tsx",
+      "lines": [
+        206
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/admin/regions/page.tsx",
+      "lines": [
+        121
+      ],
+      "client": true,
+      "usesServiceRole": false,
+      "usesAnon": false,
+      "scope": "Authenticated admin client direct reads need an authenticated server API before revoke"
+    },
+    {
+      "file": "app/api/admin/locations/route.ts",
+      "lines": [
+        70
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": false,
+      "scope": "Server path; confirm service-only credentials"
+    },
+    {
+      "file": "app/api/admin/reports/route.ts",
+      "lines": [
+        227
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": true,
+      "scope": "Server path; confirm service-only credentials"
+    },
+    {
+      "file": "app/api/admin/storage-cleanup/route.ts",
+      "lines": [
+        96
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": false,
+      "scope": "Server path; confirm service-only credentials"
+    },
+    {
+      "file": "lib/server/english-page-data.ts",
+      "lines": [
+        35
+      ],
+      "client": false,
+      "usesServiceRole": false,
+      "usesAnon": true,
+      "scope": "Public reader/fallback; migrate to bounded projection and live publication gate"
+    },
+    {
+      "file": "lib/server/public-data-resolver.ts",
+      "lines": [
+        144,
+        148,
+        170,
+        174
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": true,
+      "scope": "Public reader/fallback; migrate to bounded projection and live publication gate"
+    },
+    {
+      "file": "lib/server/public-location-data.ts",
+      "lines": [
+        159
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": true,
+      "scope": "Public reader/fallback; migrate to bounded projection and live publication gate"
+    },
+    {
+      "file": "lib/server/public-spot-resolver.ts",
+      "lines": [
+        112,
+        120,
+        172,
+        183,
+        215,
+        223
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": true,
+      "scope": "Public reader/fallback; migrate to bounded projection and live publication gate"
+    },
+    {
+      "file": "lib/server/spot-description-optimizer.ts",
+      "lines": [
+        289,
+        351,
+        385,
+        419
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": false,
+      "scope": "Server path; confirm service-only credentials"
+    },
+    {
+      "file": "lib/server/spot-english-sync.ts",
+      "lines": [
+        187,
+        246
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": false,
+      "scope": "Server path; confirm service-only credentials"
+    },
+    {
+      "file": "lib/server/spot-routing.ts",
+      "lines": [
+        40
+      ],
+      "client": false,
+      "usesServiceRole": true,
+      "usesAnon": false,
+      "scope": "Server path; confirm service-only credentials"
+    }
+  ],
+  "coverage": "Tracked source direct table reads plus named public API consumers. External clients, cached bundles and private draft references remain UNKNOWN."
+}

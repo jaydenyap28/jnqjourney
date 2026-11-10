@@ -1,0 +1,499 @@
+{
+  "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+  "count": 21,
+  "diagnostics": {
+    "parsedFrames": 21,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794278763299,
+      "path": "/",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278762159-0",
+      "wallTime": 462,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278764294,
+      "path": "/spot",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278763265-1",
+      "wallTime": 446,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278764872,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278763849-2",
+      "wallTime": 154,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278765157,
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278764128-3",
+      "wallTime": 157,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278765425,
+      "path": "/api/spots/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278764419-4",
+      "wallTime": 435,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278765983,
+      "path": "/spot/spot-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 301,
+      "acceptanceId": "1794278764975-5",
+      "wallTime": 157,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278766277,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278765238-6",
+      "wallTime": 850,
+      "cpuTime": 6,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278767193,
+      "path": "/media/candidate/92005/REDACTED.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278766182-7",
+      "wallTime": 826,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278768642,
+      "path": "/",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278767636-8",
+      "wallTime": 150,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278768920,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278767899-9",
+      "wallTime": 157,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278769222,
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278768177-10",
+      "wallTime": 157,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278873650,
+      "path": "/spot/spot-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278872605-0",
+      "wallTime": 452,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278874536,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278873507-1",
+      "wallTime": 433,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278875740,
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278874710-2",
+      "wallTime": 151,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278876015,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278874990-3",
+      "wallTime": 1200,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278877285,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794278876260-4",
+      "wallTime": 154,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278878192,
+      "path": "/spot/spot-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278877183-5",
+      "wallTime": 151,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278878467,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278877440-6",
+      "wallTime": 431,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278879877,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278878844-7",
+      "wallTime": 438,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278880444,
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278879408-8",
+      "wallTime": 151,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278883142,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794278882132-14",
+      "wallTime": 0,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    }
+  ]
+}

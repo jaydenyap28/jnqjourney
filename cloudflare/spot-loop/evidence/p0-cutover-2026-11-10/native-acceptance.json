@@ -1,0 +1,406 @@
+{
+  "startedAt": "2026-11-10T02:45:56.516Z",
+  "p0ExposureCutover": "BLOCKED",
+  "publicationGate": "BLOCKED",
+  "cloudflareBudget": 32,
+  "checks": [
+    {
+      "label": "legacy_null_home",
+      "path": "/",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278762159-0",
+      "status": 200,
+      "elapsedMs": 638,
+      "bytes": 260,
+      "mime": "text/html; charset=utf-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 2,
+      "nativeWallMs": 462,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "legacy_null_list",
+      "path": "/spot",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278763265-1",
+      "status": 200,
+      "elapsedMs": 489,
+      "bytes": 260,
+      "mime": "text/html; charset=utf-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 446,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "legacy_null_public_api",
+      "path": "/api/locations",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278763849-2",
+      "status": 200,
+      "elapsedMs": 193,
+      "bytes": 864,
+      "mime": "application/json",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 154,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "legacy_null_detail",
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278764128-3",
+      "status": 200,
+      "elapsedMs": 200,
+      "bytes": 1104,
+      "mime": "text/html; charset=utf-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 2,
+      "nativeWallMs": 157,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "public_detail_api",
+      "path": "/api/spots/cloudflare-loop-registry-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278764419-4",
+      "status": 200,
+      "elapsedMs": 457,
+      "bytes": 857,
+      "mime": "application/json",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 435,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "visible_old_alias",
+      "path": "/spot/spot-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278764975-5",
+      "status": 301,
+      "elapsedMs": 178,
+      "bytes": 0,
+      "mime": null,
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 157,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "visible_historical_media",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278765238-6",
+      "status": 200,
+      "elapsedMs": 935,
+      "bytes": 489326,
+      "mime": "image/webp",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 6,
+      "nativeWallMs": 850,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579"
+    },
+    {
+      "label": "visible_canonical_media",
+      "path": "/media/candidate/92005/ea2b4447-7fbe-413e-b187-0b64bb02d2fc.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278766182-7",
+      "status": 200,
+      "elapsedMs": 857,
+      "bytes": 489326,
+      "mime": "image/webp",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 4,
+      "nativeWallMs": 826,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579"
+    },
+    {
+      "label": "hidden_home",
+      "path": "/",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278767636-8",
+      "status": 200,
+      "elapsedMs": 168,
+      "bytes": 166,
+      "mime": "text/html; charset=utf-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 150,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "hidden_public_list",
+      "path": "/api/locations",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278767899-9",
+      "status": 200,
+      "elapsedMs": 192,
+      "bytes": 16,
+      "mime": "application/json",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 157,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "hidden_detail",
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278768177-10",
+      "status": 404,
+      "elapsedMs": 213,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 157,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "hidden_alias",
+      "path": "/spot/spot-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278768484-11",
+      "status": 404,
+      "elapsedMs": 187,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0"
+    }
+  ],
+  "acl": [
+    {
+      "role": "anon",
+      "path": "locations?select=*",
+      "status": 401,
+      "code": "42501"
+    },
+    {
+      "role": "anon",
+      "path": "locations?select=id,name",
+      "status": 401,
+      "code": "42501"
+    },
+    {
+      "role": "anon",
+      "path": "locations?select=review_jayden",
+      "status": 401,
+      "code": "42501"
+    },
+    {
+      "role": "anon",
+      "path": "locations?select=id&publication_status=eq.hidden",
+      "status": 401,
+      "code": "42501"
+    },
+    {
+      "role": "anon",
+      "path": "jnq_public_spots",
+      "status": 401,
+      "code": "42501"
+    },
+    {
+      "role": "authenticated",
+      "path": "locations?select=*",
+      "status": 403,
+      "code": "42501"
+    },
+    {
+      "role": "authenticated",
+      "path": "locations?select=id,name",
+      "status": 403,
+      "code": "42501"
+    },
+    {
+      "role": "authenticated",
+      "path": "locations?select=review_jayden",
+      "status": 403,
+      "code": "42501"
+    },
+    {
+      "role": "authenticated",
+      "path": "locations?select=id&publication_status=eq.hidden",
+      "status": 403,
+      "code": "42501"
+    },
+    {
+      "role": "authenticated",
+      "path": "jnq_public_spots",
+      "status": 403,
+      "code": "42501"
+    }
+  ],
+  "mutations": [
+    {
+      "label": "legacy_null_published",
+      "status": "active",
+      "publication_status": null,
+      "version": "2026-11-10T02:46:03.086+00:00"
+    }
+  ],
+  "formalWrites": 0,
+  "error": "NATIVE_CPU_NOT_OBSERVED",
+  "fixtureHidden": true,
+  "revoked": false,
+  "authSessionClosed": true,
+  "finishedAt": "2026-11-10T02:46:30.056Z"
+}

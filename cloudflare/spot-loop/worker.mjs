@@ -489,7 +489,7 @@ async function relayEdgeSave(request,env,id,transport) {
   // album in the Worker. The editor already knows the fixture's public path.
   return new Response(response.body,{headers:{...HEADERS,'Content-Type':'application/json'}})
 }
-function document(row,slug,locale,englishCurrent=false) {
+export function document(row,slug,locale,englishCurrent=false) {
   const name=locale==='en'?row.name:(row.name_cn||row.name)
   const title=(locale==='en'?row.seo_title_en:row.seo_title_zh)||name
   const description=(locale==='en'?row.seo_description_en:row.seo_description_zh)||row.description||''

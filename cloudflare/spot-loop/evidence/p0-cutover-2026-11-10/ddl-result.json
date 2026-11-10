@@ -1,0 +1,8 @@
+{
+  "targetProject": "rnamstwwbzknwbjwdgrf",
+  "migration": "isolated_public_spot_read_gate",
+  "result": {
+    "success": true
+  },
+  "formalSchemaExecuted": false
+}

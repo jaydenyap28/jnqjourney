@@ -1,0 +1,194 @@
+{
+  "preflight": {
+    "acl": "{postgres=arwdDxtm/postgres,service_role=arwdDxtm/postgres,anon=r/postgres}",
+    "rls": true,
+    "user": "postgres",
+    "fixtures": [
+      {
+        "id": 92005,
+        "status": "active",
+        "image_url": "/media/candidate/92005/a233fbfd-899f-43e3-91a8-f0f9b87da6ca.png",
+        "updated_at": "2026-11-10T00:40:55.358+00:00",
+        "publication_status": "hidden",
+        "imageCount": 5
+      },
+      {
+        "id": 92017,
+        "status": "active",
+        "image_url": "/media/candidate/92017/52d42675-0e70-45c6-8634-0a199322439f.webp",
+        "updated_at": "2026-11-10T01:54:00.114+00:00",
+        "publication_status": "hidden",
+        "imageCount": 1
+      },
+      {
+        "id": 92030,
+        "status": "active",
+        "image_url": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+        "updated_at": "2026-11-10T01:15:31.213+00:00",
+        "publication_status": "hidden",
+        "imageCount": 30
+      }
+    ],
+    "policies": [
+      {
+        "cmd": "SELECT",
+        "qual": "((status = 'active'::text) AND (publication_status = 'published'::text))",
+        "roles": [
+          "anon"
+        ],
+        "tablename": "locations",
+        "permissive": "PERMISSIVE",
+        "policyname": "fixture_spot_read",
+        "schemaname": "public",
+        "with_check": null
+      }
+    ],
+    "column_acl": [
+      {
+        "acl": null,
+        "column": "id"
+      },
+      {
+        "acl": null,
+        "column": "name"
+      },
+      {
+        "acl": null,
+        "column": "name_cn"
+      },
+      {
+        "acl": null,
+        "column": "category"
+      },
+      {
+        "acl": null,
+        "column": "address"
+      },
+      {
+        "acl": null,
+        "column": "latitude"
+      },
+      {
+        "acl": null,
+        "column": "longitude"
+      },
+      {
+        "acl": null,
+        "column": "region_id"
+      },
+      {
+        "acl": null,
+        "column": "video_url"
+      },
+      {
+        "acl": null,
+        "column": "facebook_video_url"
+      },
+      {
+        "acl": null,
+        "column": "image_url"
+      },
+      {
+        "acl": null,
+        "column": "images"
+      },
+      {
+        "acl": null,
+        "column": "description"
+      },
+      {
+        "acl": null,
+        "column": "review"
+      },
+      {
+        "acl": null,
+        "column": "tags"
+      },
+      {
+        "acl": null,
+        "column": "visit_date"
+      },
+      {
+        "acl": null,
+        "column": "opening_hours"
+      },
+      {
+        "acl": null,
+        "column": "price_info"
+      },
+      {
+        "acl": null,
+        "column": "google_maps_url"
+      },
+      {
+        "acl": null,
+        "column": "status"
+      },
+      {
+        "acl": null,
+        "column": "created_at"
+      },
+      {
+        "acl": null,
+        "column": "updated_at"
+      },
+      {
+        "acl": null,
+        "column": "publication_status"
+      },
+      {
+        "acl": null,
+        "column": "seo_title_zh"
+      },
+      {
+        "acl": null,
+        "column": "seo_description_zh"
+      },
+      {
+        "acl": null,
+        "column": "seo_title_en"
+      },
+      {
+        "acl": null,
+        "column": "seo_description_en"
+      },
+      {
+        "acl": null,
+        "column": "experience_zh"
+      },
+      {
+        "acl": null,
+        "column": "experience_en"
+      },
+      {
+        "acl": null,
+        "column": "related_note_slugs"
+      },
+      {
+        "acl": null,
+        "column": "image_metadata"
+      },
+      {
+        "acl": null,
+        "column": "redirect_url"
+      },
+      {
+        "acl": null,
+        "column": "redirect_type"
+      },
+      {
+        "acl": null,
+        "column": "review_jayden"
+      },
+      {
+        "acl": null,
+        "column": "review_qing"
+      },
+      {
+        "acl": null,
+        "column": "is_visited"
+      }
+    ],
+    "rpc_exists": false
+  }
+}

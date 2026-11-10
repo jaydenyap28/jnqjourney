@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-11-10T02:42:18.569Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "environment": "preview",
+  "success": true,
+  "media": {
+    "key": "media/candidate/92005/ea2b4447-7fbe-413e-b187-0b64bb02d2fc.webp",
+    "receiptKey": "_candidate-validation/92005/ea2b4447-7fbe-413e-b187-0b64bb02d2fc.webp.json",
+    "bytes": 489326,
+    "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579",
+    "source": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+    "identity": {
+      "key": "media/candidate/92005/ea2b4447-7fbe-413e-b187-0b64bb02d2fc.webp",
+      "size": 489326,
+      "mime": "image/webp",
+      "etag": "46df4684c89b6790fc643b519cbe984e",
+      "version": "7e5e3caa28afc27a1f470c187721edef",
+      "receipt_size": 263,
+      "receipt_etag": "618d25b1204e92dd559720ab85207def",
+      "receipt_version": "7e5e3caa1bfaf684f92e182ef1321cc7"
+    }
+  },
+  "registrySqlSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "gate": {
+    "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+    "origin": "https://codex-p0-publication-gate.jnqjourney-spot-loop-migration-candidate.pages.dev",
+    "branch": "codex/p0-publication-gate",
+    "environment": "preview",
+    "success": true,
+    "sourceUnavailable": false,
+    "expiresAt": 1794280350
+  },
+  "fault": {
+    "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+    "origin": "https://codex-p0-source-fault.jnqjourney-spot-loop-migration-candidate.pages.dev",
+    "branch": "codex/p0-source-fault",
+    "environment": "preview",
+    "success": true,
+    "sourceUnavailable": true,
+    "expiresAt": 1794280350
+  },
+  "productionUnchanged": true,
+  "finishedAt": "2026-11-10T02:43:03.702Z"
+}

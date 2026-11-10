@@ -1,0 +1,131 @@
+{
+  "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+  "count": 5,
+  "diagnostics": {
+    "parsedFrames": 5,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794278880795,
+      "path": "/",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794278879698-9",
+      "wallTime": 470,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278881791,
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794278880759-10",
+      "wallTime": 424,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278882342,
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794278881313-11",
+      "wallTime": 155,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278882602,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794278881591-12",
+      "wallTime": 158,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794278882885,
+      "path": "/spot/spot-92005",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 503,
+      "acceptanceId": "1794278881854-13",
+      "wallTime": 155,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    }
+  ]
+}

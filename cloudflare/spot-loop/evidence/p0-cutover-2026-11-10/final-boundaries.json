@@ -1,0 +1,14 @@
+{
+  "checkedAt": "2026-11-10T02:53:21.206Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "productionCanonicalEmpty": true,
+  "productionSecrets": 0,
+  "productionR2Bindings": 0,
+  "failClosedBoth": true,
+  "formalBucket": "jnqjourney-img",
+  "formalR2DevStillEnabled": true,
+  "formalR2DevUnchanged": true,
+  "testBucketPrivate": true,
+  "newSecretsCreated": 0,
+  "formalMigration": "HOLD"
+}

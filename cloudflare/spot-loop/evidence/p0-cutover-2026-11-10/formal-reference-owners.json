@@ -1,0 +1,204 @@
+[
+  {
+    "module": "locations",
+    "records_with_direct_r2_reference": 586,
+    "stored_reference_occurrences": 4664,
+    "named_owners": null
+  },
+  {
+    "module": "regions",
+    "records_with_direct_r2_reference": 10,
+    "stored_reference_occurrences": 10,
+    "named_owners": [
+      {
+        "id": "11",
+        "slug": null,
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "23",
+        "slug": null,
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "28",
+        "slug": "kota-bharu",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "40",
+        "slug": "kuching",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "48",
+        "slug": "otaru",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "67",
+        "slug": null,
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "71",
+        "slug": null,
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "88",
+        "slug": "hongcun",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "89",
+        "slug": "nanjing",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "90",
+        "slug": "pulau-tioman",
+        "status": null,
+        "is_active": null,
+        "publication_status": null
+      }
+    ]
+  },
+  {
+    "module": "travel_package_options",
+    "records_with_direct_r2_reference": 12,
+    "stored_reference_occurrences": 33,
+    "named_owners": [
+      {
+        "id": "1",
+        "slug": "paya-beach-resort",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "10",
+        "slug": "pirate-afternoon-tea",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "13",
+        "slug": "4d3n-sea-land-air",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "14",
+        "slug": "5d4n-sea-land-air",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "2",
+        "slug": "the-barat-tioman",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "3",
+        "slug": "aman-tioman",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "4",
+        "slug": "amazing-promo-499",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "5",
+        "slug": "new-version-599",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "6",
+        "slug": "economy-island",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "7",
+        "slug": "goa-cave",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "8",
+        "slug": "ibis-relax-666",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "9",
+        "slug": "lobster-lunch",
+        "status": "active",
+        "is_active": null,
+        "publication_status": null
+      }
+    ]
+  },
+  {
+    "module": "travel_packages",
+    "records_with_direct_r2_reference": 3,
+    "stored_reference_occurrences": 3,
+    "named_owners": [
+      {
+        "id": "1",
+        "slug": "batam-3d2n",
+        "status": "published",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "5",
+        "slug": "tioman-3d2n",
+        "status": "published",
+        "is_active": null,
+        "publication_status": null
+      },
+      {
+        "id": "9",
+        "slug": "hainan",
+        "status": "published",
+        "is_active": null,
+        "publication_status": null
+      }
+    ]
+  }
+]

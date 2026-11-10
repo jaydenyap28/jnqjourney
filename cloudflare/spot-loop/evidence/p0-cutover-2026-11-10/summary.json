@@ -1,0 +1,39 @@
+{
+  "p0ExposureCutover": "P0_EXPOSURE_CUTOVER_BLOCKED",
+  "publicationGate": "PUBLICATION_GATE_BLOCKED",
+  "isolatedFunctionalResults": {
+    "roleAclDenials": 10,
+    "publicFieldCount": 32,
+    "legacyNullVisible": true,
+    "hideRepublishAndClosedStatus": true,
+    "pagesAndMediaFailClosedOnSourceFailure": true
+  },
+  "requests": 27,
+  "nativeCpuObserved": 26,
+  "peakNativeCpuMs": 6,
+  "unknownOriginalCpu": [
+    {
+      "acceptanceId": "1794278768484-11",
+      "label": "hidden_alias",
+      "http": 404,
+      "cpuMs": "UNKNOWN"
+    }
+  ],
+  "observerCorrection": "The final query-string check matches its existing native pathname and CPU 0 after normalization. Original error retained.",
+  "remainingNativeChecksNotExecuted": [
+    "no_old_static_json_bypass",
+    "no_static_html_bypass"
+  ],
+  "localOnlyStaticBypassTests": 3,
+  "formalRpcExecuted": false,
+  "formalDataOrR2Writes": 0,
+  "formalOldPublicEntryStillEnabled": true,
+  "fixtureHidden": true,
+  "registryObjectRevoked": true,
+  "newSecrets": 0,
+  "processesRemaining": 0,
+  "freeAccountQuotaRemaining": "UNKNOWN",
+  "formalMigration": "HOLD",
+  "sqlSha256": "a3803072966f7584d8dc8fe75da222d0238bc2823c129bdccc16f53aa3d60977",
+  "deployedWorkerSha256": "aa8280d7e65b327e0c41c1e22d0a407b2853ee74115eeb37979e35fad3c7f4f7"
+}

@@ -1,0 +1,458 @@
+{
+  "startedAt": "2026-11-10T02:47:50.993Z",
+  "p0ExposureCutover": "BLOCKED",
+  "publicationGate": "BLOCKED",
+  "cloudflareBudget": 32,
+  "checks": [
+    {
+      "label": "replacement_hidden_alias_observation",
+      "path": "/spot/spot-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278872605-0",
+      "status": 404,
+      "elapsedMs": 529,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 452,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "hidden_historical_media",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278873507-1",
+      "status": 404,
+      "elapsedMs": 470,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 433,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "republished_detail_without_build",
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278874710-2",
+      "status": 200,
+      "elapsedMs": 192,
+      "bytes": 1104,
+      "mime": "text/html; charset=utf-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 151,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "republished_historical_media",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278874990-3",
+      "status": 200,
+      "elapsedMs": 1261,
+      "bytes": 489326,
+      "mime": "image/webp",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 4,
+      "nativeWallMs": 1200,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 3,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579"
+    },
+    {
+      "label": "republished_list",
+      "path": "/api/locations",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278876260-4",
+      "status": 200,
+      "elapsedMs": 192,
+      "bytes": 871,
+      "mime": "application/json",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 154,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "closed_null_alias",
+      "path": "/spot/spot-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278877183-5",
+      "status": 404,
+      "elapsedMs": 168,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 151,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "closed_null_media",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278877440-6",
+      "status": 404,
+      "elapsedMs": 465,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 0,
+      "nativeWallMs": 431,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "revoked_media",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278878844-7",
+      "status": 404,
+      "elapsedMs": 479,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 438,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "revocation_hides_page",
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278879408-8",
+      "status": 404,
+      "elapsedMs": 195,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 0,
+      "nativeWallMs": 151,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "source_failure_/",
+      "path": "/",
+      "target": "fault",
+      "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+      "acceptanceId": "1794278879698-9",
+      "status": 503,
+      "elapsedMs": 602,
+      "bytes": 30,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 470,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "source_failure_/spot/cloudflare-loop-registry-92005",
+      "path": "/spot/cloudflare-loop-registry-92005",
+      "target": "fault",
+      "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+      "acceptanceId": "1794278880759-10",
+      "status": 503,
+      "elapsedMs": 465,
+      "bytes": 30,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 424,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "source_failure_/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "path": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "target": "fault",
+      "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+      "acceptanceId": "1794278881313-11",
+      "status": 503,
+      "elapsedMs": 192,
+      "bytes": 30,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 155,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "source_failure_/api/locations",
+      "path": "/api/locations",
+      "target": "fault",
+      "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+      "acceptanceId": "1794278881591-12",
+      "status": 503,
+      "elapsedMs": 177,
+      "bytes": 30,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 2,
+      "nativeWallMs": 158,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "source_failure_/spot/spot-92005",
+      "path": "/spot/spot-92005",
+      "target": "fault",
+      "deploymentId": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+      "acceptanceId": "1794278881854-13",
+      "status": 503,
+      "elapsedMs": 193,
+      "bytes": 30,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 155,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "label": "field_injection_refused",
+      "path": "/api/locations?select=review_jayden",
+      "target": "gate",
+      "deploymentId": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+      "acceptanceId": "1794278882132-14",
+      "status": 404,
+      "elapsedMs": 17,
+      "bytes": 9,
+      "mime": "text/plain;charset=UTF-8",
+      "cache": "private, no-store, max-age=0",
+      "nativeCpuMs": 0,
+      "nativeWallMs": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    }
+  ],
+  "acl": [],
+  "mutations": [
+    {
+      "label": "republish_and_edit",
+      "status": "active",
+      "publication_status": "published",
+      "version": "2026-11-10T02:47:55.647+00:00"
+    },
+    {
+      "label": "closed_null_not_public",
+      "status": "temporarily_closed",
+      "publication_status": null,
+      "version": "2026-11-10T02:47:58.118+00:00"
+    },
+    {
+      "label": "republish_for_revoke",
+      "status": "active",
+      "publication_status": "published",
+      "version": "2026-11-10T02:47:59.311+00:00"
+    }
+  ],
+  "formalWrites": 0,
+  "priorCloudflareRequests": 12,
+  "originalUnobservedAcceptanceId": "1794278768484-11",
+  "error": "NATIVE_TRACE_MISMATCH",
+  "fixtureHidden": true,
+  "revoked": true,
+  "authSessionClosed": true,
+  "finishedAt": "2026-11-10T02:48:02.872Z"
+}

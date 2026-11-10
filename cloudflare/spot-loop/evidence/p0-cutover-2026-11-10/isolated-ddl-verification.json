@@ -1,0 +1,28 @@
+[
+  {
+    "verification": {
+      "rls": true,
+      "policies": [
+        {
+          "cmd": "SELECT",
+          "qual": "((status = 'active'::text) AND (publication_status = 'published'::text))",
+          "roles": [
+            "anon"
+          ],
+          "tablename": "locations",
+          "permissive": "PERMISSIVE",
+          "policyname": "fixture_spot_read",
+          "schemaname": "public",
+          "with_check": null
+        }
+      ],
+      "rpc_invoker": true,
+      "select_anon": false,
+      "execute_anon": false,
+      "execute_service": true,
+      "registry_rpc_count": 6,
+      "select_authenticated": false,
+      "execute_authenticated": false
+    }
+  }
+]

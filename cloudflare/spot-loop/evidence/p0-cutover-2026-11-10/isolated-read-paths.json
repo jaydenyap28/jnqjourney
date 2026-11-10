@@ -1,0 +1,45 @@
+[
+  {
+    "read_paths": {
+      "referencing_views": null,
+      "referencing_functions": [
+        {
+          "name": "public.jnq_media_save",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "name": "public.jnq_media_withdraw",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "name": "public.jnq_media_revoke",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "name": "public.jnq_media_delete",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "name": "public.jnq_media_lookup",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        },
+        {
+          "name": "public.jnq_public_spots",
+          "anon_execute": false,
+          "security_definer": false,
+          "authenticated_execute": false
+        }
+      ]
+    }
+  }
+]
