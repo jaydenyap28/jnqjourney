@@ -1,0 +1,167 @@
+{
+  "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+  "count": 15,
+  "diagnostics": {
+    "parsedFrames": 15,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false,
+    "resumedAt": "2026-11-10T00:39:14.005Z"
+  },
+  "events": [
+    {
+      "timestamp": 1794270825453,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794270822158-0",
+      "wallTime": 51,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794270826758,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794270825248-1",
+      "wallTime": 59,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794270910610,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794270909236-2",
+      "wallTime": 55,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794270912080,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794270910312-3",
+      "wallTime": 43,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794271241037,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271238853-4",
+      "wallTime": 48,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794271242332,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271240838-5",
+      "wallTime": 38,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794271243822,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794271242924-9",
+      "wallTime": 0,
+      "cpuTime": 0
+    },
+    {
+      "timestamp": 1794271244957,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271243742-10",
+      "wallTime": 31,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794271245803,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271244580-11",
+      "wallTime": 35,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794271251430,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271249891-12",
+      "wallTime": 66,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794271253922,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271252720-13",
+      "wallTime": 72,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794271254905,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271253890-14",
+      "wallTime": 55,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794271256347,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271255078-16",
+      "wallTime": 28,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794271258069,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271256844-20",
+      "wallTime": 41,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794271258549,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794271257518-21",
+      "wallTime": 33,
+      "cpuTime": 1
+    }
+  ]
+}

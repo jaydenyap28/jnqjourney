@@ -1,0 +1,693 @@
+{
+  "startedAt": "2026-11-10T00:33:11.486Z",
+  "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+  "edgeVersion": 6,
+  "expiresAt": 1794272533,
+  "cloudflareBudget": 24,
+  "cloudflareRequests": 15,
+  "edgeRequests": 21,
+  "checks": [
+    {
+      "name": "save_5_first",
+      "acceptanceId": "1794270822158-0",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 1495,
+      "issuedAt": "2026-11-10T00:33:42.158Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 2844,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 1797,
+      "nativeCpuMs": 5,
+      "nativeWallMs": 51,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_5_unchanged",
+      "acceptanceId": "1794270825248-1",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 1494,
+      "issuedAt": "2026-11-10T00:33:45.248Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 1001,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 963,
+      "nativeCpuMs": 3,
+      "nativeWallMs": 59,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_17_first",
+      "acceptanceId": "1794270909236-2",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 4337,
+      "issuedAt": "2026-11-10T00:35:09.236Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 890,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 776,
+      "nativeCpuMs": 5,
+      "nativeWallMs": 55,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_17_unchanged",
+      "acceptanceId": "1794270910312-3",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 4364,
+      "issuedAt": "2026-11-10T00:35:10.312Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 1232,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 1198,
+      "nativeCpuMs": 3,
+      "nativeWallMs": 43,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_30_first",
+      "acceptanceId": "1794271238853-4",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92030,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 7444,
+      "issuedAt": "2026-11-10T00:40:38.853Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 1977,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 1875,
+      "nativeCpuMs": 4,
+      "nativeWallMs": 48,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "save_30_unchanged",
+      "acceptanceId": "1794271240838-5",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92030,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 7471,
+      "issuedAt": "2026-11-10T00:40:40.838Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 965,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 924,
+      "nativeCpuMs": 2,
+      "nativeWallMs": 38,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "forged_identity_payload_rejected",
+      "acceptanceId": "1794271242424-6",
+      "expected": 400,
+      "expectedBridge": false,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 138,
+      "issuedAt": "2026-11-10T00:40:42.424Z",
+      "httpStatus": 400,
+      "clientElapsedMs": 37,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 0,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 0,
+      "error": "PAYLOAD_REFUSED"
+    },
+    {
+      "name": "anon_write_rejected",
+      "acceptanceId": "1794271242464-7",
+      "expected": 401,
+      "expectedBridge": false,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 106,
+      "issuedAt": "2026-11-10T00:40:42.464Z",
+      "httpStatus": 401,
+      "clientElapsedMs": 250,
+      "counts": {
+        "auth": 1,
+        "locations": 0,
+        "registryRpc": 0,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 202,
+      "error": "INVALID_SESSION"
+    },
+    {
+      "name": "cross_origin_write_rejected",
+      "acceptanceId": "1794271242716-8",
+      "expected": 403,
+      "expectedBridge": false,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 106,
+      "issuedAt": "2026-11-10T00:40:42.716Z",
+      "httpStatus": 403,
+      "clientElapsedMs": 40,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 0,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 0,
+      "error": "ORIGIN_REFUSED"
+    },
+    {
+      "name": "expired_hmac_rejected",
+      "acceptanceId": "1794271242924-9",
+      "expected": 401,
+      "issuedAt": "2026-11-10T00:40:42.924Z",
+      "httpStatus": 401,
+      "nativeCpuMs": 0,
+      "nativeWallMs": 0,
+      "nativeStatus": 401,
+      "outcome": "ok",
+      "r2Operations": {
+        "list": 0,
+        "head": 0,
+        "get": 0
+      }
+    },
+    {
+      "name": "foreign_key_failure_rolls_back",
+      "acceptanceId": "1794271243742-10",
+      "expected": 409,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 141,
+      "issuedAt": "2026-11-10T00:40:43.742Z",
+      "httpStatus": 409,
+      "clientElapsedMs": 655,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 625,
+      "sqlstate": "23503",
+      "error": "FOREIGN_KEY_TRANSACTION_REJECTED",
+      "nativeCpuMs": 2,
+      "nativeWallMs": 31,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "stale_duplicate_submission_rejected",
+      "acceptanceId": "1794271244580-11",
+      "expected": 409,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 90,
+      "issuedAt": "2026-11-10T00:40:44.580Z",
+      "httpStatus": 409,
+      "clientElapsedMs": 675,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 637,
+      "sqlstate": "PT409",
+      "error": "PT409",
+      "nativeCpuMs": 2,
+      "nativeWallMs": 35,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "unregistered_real_object_rejected",
+      "acceptanceId": "1794271249891-12",
+      "expected": 409,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 243,
+      "issuedAt": "2026-11-10T00:40:49.891Z",
+      "httpStatus": 409,
+      "clientElapsedMs": 1126,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 1063,
+      "sqlstate": "PT409",
+      "error": "PT409",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 66,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "same_bytes_new_version_rejected",
+      "acceptanceId": "1794271252720-13",
+      "expected": 409,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 507,
+      "issuedAt": "2026-11-10T00:40:52.720Z",
+      "httpStatus": 409,
+      "clientElapsedMs": 677,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 642,
+      "sqlstate": "PT409",
+      "error": "PT409",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 72,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "changed_public_media_denied",
+      "acceptanceId": "1794271253890-14",
+      "expected": 404,
+      "expectedBridge": true,
+      "action": "media",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 100,
+      "issuedAt": "2026-11-10T00:40:53.890Z",
+      "httpStatus": 404,
+      "clientElapsedMs": 285,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 251,
+      "error": "MEDIA_IDENTITY_CHANGED",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 55,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "revoke_reference_hides_spot",
+      "acceptanceId": "1794271254236-15",
+      "expected": 200,
+      "expectedBridge": false,
+      "action": "revoke",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 101,
+      "issuedAt": "2026-11-10T00:40:54.236Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 389,
+      "counts": {
+        "auth": 1,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 359
+    },
+    {
+      "name": "revoked_reference_republish_rejected",
+      "acceptanceId": "1794271255078-16",
+      "expected": 409,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 475,
+      "issuedAt": "2026-11-10T00:40:55.078Z",
+      "httpStatus": 409,
+      "clientElapsedMs": 710,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 612,
+      "sqlstate": "PT409",
+      "error": "PT409",
+      "nativeCpuMs": 1,
+      "nativeWallMs": 28,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "revoked_public_media_denied",
+      "acceptanceId": "1794271255965-17",
+      "expected": 404,
+      "expectedBridge": false,
+      "action": "media",
+      "id": 92005,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 100,
+      "issuedAt": "2026-11-10T00:40:55.965Z",
+      "httpStatus": 404,
+      "clientElapsedMs": 213,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 187,
+      "error": "MEDIA_NOT_PUBLIC"
+    },
+    {
+      "name": "withdraw_album",
+      "acceptanceId": "1794271256180-18",
+      "expected": 200,
+      "expectedBridge": false,
+      "action": "withdraw",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 84,
+      "issuedAt": "2026-11-10T00:40:56.180Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 445,
+      "counts": {
+        "auth": 1,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 398
+    },
+    {
+      "name": "withdrawn_public_media_denied",
+      "acceptanceId": "1794271256628-19",
+      "expected": 404,
+      "expectedBridge": false,
+      "action": "media",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 100,
+      "issuedAt": "2026-11-10T00:40:56.628Z",
+      "httpStatus": 404,
+      "clientElapsedMs": 212,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 0
+      },
+      "edgeElapsedMs": 183,
+      "error": "MEDIA_NOT_PUBLIC"
+    },
+    {
+      "name": "republish_album",
+      "acceptanceId": "1794271256844-20",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "save",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 122,
+      "issuedAt": "2026-11-10T00:40:56.844Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 667,
+      "counts": {
+        "auth": 1,
+        "locations": 1,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 608,
+      "nativeCpuMs": 1,
+      "nativeWallMs": 41,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    },
+    {
+      "name": "published_media_authorization_passes",
+      "acceptanceId": "1794271257518-21",
+      "expected": 200,
+      "expectedBridge": true,
+      "action": "media",
+      "id": 92017,
+      "edgeVersion": 6,
+      "deploymentId": "df43d68d-744c-47f7-94d7-163f4b83529a",
+      "requestBytes": 100,
+      "issuedAt": "2026-11-10T00:40:57.518Z",
+      "httpStatus": 200,
+      "clientElapsedMs": 279,
+      "counts": {
+        "auth": 0,
+        "locations": 0,
+        "registryRpc": 1,
+        "bridge": 1
+      },
+      "r2Operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "edgeElapsedMs": 233,
+      "nativeCpuMs": 1,
+      "nativeWallMs": 33,
+      "nativeStatus": 200,
+      "outcome": "ok"
+    }
+  ],
+  "albums": [
+    {
+      "id": 92005,
+      "count": 5,
+      "first": true,
+      "repeated": true,
+      "savedVersion": "2026-11-10T00:33:46.97+00:00"
+    },
+    {
+      "id": 92017,
+      "count": 17,
+      "first": true,
+      "repeated": true,
+      "savedVersion": "2026-11-10T00:35:12.262+00:00"
+    },
+    {
+      "id": 92030,
+      "count": 30,
+      "first": true,
+      "repeated": true,
+      "savedVersion": "2026-11-10T00:40:42.535+00:00"
+    }
+  ],
+  "assertions": [
+    "forged identity, anon and cross-origin writes leave the row unchanged",
+    "real 23503 save transaction preserved all fields and version",
+    "duplicate old-version submission preserved all fields",
+    "real R2 object and receipt without Registry cannot publish",
+    "same etag and bytes with changed native version cannot be saved",
+    "revoked media reference cannot republish"
+  ],
+  "verdict": "EDGE_BRIDGE_SAVE_GO",
+  "hold": true,
+  "unrelatedRowsBeforeSha256": "7b3da675b0182eff0ba7c5dbc232f67340035d58dd58b3eb97dc8581e6b0031d",
+  "fixtureStart": [
+    {
+      "id": 92005,
+      "updatedAt": "2026-11-09T12:38:52.718+00:00",
+      "imageCount": 5
+    },
+    {
+      "id": 92017,
+      "updatedAt": null,
+      "imageCount": 0
+    },
+    {
+      "id": 92030,
+      "updatedAt": null,
+      "imageCount": 0
+    }
+  ],
+  "resume": {
+    "at": "2026-11-10T00:39:37.703Z",
+    "priorCloudflareRequests": 4,
+    "confirmedThirty": 18,
+    "unconfirmedPairRetained": true,
+    "previousAuthSessionClosed": "UNKNOWN"
+  },
+  "securityPassed": true,
+  "fixtureFinal": [
+    {
+      "id": 92005,
+      "version": "2026-11-10T00:40:55.358+00:00",
+      "imageCount": 5,
+      "publication": "hidden"
+    },
+    {
+      "id": 92017,
+      "version": "2026-11-10T00:40:58.244+00:00",
+      "imageCount": 17,
+      "publication": "published"
+    },
+    {
+      "id": 92030,
+      "version": "2026-11-10T00:40:42.535+00:00",
+      "imageCount": 30,
+      "publication": "published"
+    }
+  ],
+  "unrelatedRowsUnchanged": true,
+  "authSessionClosed": true,
+  "localSharedKeyDeleted": true,
+  "finishedAt": "2026-11-10T00:40:58.879Z"
+}

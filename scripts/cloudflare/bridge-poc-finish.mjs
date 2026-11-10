@@ -5,11 +5,12 @@ import {execFile} from 'node:child_process'
 import {promisify} from 'node:util'
 import {readFile,writeFile,access} from 'node:fs/promises'
 import {cloudflareClient,PROJECT,BUCKET} from './candidate-cloudflare.mjs'
-const root='artifacts/cloudflare-bridge-poc/',REF='rnamstwwbzknwbjwdgrf',NAME='CANDIDATE_IDENTITY_BRIDGE_KEY'
+const saveTrial=process.argv.includes('--save-trial')
+const root=saveTrial?'artifacts/cloudflare-edge-bridge-save/':'artifacts/cloudflare-bridge-poc/',REF='rnamstwwbzknwbjwdgrf',NAME='CANDIDATE_IDENTITY_BRIDGE_KEY'
 const deployment=JSON.parse(await readFile(root+'deployment.json'))
 const acceptance=JSON.parse(await readFile(root+'native-acceptance.json'))
 assert.equal(acceptance.deploymentId,deployment.deploymentId)
-assert.equal(acceptance.cloudflareRequests,4)
+assert.ok(saveTrial?acceptance.cloudflareRequests>0&&acceptance.cloudflareRequests<=24:acceptance.cloudflareRequests===4)
 const cf=await cloudflareClient(),before=await cf(),run=promisify(execFile)
 const prod=JSON.stringify(before.deployment_configs.production)
 const beforeEnv=before.deployment_configs.preview.env_vars
@@ -31,18 +32,19 @@ const list=JSON.parse((await run(process.execPath,[process.env.JNQ_SUPABASE_CLI,
 assert.ok(!list.some(s=>s.name===NAME))
 assert.ok(list.some(s=>s.name==='CANDIDATE_R2_ACCESS_KEY_ID')&&list.some(s=>s.name==='CANDIDATE_R2_SECRET_ACCESS_KEY'))
 let localExists=true
-try{await access('cloudflare/spot-loop/.dev.vars.identity-bridge')}catch{localExists=false}
+try{await access('cloudflare/spot-loop/.dev.vars.identity-bridge'+(saveTrial?'-save':''))}catch{localExists=false}
 assert.equal(localExists,false)
 const snapshot=await cf('/deployments/'+deployment.deploymentId)
 assert.equal(snapshot.environment,'preview')
 assert.equal(snapshot.r2_buckets.TEST_MEDIA.name,BUCKET)
-assert.equal(snapshot.env_vars.BRIDGE_FIXTURE.value,'92005')
+if(saveTrial)assert.equal(snapshot.env_vars.BRIDGE_FIXTURE_IDS.value,'92005,92017,92030')
+else assert.equal(snapshot.env_vars.BRIDGE_FIXTURE.value,'92005')
 assert.equal(snapshot.env_vars.BRIDGE_EXPIRES_AT.value,String(deployment.expiresAt))
 const final={checkedAt:new Date().toISOString(),productionCanonicalEmpty:true,productionConfigurationUnchanged:true,productionEnvironmentCount:0,productionR2Count:0,
-  previewFailClosed:true,productionFailClosed:true,bucket:BUCKET,fixture:'92005',localTemporaryKeyDeleted:true,
+  previewFailClosed:true,productionFailClosed:true,bucket:BUCKET,fixtures:saveTrial?[92005,92017,92030]:[92005],localTemporaryKeyDeleted:true,
   supabaseProjectSharedSecretRemoved:true,pagesPreviewProjectSharedSecretRemoved:true,remainingSupabaseSecretMetadataNames:list.map(s=>s.name),
   fixedDeploymentRetained:true,immutablePreviewSnapshotHasHardExpiry:deployment.expiresAt,
   caveat:'Existing Preview snapshots and already-loaded Edge runtimes may retain the temporary key until their fixed hard deadline. No further traffic is sent.',
-  registryWrites:0,r2Writes:0,sqlModified:false,oldWorkerRedeployed:false,metadataQueryCount:1,finalVerdict:acceptance.verdict,formalMigration:'HOLD'}
+  registryWrites:saveTrial?'See native acceptance and media setup':0,r2Writes:saveTrial?'See media setup':0,sqlModified:false,oldWorkerRedeployed:false,metadataQueryCount:acceptance.cloudflareRequests,finalVerdict:acceptance.verdict,formalMigration:'HOLD'}
 await writeFile(root+'final-boundaries.json',JSON.stringify(final,null,2)+'\n',{flag:'wx'})
 console.log(JSON.stringify(final,null,2))

@@ -1,0 +1,23 @@
+{
+  "nativeEventsMatched": 15,
+  "peakNativeCpuMs": 5,
+  "counts": {
+    "edge": 21,
+    "bridge": 15,
+    "bridgeR2List": 28,
+    "bridgeR2Get": 0,
+    "bridgeR2Head": 0,
+    "edgeRegistryRpc": 18
+  },
+  "finalProcessCount": 0,
+  "sqlNormalizedSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "packagedModuleSha256": {
+    "out/_worker.js": "1480fbb9853c864932dbcfb4ffc5dc9a43bdc531cd97a3891c71b8cbd4d7bde4",
+    "out/auth.mjs": "bb097fbb1c1bddc3c1bdf9b184795de3c6992f46d2f7a1693493e9a0853e719c",
+    "out/snapshot.mjs": "e3090d6da7c20756dffced8fdf581745e7d47093e76990839b9ac49b9d18107c",
+    "out/media-identity.mjs": "2754c33d610454c281751add0b5432b376f2603dd5ba13bb1466839e06975269",
+    "edge/supabase/functions/jnq-registry-rm0-pilot/index.ts": "747e66033ca9aa3ae0a16b27ee22197c683855e8773338ee44c66aab5546e17e",
+    "edge/supabase/functions/jnq-registry-rm0-pilot/save-handler.mjs": "ee1c7a0c3a8395d36168244341e3bed32ac14b8c331bbaec0c7c844c8d86cadc",
+    "edge/supabase/functions/jnq-registry-rm0-pilot/spot-contract.mjs": "bed2b522c19f0863ae5b846e50ad2cbd66cdd287041bdcd9aa9453ccfcea99cf"
+  }
+}
