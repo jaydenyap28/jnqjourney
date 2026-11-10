@@ -1,0 +1,20 @@
+{
+  "deploymentId": "763e3adf-a713-4049-bb47-22322152df15",
+  "openedAt": "2026-11-10T12:01:12.818Z",
+  "deleted": true,
+  "ignoredEvents": 0,
+  "malformed": 0,
+  "events": [],
+  "unassociatedEvents": [],
+  "frames": 0,
+  "controlFrames": 0,
+  "samplingNotice": false,
+  "errorCount": 0,
+  "closedAt": "2026-11-10T12:01:58.078Z",
+  "closeCode": 1006,
+  "pongConfirmed": true,
+  "requestedSampling": "NO_SAMPLING_FILTER",
+  "nativeExpiration": null,
+  "sessionId": "REDACTED_DELETED_SESSION",
+  "clientInitiatedClose": true
+}

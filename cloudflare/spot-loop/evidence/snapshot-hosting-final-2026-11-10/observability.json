@@ -1,0 +1,54 @@
+{
+  "startedAt": "2026-11-10T12:00:51.345Z",
+  "verdict": "SNAPSHOT_HOSTING_POC_BLOCKED",
+  "history": {
+    "originalRequests": 16,
+    "previousRoundRequests": 13,
+    "remainingBudget": 23
+  },
+  "diagnosticLimit": 2,
+  "requests": [
+    {
+      "acceptanceId": "1794312073068-0",
+      "path": "/__jnq_snapshot_observe/1794312073068-0",
+      "method": "GET",
+      "status": 404,
+      "cpuMs": "UNKNOWN",
+      "purpose": "read-only-no-content-diagnostic",
+      "cfRay": "a584e6c98e578104-SIN",
+      "gateHeader": "1",
+      "bytes": 9,
+      "bodyDrained": true
+    }
+  ],
+  "formalMigration": "HOLD",
+  "proxyConfigured": false,
+  "persistentLogs": {
+    "pagesWorkersLogsSupported": false,
+    "pagesLogpushSupported": false,
+    "sources": [
+      "https://developers.cloudflare.com/workers/static-assets/migration-guides/migrate-from-pages/#compatibility-matrix",
+      "https://developers.cloudflare.com/pages/functions/debugging-and-logging/#limits"
+    ]
+  },
+  "preflight": {
+    "deploymentId": "763e3adf-a713-4049-bb47-22322152df15",
+    "buildId": "voTUxzUwYFr1dxq3Q-Ntv",
+    "prefix": "snapshot-poc/1794303857621",
+    "hardExpired": true,
+    "expiresAt": 1794311057,
+    "fixtureHidden": true,
+    "bucketPrivate": true,
+    "productionEmpty": true,
+    "failClosed": true,
+    "privateSnapshotBytesAndEtagsVerified": 8,
+    "pagesObservabilityConfigPresent": false
+  },
+  "socketOpenedAt": "2026-11-10T12:01:12.818Z",
+  "blocker": "OBSERVABILITY_BLOCKED",
+  "reason": "NATIVE_TAIL_MISSING",
+  "tailDeleted": true,
+  "fixtureHiddenAfter": true,
+  "remainingBudget": 22,
+  "finishedAt": "2026-11-10T12:02:00.166Z"
+}
