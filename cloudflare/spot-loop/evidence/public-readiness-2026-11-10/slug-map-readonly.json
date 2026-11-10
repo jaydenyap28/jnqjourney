@@ -1,0 +1,15 @@
+{
+  "sourceUrl": "https://vrufunuomioczocdsoer.supabase.co/storage/v1/object/public/location-images/_system/location-slugs.webp",
+  "status": 200,
+  "bytes": 8248,
+  "sha256": "b4b8ac2ed913284b157e9883c38d5df344238772f6a64a04491d4a424a0c8711",
+  "customSlugCount": 220,
+  "differencesFromBundle": 2,
+  "indexCanonicalDisagreements": 218,
+  "samples": {
+    "274": null,
+    "449": "the-bund-shanghai",
+    "636": null,
+    "845": "bishan-bookstore"
+  }
+}

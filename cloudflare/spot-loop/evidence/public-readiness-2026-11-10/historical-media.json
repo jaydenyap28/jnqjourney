@@ -1,0 +1,95 @@
+{
+  "phase": "verify-media",
+  "startedAt": "2026-11-10T01:53:46.128Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "branch": "codex/public-readiness",
+  "ref": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "fixture": 92017,
+  "sourceUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+  "legacyPath": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+  "canonicalMediaPath": "/media/legacy/636/turtle-alley-cover.webp",
+  "checks": [
+    {
+      "label": "registered_unpublished",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    },
+    {
+      "label": "same_historical_path_public",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 200,
+      "mime": "image/webp",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 489326,
+      "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579"
+    },
+    {
+      "label": "new_canonical_media_path_public",
+      "pathname": "/media/legacy/636/turtle-alley-cover.webp",
+      "status": 200,
+      "mime": "image/webp",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 489326,
+      "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579"
+    },
+    {
+      "label": "withdrawn_warmed_path",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    },
+    {
+      "label": "registered_object_missing",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    },
+    {
+      "label": "same_bytes_different_native_version",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    },
+    {
+      "label": "revoked_alias",
+      "pathname": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    },
+    {
+      "label": "revoked_canonical",
+      "pathname": "/media/legacy/636/turtle-alley-cover.webp",
+      "status": 404,
+      "mime": "text/plain;charset=UTF-8",
+      "cacheControl": "private, no-store, max-age=0",
+      "bytes": 9,
+      "sha256": "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    }
+  ],
+  "success": true,
+  "deploymentId": "c7569e24-a6e4-4905-8748-d79341cf6c43",
+  "originalPublicR2AfterRevoke": {
+    "status": 200,
+    "mime": "image/webp"
+  },
+  "fixtureFinal": "hidden",
+  "productionUnchanged": true,
+  "finishedAt": "2026-11-10T01:54:02.714Z"
+}

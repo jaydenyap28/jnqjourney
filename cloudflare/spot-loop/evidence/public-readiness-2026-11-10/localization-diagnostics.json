@@ -1,0 +1,26 @@
+[
+  {
+    "id": 636,
+    "snapshotStatus": "partial",
+    "effectiveStatus": "partial",
+    "fieldFailures": [
+      {
+        "field": "description",
+        "reason": "source-value-mismatch"
+      }
+    ],
+    "rawSnapshotCompleteDoesNotProveCurrentTranslation": true
+  },
+  {
+    "id": 274,
+    "snapshotStatus": "complete",
+    "effectiveStatus": "partial",
+    "fieldFailures": [
+      {
+        "field": "description",
+        "reason": "source-value-mismatch"
+      }
+    ],
+    "rawSnapshotCompleteDoesNotProveCurrentTranslation": true
+  }
+]

@@ -1,0 +1,246 @@
+{
+  "observedAt": "2026-11-10T01:44:36.975Z",
+  "publicOnly": true,
+  "snapshots": {
+    "locations": {
+      "key": "public-data/locations.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "length": "542184",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"6da5adfa79d5768359ebfd535e13bebc\"",
+      "bytes": 542184,
+      "sha256": "de1d0337f9746333bfc08e9474493a6ea342a3f55adf5ac84443515d82b78f40",
+      "generatedAt": null,
+      "version": null
+    },
+    "notes": {
+      "key": "public-data/notes.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "length": "270829",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"0f9fb2d154c00b161ea07a0928cb120c\"",
+      "bytes": 270829,
+      "sha256": "b5a04a2f5ead54a74811da054ddb0ec52f57fc5432fa4e7a092021240ec7193d",
+      "generatedAt": "2026-09-29T03:34:26.893Z",
+      "version": null
+    },
+    "guides": {
+      "key": "public-data/guides.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "length": "99460",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"2d3b2f5375523d5b3f918ef0258f8b0f\"",
+      "bytes": 99460,
+      "sha256": "19823a7ef42249211dea3afc9705ab5363b71c9194e4797f83094720943c69a5",
+      "generatedAt": "2026-09-23T12:22:07.556Z",
+      "version": null
+    },
+    "spots": {
+      "key": "public-data/spots/index.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "length": "12038",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"23ffabc2367510df7f0e5d3f8f340833\"",
+      "bytes": 12038,
+      "sha256": "e3a584709783a0b4379078cc2fcd7fdcbcb8b7f6aa3eed396cd84a6051daca19",
+      "generatedAt": null,
+      "version": null
+    },
+    "english": {
+      "key": "public-data/i18n/en/records.json",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "length": "1469692",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"135616a52020fa56bf2ee70a77b008de\"",
+      "bytes": 1469692,
+      "sha256": "4451f5eab6029a8578ef9e2c565d00caac1edb36d8f37e3462e21fdf7f8b0827",
+      "generatedAt": null,
+      "version": "admin-note-0fc143e0-e689-4086-8952-e0ad73d9f207"
+    },
+    "spot636": {
+      "key": "public-data/spots/turtle-alley-turtle-alley-636.json",
+      "status": 404,
+      "contentType": "text/html",
+      "length": "27150",
+      "platformError": null,
+      "robots": null,
+      "etag": null
+    }
+  },
+  "site": {
+    "/": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/spot/turtle-alley-turtle-alley-636": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/en/spot/turtle-alley-turtle-alley-636": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/notes/malaysia-turtle-night-terengganu": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/en/notes/malaysia-turtle-night-terengganu": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/spot/spot-636": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/sitemap.xml": {
+      "status": 402,
+      "contentType": "text/plain; charset=utf-8",
+      "length": "78",
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    },
+    "/robots.txt": {
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8",
+      "length": null,
+      "platformError": "DEPLOYMENT_DISABLED",
+      "robots": null,
+      "etag": null
+    }
+  },
+  "sourcesCompared": {
+    "publicLocationIndex": {
+      "records": 582,
+      "observedImageReferences": 582,
+      "uniqueImageUrls": 582,
+      "repeatOccurrences": 0,
+      "hosts": {
+        "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 582
+      }
+    },
+    "publicNotes": {
+      "records": 6,
+      "observedImageReferences": 122,
+      "uniqueImageUrls": 64,
+      "repeatOccurrences": 58,
+      "hosts": {
+        "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 64
+      }
+    },
+    "publicGuides": {
+      "records": 7,
+      "observedImageReferences": 7,
+      "uniqueImageUrls": 7,
+      "repeatOccurrences": 0,
+      "hosts": {
+        "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 2,
+        "i.ibb.co": 3,
+        "vrufunuomioczocdsoer.supabase.co": 2
+      }
+    },
+    "publicSpot636": {
+      "records": 0,
+      "observedImageReferences": 0,
+      "uniqueImageUrls": 0,
+      "repeatOccurrences": 0,
+      "hosts": {}
+    },
+    "archivedSpotDetails": {
+      "records": 582,
+      "observedImageReferences": 5186,
+      "uniqueImageUrls": 4669,
+      "repeatOccurrences": 517,
+      "hosts": {
+        "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 4625,
+        "i.ibb.co": 23,
+        "lh5.googleusercontent.com": 1,
+        "vrufunuomioczocdsoer.supabase.co": 20
+      }
+    }
+  },
+  "media": {
+    "uniqueAcrossScannedSources": 4740,
+    "reusedAcrossRecordsOrProjections": 625,
+    "objectOrphans": "UNKNOWN_NO_COMPLETE_BUCKET_MANIFEST"
+  },
+  "accountQuota": "UNKNOWN",
+  "publicRouteInventory": {
+    "spots": 582,
+    "notes": 6,
+    "guides": 7,
+    "enComplete": {
+      "guide": 7,
+      "region": 58,
+      "spot": 246,
+      "page": 7
+    }
+  },
+  "samples": [
+    {
+      "label": "spot_cover_636",
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+      "status": 200,
+      "contentType": "image/webp",
+      "length": "489326",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"46df4684c89b6790fc643b519cbe984e\"",
+      "referenceSources": [
+        "publicLocationIndex:636",
+        "archivedSpotDetails:636"
+      ]
+    },
+    {
+      "label": "note_cover",
+      "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/notes/malaysia-turtle-night-terengganu/cover/2026-09-23/b38d2900-1777-4942-ae62-db3b2d0b0f24-chatgpt-image-sep-23-2026-04_01_15-pm.webp",
+      "status": 200,
+      "contentType": "image/webp",
+      "length": "2015154",
+      "platformError": null,
+      "robots": null,
+      "etag": "\"995aa088d44fd2c45a2aa0194d143684\"",
+      "referenceSources": [
+        "publicNotes:malaysia-turtle-night-terengganu"
+      ]
+    }
+  ],
+  "historicalDatabaseAudit": {
+    "evidenceDate": "2026-11-09",
+    "note": "Earlier authenticated aggregate evidence. This run uses public projections and no database credentials."
+  }
+}

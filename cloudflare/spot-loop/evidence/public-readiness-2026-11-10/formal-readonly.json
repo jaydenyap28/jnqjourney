@@ -1,0 +1,88 @@
+{
+  "checkedAt": "2026-11-10",
+  "projectId": "vrufunuomioczocdsoer",
+  "method": "Official Supabase execute_sql, aggregate SELECT and two public sample rows only",
+  "writes": 0,
+  "accountQuotaRemaining": "UNKNOWN",
+  "aggregate": {
+    "states": [
+      {
+        "n": 582,
+        "status": "active",
+        "publication_status": "SQL_NULL"
+      },
+      {
+        "n": 2,
+        "status": "permanently_closed",
+        "publication_status": "SQL_NULL"
+      },
+      {
+        "n": 2,
+        "status": "temporarily_closed",
+        "publication_status": "SQL_NULL"
+      }
+    ],
+    "database": "postgres",
+    "album_max": 30,
+    "album_p95": 17,
+    "locations": 586,
+    "album_refs": 4078,
+    "cover_refs": 586,
+    "media_hosts": [
+      {
+        "host": "lh5.googleusercontent.com",
+        "references": 2,
+        "distinct_objects": 1
+      },
+      {
+        "host": "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev",
+        "references": 4662,
+        "distinct_objects": 4589
+      }
+    ],
+    "session_user": "postgres",
+    "redirect_rows": 0,
+    "database_bytes": 171371667,
+    "distinct_media_url": 4656,
+    "locations_policies": [
+      {
+        "name": "Public can read locations",
+        "qual": "true",
+        "roles": [
+          "public"
+        ],
+        "command": "SELECT"
+      }
+    ],
+    "reused_across_spots": 1,
+    "media_reference_count": 4664,
+    "withdrawn_450_present": 0,
+    "public_storage_buckets": [
+      {
+        "id": "location-images",
+        "public": true
+      }
+    ],
+    "distinct_normalized_media_identity": 4590
+  },
+  "samples": [
+    {
+      "id": 274,
+      "name": "Bukit Tun Razak",
+      "slug": null,
+      "status": "active",
+      "publication_status": null,
+      "redirect_url": null,
+      "redirect_type": "301"
+    },
+    {
+      "id": 636,
+      "name": "Turtle Alley",
+      "slug": null,
+      "status": "active",
+      "publication_status": null,
+      "redirect_url": null,
+      "redirect_type": "301"
+    }
+  ]
+}

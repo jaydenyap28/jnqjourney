@@ -1,0 +1,32 @@
+{
+  "phase": "deploy",
+  "startedAt": "2026-11-10T01:50:26.953Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "branch": "codex/public-readiness",
+  "ref": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "fixture": 92017,
+  "sourceUrl": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+  "legacyPath": "/locations/2026-05-31/636-turtle-alley55-c31f4813-26cb-4b04-957f-9805f2b3fdf8.webp",
+  "canonicalMediaPath": "/media/legacy/636/turtle-alley-cover.webp",
+  "checks": [],
+  "success": false,
+  "key": "media/candidate/92017/52d42675-0e70-45c6-8634-0a199322439f.webp",
+  "receiptKey": "_candidate-validation/92017/52d42675-0e70-45c6-8634-0a199322439f.webp.json",
+  "bytes": 489326,
+  "sha256": "7f2d29423abf4674bad68f0ec473450bcfa1e1b8942e5633246b889d3f50d579",
+  "sourceEtag": "\"46df4684c89b6790fc643b519cbe984e\"",
+  "beforeVersion": "2026-11-10T01:15:40.384+00:00",
+  "identity": {
+    "key": "media/candidate/92017/52d42675-0e70-45c6-8634-0a199322439f.webp",
+    "size": 489326,
+    "mime": "image/webp",
+    "etag": "46df4684c89b6790fc643b519cbe984e",
+    "version": "7e5e3cd9a6c93a1f45daba7498e35305",
+    "receipt_size": 263,
+    "receipt_etag": "9efbc73a15fbaae2bb76db5247a86f30",
+    "receipt_version": "7e5e3cd99d6ab0a388f61df7570086a6"
+  },
+  "error": "PUBLIC_READINESS_PHASE_FAILED",
+  "finishedAt": "2026-11-10T01:50:51.675Z"
+}

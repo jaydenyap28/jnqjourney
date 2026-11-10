@@ -1,0 +1,40 @@
+{
+  "verdict": "PUBLIC_SITE_MIGRATION_READINESS_BLOCKED",
+  "inspectedDesktopAndMobilePages": 16,
+  "inspectionOnlyRunnerFlag": true,
+  "canonicalAndH1Passed": 16,
+  "historicalMediaHttpCases": 8,
+  "formalWriteCount": 0,
+  "issues": {
+    "publicR2Bypass": true,
+    "publicLocationsPolicy": true,
+    "staticPublicationGateMissing": true,
+    "sitemapSpotEntries": 0,
+    "missingHreflangOnSamples": true,
+    "clientErrorsUnexplained": true,
+    "currentProductionUnavailable": true,
+    "completeCpuMsHistorical": 8,
+    "edgeCpu": "UNKNOWN",
+    "accountRemainingFreeQuota": "UNKNOWN"
+  },
+  "actualSampleBuildMs": 39125,
+  "actualSampleDeployFiles": 404,
+  "sampleMaxFileBytes": 2619324,
+  "deployedModuleSha256": {
+    "_worker.js": "51311c95eb02902a7c1b3395748d6c259f1910144c8acbb614e62d0664e0b512",
+    "worker.mjs": "b9da86ac41213ed89a3bfadcd1516bfdf54c901e26b0fb68a21f24e52b179913",
+    "spot-contract.mjs": "bed2b522c19f0863ae5b846e50ad2cbd66cdd287041bdcd9aa9453ccfcea99cf",
+    "media-identity.mjs": "2754c33d610454c281751add0b5432b376f2603dd5ba13bb1466839e06975269"
+  },
+  "tests": {
+    "newMediaGate": 4,
+    "failures": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 1
+  },
+  "typecheck": "PASS",
+  "nativeCpuForThisStaticReadinessProbe": "UNKNOWN",
+  "formalMigration": "HOLD"
+}

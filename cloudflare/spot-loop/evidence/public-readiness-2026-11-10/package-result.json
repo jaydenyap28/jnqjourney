@@ -1,0 +1,70 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "exists": true,
+      "inSitemap": true
+    },
+    {
+      "route": "/en",
+      "exists": true,
+      "inSitemap": false
+    },
+    {
+      "route": "/spot/turtle-alley-636",
+      "exists": true,
+      "inSitemap": false
+    },
+    {
+      "route": "/spot/bukit-tun-razak-274",
+      "exists": true,
+      "inSitemap": false
+    },
+    {
+      "route": "/en/spot/bukit-tun-razak-274",
+      "exists": true,
+      "inSitemap": false
+    },
+    {
+      "route": "/en/spot/turtle-alley-636",
+      "exists": true,
+      "inSitemap": false
+    },
+    {
+      "route": "/notes/malaysia-turtle-night-terengganu",
+      "exists": true,
+      "inSitemap": true
+    },
+    {
+      "route": "/en/notes/malaysia-turtle-night-terengganu",
+      "exists": true,
+      "inSitemap": false
+    }
+  ],
+  "aliases": [
+    [
+      "/spot/turtle-alley-turtle-alley-636",
+      "/spot/turtle-alley-636"
+    ],
+    [
+      "/spot/spot-274",
+      "/spot/bukit-tun-razak-274"
+    ],
+    [
+      "/en/spot/spot-274",
+      "/en/spot/bukit-tun-razak-274"
+    ],
+    [
+      "/notes/turtle",
+      "/notes/malaysia-turtle-night-terengganu"
+    ],
+    [
+      "/en/notes/turtle",
+      "/en/notes/malaysia-turtle-night-terengganu"
+    ]
+  ],
+  "sitemapEntries": 80,
+  "filesCopied": 397,
+  "robotsPreview": "Disallow: /",
+  "productionReady": false
+}

@@ -436,13 +436,13 @@ function lookupMatches(identity,lookup) {
   return identity&&lookup&&identity.key===lookup.key&&identity.size===lookup.size&&identity.mime===lookup.mime&&identity.etag===lookup.etag&&identity.version===lookup.version&&identity.receipt_size===lookup.receiptSize&&identity.receipt_etag===lookup.receiptEtag&&identity.receipt_version===lookup.receiptVersion
 }
 
-async function integrationImage(request,env,settings,id,key,transport) {
+export async function integrationImage(request,env,settings,id,key,transport) {
   if(!registryKey(key,id))fail(404,'Image not found')
   const args={p_spot:id,p_key:key}
   const lookup=await registryRpc(env,'lookup',args,transport)
   if(!lookup||typeof lookup.publiclyReferenced!=='boolean')fail(404,'Image not found')
   if(!lookup.publiclyReferenced){
-    if(!cookie(request,COOKIE))fail(404,'Image not found')
+    if(!settings||!cookie(request,COOKIE))fail(404,'Image not found')
     await admin(request,env,settings,transport)
   }
   const head=request.method==='HEAD'

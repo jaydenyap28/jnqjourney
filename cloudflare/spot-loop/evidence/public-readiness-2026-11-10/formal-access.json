@@ -1,0 +1,11 @@
+{
+  "projectId": "vrufunuomioczocdsoer",
+  "checkedDate": "2026-11-10",
+  "method": "Official aggregate SELECT",
+  "writes": 0,
+  "anon_write": false,
+  "anon_select": true,
+  "locations_rls": true,
+  "authenticated_select": true,
+  "storage_object_count": 2436
+}

@@ -1,0 +1,36 @@
+{
+  "spot636Canonical": {
+    "key": "public-data/spots/turtle-alley-636.json",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "length": "4482",
+    "platformError": null,
+    "robots": null,
+    "etag": "\"b02c4a1f042bbd22f6c9f357a5876b08\"",
+    "sha256": "84fec3c462ca3bd66e15e5277284d79c22d72c3e82113f8771cb8476deeb23f3",
+    "spotId": 636,
+    "albumCount": 4
+  },
+  "spot274": {
+    "key": "public-data/spots/bukit-tun-razak-274.json",
+    "status": 200,
+    "contentType": "application/json; charset=utf-8",
+    "length": "4315",
+    "platformError": null,
+    "robots": null,
+    "etag": "\"7979e23d911bbee2939df1209fe98875\"",
+    "sha256": "91d8c27feb9fabcf1b888758004dd27663ee290b1865c6647caa85eabb7539e1",
+    "spotId": 274,
+    "albumCount": 5
+  },
+  "knownHistoricalNoteMedia": [
+    {
+      "referenceToken": "91ae4731-7e0d-4265-9ab6-8ec2feb7a6f8",
+      "status": "NO_ELIGIBLE_PROBE"
+    },
+    {
+      "referenceToken": "eb47829d-ccd1-44d7-8146-f1d2afd24d6f",
+      "status": "NO_ELIGIBLE_PROBE"
+    }
+  ]
+}

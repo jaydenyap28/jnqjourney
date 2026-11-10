@@ -1,0 +1,707 @@
+{
+  "preview": "https://codex-public-readiness.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "deploymentId": "c7569e24-a6e4-4905-8748-d79341cf6c43",
+  "checkedAt": "2026-11-10T01:53:44.027Z",
+  "http": [
+    {
+      "path": "/spot/turtle-alley-turtle-alley-636",
+      "status": 301,
+      "location": "/spot/turtle-alley-636"
+    },
+    {
+      "path": "/spot/spot-274",
+      "status": 301,
+      "location": "/spot/bukit-tun-razak-274"
+    },
+    {
+      "path": "/en/spot/spot-274",
+      "status": 301,
+      "location": "/en/spot/bukit-tun-razak-274"
+    },
+    {
+      "path": "/notes/turtle",
+      "status": 301,
+      "location": "/notes/malaysia-turtle-night-terengganu"
+    },
+    {
+      "path": "/en/notes/turtle",
+      "status": 301,
+      "location": "/en/notes/malaysia-turtle-night-terengganu"
+    },
+    {
+      "path": "/jnq-public-readiness-nonexistent-20261110",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow"
+    },
+    {
+      "path": "/admin",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow"
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "noindex": "noindex, nofollow"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "type": "application/xml",
+      "noindex": "noindex, nofollow"
+    }
+  ],
+  "pages": [
+    {
+      "route": "/",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com",
+      "title": "JnQ Journey | Jayden & Qing",
+      "language": "zh",
+      "h1": [
+        "JnQ Journey 旅游地图、景点资料与完整旅行攻略"
+      ],
+      "canonical": "https://www.jnqjourney.com/",
+      "alternates": [],
+      "robots": null,
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 582,
+        "decoded": 7,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 7
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en",
+      "title": "See the world together | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "JnQ Journey travel map, places and complete travel guides"
+      ],
+      "canonical": "https://www.jnqjourney.com/en",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": false,
+      "schemaTypes": [],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 582,
+        "decoded": 7,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 7
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/spot/turtle-alley-636",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+      "title": "Turtle Alley｜登嘉楼唐人街海龟主题壁画小巷",
+      "language": "zh",
+      "h1": [
+        "海龟巷 Turtle AlleyTurtle Alley"
+      ],
+      "canonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+      "alternates": [],
+      "robots": "noindex, follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 0,
+        "decoded": 0,
+        "broken": 0,
+        "imageHosts": {}
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/spot/bukit-tun-razak-274",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/spot/bukit-tun-razak-274",
+      "title": "Bukit Tun Razak | JnQ Journey",
+      "language": "zh",
+      "h1": [
+        "Bukit Tun Razak"
+      ],
+      "canonical": "https://www.jnqjourney.com/spot/bukit-tun-razak-274",
+      "alternates": [],
+      "robots": "noindex, follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 3,
+        "decoded": 3,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 3
+        }
+      },
+      "issues": [
+        "PAGE_ERROR"
+      ],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/spot/bukit-tun-razak-274",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/spot/bukit-tun-razak-274",
+      "title": "Bukit Tun Razak | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "Bukit Tun Razak"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/spot/bukit-tun-razak-274",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 3,
+        "decoded": 3,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 3
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/spot/turtle-alley-636",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+      "title": "Turtle Alley | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "Turtle Alley海龟巷 Turtle Alley"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 0,
+        "decoded": 0,
+        "broken": 0,
+        "imageHosts": {}
+      },
+      "issues": [
+        "PAGE_ERROR"
+      ],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/notes/malaysia-turtle-night-terengganu",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+      "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+      "language": "zh",
+      "h1": [
+        "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验"
+      ],
+      "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+      "alternates": [],
+      "robots": null,
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 1,
+        "decoded": 1,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 1
+        }
+      },
+      "issues": [
+        "PAGE_ERROR"
+      ],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/notes/malaysia-turtle-night-terengganu",
+      "viewport": 1440,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/notes/malaysia-turtle-night-terengganu",
+      "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/notes/malaysia-turtle-night-terengganu",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 1440,
+        "body": 1440
+      },
+      "visibleImages": {
+        "count": 1,
+        "decoded": 1,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 1
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com",
+      "title": "JnQ Journey | Jayden & Qing",
+      "language": "zh",
+      "h1": [
+        "JnQ Journey 旅游地图、景点资料与完整旅行攻略"
+      ],
+      "canonical": "https://www.jnqjourney.com/",
+      "alternates": [],
+      "robots": null,
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 582,
+        "decoded": 4,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 4
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en",
+      "title": "See the world together | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "JnQ Journey travel map, places and complete travel guides"
+      ],
+      "canonical": "https://www.jnqjourney.com/en",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": false,
+      "schemaTypes": [],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 582,
+        "decoded": 6,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 6
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/spot/turtle-alley-636",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+      "title": "Turtle Alley｜登嘉楼唐人街海龟主题壁画小巷",
+      "language": "zh",
+      "h1": [
+        "海龟巷 Turtle AlleyTurtle Alley"
+      ],
+      "canonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+      "alternates": [],
+      "robots": "noindex, follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 2,
+        "decoded": 2,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 2
+        }
+      },
+      "issues": [
+        "PAGE_ERROR"
+      ],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/spot/bukit-tun-razak-274",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/spot/bukit-tun-razak-274",
+      "title": "Bukit Tun Razak | JnQ Journey",
+      "language": "zh",
+      "h1": [
+        "Bukit Tun Razak"
+      ],
+      "canonical": "https://www.jnqjourney.com/spot/bukit-tun-razak-274",
+      "alternates": [],
+      "robots": "noindex, follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 3,
+        "decoded": 3,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 3
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/spot/bukit-tun-razak-274",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/spot/bukit-tun-razak-274",
+      "title": "Bukit Tun Razak | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "Bukit Tun Razak"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/spot/bukit-tun-razak-274",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 1,
+        "decoded": 1,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 1
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/spot/turtle-alley-636",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+      "title": "Turtle Alley | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "Turtle Alley海龟巷 Turtle Alley"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [
+        "TouristAttraction",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 2,
+        "decoded": 2,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 2
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/notes/malaysia-turtle-night-terengganu",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+      "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+      "language": "zh",
+      "h1": [
+        "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验"
+      ],
+      "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+      "alternates": [],
+      "robots": null,
+      "ogImage": true,
+      "schemaTypes": [
+        "WebSite",
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 1,
+        "decoded": 1,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 1
+        }
+      },
+      "issues": [
+        "PAGE_ERROR"
+      ],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    },
+    {
+      "route": "/en/notes/malaysia-turtle-night-terengganu",
+      "viewport": 390,
+      "status": 200,
+      "previewNoindex": true,
+      "serverH1": 1,
+      "serverCanonical": "https://www.jnqjourney.com/en/notes/malaysia-turtle-night-terengganu",
+      "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+      "language": "en",
+      "h1": [
+        "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验"
+      ],
+      "canonical": "https://www.jnqjourney.com/en/notes/malaysia-turtle-night-terengganu",
+      "alternates": [],
+      "robots": "noindex,follow",
+      "ogImage": true,
+      "schemaTypes": [],
+      "invalidJsonLd": 0,
+      "width": {
+        "viewport": 390,
+        "body": 390
+      },
+      "visibleImages": {
+        "count": 1,
+        "decoded": 1,
+        "broken": 0,
+        "imageHosts": {
+          "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 1
+        }
+      },
+      "issues": [],
+      "canonicalMatches": true,
+      "overflowPx": 0
+    }
+  ],
+  "externalPolicy": "GET/HEAD public image origins only; no third-party scripts, APIs or telemetry",
+  "passed": true,
+  "sitemap": {
+    "total": 80,
+    "unique": 79,
+    "english": 8,
+    "spot": 0,
+    "routes": [
+      {
+        "route": "/",
+        "exists": true,
+        "inSitemap": true
+      },
+      {
+        "route": "/en",
+        "exists": true,
+        "inSitemap": false
+      },
+      {
+        "route": "/spot/turtle-alley-636",
+        "exists": true,
+        "inSitemap": false
+      },
+      {
+        "route": "/spot/bukit-tun-razak-274",
+        "exists": true,
+        "inSitemap": false
+      },
+      {
+        "route": "/en/spot/bukit-tun-razak-274",
+        "exists": true,
+        "inSitemap": false
+      },
+      {
+        "route": "/en/spot/turtle-alley-636",
+        "exists": true,
+        "inSitemap": false
+      },
+      {
+        "route": "/notes/malaysia-turtle-night-terengganu",
+        "exists": true,
+        "inSitemap": true
+      },
+      {
+        "route": "/en/notes/malaysia-turtle-night-terengganu",
+        "exists": true,
+        "inSitemap": false
+      }
+    ]
+  },
+  "browserVersion": "157.0.8103.38"
+}

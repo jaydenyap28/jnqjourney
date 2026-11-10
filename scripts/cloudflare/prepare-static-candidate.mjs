@@ -5,7 +5,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
-const base = path.join(root, 'artifacts/cloudflare-candidate')
+const readiness = process.argv.includes('--public-readiness')
+const base = path.join(root, readiness ? 'artifacts/cloudflare-public-readiness' : 'artifacts/cloudflare-candidate')
 const source = path.join(base, 'source')
 const json = async file => JSON.parse(await readFile(path.join(root, file), 'utf8'))
 await mkdir(source, { recursive: true })
@@ -22,18 +23,36 @@ for (const file of files) {
 // Node resolves dependencies from the workspace's parent node_modules. No
 // Windows junction privileges or duplicate dependency installation is needed.
 const fallback = await json('public-data/fallback/2026-10-30.json')
-const guides = await json('data/guides.json')
-const notes = (await json('data/notes.json')).filter(n => n.published)
+const guides = readiness ? (await json('artifacts/cloudflare-public-readiness/sources/guides.json')).guides : await json('data/guides.json')
+const notes = (readiness ? (await json('artifacts/cloudflare-public-readiness/sources/notes.json')).notes : await json('data/notes.json')).filter(n => n.published)
 const packages = await json('data/travel-packages-snapshot.json')
 const slugMap = await json('data/location-slugs.json')
 const pilot = await json('public-data/i18n/en/records.json')
+const sampledSpots = ['turtle-alley-636','bukit-tun-razak-274']
+const noteSlug = 'malaysia-turtle-night-terengganu'
+if (readiness) {
+  // Only the staging copy receives the public snapshots, never app/ or DB.
+  for (const [name,id,slug] of [['spot636Canonical',636,sampledSpots[0]],['spot274',274,sampledSpots[1]]]) {
+    const {schemaVersion,spot} = await json(`artifacts/cloudflare-public-readiness/sources/${name}.json`)
+    if (schemaVersion !== 1 || spot.id !== id || spot.slug !== slug || ![null,'published'].includes(spot.publication_status) || !fallback.eligibility[id] || fallback.withdrawnIds.includes(id)) throw new Error('Unexpected representative public Spot')
+    fallback.spots[id] = spot
+  }
+  const current = await json('artifacts/cloudflare-public-readiness/sources/english.json')
+  const representative = current.records.filter(record => record.entityType === 'spot' && [274,636].includes(Number(record.entityId)))
+  if (current.schemaVersion !== 1 || current.locale !== 'en' || representative.length !== 2) throw new Error('Unexpected representative public localizations')
+  pilot.records = [...pilot.records.filter(record => !(record.entityType === 'spot' && [274,636].includes(Number(record.entityId)))), ...representative]
+  for (const [file,value] of [['public-data/fallback/2026-10-30.json',fallback],['public-data/i18n/en/records.json',pilot],['data/guides.json',guides],['data/notes.json',notes]]) {
+    await writeFile(path.join(source,file), JSON.stringify(value))
+  }
+  if (!notes.find(note => note.slug === noteSlug && note.aliases?.includes('turtle'))) throw new Error('Historical Note alias missing')
+}
 const spot = fallback.locations.find(s => slugMap[String(s.id)]) || fallback.locations[0]
 const spotSlug = slugMap[String(spot.id)] ? `${slugMap[String(spot.id)]}-${spot.id}` : spot.slug
 const params = {
-  'spot/[slug]': [{ slug: spotSlug }],
+  'spot/[slug]': (readiness ? sampledSpots : [spotSlug]).map(slug => ({ slug })),
   'region/[slug]': [{ slug: fallback.regions[0].slug }],
   'guide/[slug]': [{ slug: guides[0].slug }],
-  'notes/[slug]': notes.slice(0, 1).map(n => ({ slug: n.slug })),
+  'notes/[slug]': readiness ? [{slug:noteSlug}] : notes.slice(0, 1).map(n => ({ slug: n.slug })),
   'packages/[slug]': packages.packages.filter(p => p.slug !== 'hainan').map(p => ({ slug: p.slug })),
   'packages/[slug]/[optionSlug]': packages.options.filter(o => o.package_id === packages.packages.find(p => p.slug === 'batam-3d2n')?.id).slice(0, 1).map(o => ({ slug: 'batam-3d2n', optionSlug: o.slug })),
   'packages/hainan/[optionSlug]': packages.options.filter(o => o.package_id === packages.packages.find(p => p.slug === 'hainan')?.id).slice(0, 1).map(o => ({ optionSlug: o.slug })),
@@ -64,7 +83,7 @@ for (const file of await walk(path.join(source, 'app'))) {
   }
   await writeFile(file, text)
 }
-const englishPaths = ['/en', '/en/about', `/en/guide/${guides[0].slug}`, `/en/notes/${notes[0]?.slug}`]
+const englishPaths = ['/en', '/en/about', `/en/guide/${guides[0].slug}`, `/en/notes/${readiness ? noteSlug : notes[0]?.slug}`, ...(readiness ? sampledSpots.map(slug => `/en/spot/${slug}`) : [])]
 const englishFile = path.join(source, 'pages/en/[[...path]].tsx')
 let english = await readFile(englishFile, 'utf8')
 const start = english.indexOf('export const getStaticPaths:')
@@ -80,7 +99,7 @@ const supabaseFile = path.join(source, 'lib/supabase.ts')
 let supabase = await readFile(supabaseFile, 'utf8')
 supabase = supabase.replace('process.env.NEXT_PUBLIC_SUPABASE_URL!', "(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://candidate.invalid')").replace('process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!', "(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'candidate-no-access')")
 await writeFile(supabaseFile, supabase)
-const manifest = { mode: 'compatibility-sample', productionReady: false, sourceCommit: execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(), snapshotVersion: fallback.version, sampledParams: params, englishPaths, inventory: { spots: fallback.locations.length, regions: fallback.regions.length, guides: guides.length, notes: notes.length, packages: packages.packages.length, options: packages.options.length, localizations: pilot.records.length }, blockers: ['Sample only: complete fresh publication inventory required.', 'No dynamic API runtime connected; admin saves/uploads are not enabled.', 'Automatic publication outbox migration is unapplied.', 'Cloudflare account authorization and deployed Free-plan CPU measurement required.'] }
+const manifest = { mode: readiness ? 'public-readiness-sample' : 'compatibility-sample', productionReady: false, sourceCommit: execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(), snapshotVersion: fallback.version, sampledParams: params, englishPaths, inventory: { spots: fallback.locations.length, regions: fallback.regions.length, guides: guides.length, notes: notes.length, packages: packages.packages.length, options: packages.options.length, localizations: pilot.records.length }, blockers: readiness ? ['Scoped static sample with no live publication or complete URL inventory.', 'No production API runtime or authoritative rollback target.'] : ['Sample only: complete fresh publication inventory required.', 'No dynamic API runtime connected; admin saves/uploads are not enabled.', 'Automatic publication outbox migration is unapplied.', 'Cloudflare account authorization and deployed Free-plan CPU measurement required.'] }
 await writeFile(path.join(base, 'manifest.json'), JSON.stringify(manifest, null, 2))
 if (process.argv.includes('--build')) {
   // Whitelist environment: .env.local is never copied or loaded, and secrets

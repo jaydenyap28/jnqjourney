@@ -1,0 +1,20 @@
+{
+  "checkedDate": "2026-11-10",
+  "source": "Web search connector indexed-page results, public site query",
+  "queries": [
+    "site:jnqjourney.com/spot/bishan-bookstore-845 JnQ Journey",
+    "site:jnqjourney.com/notes/malaysia-turtle-night-terengganu JnQ Journey",
+    "site:jnqjourney.com JnQ Journey 景点 游记"
+  ],
+  "observedPublicUrls": [
+    "https://www.jnqjourney.com/",
+    "https://www.jnqjourney.com/notes",
+    "https://www.jnqjourney.com/guide",
+    "https://www.jnqjourney.com/spot/turtle-alley-turtle-alley-636",
+    "https://www.jnqjourney.com/spot/bukit-tun-razak-274",
+    "https://www.jnqjourney.com/spot/the-bund-shanghai-449"
+  ],
+  "googleSearchConsoleAccess": "NOT_OBTAINED",
+  "googleIndexStatus": "UNKNOWN",
+  "scope": "Search retrieval confirms prior discovery of these URLs. It does not establish current Google indexing, traffic or inbound link counts."
+}
