@@ -2,8 +2,10 @@ import {signBridge} from '../identity-bridge/auth.mjs'
 import {SPOT_FIELDS,validateSpotFields,validVersion,validSpotRow} from '../spot-contract.mjs'
 const ORIGIN='https://rnamstwwbzknwbjwdgrf.supabase.co'
 const BROWSER='https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev'
+const INTEGRATION='https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev'
 const BRIDGE='https://codex-r2-identity-bridge.jnqjourney-spot-loop-migration-candidate.pages.dev/internal/r2-identity'
-const KEY=/^media\/candidate\/(92005|92017|92030)\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\.png$/
+const KEY=/^media\/candidate\/(92005|92017|92030)\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\.(png|jpg|webp|gif)$/
+const MIME={png:'image/png',jpg:'image/jpeg',webp:'image/webp',gif:'image/gif'}
 class Refused extends Error {constructor(status,code){super(code);this.status=status}}
 const fail=(status,code)=>{throw new Refused(status,code)}
 async function readBody(request){
@@ -18,10 +20,11 @@ async function readBody(request){
   try{return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes))}catch{fail(400,'INVALID_JSON')}
 }
 export function createSaveHandler({config,env,transport=fetch}){
+  const origin=config.browserIntegration?INTEGRATION:BROWSER
   return async request=>{
     const started=performance.now(),counts={auth:0,locations:0,registryRpc:0,bridge:0}
     let bridgeOperations=null,sqlstate=null
-    const headers={'Cache-Control':'private, no-store','Content-Type':'application/json','X-Content-Type-Options':'nosniff','Access-Control-Allow-Origin':BROWSER,'Vary':'Origin'}
+    const headers={'Cache-Control':'private, no-store','Content-Type':'application/json','X-Content-Type-Options':'nosniff','Vary':'Origin',...(!config.browserIntegration?{'Access-Control-Allow-Origin':origin}:{})}
     const respond=(data,status=200)=>Response.json({...data,counts,bridgeOperations,sqlstate,serverElapsedMs:Math.round(performance.now()-started),cpuMs:'UNKNOWN'},{status,headers})
     async function remote(url,options){
       const response=await transport(url,{...options,redirect:'manual',signal:AbortSignal.timeout(10000)})
@@ -52,17 +55,24 @@ export function createSaveHandler({config,env,transport=fetch}){
       if(data.operations&&['list','head','get'].every(k=>Number.isSafeInteger(data.operations[k])&&data.operations[k]>=0))bridgeOperations=data.operations
       if(!response.ok)fail(response.status===409?409:503,'BRIDGE_'+(response.status===409?'IDENTITY_UNAVAILABLE':'UNAVAILABLE'))
       if(data.nonce!==signed['X-JnQ-Bridge-Nonce']||data.acceptanceId!==marker||data.spotId!==id||!Array.isArray(data.identities)||data.identities.length!==keys.length||!bridgeOperations||bridgeOperations.list!==2||bridgeOperations.head>8||bridgeOperations.get!==0)fail(503,'BRIDGE_RESPONSE_INVALID')
-      if(data.identities.some((item,i)=>item.key!==keys[i]||!Number.isSafeInteger(item.size)||item.size<12||item.size>10485760||!Number.isSafeInteger(item.receipt_size)||item.receipt_size<1||item.receipt_size>1024||item.mime!=='image/png'||![item.etag,item.version,item.receipt_etag,item.receipt_version].every(v=>typeof v==='string'&&v.length>0&&v!=='null')))fail(409,'MEDIA_IDENTITY_INVALID')
+      if(data.identities.some((item,i)=>item.key!==keys[i]||!Number.isSafeInteger(item.size)||item.size<12||item.size>10485760||!Number.isSafeInteger(item.receipt_size)||item.receipt_size<1||item.receipt_size>1024||item.mime!==MIME[KEY.exec(keys[i])?.[2]]||![item.etag,item.version,item.receipt_etag,item.receipt_version].every(v=>typeof v==='string'&&v.length>0&&v!=='null')))fail(409,'MEDIA_IDENTITY_INVALID')
       return data.identities
     }
     try{
       if(env('SUPABASE_URL')!==ORIGIN||Date.now()>=config.expiresAt*1000)fail(503,'PILOT_EXPIRED_OR_MISCONFIGURED')
-      if(request.headers.get('Origin')!==BROWSER)fail(403,'ORIGIN_REFUSED')
-      if(request.method==='OPTIONS')return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Headers':'authorization,apikey,content-type,x-jnq-acceptance','Access-Control-Allow-Methods':'POST'}})
+      if(request.headers.get('Origin')!==origin)fail(403,'ORIGIN_REFUSED')
+      if(request.method==='OPTIONS'&&!config.browserIntegration)return new Response(null,{status:204,headers:{...headers,'Access-Control-Allow-Headers':'authorization,apikey,content-type,x-jnq-acceptance','Access-Control-Allow-Methods':'POST'}})
       if(request.method!=='POST'||request.headers.get('content-type')!=='application/json')fail(405,'METHOD_REFUSED')
       const marker=request.headers.get('X-JnQ-Acceptance')||''
       if(!/^[0-9-]{1,40}$/.test(marker))fail(400,'MARKER_REQUIRED')
-      const body=await readBody(request),id=body?.id
+      let body=await readBody(request)
+      if(config.browserIntegration){
+        const fixture=request.headers.get('X-JnQ-Spot')
+        if(!['92017','92030'].includes(fixture)||!body||Array.isArray(body)||typeof body!=='object'||Object.keys(body).some(key=>!['expectedUpdatedAt','data'].includes(key)))fail(400,'PAYLOAD_REFUSED')
+        const action=body.data?.publication_status==='hidden'&&Object.keys(body.data).length===1?'withdraw':'save'
+        body=action==='withdraw'?{action,id:Number(fixture),expectedUpdatedAt:body.expectedUpdatedAt}:{...body,action,id:Number(fixture)}
+      }
+      const id=body?.id
       if(![92005,92017,92030].includes(id))fail(400,'FIXTURE_REFUSED')
       const allowed={save:['action','id','expectedUpdatedAt','data'],withdraw:['action','id','expectedUpdatedAt'],revoke:['action','id','key'],media:['action','id','key']}[body.action]
       if(!allowed||Object.keys(body).some(k=>!allowed.includes(k)))fail(400,'PAYLOAD_REFUSED')

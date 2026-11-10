@@ -13,6 +13,7 @@ const HEADERS = {'Cache-Control':'private, no-store, max-age=0','X-Robots-Tag':'
 const R2_ACCOUNT='41feff7cd62964f2eb33bb82508509a1'
 const R2_TEST_BUCKET='jnqjourney-spot-loop-isolated-media'
 const UPLOAD_ORIGIN='https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev'
+const MEDIA_PREVIEW_ORIGIN='https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev'
 const CSP = `default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self' https://${R2_ACCOUNT}.r2.cloudflarestorage.com/${R2_TEST_BUCKET}/_candidate-staging/; form-action 'self'; frame-ancestors 'none'; base-uri 'none'`
 class Failure extends Error { constructor(status, message) { super(message); this.status = status } }
 const fail = (status, message) => { throw new Failure(status, message) }
@@ -34,7 +35,9 @@ export function config(env) {
     const reservedId=Number(id)>=92000&&Number(id)<93000
     return registry ? !reservedId||slug!==`cloudflare-loop-registry-${id}` : reservedId||slug.startsWith('cloudflare-loop-registry-')
   }))fail(503,'Registry fixtures require a dedicated isolated scope')
-  return {emails,fixtures,registry}
+  const edgeSave=env.CANDIDATE_EDGE_SAVE==='true'
+  if(edgeSave&&(!registry||Object.keys(fixtures).sort().join(',')!=='92017,92030'||!Number.isSafeInteger(Number(env.CANDIDATE_MEDIA_EXPIRES_AT))))fail(503,'Dedicated media integration scope required')
+  return {emails,fixtures,registry,edgeSave}
 }
 function cookie(request,name) {
   const raw=(request.headers.get('cookie')||'').split(';').map(s=>s.trim()).find(s=>s.startsWith(`${name}=`))?.slice(name.length+1)
@@ -229,7 +232,8 @@ export async function signCandidatePut(env,key,type,size,copySource=null,now=new
 const ticketKey=key=>`_candidate-tickets/${key.slice('media/candidate/'.length)}.json`
 const stagingKey=key=>key.replace('media/candidate/','_candidate-staging/')
 async function issueDirect(request,env,id,user) {
-  if(new URL(request.url).origin!==UPLOAD_ORIGIN)fail(403,'Use the approved candidate upload origin')
+  const origin=env.CANDIDATE_EDGE_SAVE==='true'?MEDIA_PREVIEW_ORIGIN:UPLOAD_ORIGIN
+  if(new URL(request.url).origin!==origin)fail(403,'Use the approved candidate upload origin')
   // Fail before creating tickets if the operator has not provisioned secrets.
   if(!env.CANDIDATE_R2_ACCESS_KEY_ID||!env.CANDIDATE_R2_SECRET_ACCESS_KEY)fail(503,'Isolated Preview signing credentials are not configured')
   const body=await bodyJson(request),ext={'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif'}[body?.type]
@@ -427,6 +431,64 @@ async function registryImage(request,env,settings,id,key,transport) {
   }
   return new Response(head?null:object.body,{headers:{...HEADERS,'Content-Type':expected.mime}})
 }
+
+function lookupMatches(identity,lookup) {
+  return identity&&lookup&&identity.key===lookup.key&&identity.size===lookup.size&&identity.mime===lookup.mime&&identity.etag===lookup.etag&&identity.version===lookup.version&&identity.receipt_size===lookup.receiptSize&&identity.receipt_etag===lookup.receiptEtag&&identity.receipt_version===lookup.receiptVersion
+}
+
+async function integrationImage(request,env,settings,id,key,transport) {
+  if(!registryKey(key,id))fail(404,'Image not found')
+  const args={p_spot:id,p_key:key}
+  const lookup=await registryRpc(env,'lookup',args,transport)
+  if(!lookup||typeof lookup.publiclyReferenced!=='boolean')fail(404,'Image not found')
+  if(!lookup.publiclyReferenced){
+    if(!cookie(request,COOKIE))fail(404,'Image not found')
+    await admin(request,env,settings,transport)
+  }
+  const head=request.method==='HEAD'
+  const object=await env.TEST_MEDIA[head?'head':'get'](key)
+  let release=false
+  try {
+    const receipt=await env.TEST_MEDIA.head(mediaReceiptKey(key))
+    const identity=mediaIdentity(key,object,receipt)
+    if(!lookupMatches(identity,lookup))fail(404,'Image not found')
+    // Check publication and revocation again after the object snapshot. The
+    // final GET's native identity describes the very stream we return.
+    if(lookup.publiclyReferenced){
+      const current=await registryRpc(env,'lookup',args,transport)
+      if(!current?.publiclyReferenced||!lookupMatches(identity,current))fail(404,'Image not found')
+    }
+    const response=new Response(head?null:object.body,{headers:{...HEADERS,'Content-Type':identity.mime,'Content-Length':String(identity.size)}})
+    release=true
+    return response
+  }finally{
+    if(!release)await object?.body?.cancel().catch(()=>{})
+  }
+}
+
+async function relayEdgeSave(request,env,id,transport) {
+  const token=cookie(request,COOKIE)
+  if(!token)fail(401,'Session expired')
+  if(request.headers.get('Content-Type')!=='application/json'||!request.body)fail(400,'JSON body required')
+  const length=request.headers.get('Content-Length')
+  if(length&&(!/^\d+$/.test(length)||Number(length)>262144))fail(413,'Request too large')
+  const marker=request.headers.get('X-JnQ-Acceptance')
+  let response
+  try {
+    response=await transport(`${env.SUPABASE_URL}/functions/v1/jnq-registry-rm0-pilot`,{
+      method:'POST',body:request.body,duplex:'half',cache:'no-store',redirect:'manual',signal:AbortSignal.timeout(20000),
+      headers:{apikey:env.SUPABASE_ANON_KEY,Authorization:`Bearer ${token}`,Origin:MEDIA_PREVIEW_ORIGIN,'Content-Type':'application/json','X-JnQ-Spot':id,'X-JnQ-Acceptance':/^[0-9-]{1,40}$/.test(marker||'')?marker:`${Date.now()}-${crypto.getRandomValues(new Uint32Array(1))[0]}`},
+    })
+  }catch{fail(503,'Save result unknown; reload before retrying')}
+  if(!response.ok){
+    await response.body?.cancel().catch(()=>{})
+    const messages={400:'Invalid Spot fields',401:'Session expired',403:'Admin permission required',404:'Spot not found',409:'Spot or media changed; reload before saving',413:'Request too large'}
+    fail(Object.hasOwn(messages,response.status)?response.status:503,messages[response.status]||'Save result unknown; reload before retrying')
+  }
+  // Return the Edge response stream without parsing and serializing a 30-image
+  // album in the Worker. The editor already knows the fixture's public path.
+  return new Response(response.body,{headers:{...HEADERS,'Content-Type':'application/json'}})
+}
 function document(row,slug,locale,englishCurrent=false) {
   const name=locale==='en'?row.name:(row.name_cn||row.name)
   const title=(locale==='en'?row.seo_title_en:row.seo_title_zh)||name
@@ -445,6 +507,7 @@ async function responseFor(request,env,transport) {
   if(['/admin/cloudflare-spot','/candidate-editor.js','/candidate.css'].includes(url.pathname))return env.ASSETS.fetch(request)
   const settings=config(env)
   if(url.protocol!=='https:')fail(400,'HTTPS required')
+  if(settings.edgeSave&&(url.origin!==MEDIA_PREVIEW_ORIGIN||Date.now()>=Number(env.CANDIDATE_MEDIA_EXPIRES_AT)*1000))fail(404,'Media integration Preview unavailable')
   const mutating=!['GET','HEAD'].includes(request.method)
   if(mutating)sameOrigin(request)
   if(url.pathname==='/api/candidate/session') {
@@ -477,8 +540,12 @@ async function responseFor(request,env,transport) {
   }
   const edit=url.pathname.match(/^\/api\/candidate\/spots\/([1-9]\d*)(\/image(?:\/(presign|complete|cancel|revoke))?)?$/)
   if(edit) {
-    const user=await admin(request,env,settings,transport)
     const id=checkedId(edit[1],settings)
+    if(settings.edgeSave&&!edit[2]&&request.method==='PATCH'){
+      if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
+      return relayEdgeSave(request,env,id,transport)
+    }
+    const user=await admin(request,env,settings,transport)
     if(edit[2]) {
       if(request.method!=='POST')fail(405,'Method not allowed')
       if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
@@ -495,7 +562,7 @@ async function responseFor(request,env,transport) {
       if(edit[3]==='complete'||edit[3]==='cancel')return completeDirect(request,env,id,user,transport,settings.registry,edit[3]==='cancel')
       return upload(request,env,id)
     }
-    if(request.method==='GET')return json({spot:await location(env,id,transport),publicPath:`/spot/${settings.fixtures[id]}`})
+    if(request.method==='GET')return json({spot:await location(env,id,transport),publicPath:`/spot/${settings.fixtures[id]}`,...(settings.edgeSave?{maxAlbum:30}:{})})
     if(!['PATCH','DELETE'].includes(request.method))fail(405,'Method not allowed')
     if(env.CANDIDATE_WRITES_ENABLED!=='true')fail(503,'Candidate writes are disabled')
     if(request.method==='DELETE') {
@@ -524,7 +591,7 @@ async function responseFor(request,env,transport) {
     if(!['GET','HEAD'].includes(request.method))fail(405,'Method not allowed')
     const raw=media?.[1]||data?.[1]||(page?.[2]||legacyData?.[1]).match(/-(\d+)$/)?.[1]
     const id=checkedId(raw,settings)
-    if(media&&settings.registry)return registryImage(request,env,settings,id,url.pathname.slice(1),transport)
+    if(media&&settings.registry)return (settings.edgeSave?integrationImage:registryImage)(request,env,settings,id,url.pathname.slice(1),transport)
     const row=await location(env,id,transport)
     if(!media){
       const result=await routing(id,row,settings,env,transport)
@@ -552,7 +619,7 @@ async function responseFor(request,env,transport) {
     const englishCurrent=!!row.updated_at&&englishVersions[id]===row.updated_at
     return new Response(request.method==='HEAD'?null:document(row,settings.fixtures[id],page?.[1]?'en':'zh',englishCurrent),{headers:{...HEADERS,'Content-Type':'text/html; charset=utf-8','Content-Security-Policy':CSP,...(row.updated_at?{'X-JnQ-Publication-Version':row.updated_at}:{})}})
   }
-  if(url.pathname.startsWith('/api/'))fail(404,'Candidate endpoint not found')
+  if(url.pathname.startsWith('/api/')||(settings.edgeSave&&url.pathname.startsWith('/media/')))fail(404,'Candidate endpoint not found')
   return env.ASSETS.fetch(request)
 }
 export function createWorker(transport=(...args)=>globalThis.fetch(...args)) {

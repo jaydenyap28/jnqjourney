@@ -45,7 +45,7 @@ export default {async fetch(request,env){
     try{body=JSON.parse(raw)}catch{fail(400,'INVALID_JSON')}
     if(batch){
       if(!body||typeof body!=='object'||Array.isArray(body)||Object.keys(body).some(key=>!['spotId','keys'].includes(key))||![92005,92017,92030].includes(body.spotId)||!Array.isArray(body.keys)||body.keys.length<1||body.keys.length>30||new Set(body.keys).size!==body.keys.length)fail(400,'BATCH_SCOPE_REFUSED')
-      const pattern=new RegExp(`^media/candidate/${body.spotId}/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\\.png$`)
+      const pattern=new RegExp(`^media/candidate/${body.spotId}/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\\.(?:png|jpg|webp|gif)$`)
       if(body.keys.some(key=>typeof key!=='string'||!pattern.test(key)))fail(400,'FIXTURE_KEY_REFUSED')
       const snapshot=await readBatchSnapshot(env.TEST_MEDIA,String(body.spotId),body.keys,fail)
       return Response.json({...snapshot,nonce,acceptanceId:marker,spotId:body.spotId},{headers:HEADERS})

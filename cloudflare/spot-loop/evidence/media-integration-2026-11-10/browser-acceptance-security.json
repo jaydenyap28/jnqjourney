@@ -1,0 +1,470 @@
+{
+  "origin": "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "uiDeployment": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+  "bridgeDeployment": "8333108c-052e-4684-a0a2-51f05f3f266d",
+  "edgeVersion": 9,
+  "startedAt": "2026-11-10T01:15:21.427Z",
+  "verdict": "BROWSER_MEDIA_INTEGRATION_PASS",
+  "edgeCpu": "UNKNOWN",
+  "freeQuotaRemaining": "UNKNOWN",
+  "steps": [
+    "login_and_load_30",
+    "verify_already_saved_30_checkpoint",
+    "reload_and_handle_conflict_permission_network",
+    "save_reedit_and_withdraw",
+    "expired_browser_session",
+    "logout_and_clear_browser_session",
+    "unregistered_r2_object_denied",
+    "overwrite_after_snapshot_before_transaction",
+    "revoke_after_snapshot_before_transaction"
+  ],
+  "checks": [
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "acceptanceId": "1794273323149-0",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273325746-1",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273326878-2",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "public_image_before_withdraw_resume",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273327918-3",
+      "bytes": 32768,
+      "mime": "image/png",
+      "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 200,
+      "nativeCpuMs": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "reload_and_handle_conflict_permission_network",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273328558-4",
+      "status": 403,
+      "nativeCpuMs": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "save_reedit_and_withdraw",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273329368-5",
+      "edgeElapsedMs": 985,
+      "bridgeOperations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "status": 200,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "bridgeCpuMs": 2
+    },
+    {
+      "stage": "withdrawn_same_warmed_url_denied",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273330638-6",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "expired_browser_session",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273331167-7",
+      "status": 401,
+      "nativeCpuMs": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "logout_and_clear_browser_session",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "acceptanceId": "1794273331365-8",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "logout_and_clear_browser_session",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273332260-9",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "logout_and_clear_browser_session",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "DELETE",
+      "acceptanceId": "1794273332739-10",
+      "status": 200,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "unregistered_r2_bytes_denied",
+      "target": "ui",
+      "path": "/media/candidate/92017/7e4dd796-f922-4561-b4ba-8b374d7168a8.png",
+      "method": "GET",
+      "acceptanceId": "1794273335466-11",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "overwrite_after_snapshot_before_transaction",
+      "target": "bridge",
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "acceptanceId": "1794273336217-12",
+      "operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "status": 200,
+      "nativeCpuMs": 4,
+      "outcome": "ok"
+    },
+    {
+      "stage": "overwritten_object_bytes_denied",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273338361-13",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "revoke_after_snapshot_before_transaction",
+      "target": "bridge",
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "acceptanceId": "1794273339252-14",
+      "operations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "status": 200,
+      "nativeCpuMs": 2,
+      "outcome": "ok"
+    },
+    {
+      "stage": "revoked_object_bytes_denied",
+      "target": "ui",
+      "path": "/media/candidate/92017/2bdb0b31-e519-4553-b28d-c2170dfb98a2.png",
+      "method": "GET",
+      "acceptanceId": "1794273340349-15",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    }
+  ],
+  "uploads": [],
+  "race": [
+    {
+      "case": "overwrite",
+      "snapshotVersion": "7e5e3d1feaecafde2d8c61a236bd050a",
+      "currentVersion": "7e5e3cf99d49706e0d41678051b026d9",
+      "rpcStatus": 200
+    },
+    {
+      "case": "revoke",
+      "staleStatus": 409,
+      "staleCode": "PT409",
+      "currentStatus": 409,
+      "currentCode": "PT409"
+    }
+  ],
+  "priorObservedRequests": 32,
+  "uploadReused": true,
+  "unmeasuredPriorRead": "1794273197102-4",
+  "permissionTestFirstRequestCommitted": true,
+  "browserVersion": "157.0.8103.38",
+  "image": {
+    "bytes": 32768,
+    "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631"
+  },
+  "album": {
+    "count": 30,
+    "version": "2026-11-10T01:14:26.87+00:00"
+  },
+  "networkFault": "aborted before dispatch",
+  "lowMargin": [
+    {
+      "path": "/api/candidate/spots/92030/image/complete",
+      "nativeCpuMs": 8
+    }
+  ],
+  "finishedAt": "2026-11-10T01:15:40.961Z",
+  "pageErrors": 0
+}

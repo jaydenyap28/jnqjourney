@@ -1,0 +1,400 @@
+{
+  "origin": "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "uiDeployment": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+  "bridgeDeployment": "8333108c-052e-4684-a0a2-51f05f3f266d",
+  "edgeVersion": 9,
+  "startedAt": "2026-11-10T01:14:09.742Z",
+  "verdict": "BROWSER_MEDIA_INTEGRATION_BLOCKED",
+  "edgeCpu": "UNKNOWN",
+  "freeQuotaRemaining": "UNKNOWN",
+  "steps": [
+    "login_and_load_30",
+    "browser_presigned_upload_and_complete",
+    "save_30_with_new_upload",
+    "real_public_bytes_and_cache"
+  ],
+  "checks": [
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "acceptanceId": "1794273251578-0",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273253515-1",
+      "status": 200,
+      "nativeCpuMs": 5,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92030/d716d21a-3a24-405a-ae7b-489111d18273.png",
+      "method": "GET",
+      "acceptanceId": "1794273255189-2",
+      "status": 200,
+      "nativeCpuMs": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "unpublished_registered_bytes_denied",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273256262-3",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "save_30_with_new_upload",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273257092-4",
+      "edgeElapsedMs": 1445,
+      "bridgeOperations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "bridgeCpuMs": 4
+    },
+    {
+      "stage": "public_image_first",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273259776-5",
+      "bytes": 32768,
+      "mime": "image/png",
+      "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "public_image_repeat_default_cache",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273260522-6",
+      "bytes": 32768,
+      "mime": "image/png",
+      "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "retired_candidate_url_denied",
+      "target": "ui",
+      "path": "/media/candidate/92030/37f2d6c2-12e6-472a-a016-19e493aaaba0.png",
+      "method": "GET",
+      "acceptanceId": "1794273261294-7",
+      "bytes": 27,
+      "mime": "application/json",
+      "sha256": "108e184d57822f2bafc108005b373169406d36977ed6502e5ac9d304ed1bf0e0",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "legacy_public_media_path_denied",
+      "target": "ui",
+      "path": "/media/locations/92030/synthetic-legacy.png",
+      "method": "GET",
+      "acceptanceId": "1794273261830-8",
+      "bytes": 40,
+      "mime": "application/json",
+      "sha256": "a1e5aa01513851b5c1c2a354923390834828eaeec8d108b87994e88a27ce7038",
+      "cacheControl": "private, no-store, max-age=0",
+      "cfCacheStatus": null,
+      "browserCache": {
+        "disk": false,
+        "memory": false,
+        "serviceWorker": false
+      },
+      "status": 404,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "reload_and_handle_conflict_permission_network",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273263097-9",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "reload_and_handle_conflict_permission_network",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273263915-10",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "reload_and_handle_conflict_permission_network",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273264402-11",
+      "status": 409,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "bridgeCpuMs": 2
+    },
+    {
+      "stage": "reload_and_handle_conflict_permission_network",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "acceptanceId": "1794273265382-12",
+      "edgeElapsedMs": 664,
+      "bridgeOperations": {
+        "list": 2,
+        "head": 0,
+        "get": 0
+      },
+      "status": 200,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok",
+      "bridgeCpuMs": 3
+    }
+  ],
+  "uploads": [],
+  "race": [],
+  "priorObservedRequests": 19,
+  "uploadReused": true,
+  "unmeasuredPriorRead": "1794273197102-4",
+  "browserVersion": "157.0.8103.38",
+  "image": {
+    "bytes": 32768,
+    "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631"
+  },
+  "album": {
+    "count": 30,
+    "version": "2026-11-10T01:14:20.331+00:00"
+  },
+  "error": "BROWSER_OR_INTEGRATION_STEP_FAILED",
+  "failedStage": "reload_and_handle_conflict_permission_network",
+  "finishedAt": "2026-11-10T01:14:45.735Z",
+  "pageErrors": 0
+}

@@ -1,0 +1,23 @@
+{
+  "verdict": "BROWSER_MEDIA_INTEGRATION_PASS",
+  "production": "HOLD",
+  "observedNative": {
+    "ui": 45,
+    "bridge": 6
+  },
+  "maxNativeCpuMs": {
+    "ui": 8,
+    "bridge": 4
+  },
+  "measuredNewSaveRelayMaxMs": 2,
+  "publicImageGetMaxMs": 4,
+  "unmeasuredExistingRead": "1794273197102-4",
+  "tailProcessCountAfterCleanup": 0,
+  "sqlLfSha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "packagedSourceSha256": {
+    "out/_worker.js": "670ba5dce5a69689e5256f34e726b1aadedd1dad271671af24291d973b0db9c5",
+    "out/candidate-editor.js": "9633c3330f2b07bb2b4ae376539fb8dc1b28a20f298f2f2cc3a1ae2f28778275",
+    "bridge/out/_worker.js": "d7060f33f9a39b45b649d438895ad7ec34bcb5a809bf77c4f6af882ab31c4407",
+    "edge/supabase/functions/jnq-registry-rm0-pilot/save-handler.mjs": "a8ccd7cf7059bee8f2ef02c08acdb6a170cac757ba2aa74ca865ad18d59dbf9d"
+  }
+}

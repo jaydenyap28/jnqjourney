@@ -1,0 +1,253 @@
+{
+  "origin": "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "uiDeployment": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+  "bridgeDeployment": "8333108c-052e-4684-a0a2-51f05f3f266d",
+  "edgeVersion": 9,
+  "startedAt": "2026-11-10T01:12:00.738Z",
+  "verdict": "BROWSER_MEDIA_INTEGRATION_BLOCKED",
+  "edgeCpu": "UNKNOWN",
+  "freeQuotaRemaining": "UNKNOWN",
+  "steps": [
+    "login_and_load_30"
+  ],
+  "checks": [
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "acceptanceId": "1794273122532-0",
+      "status": 401,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "acceptanceId": "1794273122891-1",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/spots/92017",
+      "method": "GET",
+      "acceptanceId": "1794273124074-2",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273124534-3",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "GET",
+      "acceptanceId": "1794273125041-4",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92030/d716d21a-3a24-405a-ae7b-489111d18273.png",
+      "method": "GET",
+      "acceptanceId": "1794273125726-5",
+      "status": 200,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_presigned_upload_and_complete",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030/image/presign",
+      "method": "POST",
+      "acceptanceId": "1794273126371-6",
+      "status": 201,
+      "nativeCpuMs": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 1,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_presigned_upload_and_complete",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030/image/complete",
+      "method": "POST",
+      "acceptanceId": "1794273127793-7",
+      "status": 201,
+      "nativeCpuMs": 8,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 3,
+          "head": 0,
+          "put": 2,
+          "delete": 1
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 1
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "browser_presigned_upload_and_complete",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273129593-8",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "unpublished_registered_bytes_denied",
+      "target": "ui",
+      "path": "/media/candidate/92030/072ec3ad-32bf-48c6-a083-ed1e9ee3ec49.png",
+      "method": "GET",
+      "acceptanceId": "1794273130005-9",
+      "bytes": 123,
+      "mime": "text/html; charset=utf-8",
+      "sha256": "b4acd75c1594e9841c274edb1f85a60552095f31a196a4301c6cce5fce0a2b99",
+      "cacheControl": "no-store",
+      "cfCacheStatus": null,
+      "status": 404
+    }
+  ],
+  "uploads": [
+    {
+      "method": "PUT",
+      "status": 200,
+      "cors": true
+    }
+  ],
+  "race": [],
+  "priorObservedRequests": 4,
+  "browserVersion": "157.0.8103.38",
+  "image": {
+    "bytes": 32768,
+    "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631"
+  },
+  "error": "NATIVE_TAIL_MISSING",
+  "failedStage": "browser_presigned_upload_and_complete",
+  "finishedAt": "2026-11-10T01:12:31.767Z",
+  "pageErrors": 0
+}

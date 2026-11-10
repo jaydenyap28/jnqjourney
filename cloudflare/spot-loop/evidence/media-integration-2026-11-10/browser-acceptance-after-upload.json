@@ -1,0 +1,126 @@
+{
+  "origin": "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "uiDeployment": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+  "bridgeDeployment": "8333108c-052e-4684-a0a2-51f05f3f266d",
+  "edgeVersion": 9,
+  "startedAt": "2026-11-10T01:13:13.026Z",
+  "verdict": "BROWSER_MEDIA_INTEGRATION_BLOCKED",
+  "edgeCpu": "UNKNOWN",
+  "freeQuotaRemaining": "UNKNOWN",
+  "steps": [],
+  "checks": [
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "acceptanceId": "1794273194883-0",
+      "status": 401,
+      "nativeCpuMs": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "acceptanceId": "1794273195003-1",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/spots/92017",
+      "method": "GET",
+      "acceptanceId": "1794273196139-2",
+      "status": 200,
+      "nativeCpuMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/media/candidate/92017/8f0c3145-8b84-409b-9e94-db35a79e3019.png",
+      "method": "GET",
+      "acceptanceId": "1794273196591-3",
+      "status": 200,
+      "nativeCpuMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      },
+      "outcome": "ok"
+    },
+    {
+      "stage": "login_and_load_30",
+      "target": "ui",
+      "path": "/api/candidate/spots/92030",
+      "method": "GET",
+      "acceptanceId": "1794273197102-4",
+      "status": 200
+    }
+  ],
+  "uploads": [],
+  "race": [],
+  "priorObservedRequests": 14,
+  "uploadReused": true,
+  "browserVersion": "157.0.8103.38",
+  "image": {
+    "bytes": 32768,
+    "sha256": "504a06e4275dc215d811e0d9f70a32570ebc82168fce8985bf7ebbef51351631"
+  },
+  "error": "NATIVE_TAIL_MISSING",
+  "failedStage": "login_and_load_30",
+  "finishedAt": "2026-11-10T01:13:37.829Z",
+  "pageErrors": 0
+}

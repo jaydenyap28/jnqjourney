@@ -1,0 +1,76 @@
+{
+  "deploymentId": "8333108c-052e-4684-a0a2-51f05f3f266d",
+  "count": 6,
+  "diagnostics": {
+    "parsedFrames": 6,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794273260057,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273257092-4",
+      "wallTime": 63,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794273265743,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273264402-11",
+      "wallTime": 36,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794273266663,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273265382-12",
+      "wallTime": 34,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794273331012,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273329368-5",
+      "wallTime": 45,
+      "cpuTime": 2
+    },
+    {
+      "timestamp": 1794273337155,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273336217-12",
+      "wallTime": 41,
+      "cpuTime": 4
+    },
+    {
+      "timestamp": 1794273340133,
+      "path": "/internal/r2-identity",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273339252-14",
+      "wallTime": 38,
+      "cpuTime": 2
+    }
+  ]
+}

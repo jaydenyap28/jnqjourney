@@ -1,0 +1,1051 @@
+{
+  "deploymentId": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+  "count": 45,
+  "diagnostics": {
+    "parsedFrames": 45,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false
+  },
+  "events": [
+    {
+      "timestamp": 1794273081770,
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794273080894-0",
+      "wallTime": 2,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273082261,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273081339-1",
+      "wallTime": 1628,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273084013,
+      "path": "/api/candidate/spots/92017",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273083150-2",
+      "wallTime": 792,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273084931,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273084060-3",
+      "wallTime": 487,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273123414,
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794273122532-0",
+      "wallTime": 2,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273123836,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273122891-1",
+      "wallTime": 990,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273124945,
+      "path": "/api/candidate/spots/92017",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273124074-2",
+      "wallTime": 338,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273125408,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273124534-3",
+      "wallTime": 382,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273125898,
+      "path": "/api/candidate/spots/92030",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273125041-4",
+      "wallTime": 582,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273126587,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273125726-5",
+      "wallTime": 444,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273127250,
+      "path": "/api/candidate/spots/92030/image/presign",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794273126371-6",
+      "wallTime": 397,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 1,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273128671,
+      "path": "/api/candidate/spots/92030/image/complete",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 201,
+      "acceptanceId": "1794273127793-7",
+      "wallTime": 1669,
+      "cpuTime": 8,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 3,
+          "head": 0,
+          "put": 2,
+          "delete": 1
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 1
+      }
+    },
+    {
+      "timestamp": 1794273130464,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273129593-8",
+      "wallTime": 355,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273195760,
+      "path": "/api/candidate/session",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794273194883-0",
+      "wallTime": 1,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273195921,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273195003-1",
+      "wallTime": 973,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273197000,
+      "path": "/api/candidate/spots/92017",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273196139-2",
+      "wallTime": 333,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273197465,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273196591-3",
+      "wallTime": 382,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273197963,
+      "path": "/api/candidate/spots/92030",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273197102-4",
+      "wallTime": 314,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 1,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273252500,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273251578-0",
+      "wallTime": 1004,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273254378,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273253515-1",
+      "wallTime": 670,
+      "cpuTime": 5,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273256066,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273255189-2",
+      "wallTime": 376,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273257126,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273256262-3",
+      "wallTime": 422,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273257975,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273257092-4",
+      "wallTime": 2433,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273260656,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273259776-5",
+      "wallTime": 611,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273261395,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273260522-6",
+      "wallTime": 646,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273262156,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273261294-7",
+      "wallTime": 435,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273262702,
+      "path": "/media/locations/92030/synthetic-legacy.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273261830-8",
+      "wallTime": 1,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273263959,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273263097-9",
+      "wallTime": 373,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273264777,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273263915-10",
+      "wallTime": 370,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273265269,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 409,
+      "acceptanceId": "1794273264402-11",
+      "wallTime": 856,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273266245,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273265382-12",
+      "wallTime": 685,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273324060,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273323149-0",
+      "wallTime": 1143,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273326627,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273325746-1",
+      "wallTime": 663,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273327758,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273326878-2",
+      "wallTime": 370,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273328807,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273327918-3",
+      "wallTime": 427,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273329497,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 403,
+      "acceptanceId": "1794273328558-4",
+      "wallTime": 1,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273330248,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273329368-5",
+      "wallTime": 1031,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273331516,
+      "path": "/media/candidate/92030/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273330638-6",
+      "wallTime": 151,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273332030,
+      "path": "/api/candidate/spots/92030",
+      "method": "PATCH",
+      "outcome": "ok",
+      "status": 401,
+      "acceptanceId": "1794273331167-7",
+      "wallTime": 0,
+      "cpuTime": 0,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273332269,
+      "path": "/api/candidate/session",
+      "method": "POST",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273331365-8",
+      "wallTime": 399,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 2,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273333124,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273332260-9",
+      "wallTime": 367,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 2,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273333618,
+      "path": "/api/candidate/session",
+      "method": "DELETE",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794273332739-10",
+      "wallTime": 157,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 0,
+        "supabaseRead": 0,
+        "auth": 1,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273336340,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273335466-11",
+      "wallTime": 149,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273339224,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273338361-13",
+      "wallTime": 605,
+      "cpuTime": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 1,
+          "head": 1,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    },
+    {
+      "timestamp": 1794273341278,
+      "path": "/media/candidate/92017/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794273340349-15",
+      "wallTime": 152,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0,
+          "put": 0,
+          "delete": 0
+        },
+        "supabaseRpc": 1,
+        "supabaseRead": 0,
+        "auth": 0,
+        "copy": 0
+      }
+    }
+  ]
+}
