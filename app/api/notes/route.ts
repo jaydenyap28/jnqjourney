@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import { readPublicNoteBySlug, readPublicNotes } from '@/lib/server/public-content-store'
-import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
+import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveNotePublicMedia } from '@/lib/server/public-content-media'
 
 export const runtime = 'nodejs'
-export const revalidate = 3600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-export async function GET(request: Request) {
+async function read(request: Request) {
   const slug = String(new URL(request.url).searchParams.get('slug') || '').trim()
   const { locations } = await resolvePublicData()
   if (slug) {
@@ -17,7 +18,7 @@ export async function GET(request: Request) {
     }
     return NextResponse.json(
       { note: resolveNotePublicMedia(storedNote, locations) },
-      { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } }
+      { headers: { 'Cache-Control': PRIVATE_NO_STORE } }
     )
   }
   const notes = (await readPublicNotes()).map((storedNote) => {
@@ -39,8 +40,12 @@ export async function GET(request: Request) {
     { notes },
     {
       headers: {
-        'Cache-Control': PUBLIC_CACHE_CONTROL,
+        'Cache-Control': PRIVATE_NO_STORE,
       },
     }
   )
+}
+
+export async function GET(request: Request) {
+  try { return await read(request) } catch { return NextResponse.json({error:{code:'PUBLIC_DATA_UNAVAILABLE',message:'Public content temporarily unavailable.'}}, {status:503,headers:{'Cache-Control':PRIVATE_NO_STORE}}) }
 }

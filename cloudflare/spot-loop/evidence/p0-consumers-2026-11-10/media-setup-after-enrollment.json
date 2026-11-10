@@ -1,0 +1,28 @@
+{
+  "projectRef": "rnamstwwbzknwbjwdgrf",
+  "bucket": "jnqjourney-spot-loop-isolated-media",
+  "media": [
+    {
+      "id": 92061,
+      "key": "media/candidate/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "receiptKey": "_candidate-validation/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png.json",
+      "registered": true,
+      "size": 68,
+      "etag": "a75db2c3e1deed40d807e8d2656674cd",
+      "version": "7e5e3c459188224e329abc86cebe9f3a",
+      "receiptSize": 257,
+      "receiptEtag": "6c849f7ad1e6d7eefd75c19eff6b500c",
+      "receiptVersion": "7e5e3c45893891780616bb4a2cecce15",
+      "bytesVerified": true
+    }
+  ],
+  "r2": {
+    "put": 2,
+    "get": 2
+  },
+  "registry": {
+    "register": 1,
+    "lookup": 1
+  },
+  "sha256": "5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15"
+}

@@ -1,0 +1,9 @@
+{
+  "processes": [],
+  "testPortListeners": 0,
+  "unexpectedListenerErrors": 0,
+  "ownedProcessesRemaining": 0,
+  "newTemporarySecrets": 0,
+  "retainedIsolatedR2Objects": "Retained; no uncertain or shared object deleted",
+  "checkedAt": "2026-11-10T05:23:47.1594246Z"
+}

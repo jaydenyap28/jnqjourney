@@ -1,0 +1,65 @@
+{
+  "verdict": "P0_CONSUMER_ADAPTATION_BLOCKED",
+  "baseline": "38338b922a20c797a9e3d02df1c01e8cc1c8bb11",
+  "adminReadAdapters": {
+    "implemented": 7,
+    "actualProtectedRead200": 7,
+    "fullEditSaveRefreshPassed": 0
+  },
+  "publicReaders": {
+    "implemented": 4,
+    "fullPageMatrixPassed": false
+  },
+  "feedFamilies": {
+    "implemented": 8,
+    "basicReadPathsVerified": 8,
+    "remainingLegacyOperationalConsumers": [
+      "app/api/admin/storage-cleanup/route.ts",
+      "lib/server/r2.ts Guide publication public read-back",
+      "lib/server/public-guide-trip-cost.ts publication helpers CDN/static reads",
+      "lib/server/localization-publisher.mjs public read-back"
+    ]
+  },
+  "browser": {
+    "realNextLocal": true,
+    "frontendHostedOnPages": false,
+    "renderedRoutes": [
+      "/search",
+      "/region",
+      "/guide",
+      "/notes",
+      "/en/notes"
+    ],
+    "homeBlocked": true,
+    "detailEnglishHomeAndRscMatrix": "NOT_COMPLETE"
+  },
+  "native": {
+    "markedSamples": 13,
+    "allCpuObserved": true,
+    "maxCpuMs": 5,
+    "totalWorkerRequests": "UNKNOWN: other server/browser feed requests not a complete native ledger",
+    "originalMissingCpu": "1794278768484-11 remains UNKNOWN",
+    "smallSampleOnly": true
+  },
+  "knownHistory": {
+    "complete8ms": "preserved",
+    "registry17Image29msAnd19ms": "preserved"
+  },
+  "mapping": {
+    "knownUrlKeys": 690,
+    "crossModuleKeys": 10,
+    "historicalByteIdentitiesVerifiedThisRound": 0
+  },
+  "tests": {
+    "unitPassed": 14,
+    "sourceTypecheckExit": 0,
+    "workspaceWideTypecheck": "NOT_PASS: includes artifacts/untracked generated file; adapter type errors corrected in source",
+    "eslintErrors": 0,
+    "eslintExistingWarnings": 2
+  },
+  "productionWrites": 0,
+  "productionDeploymentsCreated": 0,
+  "formalMigration": "HOLD",
+  "deployedWorkerSha256": "61576ce2f05f1a9e32ceb6e91173a9f5adabdca9095bc8e1de1d759e46c3620d",
+  "freeQuotaRemaining": "UNKNOWN"
+}

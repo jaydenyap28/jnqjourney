@@ -1,0 +1,109 @@
+{
+  "startedAt": "2026-11-10T04:31:57.024Z",
+  "success": true,
+  "environment": "preview",
+  "origin": "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "fixtures": [
+    92061,
+    92062
+  ],
+  "formalWrites": 0,
+  "newSecrets": 0,
+  "priorSetupError": "REGISTRATION_NOT_CONFIRMED",
+  "olderAllowlistChecks": [
+    {
+      "id": "5332ce56-643d-4c5c-9882-4487c516c563",
+      "allowlist": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+      "allowlist": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "allowlist": [
+        "1"
+      ]
+    },
+    {
+      "id": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+      "allowlist": [
+        "1"
+      ]
+    },
+    {
+      "id": "50f3962e-5eb5-47a6-8662-319d992b4113",
+      "allowlist": [
+        "1"
+      ]
+    },
+    {
+      "id": "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+      "allowlist": [
+        "1"
+      ]
+    },
+    {
+      "id": "730e582e-530a-4026-9478-5ccebd5fd248",
+      "allowlist": [
+        "1"
+      ]
+    },
+    {
+      "id": "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95",
+      "allowlist": [
+        "1"
+      ]
+    }
+  ],
+  "fixturesCreated": true,
+  "fixtureVersion": "2026-11-10T04:32:22.326+00:00",
+  "mediaPath": "/media/candidate/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+  "feedPrefix": "candidate-consumers/1794285141231/",
+  "feeds": [
+    {
+      "key": "candidate-consumers/1794285141231/regions.json",
+      "bytes": 219,
+      "version": "7e5e3c457c257c9ea8f4f6215b33483d",
+      "etag": "b44eb1b13b4bcda92e11d9b10deec72b"
+    },
+    {
+      "key": "candidate-consumers/1794285141231/guides.json",
+      "bytes": 99408,
+      "version": "7e5e3c4576ea52915b2b6d78a87b37f9",
+      "etag": "c26ea4b204c3037dc18e1dbf47c10d61"
+    },
+    {
+      "key": "candidate-consumers/1794285141231/notes.json",
+      "bytes": 267345,
+      "version": "7e5e3c45715cb0262dd757c16a7ad90e",
+      "etag": "dd669027eaa635e828245a7d3f0fcdd5"
+    },
+    {
+      "key": "candidate-consumers/1794285141231/i18n/en/records.json",
+      "bytes": 408260,
+      "version": "7e5e3c456c2e590399963420bcb1edf3",
+      "etag": "2368a4e69090b28161c16e22dbc7972d"
+    },
+    {
+      "key": "candidate-consumers/1794285141231/guide-trip-costs.json",
+      "bytes": 4154,
+      "version": "7e5e3c456614c6d887dbfbc445e5f40b",
+      "etag": "f2e6488b630d519f020cdd04b5a00609"
+    }
+  ],
+  "expiresAt": 1794292348,
+  "deploymentId": "f62a26a3-64a3-4eb9-96f1-f4e9d8229532",
+  "productionUnchanged": true,
+  "finishedAt": "2026-11-10T04:32:42.431Z"
+}

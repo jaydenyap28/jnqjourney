@@ -25,7 +25,7 @@ import { buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/l
 
 
 import RegionPageView from '@/components/RegionPageView'
-export const revalidate=3600
+export const revalidate = 0
 interface PageProps {
   params: {
     slug: string
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const readableName = resolveEntityDisplayName(region).primary
   const seoTitle = `${readableName} Travel Guide - Spots, Food, Stays and Routes`
   const description = `Explore ${readableName} with JnQ Journey: travel spots, food finds, stays, route ideas, maps, photos, and practical notes for planning your trip.`
-  
+
   const canonicalPath = buildRegionPath(region.name, region.id)
   const canonicalUrl = buildCanonicalUrl(canonicalPath)
 
@@ -62,3 +62,5 @@ export default async function RegionPage({params}:PageProps) {
  const relatedNotes=notes.filter(note=>note.published && noteRegionIds(note,publicData.locations,publicData.regions).has(region.id)).map(toRelatedNoteCard);
  return <RegionPageView region={region} locations={locations.slice(0,100)} relatedGuideSpotIds={locations.map(location=>location.id)} relatedPackages={packages.filter(p=>p.region_id===region.id)} allGuides={allGuides} relatedNotes={relatedNotes}/>
 }
+
+export const dynamic = 'force-dynamic'

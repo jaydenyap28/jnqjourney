@@ -1,0 +1,30 @@
+[
+  {
+    "verification": {
+      "fixtures": [
+        {
+          "id": 92061,
+          "status": "active",
+          "enrolled": true,
+          "registry_records": 1,
+          "publication_status": "hidden"
+        },
+        {
+          "id": 92062,
+          "status": "active",
+          "enrolled": true,
+          "registry_records": 0,
+          "publication_status": "hidden"
+        }
+      ],
+      "anon_select": false,
+      "project_ref": "rnamstwwbzknwbjwdgrf",
+      "locations_rls": true,
+      "public_rpc_anon": false,
+      "public_rpc_service": true,
+      "registry_rpc_count": 6,
+      "authenticated_select": false,
+      "public_rpc_authenticated": false
+    }
+  }
+]

@@ -1,0 +1,22 @@
+✔ missing or mismatched admin allowlist fails closed before any write (152.1717ms)
+✔ create Spot through admin API preserves every field and save result (31.2792ms)
+✔ update Spot through admin API preserves fields and safe-save error details (23.111ms)
+✔ clear cover through admin API changes only image_url with minimal result (17.9222ms)
+✔ admin API normalizes legacy stringified price_info before writing JSONB (20.0379ms)
+✔ admin full-field read, bounded pagination, detail and linked reads use a real auth guard (164.9162ms)
+✔ live ID inventory is paginated; RPC batches never exceed twenty and NULL remains public (32.263ms)
+✔ private columns, malformed projection and stale fallback cannot restore visibility (19.2732ms)
+✔ actual public resolvers preserve custom slugs, omit hidden records and have no source fallback (7125.4442ms)
+✔ private feed failure does not use CDN or bundled content (12.2592ms)
+✔ exact legacy media host rewriting preserves shared key identity and blocks public-host bypass (2.1608ms)
+✔ candidate legacy mutation cannot bypass Registry and browser metadata cannot proxy arbitrary URLs (15.1036ms)
+✔ all seven actual client files use protected reads, including indirect relationship joins (3.7307ms)
+✔ Pages React without cache() stays live and browser imports of server data fail immediately (2.0439ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7648.8801

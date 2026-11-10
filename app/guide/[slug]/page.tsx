@@ -43,7 +43,7 @@ import { selectGuideRouteNoteCards } from '@/lib/content-relations'
 
 import GuidePageView from '@/components/GuidePageView'
 import { buildPageTitle, buildMetaDescription, buildCanonicalUrl, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
-export const revalidate = 3600
+export const revalidate = 0
 const resolveGuideMediaForRender = cache(resolveGuidePublicMedia)
 export function generateStaticParams() { return [] }
 interface PageProps {
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const baseTitle = `${guide.title}${daysText ? ` (${daysText})` : ''} Travel Guide`
 
   const description = buildMetaDescription(
-    guide.summary || guide.tagline || guide.title, 
+    guide.summary || guide.tagline || guide.title,
     `Plan ${guide.title} with a day-by-day route, linked spots, transport notes${hasBudgetOrStay ? ', stays, budget references' : ''}, photos, and practical travel details from JnQ Journey.`
   )
   const canonicalUrl = buildCanonicalUrl(`/guide/${guide.slug}`)
@@ -90,3 +90,5 @@ export default async function GuideDetailPage({params}:PageProps) {
  ].flatMap(item => item.type === 'note' ? [item.noteSlug] : [])
  return <GuidePageView guide={guide} publicData={publicData} publicTripCost={publicTripCost} approvedPriceHighlights={approvedPriceHighlights} relatedPackages={packages.filter(p=>p.related_guide_slugs?.includes(guide.slug))} allGuides={guides.map(g=>resolveGuideMediaForRender(g,publicData.locations))} routeNotes={selectGuideRouteNoteCards(noteSlugs,notes)}/>
 }
+
+export const dynamic = 'force-dynamic'

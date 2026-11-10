@@ -1,0 +1,20 @@
+{
+  "startedAt": "2026-11-10T05:01:51.983Z",
+  "runtime": "Local real Next components; Cloudflare Preview is the private-feed/byte API only",
+  "pages": [
+    {
+      "path": "/en/notes",
+      "http": 200,
+      "textChars": 2865,
+      "headings": 11,
+      "newJsErrors": 0,
+      "unverifiedMediaDenied": 0,
+      "runtimeErrorOverlay": false,
+      "bodyRendered": true
+    }
+  ],
+  "canonical": null,
+  "formalWrites": 0,
+  "fixtureHidden": true,
+  "finishedAt": "2026-11-10T05:01:56.856Z"
+}

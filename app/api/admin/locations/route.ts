@@ -2,9 +2,40 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
 import { requireAdminRequest } from '@/lib/server/admin-auth'
+import { isolatedReadIds } from '@/lib/server/consumer-scope'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+export async function GET(request: Request) {
+  const auth = await requireAdminRequest(request)
+  if (!auth.ok) return auth.response
+  const headers = { 'Cache-Control': 'private, no-store, max-age=0', 'Vary': 'Authorization' }
+  const params = new URL(request.url).searchParams
+  const id = params.get('id')
+  const page = Number(params.get('page') || '0')
+  const resource = params.get('resource') || 'locations'
+  if ([...params.keys()].some(key => !['id', 'page', 'resource'].includes(key)) ||
+      !Number.isSafeInteger(page) || page < 0 || page >= 50 ||
+      (id != null && (!/^[1-9]\d*$/.test(id) || !validId(Number(id)))) ||
+      !['locations', 'affiliate-links'].includes(resource) || (id && resource !== 'locations')) return invalid('Invalid read query.')
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !key) return NextResponse.json({ error: { message: 'Database unavailable.' } }, { status: 503, headers })
+  const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) } })
+  const query = resource === 'locations'
+    ? db.from('locations').select('*,regions:region_id(id,name,name_cn,country,parent_id,parent:parent_id(id,name,name_cn,country))').order('id', { ascending: false })
+    : db.from('affiliate_links').select('*,locations:location_id(name,name_cn),regions:region_id(name,name_cn,country)').order('id', { ascending: false })
+  const fixtures = isolatedReadIds()
+  if (fixtures) {
+    if (resource === 'locations') query.in('id', fixtures)
+    else query.or(`location_id.is.null,location_id.in.(${fixtures.join(',')})`)
+  }
+  const result = id ? await query.eq('id', Number(id)).maybeSingle() : await query.range(page * 200, page * 200 + 199)
+  if (result.error) return NextResponse.json({ error: { message: 'Admin data source unavailable.' } }, { status: 503, headers })
+  if (id && !result.data) return NextResponse.json({ error: { message: 'Location not found.' } }, { status: 404, headers })
+  return NextResponse.json({ data: result.data, hasMore: !id && Array.isArray(result.data) && result.data.length === 200 }, { headers })
+}
 
 function invalid(message: string) {
   return NextResponse.json({ data: null, error: { message } }, { status: 400 })
@@ -68,7 +99,7 @@ async function mutate(request: Request, method: 'POST' | 'PATCH' | 'DELETE') {
   }
   const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
   const table = supabase.from('locations')
-  const mutationData = method === 'DELETE' ? null : normalizeLocationMutationData(body.data)
+  const mutationData = method === 'DELETE' ? {} : normalizeLocationMutationData(body.data)
   const query = method === 'POST' ? table.insert([mutationData]) : method === 'PATCH' ? table.update(mutationData) : table.delete()
   const filtered = method === 'POST' ? query : hasId ? query.eq('id', body.id) : query.in('id', body.ids)
   // Save returns the same ID/timestamp used by slug saving and snapshot publishing.

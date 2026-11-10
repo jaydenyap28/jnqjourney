@@ -16,8 +16,8 @@ import { formatOpeningHoursDisplay } from '@/lib/opening-hours'
 import { buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 import { readPublishedPackages } from '@/lib/server/travel-packages'
 
-export const revalidate = 600
-export const dynamic = 'force-static'
+export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
   params: {

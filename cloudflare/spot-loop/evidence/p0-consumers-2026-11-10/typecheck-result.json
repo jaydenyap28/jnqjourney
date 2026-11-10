@@ -1,0 +1,6 @@
+{
+  "warnings": "Workspace-wide tsc initially failed; this is the corrected source-scope run.",
+  "sourceScope": "app, pages, components, lib, types; excludes artifacts and pre-existing untracked lib/build-fonts.generated.ts",
+  "exitCode": 0,
+  "command": "tsc --project artifacts/cloudflare-p0-consumers/tsconfig.validation.json --noEmit"
+}

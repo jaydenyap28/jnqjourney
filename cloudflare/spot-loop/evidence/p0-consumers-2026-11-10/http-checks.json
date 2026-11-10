@@ -1,0 +1,243 @@
+{
+  "startedAt": "2026-11-10T04:50:33.382Z",
+  "checks": [
+    {
+      "label": "admin_anonymous_denied",
+      "path": "/api/admin/locations",
+      "status": 401,
+      "bytes": 48,
+      "expected": 401,
+      "passed": true,
+      "cache": null
+    },
+    {
+      "label": "admin_full_fields",
+      "path": "/api/admin/locations?page=0",
+      "status": 200,
+      "bytes": 2003,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "metadata_anonymous_denied",
+      "path": "/api/admin/image-size?url=%2Fmedia%2Fcandidate%2F92061%2Fc7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "status": 401,
+      "bytes": 48,
+      "expected": 401,
+      "passed": true,
+      "cache": null
+    },
+    {
+      "label": "metadata_controlled_image",
+      "path": "/api/admin/image-size?url=%2Fmedia%2Fcandidate%2F92061%2Fc7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "status": 200,
+      "bytes": 11,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "metadata_ssrf_rejected",
+      "path": "/api/admin/image-size?url=http://169.254.169.254/",
+      "status": 400,
+      "bytes": 56,
+      "expected": 400,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/api/locations",
+      "status": 200,
+      "bytes": 706,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/api/regions",
+      "status": 200,
+      "bytes": 259,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/api/spots/consumer-fixture-92061",
+      "status": 200,
+      "bytes": 1088,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/locations.json",
+      "status": 200,
+      "bytes": 466,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/regions.json",
+      "status": 200,
+      "bytes": 277,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/spots/index.json",
+      "status": 200,
+      "bytes": 60,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/spots/consumer-fixture-92061.json",
+      "status": 301,
+      "bytes": 0,
+      "expected": 200,
+      "passed": false,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/guides.json",
+      "status": 200,
+      "bytes": 99367,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/notes.json",
+      "status": 200,
+      "bytes": 267304,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/i18n/en/records.json",
+      "status": 200,
+      "bytes": 122968,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "controlled_public_source",
+      "path": "/public-data/guide-trip-costs.json",
+      "status": 200,
+      "bytes": 4154,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "historical_feed_alias",
+      "path": "/public-data/spots/spot-92061.json",
+      "status": 301,
+      "bytes": 0,
+      "expected": 301,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "authoritative_admin_notes",
+      "path": "/api/admin/notes",
+      "status": 503,
+      "bytes": 55,
+      "expected": 200,
+      "passed": false,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "hidden_projection",
+      "path": "/public-data/locations.json",
+      "status": 200,
+      "bytes": 34,
+      "expected": 200,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "hidden_detail_feed",
+      "path": "/public-data/spots/consumer-fixture-92061.json",
+      "status": 404,
+      "bytes": 9,
+      "expected": 404,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "hidden_alias_feed",
+      "path": "/public-data/spots/spot-92061.json",
+      "status": 404,
+      "bytes": 9,
+      "expected": 404,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "hidden_api",
+      "path": "/api/spots/consumer-fixture-92061",
+      "status": 404,
+      "bytes": 51,
+      "expected": 404,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    },
+    {
+      "label": "hidden_image",
+      "path": "/media/candidate/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "status": 404,
+      "bytes": 17,
+      "expected": 404,
+      "passed": true,
+      "cache": "private, no-store, max-age=0"
+    }
+  ],
+  "gaps": [
+    {
+      "source": "isolated travel_packages",
+      "status": 400,
+      "code": "42703",
+      "message": "column travel_packages.hero_image does not exist"
+    },
+    {
+      "source": "isolated Notes pointer",
+      "status": 503
+    }
+  ],
+  "success": false,
+  "siteRuntime": "Local Next with isolated Supabase and Cloudflare Preview data source; not a hosted Next frontend",
+  "fixtureControlOnly": true,
+  "nativeHead": {
+    "acceptanceId": "1794286235681-12",
+    "status": 200,
+    "cpuMs": 4,
+    "operations": {
+      "r2": {
+        "list": 0,
+        "get": 0,
+        "head": 2
+      },
+      "supabaseRpc": 2
+    }
+  },
+  "fixtureHidden": true,
+  "localSessionClosed": true,
+  "finishedAt": "2026-11-10T04:50:55.112Z"
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "file": "artifacts/cloudflare-p0-consumers/replacement/locations.json",
+    "bytes": 523124,
+    "sha256": "32306bd3811d9b3bc152e92466283a125bb0087eac269269d79987966663d8d4"
+  },
+  {
+    "file": "artifacts/cloudflare-p0-consumers/replacement/regions.json",
+    "bytes": 30783,
+    "sha256": "fdaa7b88ba563f45356d7914a7744d125831b317eef271b8d5ff80d0c23fa9d3"
+  },
+  {
+    "file": "artifacts/cloudflare-p0-consumers/replacement/guides.json",
+    "bytes": 99569,
+    "sha256": "332e2a8cd11f5b390f585fd46c616d89414d5cfc9e1c16c02e7583d136a60b0f"
+  },
+  {
+    "file": "artifacts/cloudflare-p0-consumers/replacement/notes.json",
+    "bytes": 267287,
+    "sha256": "3d4515d3db52a28262df863e567492b297a671bdec2361adf10916d2c597be49"
+  },
+  {
+    "file": "artifacts/cloudflare-p0-consumers/replacement/packages.json",
+    "bytes": 61673,
+    "sha256": "252f269b007f2b9703b61b163f623ebe86062487bb1f431db847778f488961fa"
+  }
+]

@@ -24,6 +24,7 @@ import { adminFetch } from '@/lib/admin-fetch'
 import { mutateAdminRegions } from '@/lib/admin-regions'
 import { getRegionPathLabel, type RegionLike } from '@/lib/region-utils'
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations } from '@/lib/admin-location-read'
 
 interface Region extends RegionLike {
   id: number
@@ -117,10 +118,7 @@ export default function RegionsPage() {
   }
 
   async function fetchLocations() {
-    const { data, error } = await supabase
-      .from('locations')
-      .select('id, name, name_cn, image_url, images, address, region_id')
-      .order('id', { ascending: false })
+    const { data, error } = await readAdminLocations()
     if (error) throw error
     setLocations((data || []) as LocationOption[])
   }

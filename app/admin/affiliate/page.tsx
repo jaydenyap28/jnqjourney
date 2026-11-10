@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Download, Edit, ExternalLink, Filter, Plus, Trash2, X } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations, readAdminAffiliateLinks } from '@/lib/admin-location-read'
 import { mutateAdminAffiliateLinks } from '@/lib/admin-affiliate-links'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -137,6 +138,7 @@ function AffiliatePageContent() {
   const [locations, setLocations] = useState<BasicLocation[]>([])
   const [regions, setRegions] = useState<BasicRegion[]>([])
   const [loading, setLoading] = useState(true)
+  const [readError, setReadError] = useState('')
   const [filterProvider, setFilterProvider] = useState('all')
   const [filterType, setFilterType] = useState('all')
   const [linksSearch, setLinksSearch] = useState('')
@@ -159,27 +161,14 @@ function AffiliatePageContent() {
   const fetchLinks = async () => {
     setLoading(true)
 
-    const { data } = await supabase
-      .from('affiliate_links')
-      .select(
-        `
-          *,
-          locations(name, name_cn),
-          regions(name, country)
-        `
-      )
-      .order('created_at', { ascending: false })
+    const { data } = await readAdminAffiliateLinks()
 
     setLinks(data || [])
     setLoading(false)
   }
 
   const fetchLocations = async () => {
-    const { data } = await supabase
-      .from('locations')
-      .select('id, name, name_cn, regions:region_id(name, name_cn, country, parent:parent_id(name, name_cn, country))')
-      .order('name')
-      .limit(500)
+    const { data } = await readAdminLocations()
 
     const normalizedLocations: BasicLocation[] = (data || []).map((item: any) => ({
       ...item,
@@ -223,9 +212,10 @@ function AffiliatePageContent() {
   }, [searchParams])
 
   useEffect(() => {
-    fetchLinks()
-    fetchLocations()
-    fetchRegions()
+    Promise.all([fetchLinks(), fetchLocations(), fetchRegions()]).catch(error => {
+      setReadError(error instanceof Error ? error.message : '后台数据加载失败')
+      setLoading(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -403,7 +393,7 @@ function AffiliatePageContent() {
       }
     } else {
       let payloads: any[] = []
-      
+
       if (locationIds.length) {
         payloads = locationIds.map((locationId) => ({
           ...basePayload,
@@ -486,6 +476,7 @@ function AffiliatePageContent() {
 
   return (
     <div className="space-y-6 p-6">
+      {readError ? <p role="alert" className="text-red-500">{readError}</p> : null}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="text-3xl font-bold">联盟链接管理</h1>

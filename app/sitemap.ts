@@ -9,10 +9,9 @@ import { fetchAllLocationsForSitemap, fetchAllRegionsForSitemap } from '@/lib/se
 import { readPublishedPackageOptions, readPublishedPackages } from '@/lib/server/travel-packages'
 import { readLocalizationSnapshot } from '@/lib/server/localization-snapshot'
 
-export const revalidate = 3600
-// The live quality inventory must be read for each regeneration. Its
-// no-store fetch must not turn every crawler request into a regeneration.
-export const dynamic = 'force-static'
+export const revalidate = 0
+// Current publication eligibility is read on every sitemap request.
+export const dynamic = 'force-dynamic'
 
 function validDateOrUndefined(value?: string | null) {
   if (!value) return undefined

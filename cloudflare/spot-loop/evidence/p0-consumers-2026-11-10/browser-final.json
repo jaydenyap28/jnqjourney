@@ -1,0 +1,268 @@
+{
+  "startedAt": "2026-11-10T04:44:29.094Z",
+  "siteOrigin": "http://127.0.0.1:4401",
+  "siteRuntime": "Real Next 14 app, local-only isolated environment; NOT a Cloudflare frontend deployment",
+  "previewApi": "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "steps": [
+    {
+      "name": "real_supabase_login",
+      "passed": true
+    },
+    {
+      "name": "/admin",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": true,
+      "sourceErrorVisible": true
+    },
+    {
+      "name": "real_supabase_login",
+      "passed": true
+    },
+    {
+      "name": "/admin/edit/92061",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": false,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "/admin/regions",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": true,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "/admin/notes",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": false,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "/admin/guides",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": false,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "/admin/affiliate",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": true,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "/admin/klook-widgets",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": false,
+      "sourceErrorVisible": false
+    },
+    {
+      "name": "anonymous_admin_denied",
+      "http": 401,
+      "passed": true
+    },
+    {
+      "name": "/",
+      "http": 200,
+      "htmlChars": 0,
+      "hiddenFixtureNotPresent": true
+    }
+  ],
+  "api": [
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/guides",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/guides",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/klook-widgets",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/klook-widgets",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "formalRequestsBlocked": 23,
+  "verdict": "P0_CONSUMER_ADAPTATION_BLOCKED",
+  "priorBrowserError": "BROWSER_TIMEOUT",
+  "fixtureControlOnly": true,
+  "browserVersion": "157.0.8103.38",
+  "error": "BROWSER_ACCEPTANCE_FAILED",
+  "failureSummary": "page.goto: net::ERR_ABORTED at http://127.0.0.1:4401/search\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4401/search\", waiting until \"domcontentloaded\"\u001b[22m\n",
+  "fixtureHiddenAfterTest": true,
+  "finishedAt": "2026-11-10T04:44:56.708Z"
+}

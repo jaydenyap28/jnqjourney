@@ -6,6 +6,7 @@ import { Edit, Plus, Search, Trash2, X } from 'lucide-react'
 
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations } from '@/lib/admin-location-read'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -97,11 +98,7 @@ export default function AdminKlookWidgetsPage() {
       const [widgetsResponse, notesResponse, locationsResponse, regionsResponse] = await Promise.all([
         adminFetch('/api/admin/klook-widgets', { cache: 'no-store' }),
         adminFetch('/api/admin/notes', { cache: 'no-store' }),
-        supabase
-          .from('locations')
-          .select('id, name, name_cn, regions:region_id(name, name_cn, country, parent:parent_id(name, name_cn))')
-          .order('name')
-          .limit(600),
+        readAdminLocations(),
         supabase
           .from('regions')
           .select('id, name, name_cn, country, parent:parent_id(name, name_cn)')

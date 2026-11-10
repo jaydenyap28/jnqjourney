@@ -1,6 +1,7 @@
 import 'server-only'
 
-import { unstable_cache } from 'next/cache'
+import { requestCache as cache } from './request-cache'
+import { readPrivatePublicFeed, PublicReadUnavailable } from './public-read-source'
 
 import staticSnapshot from '@/public-data/guide-trip-costs.json'
 import type { TravelGuide } from '@/lib/guides'
@@ -87,21 +88,16 @@ function readStaticSnapshot() {
 }
 
 async function readPublicGuideTripCostUncached(guide: Pick<TravelGuide, 'slug' | 'budgetItems'>) {
-  const snapshot = await readCdnSnapshot()
-  const published = (snapshot || readStaticSnapshot()).tripCosts.find((item) => item.slug === guide.slug)
+  const snapshot = normalizePublicGuideTripCostSnapshot(await readPrivatePublicFeed('guide-trip-costs.json'))
+  if (!snapshot) throw new PublicReadUnavailable()
+  const published = snapshot.tripCosts.find((item) => item.slug === guide.slug)
   if (published) return published.tripCost
 
   const actual = await readPublishedGuideBudget(guide.slug)
   return resolvePublicGuideTripCost(actual, guide.budgetItems)
 }
 
-export function readPublicGuideTripCost(guide: Pick<TravelGuide, 'slug' | 'budgetItems'>) {
-  return unstable_cache(
-    () => readPublicGuideTripCostUncached(guide),
-    ['public-guide-trip-cost-v1', guide.slug],
-    { revalidate: 3600, tags: ['guide-trip-costs', `guide-trip-cost:${guide.slug}`] },
-  )()
-}
+export const readPublicGuideTripCost = cache(readPublicGuideTripCostUncached)
 
 async function publishRecord(record: PublicGuideTripCostRecord) {
   const current = await readCdnSnapshot(true) || readStaticSnapshot()

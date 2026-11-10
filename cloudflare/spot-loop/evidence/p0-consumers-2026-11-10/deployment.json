@@ -1,0 +1,50 @@
+{
+  "startedAt": "2026-11-10T04:29:33.521Z",
+  "success": false,
+  "environment": "preview",
+  "origin": "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "fixtures": [
+    92061,
+    92062
+  ],
+  "formalWrites": 0,
+  "newSecrets": 0,
+  "olderAllowlistChecks": [
+    {
+      "id": "5332ce56-643d-4c5c-9882-4487c516c563",
+      "allowlist": ""
+    },
+    {
+      "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+      "allowlist": ""
+    },
+    {
+      "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+      "allowlist": ""
+    },
+    {
+      "id": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+      "allowlist": ""
+    },
+    {
+      "id": "50f3962e-5eb5-47a6-8662-319d992b4113",
+      "allowlist": ""
+    },
+    {
+      "id": "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+      "allowlist": ""
+    },
+    {
+      "id": "730e582e-530a-4026-9478-5ccebd5fd248",
+      "allowlist": ""
+    },
+    {
+      "id": "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95",
+      "allowlist": ""
+    }
+  ],
+  "fixturesCreated": true,
+  "error": "REGISTRATION_NOT_CONFIRMED",
+  "failedAssertion": "REGISTRATION_NOT_CONFIRMED",
+  "finishedAt": "2026-11-10T04:30:00.130Z"
+}

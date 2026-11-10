@@ -13,6 +13,10 @@ import PublicLanguageControl from '@/components/PublicLanguageControl'
 
 import { buildMetaDescription, buildOpenGraphData, buildTwitterCardData } from '@/lib/seo'
 
+// No persisted HTML/RSC response may outlive current publication eligibility.
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const siteUrl = getSiteUrl()
 const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
 const googleAdSensePublisherId = 'ca-pub-3371680133104731'

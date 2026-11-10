@@ -52,6 +52,18 @@ export async function requireAdminRequest(request: Request) {
     }
   }
 
+  // The new candidate site currently adapts reads only. Existing dedicated
+  // Registry/Edge/Bridge deployments do not use this Next API guard. Until
+  // their mutation contracts and publisher read-back are connected here,
+  // block partial legacy writes (including Notes/Guide storage-only saves).
+  if (process.env.JNQ_PUBLIC_FEED_ORIGIN && !['GET', 'HEAD'].includes(request.method)) {
+    return {
+      ok: false as const,
+      response: NextResponse.json({error:'当前迁移候选已启用受控读取，后台写入尚未接通，未执行保存。'},
+        {status:503,headers:{'Cache-Control':'private, no-store, max-age=0'}}),
+    }
+  }
+
   return {
     ok: true as const,
     user: data.user,

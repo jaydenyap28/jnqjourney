@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { adminFetch } from '@/lib/admin-fetch'
 import { isR2ImageUrl } from '@/lib/image-url'
 
 export function formatBytes(bytes: number, decimals = 2) {
@@ -36,7 +37,7 @@ export default function ImageMetadataBadge({ url, className }: { url: string, cl
       return
     }
 
-    fetch(`/api/admin/image-size?url=${encodeURIComponent(url)}`)
+    adminFetch(`/api/admin/image-size?url=${encodeURIComponent(url)}`, {cache:'no-store'})
       .then((res) => res.json())
       .then((data) => {
         if (mounted && data.size) {
@@ -57,7 +58,7 @@ export default function ImageMetadataBadge({ url, className }: { url: string, cl
   if (source === 'Cloudflare R2') sourceColor = 'bg-orange-600'
   if (source === 'ImgBB') sourceColor = 'bg-blue-600'
   if (source === 'Supabase') sourceColor = 'bg-emerald-600'
-  
+
   const sizeLevel = !size
     ? 'normal'
     : size > IMAGE_SIZE_DANGER_BYTES

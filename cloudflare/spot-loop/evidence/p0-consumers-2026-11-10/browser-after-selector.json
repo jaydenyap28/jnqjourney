@@ -1,0 +1,70 @@
+{
+  "startedAt": "2026-11-10T04:41:11.127Z",
+  "siteOrigin": "http://127.0.0.1:4401",
+  "siteRuntime": "Real Next 14 app, local-only isolated environment; NOT a Cloudflare frontend deployment",
+  "previewApi": "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "steps": [
+    {
+      "name": "real_supabase_login",
+      "passed": true
+    },
+    {
+      "name": "/admin",
+      "http": 200,
+      "locationRead200": true,
+      "allApiSucceeded": true,
+      "sourceErrorVisible": true
+    }
+  ],
+  "api": [
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/locations",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/image-size",
+      "status": 500
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/notes",
+      "status": 503
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    },
+    {
+      "path": "/api/admin/location-slugs",
+      "status": 200
+    }
+  ],
+  "pageErrors": [],
+  "formalRequestsBlocked": 9,
+  "verdict": "P0_CONSUMER_ADAPTATION_BLOCKED",
+  "fixtureControlOnly": true,
+  "browserVersion": "157.0.8103.38",
+  "error": "BROWSER_TIMEOUT",
+  "failureSummary": "page.goto: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:4401/admin/edit/92061\", waiting until \"networkidle\"\u001b[22m\n",
+  "fixtureHiddenAfterTest": true,
+  "finishedAt": "2026-11-10T04:42:50.833Z"
+}

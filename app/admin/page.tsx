@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations } from '@/lib/admin-location-read'
 import { adminFetch } from '@/lib/admin-fetch'
 import { mutateAdminLocations } from '@/lib/admin-locations'
 import {
@@ -174,6 +175,7 @@ export default function AdminDashboard() {
   const [allRegions, setAllRegions] = useState<Region[]>([])
   const [affiliateCounts, setAffiliateCounts] = useState<Record<number, number>>({})
   const [loading, setLoading] = useState(true)
+  const [readError, setReadError] = useState('')
   const [deletingId, setDeletingId] = useState<number | null>(null)
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -202,12 +204,7 @@ export default function AdminDashboard() {
 
       try {
         const [locationsResult, regionsResult, affiliateResult] = await Promise.all([
-          supabase
-            .from('locations')
-            .select(
-              'id, name, name_cn, visit_date, region_id, status, image_url, images, video_url, facebook_video_url, regions(id, name, name_cn, country, parent_id, parent:parent_id(id, name, name_cn, country))'
-            )
-            .order('id', { ascending: false }),
+          readAdminLocations(),
           supabase.from('regions').select('id, name, name_cn, country, parent_id, parent:parent_id(id, name, name_cn, country)').order('name', { ascending: true }),
           supabase.from('affiliate_links').select('location_id, is_active'),
         ])
@@ -240,7 +237,7 @@ export default function AdminDashboard() {
           setAffiliateCounts({})
         }
       } catch (error) {
-        console.error('Error fetching admin dashboard data:', error)
+        setReadError(error instanceof Error ? error.message : '后台数据加载失败')
       } finally {
         setLoading(false)
       }
@@ -537,6 +534,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.12),transparent_26%),linear-gradient(180deg,#f8fafc_0%,#ffffff_100%)] p-4 pb-24 md:p-8">
+      {readError ? <p role="alert" className="text-red-500">{readError}</p> : null}
       <div className="mx-auto max-w-7xl space-y-6">
         <div className="flex flex-col gap-4 rounded-[28px] border border-amber-100 bg-white/90 p-6 shadow-[0_24px_80px_-50px_rgba(71,85,105,0.35)] md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">

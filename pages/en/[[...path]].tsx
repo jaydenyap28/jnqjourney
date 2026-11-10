@@ -1,37 +1,23 @@
-import type { GetStaticPaths, GetStaticProps } from 'next'
+import type { GetServerSideProps } from 'next'
 import EnglishRouteAdapter from '@/components/EnglishRouteAdapter'
 import type { EnglishPageData } from '@/lib/server/english-page-data'
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const { default: pilot } = await import('@/public-data/i18n/en/records.json')
-  const { default: spotIndex } = await import('@/public-data/spots/index.json')
-  const bundledSpotIds = new Set(
-  spotIndex.slugs
-    .map((slug) => Number(String(slug).match(/-(\d+)$/)?.[1] || 0))
-    .filter((id) => Number.isSafeInteger(id) && id > 0 && id !== 450)
-)
-
-
-  return ({
-  paths: [
-    '/en',
-    '/en/region',
-    '/en/guide',
-    '/en/search',
-    '/en/about',
-    '/en/notes',
-    ...pilot.records
-      .filter((record) => record.entityType !== 'spot' || bundledSpotIds.has(Number(record.entityId)))
-      .map((record) => `/en${record.canonicalPath}`),
-  ],
-  fallback: 'blocking',
-})
+type Props = {data: EnglishPageData} | {unavailable:true}
+export const getServerSideProps: GetServerSideProps<Props> = async ({params,res}) => {
+  res.setHeader('Cache-Control','private, no-store, max-age=0')
+  try {
+    const { compactEnglishPageData, englishPageData } = await import('@/lib/server/english-page-data')
+    const value = await englishPageData(Array.isArray(params?.path) ? params.path : [], true)
+    if (!value) return {notFound: true}
+    if ('redirect' in value) return {redirect: {destination:value.redirect,permanent:true}}
+    return {props:JSON.parse(JSON.stringify({data:compactEnglishPageData(value.data)}))}
+  } catch {
+    res.statusCode = 503
+    res.setHeader('Retry-After','30')
+    return {props:{unavailable:true}}
+  }
 }
-export const getStaticProps: GetStaticProps<{data:EnglishPageData}> = async ({params,revalidateReason}) => {
-  const { compactEnglishPageData, englishPageData } = await import('@/lib/server/english-page-data')
-  const value = await englishPageData(Array.isArray(params?.path) ? params.path : [],revalidateReason === 'on-demand')
-  if (!value) return {notFound:true,revalidate:600}
-  if ('redirect' in value) return {redirect:{destination:value.redirect,permanent:true}}
-  return {props:JSON.parse(JSON.stringify({data:compactEnglishPageData(value.data)})),revalidate:600}
+export default function EnglishPage(props: Props) {
+  if ('unavailable' in props) return <main><h1>Public content temporarily unavailable</h1><p>Please try again later.</p></main>
+  return <EnglishRouteAdapter data={props.data}/>
 }
-export default EnglishRouteAdapter

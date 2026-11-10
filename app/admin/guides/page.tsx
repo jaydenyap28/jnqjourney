@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations, readAdminAffiliateLinks } from '@/lib/admin-location-read'
 import { adminFetch } from '@/lib/admin-fetch'
 import { DEFAULT_GUIDE_COVER_ACCENT, EMPTY_GUIDE, type GuideAttractionRef, type TravelGuide } from '@/lib/guides'
 import { attractionKey, orderedGuideAttractions, orderedGuideDayRoute } from '@/lib/guide-attractions'
@@ -574,58 +575,14 @@ export default function AdminGuidesPage() {
 
     try {
       const fetchAllLocations = async () => {
-        const pageSize = 500
-        const rows: any[] = []
-        let from = 0
-
-        while (true) {
-          const { data, error } = await supabase
-            .from('locations')
-            .select(
-              `
-                id,
-                name,
-                name_cn,
-                category,
-                visit_date,
-                image_url,
-                images,
-                address,
-                region_id,
-                latitude,
-                longitude,
-                regions:region_id (
-                  id,
-                  name,
-                  name_cn,
-                  country
-                )
-              `
-            )
-            .order('visit_date', { ascending: true, nullsFirst: false })
-            .order('id', { ascending: true })
-            .range(from, from + pageSize - 1)
-
-          if (error) throw error
-
-          const batch = Array.isArray(data) ? data : []
-          rows.push(...batch)
-
-          if (batch.length < pageSize) break
-          from += pageSize
-        }
-
-        return rows
+        const { data } = await readAdminLocations()
+        return data.sort((a: any, b: any) => String(a.visit_date || '9999').localeCompare(String(b.visit_date || '9999')) || a.id - b.id)
       }
 
       const [guidesResponse, locationsData, affiliateLinksResponse] = await Promise.all([
         adminFetch('/api/admin/guides', { cache: 'no-store' }),
         fetchAllLocations(),
-        supabase
-          .from('affiliate_links')
-          .select('id, title, provider, link_type, location_id, region_id, is_active, locations(name, name_cn), regions(name, name_cn, country)')
-          .eq('is_active', true)
-          .order('created_at', { ascending: false }),
+        readAdminAffiliateLinks().then(result => ({...result, data: result.data.filter(link => link.is_active === true)})),
       ])
 
       if (!guidesResponse.ok) {

@@ -1,233 +1,38 @@
-import 'server-only'
-
-import { createClient } from '@supabase/supabase-js'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
+import './assert-server'
+import { requestCache as cache } from './request-cache'
 import { evaluateSpotQuality } from '@/lib/spot-quality'
-import { readFallbackSpot } from './public-fallback-snapshot'
-import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
-
 import { extractLocationIdFromSlug, slugifyLocationName } from '@/lib/location-routing'
-import { buildCanonicalLocationPath, readLocationSlugMap } from '@/lib/server/location-slugs-store'
-import {
-  resolvePublicSpotSources,
-  type PublicSpotIndexSnapshot,
-  type PublicSpotLookup,
-  type PublicSpotRecord,
-  type PublicSpotSnapshot,
-  type PublicSpotSource,
-} from '@/lib/public-spot'
+import { readLocationSlugMap } from './location-slugs-store'
+import { readPublicRows, readPrivatePublicFeed, PublicReadUnavailable } from './public-read-source'
+import type { PublicSpotRecord, PublicSpotSource } from '@/lib/public-spot'
 
-const LEGACY_SPOT_SELECT = `
-  id,name,name_cn,category,latitude,longitude,image_url,images,description,tags,
-  video_url,facebook_video_url,visit_date,opening_hours,price_info,address,region_id,
-  regions:region_id (
-    id,name,name_cn,country,description,image_url,parent_id,code
-  )
-`
-const SPOT_DETAIL_SELECT = `${SPOT_CONTENT_SELECT},${LEGACY_SPOT_SELECT}`
-const TIMEOUT_MS = 4000
-
-export class PublicSpotUnavailableError extends Error {
-  constructor(slug: string) {
-    super(`Public spot data is temporarily unavailable for ${slug}.`)
-    this.name = 'PublicSpotUnavailableError'
-  }
+export class PublicSpotUnavailableError extends PublicReadUnavailable {}
+export interface ResolvedPublicSpot { spot: PublicSpotRecord; source: PublicSpotSource; quality: ReturnType<typeof evaluateSpotQuality> }
+function publicRegion(rows: any[], id: number | null) {
+  const region = rows.find(item => item.id === id)
+  if (!region) return null
+  return {id:region.id,name:region.name,name_cn:region.name_cn ?? null,country:region.country ?? null,
+    description:region.description ?? region.shortSummary ?? null,image_url:region.image_url ?? region.thumbnail ?? null,
+    parent_id:region.parent_id ?? region.parentId ?? null,code:region.code ?? null}
 }
-
-export interface ResolvedPublicSpot {
-  spot: PublicSpotRecord
-  source: PublicSpotSource
-  quality: ReturnType<typeof evaluateSpotQuality>
+export async function readAuthoritativePublicSpotsByIds(ids: number[]): Promise<PublicSpotRecord[]> {
+  if (!ids.length) return []
+  const [rows, regions, slugMap] = await Promise.all([
+    readPublicRows([...new Set(ids)]), readPrivatePublicFeed<{regions: any[]}>('regions.json'), readLocationSlugMap(),
+  ])
+  if (!Array.isArray(regions.regions)) throw new PublicReadUnavailable()
+  return rows.map(row => ({...row,
+    slug: (slugMap[String(row.id)] || slugifyLocationName(row.name) || 'spot')+'-'+row.id,
+    regions: publicRegion(regions.regions, row.region_id),
+  } as PublicSpotRecord))
 }
-
-async function withTimeout<T>(promise: PromiseLike<T>, label: string): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined
-  try {
-    return await Promise.race([
-      Promise.resolve(promise),
-      new Promise<T>((_, reject) => {
-        timer = setTimeout(() => reject(new Error(`${label} timed out`)), TIMEOUT_MS)
-      }),
-    ])
-  } finally {
-    if (timer) clearTimeout(timer)
-  }
-}
-
-function cdnBase() {
-  return String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
-}
-
-async function readCdnSpot(slug: string): Promise<PublicSpotLookup> {
-  const base = cdnBase()
-  if (!base) return { status: 'not-found' }
-  try {
-    const indexResponse = await withTimeout(
-      fetch(`${base}/public-data/spots/index.json`, {
-        headers: { 'Cache-Control': 'no-cache' },
-        next: { revalidate: 3600, tags: ['public-spots'] },
-      }),
-      'Public spot CDN index'
-    )
-    if (indexResponse.ok) {
-      const index = await indexResponse.json() as PublicSpotIndexSnapshot
-      if (index?.schemaVersion !== 1 || !Array.isArray(index.slugs)) return { status: 'failure' }
-      const id = extractLocationIdFromSlug(slug)
-      const canonicalSlug = id ? index.slugs.find((value) => value.endsWith(`-${id}`)) : undefined
-      if (!canonicalSlug) {
-        const maxId = Math.max(0, ...index.slugs.map((value) => extractLocationIdFromSlug(value) || 0))
-        return { status: 'not-found', authoritative: Boolean(id && id > maxId) }
-      }
-      slug = canonicalSlug
-    } else if (indexResponse.status !== 404) {
-      return { status: 'failure', error: new Error(`Public spot CDN index returned ${indexResponse.status}`) }
-    }
-    const response = await withTimeout(
-      fetch(`${base}/public-data/spots/${encodeURIComponent(slug)}.json`, {
-        headers: { 'Cache-Control': 'no-cache' },
-        next: { revalidate: 3600, tags: ['public-spots', `public-spot:${slug}`] },
-      }),
-      'Public spot CDN'
-    )
-    if (response.status === 404) return { status: 'not-found' }
-    if (!response.ok) return { status: 'failure', error: new Error(`Public spot CDN returned ${response.status}`) }
-    const payload = await response.json() as PublicSpotSnapshot
-    return payload?.schemaVersion === 1 && payload.spot?.id ? { status: 'found', spot: payload.spot } : { status: 'failure' }
-  } catch (error) {
-    return { status: 'failure', error }
-  }
-}
-
-async function readSupabaseSpot(slug: string): Promise<PublicSpotLookup> {
-  const id = extractLocationIdFromSlug(slug)
-  if (!id) return { status: 'not-found' }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return { status: 'failure', error: new Error('Missing Supabase public environment variables') }
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  try {
-    let result = await withTimeout(
-      supabase
-        .from('locations')
-        .select(SPOT_DETAIL_SELECT)
-        .eq('id', id)
-        .eq('status', 'active')
-        .maybeSingle(),
-      'Supabase public spot'
-    )
-    if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
-      result = await withTimeout(supabase.from('locations').select(LEGACY_SPOT_SELECT).eq('id', id).eq('status', 'active').maybeSingle(), 'Legacy public spot')
-    }
-    if (result.error) return { status: 'failure', error: result.error }
-    if (!result.data || !isSpotPublished(result.data as unknown as PublicSpotRecord)) return { status: 'not-found', authoritative: true }
-    return { status: 'found', spot: { ...(result.data as unknown as PublicSpotRecord), slug } }
-  } catch (error) {
-    return { status: 'failure', error }
-  }
-}
-
-async function readStaticSpot(slug: string): Promise<PublicSpotLookup> {
-  const id = extractLocationIdFromSlug(slug)
-  return id ? readFallbackSpot(id) : { status: 'not-found' }
-}
-
-async function resolveSpotUncached(slug: string): Promise<ResolvedPublicSpot | null> {
-  if (!extractLocationIdFromSlug(slug) || extractLocationIdFromSlug(slug) === 450) return null
-
-  const result = await resolvePublicSpotSources({
-    cdn: () => readCdnSpot(slug),
-    supabase: () => readSupabaseSpot(slug),
-    fallback: () => readStaticSpot(slug),
-  })
-  if (result.status === 'found') return isSpotPublished(result.spot) ? { spot: result.spot, source: result.source, quality: evaluateSpotQuality(result.spot) } : null
-  if (result.status === 'not-found') return null
-  throw new PublicSpotUnavailableError(slug)
-}
-
-function resolveCached(slug: string) {
-  const id = extractLocationIdFromSlug(slug)
-  if (!id || !Number.isSafeInteger(id) || id <= 0 || id === 450) return Promise.resolve(null)
-  const identity = `spot-${id}`
-  return unstable_cache(
-    () => resolveSpotUncached(identity),
-    ['public-spot-v4-quality', identity],
-    { revalidate: 3600, tags: ['public-spots', `public-spot:${identity}`] }
-  )()
-}
-
-export const getPublicSpotBySlug = cache(async (slug: string) => resolveCached(String(slug || '').trim()))
-
-export async function readAuthoritativePublicSpotsByIds(ids: number[]) {
-  const uniqueIds = Array.from(new Set(ids)).filter((id) => Number.isInteger(id) && id > 0)
-  if (!uniqueIds.length) return [] as PublicSpotRecord[]
-
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
-
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  const currentResult = await withTimeout(
-    supabase
-      .from('locations')
-      .select(SPOT_DETAIL_SELECT)
-      .in('id', uniqueIds)
-      .eq('status', 'active'),
-    'Authoritative public spots'
-  )
-
-  let rows: unknown[] = []
-  if (currentResult.error && ['42703', 'PGRST204'].includes(currentResult.error.code)) {
-    const legacyResult = await withTimeout(
-      supabase
-        .from('locations')
-        .select(LEGACY_SPOT_SELECT)
-        .in('id', uniqueIds)
-        .eq('status', 'active'),
-      'Legacy authoritative spots'
-    )
-    if (legacyResult.error) throw new Error(legacyResult.error.message || 'Unable to read authoritative public spots.')
-    rows = legacyResult.data || []
-  } else {
-    if (currentResult.error) throw new Error(currentResult.error.message || 'Unable to read authoritative public spots.')
-    rows = currentResult.data || []
-  }
-
-  const slugMap = await readLocationSlugMap()
-  return rows
-    .map((raw) => raw as unknown as Omit<PublicSpotRecord, 'slug'>)
-    .filter(isSpotPublished)
-    .map((row) => {
-      const customSlug = slugMap[String(row.id)] || ''
-      const base = customSlug || slugifyLocationName(row.name) || 'spot'
-      return { ...row, slug: `${base}-${row.id}` } as PublicSpotRecord
-    })
-}
-
 export async function readAuthoritativePublicSpotById(id: number) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) throw new Error('Missing authoritative Supabase environment variables.')
-  if (!Number.isInteger(id) || id <= 0) throw new Error('Invalid Spot id.')
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  let result = await withTimeout(
-    supabase
-      .from('locations')
-      .select(SPOT_DETAIL_SELECT)
-      .eq('id', id)
-      .eq('status', 'active')
-      .maybeSingle(),
-    'Authoritative public spot'
-  )
-  if (result.error && ['42703', 'PGRST204'].includes(result.error.code)) {
-    result = await withTimeout(supabase.from('locations').select(LEGACY_SPOT_SELECT).eq('id', id).eq('status', 'active').maybeSingle(), 'Legacy authoritative spot')
-  }
-  if (result.error) throw new Error(result.error.message || 'Unable to read authoritative public spot.')
-  if (!result.data) return null
-  const row = result.data as unknown as Omit<PublicSpotRecord, 'slug'>
-  if (!isSpotPublished(row)) return null
-  const canonicalPath = await buildCanonicalLocationPath(row.name, row.id)
-  return { ...row, slug: canonicalPath.replace('/spot/', '') } as PublicSpotRecord
+  if (!Number.isSafeInteger(id) || id <= 0) throw new PublicReadUnavailable()
+  return (await readAuthoritativePublicSpotsByIds([id]))[0] || null
 }
-
-export const PUBLIC_SPOT_SELECT = SPOT_DETAIL_SELECT
+export const getPublicSpotBySlug = cache(async (slug: string): Promise<ResolvedPublicSpot | null> => {
+  const id = extractLocationIdFromSlug(slug)
+  if (!id || id === 450) return null
+  const spot = await readAuthoritativePublicSpotById(id)
+  return spot ? {spot, source: 'supabase', quality: evaluateSpotQuality(spot)} : null
+})

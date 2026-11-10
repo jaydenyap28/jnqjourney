@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 }
 
-export const revalidate = 600 // Cache for 10 minutes
+export const revalidate = 0 // Cache for 10 minutes
 
 export default async function NotesIndexPage() {
   const [storedNotes, { locations }] = await Promise.all([readPublicNotes(), resolvePublicData()])
@@ -74,3 +74,5 @@ export default async function NotesIndexPage() {
     </main>
   )
 }
+
+export const dynamic = 'force-dynamic'

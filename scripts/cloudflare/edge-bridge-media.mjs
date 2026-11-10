@@ -5,7 +5,8 @@ import {readFile,writeFile} from 'node:fs/promises'
 import {ACCOUNT,BUCKET} from './candidate-cloudflare.mjs'
 import {isolatedRequest,ISOLATED_REF} from './isolated-supabase.mjs'
 export const syntheticPng=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=','base64')
-export async function createMediaPreparer({root,keys,token,resume=false}){
+export async function createMediaPreparer({root,keys,token,resume=false,fixtureIds=[92005,92017,92030]}){
+  assert.ok(Array.isArray(fixtureIds)&&fixtureIds.length>0&&fixtureIds.length<=3&&new Set(fixtureIds).size===fixtureIds.length&&fixtureIds.every(id=>Number.isSafeInteger(id)&&id>=92000&&id<=92999))
   const hash=value=>createHash('sha256').update(value).digest('hex')
   assert.equal(hash(syntheticPng),'5e3d382db4dd83d59aa5742793ad6b7903409e865c83bcbc54835049f043bc15')
   const file=root+'media-setup.json'
@@ -14,7 +15,8 @@ export async function createMediaPreparer({root,keys,token,resume=false}){
   const persist=()=>writeFile(file,JSON.stringify(report,null,2)+'\n')
   if(!resume)await writeFile(file,JSON.stringify(report,null,2)+'\n',{flag:'wx'})
   async function objectRequest(key,bytes,type){
-    assert.match(key,/^(?:media\/candidate|_candidate-validation)\/920(?:05|17|30)\/[a-f0-9-]+\.png(?:\.json)?$/)
+    assert.match(key,/^(?:media\/candidate|_candidate-validation)\/92\d{3}\/[a-f0-9-]+\.png(?:\.json)?$/)
+    assert.ok(fixtureIds.includes(Number(key.split('/').at(key.startsWith('media/')?2:1))))
     report.r2[bytes?'put':'get']++;await persist()
     const response=await fetch(`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/r2/buckets/${BUCKET}/objects/${key}`,{
       method:bytes?'PUT':'GET',headers:{Authorization:'Bearer '+token,...(bytes?{'Content-Type':type}:{})},...(bytes?{body:bytes}:{}),redirect:'manual',signal:AbortSignal.timeout(15000)})
@@ -23,7 +25,7 @@ export async function createMediaPreparer({root,keys,token,resume=false}){
     return {bytes:Buffer.from(await response.arrayBuffer()),mime:response.headers.get('content-type'),etag:response.headers.get('etag')?.replace(/^W\//,'').replaceAll('"','')}
   }
   async function prepare(id,n,{register=true}={}){
-    assert.ok([92005,92017,92030].includes(id)&&n>=1&&n<=30)
+    assert.ok(fixtureIds.includes(id)&&n>=1&&n<=30)
     const paths=[]
     for(let i=0;i<n;i++){
       const key=`media/candidate/${id}/${randomUUID()}.png`,receiptKey='_candidate-validation/'+key.slice('media/candidate/'.length)+'.json'

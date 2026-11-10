@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations } from '@/lib/admin-location-read'
 import AdminLocationForm from '@/components/AdminLocationForm'
 import { Loader2 } from 'lucide-react'
 
@@ -13,11 +14,7 @@ export default function EditLocationPage({ params }: { params: { id: string } })
   useEffect(() => {
     const fetchLocation = async () => {
       try {
-        const { data, error } = await supabase
-          .from('locations')
-          .select('*')
-          .eq('id', params.id)
-          .single()
+        const { data, error } = await readAdminLocations(params.id)
 
         if (error) throw error
         setLocation(data)

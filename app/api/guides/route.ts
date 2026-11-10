@@ -1,21 +1,22 @@
 import { NextResponse } from 'next/server'
 import { readPublicGuideBySlug, readPublicGuides } from '@/lib/server/public-content-store'
-import { PUBLIC_CACHE_CONTROL, PRIVATE_NO_STORE } from '@/lib/public-data'
+import { PRIVATE_NO_STORE } from '@/lib/public-data'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { resolveGuidePublicMedia } from '@/lib/server/public-content-media'
 import { readPublicGuideTripCost } from '@/lib/server/public-guide-trip-cost'
 
 export const runtime = 'nodejs'
-export const revalidate = 600
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
-export async function GET(request: Request) {
+async function read(request: Request) {
   const slug = String(new URL(request.url).searchParams.get('slug') || '').trim()
   const { locations } = await resolvePublicData()
   if (slug) {
     const guide = await readPublicGuideBySlug(slug)
     if (!guide) return NextResponse.json({ error: 'Guide not found.' }, { status: 404, headers: { 'Cache-Control': PRIVATE_NO_STORE } })
     const tripCost = await readPublicGuideTripCost(guide)
-    return NextResponse.json({ guide: resolveGuidePublicMedia(guide, locations), tripCost }, { headers: { 'Cache-Control': PUBLIC_CACHE_CONTROL } })
+    return NextResponse.json({ guide: resolveGuidePublicMedia(guide, locations), tripCost }, { headers: { 'Cache-Control': PRIVATE_NO_STORE } })
   }
   const guides = (await readPublicGuides()).map((storedGuide) => {
     const guide = resolveGuidePublicMedia(storedGuide, locations)
@@ -37,8 +38,12 @@ export async function GET(request: Request) {
     { guides },
     {
       headers: {
-        'Cache-Control': PUBLIC_CACHE_CONTROL,
+        'Cache-Control': PRIVATE_NO_STORE,
       },
     }
   )
+}
+
+export async function GET(request: Request) {
+  try { return await read(request) } catch { return NextResponse.json({error:{code:'PUBLIC_DATA_UNAVAILABLE',message:'Public content temporarily unavailable.'}}, {status:503,headers:{'Cache-Control':PRIVATE_NO_STORE}}) }
 }

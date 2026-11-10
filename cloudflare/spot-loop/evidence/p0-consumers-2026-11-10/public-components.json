@@ -1,0 +1,60 @@
+{
+  "startedAt": "2026-11-10T04:55:49.091Z",
+  "runtime": "Local real Next components; Cloudflare Preview is the private-feed/byte API only",
+  "pages": [
+    {
+      "path": "/search",
+      "http": 200,
+      "textChars": 360,
+      "headings": 5,
+      "newJsErrors": 0,
+      "unverifiedMediaDenied": 0,
+      "runtimeErrorOverlay": false,
+      "bodyRendered": true
+    },
+    {
+      "path": "/region",
+      "http": 200,
+      "textChars": 500,
+      "headings": 6,
+      "newJsErrors": 0,
+      "unverifiedMediaDenied": 0,
+      "runtimeErrorOverlay": false,
+      "bodyRendered": true
+    },
+    {
+      "path": "/guide",
+      "http": 200,
+      "textChars": 1513,
+      "headings": 12,
+      "newJsErrors": 0,
+      "unverifiedMediaDenied": 2,
+      "runtimeErrorOverlay": false,
+      "bodyRendered": true
+    },
+    {
+      "path": "/notes",
+      "http": 200,
+      "textChars": 1311,
+      "headings": 11,
+      "newJsErrors": 0,
+      "unverifiedMediaDenied": 8,
+      "runtimeErrorOverlay": false,
+      "bodyRendered": true
+    },
+    {
+      "path": "/en/notes",
+      "error": "BROWSER_NAVIGATION_FAILED",
+      "newJsErrors": 0
+    }
+  ],
+  "canonical": {
+    "source": "Actual current public API slug, not guessed from fixture name",
+    "slug": "consumer-fixture-92061-92061",
+    "status": 200,
+    "fields": 34
+  },
+  "formalWrites": 0,
+  "fixtureHidden": true,
+  "finishedAt": "2026-11-10T04:56:06.819Z"
+}

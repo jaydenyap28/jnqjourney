@@ -1,5 +1,5 @@
 import type { PublicLocation, PublicRegion } from './public-data.ts'
-import { isR2PublicImage } from './public-media.ts'
+import { isR2PublicImage, isControlledMediaPath } from './public-media.ts'
 
 const FEATURED_SPOT_TOKEN = /(?:^|[,;\s])featured-spot[:=](\d+)(?:$|[,;\s])/i
 
@@ -11,6 +11,7 @@ function featuredSpotId(region: PublicRegion) {
 function explicitRegionCover(region: PublicRegion) {
   const value = String(region.thumbnail || '').trim()
   if (!value) return null
+  if (isControlledMediaPath(value)) return value
   try {
     const protocol = new URL(value).protocol
     return protocol === 'https:' || protocol === 'http:' ? value : null

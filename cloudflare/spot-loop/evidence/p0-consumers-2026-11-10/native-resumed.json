@@ -1,0 +1,162 @@
+{
+  "deploymentId": "f62a26a3-64a3-4eb9-96f1-f4e9d8229532",
+  "origin": "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev",
+  "startedAt": "2026-11-10T04:36:00.041Z",
+  "checks": [
+    {
+      "label": "live_projection",
+      "path": "/public-data/spots/records.json",
+      "acceptanceId": "1794285280274-0",
+      "status": 200,
+      "bytes": 859,
+      "cpuMs": 3,
+      "wallMs": 491
+    },
+    {
+      "label": "private_feed_regions.json",
+      "path": "/public-data/regions.json",
+      "acceptanceId": "1794285281402-1",
+      "status": 200,
+      "bytes": 219,
+      "cpuMs": 1,
+      "wallMs": 421
+    },
+    {
+      "label": "private_feed_guides.json",
+      "path": "/public-data/guides.json",
+      "acceptanceId": "1794285281994-2",
+      "status": 200,
+      "bytes": 99408,
+      "cpuMs": 1,
+      "wallMs": 178
+    },
+    {
+      "label": "private_feed_notes.json",
+      "path": "/public-data/notes.json",
+      "acceptanceId": "1794285282306-3",
+      "status": 200,
+      "bytes": 267345,
+      "cpuMs": 1,
+      "wallMs": 503
+    },
+    {
+      "label": "private_feed_i18n/en/records.json",
+      "path": "/public-data/i18n/en/records.json",
+      "acceptanceId": "1794285283074-4",
+      "status": 200,
+      "bytes": 408260,
+      "cpuMs": 1,
+      "wallMs": 215
+    },
+    {
+      "label": "private_feed_guide-trip-costs.json",
+      "path": "/public-data/guide-trip-costs.json",
+      "acceptanceId": "1794285283380-5",
+      "status": 200,
+      "bytes": 4154,
+      "cpuMs": 1,
+      "wallMs": 191
+    },
+    {
+      "label": "published_image",
+      "path": "/media/candidate/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "acceptanceId": "1794285283727-6",
+      "status": 200,
+      "bytes": 68,
+      "cpuMs": 5,
+      "wallMs": 513
+    },
+    {
+      "label": "field_injection",
+      "path": "/api/locations?select=review_jayden",
+      "acceptanceId": "1794285360578-7",
+      "status": 404,
+      "bytes": 9,
+      "cpuMs": 1,
+      "wallMs": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "label": "static_json_denied",
+      "path": "/_next/data/old/spot/consumer-fixture-92061.json",
+      "acceptanceId": "1794285361186-8",
+      "status": 404,
+      "bytes": 9,
+      "cpuMs": 1,
+      "wallMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "label": "static_html_denied",
+      "path": "/spot/consumer-fixture-92061.html",
+      "acceptanceId": "1794285361412-9",
+      "status": 404,
+      "bytes": 9,
+      "cpuMs": 1,
+      "wallMs": 2,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "label": "hidden_live_projection",
+      "path": "/public-data/spots/records.json",
+      "acceptanceId": "1794285361591-10",
+      "status": 200,
+      "bytes": 16,
+      "cpuMs": 3,
+      "wallMs": 532,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 1
+      }
+    },
+    {
+      "label": "hidden_image",
+      "path": "/media/candidate/92061/c7d1425c-9a8f-4c03-8ce8-c4e234515203.png",
+      "acceptanceId": "1794285362276-11",
+      "status": 404,
+      "bytes": 9,
+      "cpuMs": 5,
+      "wallMs": 491,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 1
+      }
+    }
+  ],
+  "budget": 24,
+  "success": true,
+  "formalMigration": "HOLD",
+  "priorObserverError": "TRACE_MISMATCH",
+  "originalImageCpuConfirmedMs": 5,
+  "safetyWithdrawalConfirmed": true,
+  "finishedAt": "2026-11-10T04:36:03.412Z"
+}

@@ -1,0 +1,195 @@
+{
+  "deploymentId": "f62a26a3-64a3-4eb9-96f1-f4e9d8229532",
+  "count": 13,
+  "diagnostics": {
+    "parsedFrames": 13,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": false,
+    "incompleteFrame": false,
+    "resumedAt": "2026-11-10T04:35:40.075Z"
+  },
+  "events": [
+    {
+      "timestamp": 1794285281573,
+      "path": "/public-data/spots/records.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285280274-0",
+      "wallTime": 491,
+      "cpuTime": 3
+    },
+    {
+      "timestamp": 1794285282622,
+      "path": "/public-data/regions.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285281402-1",
+      "wallTime": 421,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794285283177,
+      "path": "/public-data/guides.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285281994-2",
+      "wallTime": 178,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794285283526,
+      "path": "/public-data/notes.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285282306-3",
+      "wallTime": 503,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794285284286,
+      "path": "/public-data/i18n/en/records.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285283074-4",
+      "wallTime": 215,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794285284580,
+      "path": "/public-data/guide-trip-costs.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285283380-5",
+      "wallTime": 191,
+      "cpuTime": 1
+    },
+    {
+      "timestamp": 1794285284909,
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285283727-6",
+      "wallTime": 513,
+      "cpuTime": 5
+    },
+    {
+      "timestamp": 1794285361866,
+      "path": "/api/locations",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794285360578-7",
+      "wallTime": 1,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "timestamp": 1794285362445,
+      "path": "/_next/data/old/spot/consumer-fixture-92061.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794285361186-8",
+      "wallTime": 2,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "timestamp": 1794285362629,
+      "path": "/spot/consumer-fixture-92061.html",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794285361412-9",
+      "wallTime": 2,
+      "cpuTime": 1,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 0
+      }
+    },
+    {
+      "timestamp": 1794285362785,
+      "path": "/public-data/spots/records.json",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794285361591-10",
+      "wallTime": 532,
+      "cpuTime": 3,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 1
+      }
+    },
+    {
+      "timestamp": 1794285363475,
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "GET",
+      "outcome": "ok",
+      "status": 404,
+      "acceptanceId": "1794285362276-11",
+      "wallTime": 491,
+      "cpuTime": 5,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 0
+        },
+        "supabaseRpc": 1
+      }
+    },
+    {
+      "timestamp": 1794286236955,
+      "path": "/media/candidate/92061/REDACTED.png",
+      "method": "HEAD",
+      "outcome": "ok",
+      "status": 200,
+      "acceptanceId": "1794286235681-12",
+      "wallTime": 1091,
+      "cpuTime": 4,
+      "operations": {
+        "r2": {
+          "list": 0,
+          "get": 0,
+          "head": 2
+        },
+        "supabaseRpc": 2
+      }
+    }
+  ]
+}

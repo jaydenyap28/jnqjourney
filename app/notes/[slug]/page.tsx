@@ -171,7 +171,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-export const revalidate = 3600
+export const revalidate = 0
 
 function renderBlock(block: NoteBlock, locationsById: Map<number, LocationData>, index = 0) {
   if (block.type === 'heading') {
@@ -595,3 +595,5 @@ export default async function NoteDetailPage({ params }: PageProps) {
     </main>
   )
 }
+
+export const dynamic = 'force-dynamic'

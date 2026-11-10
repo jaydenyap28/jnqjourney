@@ -1,6 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
+import { readAuthoritativePublicSpotById } from './public-spot-resolver'
 import priceHighlights from '@/data/guide-price-highlights.json'
-import locationSlugMap from '@/data/location-slugs.json'
 import { notesForSpot, toRelatedNoteCard, type RelatedNoteCard } from '@/lib/content-relations'
 import { relatedGuidesForSpot, relatedPackagesForSpot, nearbySpots } from '@/lib/spot-relations'
 import { toHomeGuideCard, toHomeNoteCard, toPackageCard, type HomeGuideCard, type HomeNoteCard, type PackageCard } from '@/lib/home-cards'
@@ -21,27 +20,6 @@ import { resolveGuidePublicMedia, resolveNotePublicMedia } from '@/lib/server/pu
 import { readBilingualSnapshot, readBundledJson, readLocalizationSnapshot } from './localization-snapshot'
 import { localizeHomepageNote, localizeHomepagePackage } from '@/lib/homepage-localization'
 import { evaluateSpotQuality } from '@/lib/spot-quality'
-
-async function readPagesPublicSpotFallback(id: number, slug: string): Promise<PublicSpotRecord | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null
-
-  const supabase = createClient(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
-
-  const { data, error } = await supabase
-    .from('locations')
-    .select('*,regions:region_id (*)')
-    .eq('id', id)
-    .eq('status', 'active')
-    .maybeSingle()
-
-  if (error || !data) return null
-  if (data.publication_status && data.publication_status !== 'published') return null
-  return { ...(data as unknown as PublicSpotRecord), slug }
-}
 
 export interface EnglishPageData {
   homeCards?: { guides: HomeGuideCard[]; notes: HomeNoteCard[]; packages: PackageCard[] }
@@ -79,16 +57,15 @@ export function compactEnglishPageData(data:EnglishPageData):EnglishPageData {
   return result
 }
 export async function readEnglishCollections(freshLocalization = false) {
-  const [locationData, regionData, guideData, localization, slugMap] = await Promise.all([
+  const [locationData, regionData, guideData, localization] = await Promise.all([
     readBilingualSnapshot<{locations:PublicLocation[]}>('locations.json', () => readBundledJson('public-data/locations.json'), x => Array.isArray((x as any)?.locations), freshLocalization),
     readBilingualSnapshot<{regions:PublicRegion[]}>('regions.json', () => readBundledJson('public-data/regions.json'), x => Array.isArray((x as any)?.regions)),
     readBilingualSnapshot<{guides:TravelGuide[]}>('guides.json', async () => { const raw = await readBundledJson<any>('data/guides.json'); return {guides:Array.isArray(raw)?raw:raw.guides} }, x => Array.isArray((x as any)?.guides)),
     readLocalizationSnapshot('en',freshLocalization),
-    locationSlugMap as Record<string,string>,
   ])
   const snapshotSlugs=Object.fromEntries(locationData.locations.map(location=>[location.id,location.slug]))
   const locations=locationData.locations.map(location=>{
-    const slugged = slugMap[String(location.id)] ? {...location,slug:`${slugMap[String(location.id)]}-${location.id}`} : location
+    const slugged = location
     const spotRecord = localizationRecord(localization, 'spot', location.id)
     const translatedTitle = String(spotRecord?.fields?.title?.text || '').trim()
     return translatedTitle ? { ...slugged, name: translatedTitle } : slugged
@@ -209,23 +186,8 @@ export async function englishPageData(parts: string[] = [], freshLocalization = 
     if (!summary) return null
     if (summary.slug !== slug) return {redirect:`/en/spot/${summary.slug}`}
     const spotLocalization=localizationRecord(localization,'spot',summary.id)
-    const sourceSnapshotSlug=String(spotLocalization?.source?.url || '').match(/\/spots\/([^/?]+)\.json(?:[?#].*)?$/)?.[1]
-    const snapshotSlug=sourceSnapshotSlug || collection.snapshotSlugs[summary.id]
-    let sourceSpot: PublicSpotRecord
-    try {
-      const snapshot = await readBilingualSnapshot<{spot:PublicSpotRecord}>(
-        `spots/${snapshotSlug}.json`,
-        () => readBundledJson(`public-data/spots/${snapshotSlug}.json`),
-        x => (x as any)?.spot?.id===summary.id,
-        freshLocalization
-      )
-      sourceSpot = snapshot.spot
-    } catch {
-      const fallbackSpot = await readPagesPublicSpotFallback(summary.id, summary.slug)
-      if (!fallbackSpot) return null
-      sourceSpot = fallbackSpot
-    }
-    if (sourceSpot.publication_status && sourceSpot.publication_status !== 'published') return null
+    const sourceSpot = await readAuthoritativePublicSpotById(summary.id)
+    if (!sourceSpot) return null
     const source = {...sourceSpot,title:sourceSpot.name}
     const result = applyLocalization(source,spotLocalization)
     data.kind='spot'; data.spot=result.value; data.spotSeoIndexable=evaluateSpotQuality(sourceSpot).indexable; data.status=result.status; data.title=result.value.title!==source.name ? result.value.title : resolveEntityDisplayName(source,'en').primary

@@ -1,4 +1,5 @@
 import type { TravelGuide } from '../guides.ts'
+import { controlledMediaValue } from '../controlled-media.ts'
 import type { LongformNote } from '../notes.ts'
 import type { PublicLocation } from '../public-data.ts'
 import { isR2PublicImage, resolvePublicImage } from '../public-media.ts'
@@ -154,7 +155,7 @@ export function resolveGuidePublicMedia(guide: TravelGuide, locations: PublicLoc
     gallery,
     legacy: [guide.coverImage],
   })
-  return coverImage === guide.coverImage ? guide : { ...guide, coverImage: coverImage || undefined }
+  return controlledMediaValue(coverImage === guide.coverImage ? guide : { ...guide, coverImage: coverImage || undefined })
 }
 
 export function resolveNotePublicMedia(note: LongformNote, locations: PublicLocation[]) {
@@ -199,6 +200,6 @@ export function resolveNotePublicMedia(note: LongformNote, locations: PublicLoca
     }
     return block
   })
-  if (coverImage === note.coverImage && blocks.every((block, index) => block === note.blocks[index])) return note
-  return { ...note, coverImage: coverImage || undefined, blocks }
+  if (coverImage === note.coverImage && blocks.every((block, index) => block === note.blocks[index])) return controlledMediaValue(note)
+  return controlledMediaValue({ ...note, coverImage: coverImage || undefined, blocks })
 }

@@ -21,6 +21,7 @@ import {
 import { noteEditorKey, scheduleNoteAutosave } from '@/lib/note-sync'
 import { adminFetch } from '@/lib/admin-fetch'
 import { supabase } from '@/lib/supabase'
+import { readAdminLocations, readAdminAffiliateLinks } from '@/lib/admin-location-read'
 import FallbackImage from '@/components/FallbackImage'
 import InlineMarkdown from '@/components/InlineMarkdown'
 import { Badge } from '@/components/ui/badge'
@@ -434,16 +435,8 @@ export default function AdminNotesPage() {
       try {
         const [notesResponse, locationsResponse, affiliateResponse, widgetsResponse] = await Promise.all([
           adminFetch('/api/admin/notes', { cache: 'no-store' }),
-          supabase
-            .from('locations')
-            .select('id,name,name_cn,image_url,images,category,regions:region_id(id,name,name_cn,country)')
-            .order('id', { ascending: false }),
-          supabase
-            .from('affiliate_links')
-            .select('id,title,provider,link_type,url,locations:location_id(name,name_cn),regions:region_id(name,name_cn,country)')
-            .eq('is_active', true)
-            .order('id', { ascending: false })
-            .limit(200),
+          readAdminLocations(),
+          readAdminAffiliateLinks().then(result => ({...result, data: result.data.filter(link => link.is_active === true).sort((a, b) => b.id - a.id).slice(0, 200)})),
           adminFetch('/api/admin/klook-widgets', { cache: 'no-store' }),
         ])
 

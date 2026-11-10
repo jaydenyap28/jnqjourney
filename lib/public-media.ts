@@ -1,5 +1,9 @@
 export type PublicImageValue = string | null | undefined
 
+export function isControlledMediaPath(value: string) {
+  return /^\/media\/(?:legacy\/[^/?#]+|candidate\/\d+\/[a-f0-9-]+\.(?:png|webp|jpe?g|gif))(?:#[^\s]*)?$/.test(value)
+}
+
 function cleanImageUrl(value: PublicImageValue) {
   return String(value || '').trim()
 }
@@ -19,6 +23,7 @@ export function publicImageIdentity(value: PublicImageValue) {
 export function isR2PublicImage(value: PublicImageValue) {
   const raw = cleanImageUrl(value)
   if (!raw) return false
+  if (isControlledMediaPath(raw)) return true
   try {
     const host = new URL(raw).hostname.toLowerCase()
     return host.endsWith('.r2.dev') || host.includes('r2.cloudflarestorage.com')

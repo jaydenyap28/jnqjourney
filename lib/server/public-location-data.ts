@@ -1,6 +1,5 @@
-import { cache } from 'react'
-import { unstable_cache } from 'next/cache'
-import { createClient } from '@supabase/supabase-js'
+import { requestCache as cache } from './request-cache'
+import { readPublicRows } from './public-read-source'
 import { extractRegionIdFromSlug } from '@/lib/region-routing'
 import { resolvePublicData } from '@/lib/server/public-data-resolver'
 import { getPublicSpotBySlug } from '@/lib/server/public-spot-resolver'
@@ -127,7 +126,7 @@ export async function fetchLocationsByRegion(regionId: number, limit = 60) {
     })) as LocationSummary[]
 }
 
-export const fetchTopRegions = unstable_cache(
+export const fetchTopRegions = cache(
   async (limit = 80) => {
     const { regions } = await resolvePublicData()
     const rows = regions.map((region) => ({
@@ -144,33 +143,13 @@ export const fetchTopRegions = unstable_cache(
         .filter((value): value is number => typeof value === 'number')
     )
     return rows.filter((region) => !parentIds.has(region.id)).slice(0, limit)
-  },
-  ['top-regions'],
-  { revalidate: 3600, tags: ['regions'] }
+  }
 )
 
 export async function fetchAllLocationsForSitemap() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (url && key) {
-    const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-    const result = await supabase
-      .from('locations')
-      .select('id,name,description,review,image_url,images,experience_zh,visit_date,video_url,facebook_video_url,address,opening_hours,price_info,related_note_slugs,updated_at,publication_status,status')
-      .eq('status', 'active')
-
-    if (!result.error && result.data) {
-      return result.data
-        .filter((location: any) => Number(location.id) !== 450 && (location.publication_status == null || location.publication_status === 'published') && evaluateSpotQuality(location).indexable)
-        .map((location: any) => ({ id: Number(location.id), name: String(location.name || ''), updated_at: location.updated_at || undefined }))
-    }
-  }
-
-  // Conservative fallback: if the quality inventory cannot be loaded, avoid
-  // re-introducing every thin Spot into the sitemap. Existing Spot URLs remain
-  // reachable internally and can still be crawled through links.
-  return []
+  const rows = await readPublicRows()
+  return rows.filter(location => evaluateSpotQuality(location).indexable)
+    .map(location => ({id: location.id, name: location.name, updated_at: location.updated_at || undefined}))
 }
 
 export async function fetchAllRegionsForSitemap() {

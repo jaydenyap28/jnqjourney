@@ -1,0 +1,70 @@
+{
+  "checkedAt": "2026-11-10T05:10:57.435Z",
+  "project": "jnqjourney-spot-loop-migration-candidate",
+  "formalMigration": "HOLD",
+  "paidServicesAdded": 0,
+  "newSecrets": 0,
+  "formalWrites": 0,
+  "frozenRegistrySha256": "b221473d7f08dd28bcee736928b7e34b1a16f3191723f5decd025709972008f1",
+  "clientBundleScan": {
+    "chunks": 86,
+    "privateKeyMatches": 0,
+    "privateRpcMatches": 0,
+    "includesCompiledEnglishPages": true
+  },
+  "productionCanonicalEmpty": true,
+  "productionVariables": 0,
+  "productionBindings": 0,
+  "previewSecretTypesCorrect": true,
+  "productionFailClosed": true,
+  "previewFailClosed": true,
+  "buckets": [
+    {
+      "name": "jnqjourney-spot-loop-isolated-media",
+      "managedPublicEnabled": false
+    },
+    {
+      "name": "jnqjourney-img",
+      "managedPublicEnabled": true
+    }
+  ],
+  "fixtures": [
+    {
+      "id": 92061,
+      "status": "active",
+      "publication_status": "hidden"
+    },
+    {
+      "id": 92062,
+      "status": "active",
+      "publication_status": "hidden"
+    }
+  ],
+  "authenticatedDirectTable": {
+    "status": 403,
+    "code": "42501"
+  },
+  "candidateWritesBlocked": [
+    {
+      "resource": "locations",
+      "status": 503
+    },
+    {
+      "resource": "notes",
+      "status": 503
+    },
+    {
+      "resource": "guides",
+      "status": 503
+    }
+  ],
+  "localSessionClosed": true,
+  "nativeMarkedSamples": {
+    "count": 13,
+    "peakCpuMs": 5,
+    "actualTotalWorkerRequests": "UNKNOWN: browser/server feed requests without markers are not a total request ledger",
+    "originalP0MissingTail": "1794278768484-11 remains UNKNOWN"
+  },
+  "accountFreeQuotaRemaining": "UNKNOWN",
+  "edgeCpu": "UNKNOWN"
+}

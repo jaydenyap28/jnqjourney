@@ -1,7 +1,7 @@
 import { createRequestDeduper, type PublicLocation, type PublicRegion } from '@/lib/public-data'
 
 export const fetchPublicData = createRequestDeduper<{ locations: PublicLocation[]; regions: PublicRegion[] }>(() =>
-  fetch('/api/locations')
+  fetch('/api/locations', {cache:'no-store'})
       .then(async (response) => {
         const payload = await response.json()
         if (!response.ok) throw new Error(payload?.error?.message || payload?.error || 'Unable to load travel spots right now.')

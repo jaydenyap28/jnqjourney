@@ -1,34 +1,24 @@
-import 'server-only'
+import './assert-server'
 
-import { createClient } from '@supabase/supabase-js'
-import { unstable_cache } from 'next/cache'
-import { cache } from 'react'
-import { readPublicFallbackSnapshot } from './public-fallback-snapshot'
+import { readPublicRows, readPrivatePublicFeed, PublicReadUnavailable } from './public-read-source'
+import { readLocationSlugMap } from './location-slugs-store'
+import { requestCache as cache } from './request-cache'
 
 import {
   hasValidCoordinates,
-  resolvePublicDataSources,
   type PublicDataSource,
   type PublicLocation,
-  type PublicLocationsPayload,
   type PublicRegion,
-  type PublicRegionsPayload,
   type ResolvedPublicData,
 } from '@/lib/public-data'
-import { publicSpotFromSupabaseRow, type PublicSpotRecord } from '@/lib/public-spot'
+import { publicSpotFromSupabaseRow } from '@/lib/public-spot'
 import { resolvePublicRegionMedia } from '@/lib/public-region-media'
 import { usableVisitDate } from '@/lib/homepage-order'
 import { publicSummaryText } from '@/lib/public-summary'
-import { SPOT_CONTENT_SELECT, isSpotPublished } from '@/lib/spot-content'
+import { isSpotPublished } from '@/lib/spot-content'
 
 const LOCATIONS_SELECT = 'id,name,name_cn,category,latitude,longitude,image_url,region_id,visit_date'
 const REGIONS_SELECT = 'id,name,name_cn,country,image_url,code,parent_id'
-const LEGACY_SNAPSHOT_SELECT = `${LOCATIONS_SELECT},images,description,tags,video_url,facebook_video_url,opening_hours,price_info,address`
-const SNAPSHOT_LOCATIONS_SELECT: string = `${LEGACY_SNAPSHOT_SELECT},${SPOT_CONTENT_SELECT}`
-const SNAPSHOT_REGIONS_SELECT = `${REGIONS_SELECT},description`
-const TIMEOUT_MS = 4000
-
-let inFlight: Promise<ResolvedPublicData> | null = null
 
 function displayName(name: unknown, nameCn: unknown) {
   const english = String(name || '').trim()
@@ -86,163 +76,25 @@ export function normalizeSupabasePublicData(locationRows: any[], regionRows: any
   return { locations, regions }
 }
 
-async function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
-  let timer: ReturnType<typeof setTimeout> | undefined
-  try {
-    return await Promise.race([
-      promise,
-      new Promise<T>((_, reject) => {
-        timer = setTimeout(() => reject(new Error(`${label} timed out`)), TIMEOUT_MS)
-      }),
-    ])
-  } finally {
-    if (timer) clearTimeout(timer)
-  }
-}
-
-async function readStaticFallback(): Promise<ResolvedPublicData> {
-  const snapshot = await readPublicFallbackSnapshot()
-  return { locations: snapshot.locations, regions: snapshot.regions, source: 'static-fallback' }
-}
-
-function publicDataCdnBase() {
-  return String(process.env.PUBLIC_DATA_CDN_BASE_URL || process.env.R2_PUBLIC_BASE_URL || '').replace(/\/+$/, '')
-}
-
-async function readCdnSnapshot(): Promise<ResolvedPublicData | null> {
-  const base = publicDataCdnBase()
-  if (!base) return null
-  try {
-    const [locationsResponse, regionsResponse] = await withTimeout(Promise.all([
-      fetch(`${base}/public-data/locations.json`, { next: { revalidate: 3600, tags: ['public-locations'] } }),
-      // The Region snapshot is overwritten at a fixed R2 key. Ask the CDN to
-      // revalidate that object when Next has precisely invalidated this tag.
-      fetch(`${base}/public-data/regions.json`, {
-        headers: { 'Cache-Control': 'no-cache' },
-        next: { revalidate: 3600, tags: ['public-regions'] },
-      }),
-    ]), 'Public data CDN')
-    if (!locationsResponse.ok || !regionsResponse.ok) return null
-    const [locations, regions] = await Promise.all([
-      locationsResponse.json() as Promise<PublicLocationsPayload>,
-      regionsResponse.json() as Promise<PublicRegionsPayload>,
-    ])
-    if (!Array.isArray(locations.locations) || !Array.isArray(regions.regions)) return null
-    return { locations: locations.locations.filter(hasValidCoordinates), regions: regions.regions, source: 'cdn-cache' }
-  } catch {
-    return null
-  }
-}
-
-async function readSupabase(): Promise<ResolvedPublicData | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  if (!url || !key) return null
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  try {
-    let [locationsResult, regionsResult] = await withTimeout(Promise.all([
-      supabase.from('locations').select(`${LOCATIONS_SELECT},publication_status`).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>(),
-      supabase.from('regions').select(REGIONS_SELECT).order('id', { ascending: true }),
-    ]), 'Supabase public data')
-    if (locationsResult.error && ['42703', 'PGRST204'].includes(locationsResult.error.code)) {
-      locationsResult = await supabase.from('locations').select(LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>()
-    }
-    if (locationsResult.error || regionsResult.error) return null
-    const normalized = normalizeSupabasePublicData(locationsResult.data || [], regionsResult.data || [])
-    return { ...normalized, source: 'supabase' }
-  } catch {
-    return null
-  }
-}
-
-interface PublicSnapshotBundle {
-  data: ResolvedPublicData
-  spots: PublicSpotRecord[]
-}
-
-async function readSupabaseSnapshotBundle(): Promise<PublicSnapshotBundle | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!url || !key) return null
-  const supabase = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
-  try {
-    let [locationsResult, regionsResult] = await withTimeout(Promise.all([
-      supabase.from('locations').select(SNAPSHOT_LOCATIONS_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>(),
-      supabase.from('regions').select(SNAPSHOT_REGIONS_SELECT).order('id', { ascending: true }),
-    ]), 'Supabase snapshot data')
-    if (locationsResult.error && ['42703', 'PGRST204'].includes(locationsResult.error.code)) {
-      locationsResult = await withTimeout(Promise.resolve(supabase.from('locations').select(LEGACY_SNAPSHOT_SELECT).eq('status', 'active').order('id', { ascending: false }).returns<Record<string, any>[]>()), 'Legacy snapshot data')
-    }
-    if (locationsResult.error || regionsResult.error) return null
-    const locationRows = locationsResult.data || []
-    const regionRows = regionsResult.data || []
-    const normalized = normalizeSupabasePublicData(locationRows, regionRows)
-    const locationById = new Map(normalized.locations.map((location) => [location.id, location]))
-    const regionById = new Map(regionRows.map((region: any) => [Number(region.id), region]))
-    const spots = locationRows
-      .map((row: any) => {
-        const location = locationById.get(Number(row.id))
-        return location ? publicSpotFromSupabaseRow(row, location, regionById.get(Number(row.region_id))) : null
-      })
-      .filter((spot): spot is PublicSpotRecord => Boolean(spot))
-    return { data: { ...normalized, source: 'supabase' }, spots }
-  } catch {
-    return null
-  }
-}
-
-async function resolveUncached(): Promise<ResolvedPublicData> {
-  const resolved = await resolvePublicDataSources({
-    cdn: async () => {
-      const value = await readCdnSnapshot()
-      return value ? { locations: value.locations, regions: value.regions } : null
-    },
-    supabase: async () => {
-      const value = await readSupabase()
-      return value ? { locations: value.locations, regions: value.regions } : null
-    },
-    fallback: async () => {
-      const value = await readStaticFallback()
-      return { locations: value.locations, regions: value.regions }
-    },
-  })
-  return { ...resolved, regions: resolvePublicRegionMedia(resolved.regions, resolved.locations) }
-}
-
-async function resolveCoalesced() {
-  if (!inFlight) inFlight = resolveUncached().finally(() => { inFlight = null })
-  return inFlight
-}
-
-const resolveCached = unstable_cache(resolveCoalesced, ['public-data-v2-fallback-20261030'], {
-  revalidate: 3600,
-  tags: ['public-data', 'public-locations', 'public-regions'],
-})
-
-async function readPublicData() {
-  if (process.env.JNQ_PUBLIC_FALLBACK === 'disabled') return resolveUncached()
-  return resolveCached()
-}
-
-export const resolvePublicData = typeof cache === 'function' ? cache(readPublicData) : readPublicData
-
-export async function resolvePublicDataUncachedForSnapshot() {
-  const bundle = await readSupabaseSnapshotBundle()
-  if (!bundle) throw new Error('Authoritative public data is unavailable.')
-  return { ...bundle.data, regions: resolvePublicRegionMedia(bundle.data.regions, bundle.data.locations) }
-}
 
 export async function resolvePublicSnapshotBundleUncached() {
-  const bundle = await readSupabaseSnapshotBundle()
-  if (!bundle) throw new Error('Authoritative public data is unavailable.')
-  return {
-    ...bundle,
-    data: { ...bundle.data, regions: resolvePublicRegionMedia(bundle.data.regions, bundle.data.locations) },
-  }
+  const [locationRows, regionPayload] = await Promise.all([readPublicRows(), readPrivatePublicFeed<{regions: any[]}>('regions.json')])
+  if (!Array.isArray(regionPayload.regions)) throw new PublicReadUnavailable()
+  const regionRows = regionPayload.regions.map(row => ({...row, image_url: row.image_url ?? row.thumbnail, description: row.description ?? row.shortSummary, parent_id: row.parent_id ?? row.parentId}))
+  const normalized = normalizeSupabasePublicData(locationRows, regionRows)
+  const slugs = await readLocationSlugMap()
+  normalized.locations = normalized.locations.map(row => ({...row, slug: slugs[String(row.id)] ? slugs[String(row.id)]+'-'+row.id : row.slug}))
+  const regionById = new Map(regionRows.map(row => [Number(row.id), row]))
+  const locationById = new Map(normalized.locations.map(row => [row.id,row]))
+  const spots = locationRows.flatMap(row => {
+    const location = locationById.get(row.id)
+    return location ? [publicSpotFromSupabaseRow(row, location, regionById.get(Number(row.region_id)))] : []
+  })
+  return {data: {...normalized, regions: resolvePublicRegionMedia(normalized.regions, normalized.locations), source: 'supabase' as const}, spots}
 }
-
-export function dataSourceHeader(source: PublicDataSource) {
-  return source === 'cdn-cache' ? 'cdn-cache' : source
-}
-
+async function readPublicData() { return (await resolvePublicSnapshotBundleUncached()).data }
+// React cache only deduplicates within one request; no persisted snapshot.
+export const resolvePublicData = cache(readPublicData)
+export async function resolvePublicDataUncachedForSnapshot() { return readPublicData() }
+export function dataSourceHeader(source: PublicDataSource) { return source }
 export const PUBLIC_DATA_SELECTS = { locations: LOCATIONS_SELECT, regions: REGIONS_SELECT }
