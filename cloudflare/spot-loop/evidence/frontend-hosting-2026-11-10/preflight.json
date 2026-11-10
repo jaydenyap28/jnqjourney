@@ -1,0 +1,113 @@
+{
+  "baseline": "bce68994c794db434a7aefc0ac1538b0c8229b1e",
+  "toolchain": {
+    "node": "v24.13.0",
+    "next": "14.2.35",
+    "react": "18.3.1"
+  },
+  "builder": "next build with output export in separate staging directory",
+  "localBuilds": [
+    {
+      "name": "initial_complete",
+      "at": "2026-11-10T07:42:04.941Z",
+      "scope": "complete tracked App and Pages router tree",
+      "files": 1149,
+      "exitCode": 1,
+      "elapsedMs": 16641,
+      "compiled": false,
+      "diagnostic": "Error: EPERM: operation not permitted, mkdir '<candidate>\\.next\\server\\pages\\api\\admin'"
+    },
+    {
+      "name": "complete",
+      "at": "2026-11-10T07:43:18.142Z",
+      "scope": "complete tracked App and Pages router tree",
+      "files": 1149,
+      "exitCode": 1,
+      "elapsedMs": 50751,
+      "compiled": true,
+      "diagnostic": "Error: export const dynamic = \"force-dynamic\" on page \"/api/admin/affiliate-links\" cannot be used with \"output: export\". See more info here: https://nextjs.org/docs/advanced-features/static-html-export"
+    },
+    {
+      "name": "english_missing_global_css",
+      "at": "2026-11-10T07:43:53.495Z",
+      "scope": "pages-router-only diagnostic",
+      "files": 1041,
+      "exitCode": 1,
+      "elapsedMs": 11807,
+      "compiled": false,
+      "diagnostic": "Module not found: Can't resolve '@/app/globals.css'"
+    },
+    {
+      "name": "english_missing_font_css",
+      "at": "2026-11-10T07:44:31.062Z",
+      "scope": "pages-router-only diagnostic",
+      "files": 1042,
+      "exitCode": 1,
+      "elapsedMs": 10513,
+      "compiled": false,
+      "diagnostic": "Error: Can't resolve './site-fonts.css' in '<candidate>\\app'"
+    },
+    {
+      "name": "english",
+      "at": "2026-11-10T07:45:21.890Z",
+      "scope": "pages-router-only diagnostic",
+      "files": 1043,
+      "exitCode": 1,
+      "elapsedMs": 20734,
+      "compiled": true,
+      "diagnostic": "Error: Error for page /en/[[...path]]: pages with `getServerSideProps` can not be exported. See more info here: https://nextjs.org/docs/messages/gssp-export"
+    }
+  ],
+  "adapterResolution": {
+    "command": "npm install --dry-run --strict-peer-deps --ignore-scripts --no-audit --no-fund --package-lock=false",
+    "runs": [
+      {
+        "name": "OpenNext",
+        "dependencies": {
+          "next": "14.2.35",
+          "react": "18.3.1",
+          "react-dom": "18.3.1",
+          "@opennextjs/cloudflare": "1.20.16"
+        },
+        "exitCode": 1,
+        "diagnostic": [
+          "npm error code ERESOLVE",
+          "npm error Found: next@14.2.35",
+          "npm error peer next@\">=15.5.29 <16 || >=16.4.5\" from @opennextjs/cloudflare@1.20.16"
+        ]
+      },
+      {
+        "name": "vinext",
+        "dependencies": {
+          "next": "14.2.35",
+          "react": "18.3.1",
+          "react-dom": "18.3.1",
+          "vinext": "1.4.4"
+        },
+        "exitCode": 1,
+        "diagnostic": [
+          "npm error code ERESOLVE",
+          "npm error Found: react@18.3.1",
+          "npm error peer react@\"^19.3.1\" from vinext@1.4.4"
+        ]
+      }
+    ]
+  },
+  "hostedPreview": {
+    "deploymentAttempted": false,
+    "chromeRoutesPassed": 0,
+    "chromeRoutesPlanned": 5,
+    "nativeCpuSamples": 0,
+    "nativeCpuMs": "UNKNOWN",
+    "staticRequests": "NOT_RUN",
+    "dynamicRequests": "NOT_RUN"
+  },
+  "previousTailGap": "1794278768484-11 UNKNOWN",
+  "decision": {
+    "frontend": "FRONTEND_HOSTING_BLOCKED",
+    "authoritativeSources": "AUTHORITATIVE_SOURCE_BLOCKED",
+    "adminWrites": "ADMIN_WRITE_INTEGRATION_BLOCKED",
+    "formalMigration": "HOLD"
+  },
+  "authorizedRemoteMutations": 0
+}
