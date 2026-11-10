@@ -1,0 +1,18 @@
+{
+  "assetCount": 335,
+  "bytes": 24353892,
+  "contentRepresentationsPresent": 0,
+  "routeRules": {
+    "version": 1,
+    "include": [
+      "/*"
+    ],
+    "exclude": [
+      "/_next/static/*",
+      "/fonts/*",
+      "/icon.png",
+      "/apple-icon.png",
+      "/favicon.ico"
+    ]
+  }
+}

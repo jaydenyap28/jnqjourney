@@ -1,0 +1,17 @@
+{
+  "deploymentId": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+  "count": 0,
+  "diagnostics": {
+    "parsedFrames": 0,
+    "parseErrors": 0,
+    "unmatchedRequests": 0,
+    "truncatedEvents": 0,
+    "warningFrames": 0,
+    "stderrWarnings": 0,
+    "closed": true,
+    "incompleteFrame": false,
+    "exitCode": null,
+    "exitSignal": "SIGTERM"
+  },
+  "events": []
+}
