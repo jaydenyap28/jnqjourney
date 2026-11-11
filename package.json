@@ -12,6 +12,7 @@
     "cf:package": "node scripts/cloudflare/package-candidate.mjs",
     "cf:verify": "node scripts/cloudflare/verify-static-candidate.mjs",
     "cf:preview": "node scripts/cloudflare/serve-candidate.mjs",
+    "cf:recovery": "node scripts/cloudflare/recovery-candidate.mjs",
     "test:cloudflare": "node --test tests/cloudflare-publication.test.mjs tests/admin-locations.test.cjs",
     "cf:spot:package": "node scripts/cloudflare/package-spot-loop.mjs",
     "test:cloudflare-spot": "node --test tests/cloudflare-spot-loop.test.mjs",

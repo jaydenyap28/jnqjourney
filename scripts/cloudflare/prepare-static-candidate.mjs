@@ -5,6 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
+if (process.argv.includes('--recovery')) { await import('./prepare-static-recovery.mjs'); process.exit(0) }
 const readiness = process.argv.includes('--public-readiness')
 const base = path.join(root, readiness ? 'artifacts/cloudflare-public-readiness' : 'artifacts/cloudflare-candidate')
 const source = path.join(base, 'source')

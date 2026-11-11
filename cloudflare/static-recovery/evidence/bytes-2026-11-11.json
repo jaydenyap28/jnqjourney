@@ -1,0 +1,197 @@
+{
+  "checkedAt": "2026-11-11T02:54:04.546Z",
+  "buildId": "eJ1kXw-B4EBhzS3pmybYs",
+  "checks": [
+    {
+      "route": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 2620264,
+      "sha256": "390fc667ab0f290fb7b307ca10e8b5909848373582f9aa23dcc032a9f1b08fcd",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/spot/turtle-alley-636",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 106734,
+      "sha256": "17ad00a8cd72abab90f4fc1e26945c7709b03007ffd7aeb69078359c8543f116",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/en/packages",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 13616,
+      "sha256": "9a831bd9e87cdfc489896830b9a8bfa62fa41024751bf074c66e9d96ba9d4771",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/en/disclaimer",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 13630,
+      "sha256": "44c2e81d0858b751adf358a7d1fff30a63fb2b9ea7e9cee337c1efa4f7ab0c41",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/spot/turtle-alley-636.txt",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 34668,
+      "sha256": "86fdcec11d4a1ecc3d7f185c79311f49c507f26fbb40b7094b5d7ecf85cd06fa",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/_next/data/eJ1kXw-B4EBhzS3pmybYs/en/spot/turtle-alley-636.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 12466,
+      "sha256": "bac2b653ce239c9e94b54a3d6694e68831879e2c9f054759f0a44f9579a281d4",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/api/locations",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 573048,
+      "sha256": "9ee8a9b97a332757ba2d57470ed8e9c570edcf39dec70cdb01257e788c38ee8e",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/api/spots/turtle-alley-636",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 4539,
+      "sha256": "a0eb9302a3672f993d2a168d981342223c7d58ac94b5d09315026139713461c0",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/regions.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 34874,
+      "sha256": "d08801afebf895ab9bbaadfa5771d49a9d3d04f02f21c2b901696ebfbf64a355",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/guides.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 99419,
+      "sha256": "bb50a06ed7bb04b2867b1d2299953b909cbaa30cc6e9c37b233ebed93f94b597",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/notes.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 270788,
+      "sha256": "6c5de19e2d5ca8b94c64d1b9f3965f6de34519e8f21590a11aafb116b2b0fb7d",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/guide-trip-costs.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 4865,
+      "sha256": "aeefbc568c6492bc96d745cfe9ae20dd4388b6b666cbf52340ae3aa84f556c60",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/i18n/en/records.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 1271437,
+      "sha256": "ee20a5b08898b4186a581f0939a1bdc2c074c527e45928e002796209e82210db",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/spots/index.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 15981,
+      "sha256": "c293f79dde7d620e515780347d079dc8e5cb04a5104da48a2bb8061f9a2b1573",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/affiliate-links.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 644097,
+      "sha256": "a2514edea2c49caa08d58e3893c1bd1c8fc5affdf618a141fbcaa667ae8a3f1a",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/public-data/fx/MYR.json",
+      "status": 200,
+      "type": "application/json",
+      "noindex": "noindex, nofollow",
+      "bytes": 85,
+      "sha256": "24dae7dc67fe0efcc4b082e374f247a03e8d7b29ce705a8e57c42f2e2d491df7",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/sitemap.xml",
+      "status": 200,
+      "type": "application/xml",
+      "noindex": "noindex, nofollow",
+      "bytes": 222135,
+      "sha256": "30114b6563d22b9c0af0ba39b3fa8bc51497ef902518d923ece8f4f686934f19",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/robots.txt",
+      "status": 200,
+      "type": "text/plain; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 26,
+      "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+      "matched": true,
+      "passed": true
+    },
+    {
+      "route": "/definitely-not-a-page-20261111",
+      "status": 404,
+      "type": "text/html; charset=utf-8",
+      "noindex": "noindex, nofollow",
+      "bytes": 15949,
+      "sha256": "41611f9e0ef45653bac328096a8d447c1c782d62d89a51f60c68e9802cb6ac56",
+      "matched": true,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

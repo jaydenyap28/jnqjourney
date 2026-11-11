@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+if(process.argv.includes('--recovery')) { await (await import('./verify-static-recovery.mjs')).verifyRecoveryPackage(); process.exit(0) }
 const base=path.resolve('artifacts/cloudflare-candidate')
 const out=path.join(base,'source/out')
 const manifest=JSON.parse(await readFile(path.join(base,'manifest.json'),'utf8'))

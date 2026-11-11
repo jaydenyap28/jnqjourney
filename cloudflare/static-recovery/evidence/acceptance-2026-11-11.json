@@ -1,0 +1,1360 @@
+{
+  "createdAt": "2026-11-11T03:02:46.338Z",
+  "statuses": {
+    "publicStatic": "PUBLIC_STATIC_READY",
+    "admin": "ADMIN_PENDING",
+    "publication": "PUBLICATION_PENDING",
+    "formalMigration": "HOLD"
+  },
+  "scope": "READY means the full pure-static Preview candidate, not Production cutover or real-time withdrawal.",
+  "preview": {
+    "url": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+    "id": "921277e0-81c7-46a0-ae65-c869a4f3e947",
+    "branch": "codex/cloudflare-static-recovery",
+    "project": "jnqjourney-static-recovery-candidate",
+    "productionDeployments": 0,
+    "productionCanonicalEmpty": true,
+    "secretsAndBindings": 0,
+    "functions": 0,
+    "workerUploaded": false
+  },
+  "content": {
+    "capturedAt": "2026-11-11T01:49:46.349Z",
+    "authority": {
+      "guides": {
+        "pointer": "_system/guides-latest.webp",
+        "target": "_system/guides/1790166125049.webp",
+        "sha256": "31dc7d303689df31181b1815d76d7ab27f55ffe91a5a1ce72afbcbbae852a2ab"
+      },
+      "notes": {
+        "pointer": "_system/notes-latest.webp",
+        "target": "_system/notes/1790652864167.webp",
+        "sha256": "828675c2c3fbdffc41284f70d9a06ef80ef741e5bb71b0545f5311024222b61a"
+      },
+      "slugs": {
+        "sha256": "b4b8ac2ed913284b157e9883c38d5df344238772f6a64a04491d4a424a0c8711"
+      },
+      "english": {
+        "sha256": "4451f5eab6029a8578ef9e2c565d00caac1edb36d8f37e3462e21fdf7f8b0827",
+        "version": "admin-note-0fc143e0-e689-4086-8952-e0ad73d9f207"
+      }
+    },
+    "counts": {
+      "totalSpots": 586,
+      "publicSpots": 582,
+      "excludedSpots": 4,
+      "regions": 58,
+      "guides": 7,
+      "notes": 6,
+      "packages": 3,
+      "options": 12,
+      "localizations": 402,
+      "affiliates": 360
+    },
+    "latestReadOnlyRecheck": {
+      "checkedAt": "2026-11-11T02:52:06.740Z",
+      "matched": true,
+      "files": [
+        "database.json",
+        "guides.json",
+        "notes.json",
+        "location-slugs.json",
+        "english.json",
+        "guide-trip-costs.json",
+        "historical-public-slugs.json",
+        "fx.json"
+      ],
+      "productionWrites": 0,
+      "realtimeRevocation": false
+    }
+  },
+  "artifact": {
+    "verifiedAt": "2026-11-11T03:00:18.708Z",
+    "passed": true,
+    "publicPages": 1349,
+    "publicSpotDetails": 582,
+    "sitemapEntries": 706,
+    "indexablePages": 706,
+    "redirects": 1478,
+    "files": 3621,
+    "bytes": 226642240,
+    "maxFileBytes": 2620264,
+    "freeFileLimit": 20000,
+    "freeFileByteLimit": 26214400,
+    "actualLocalBuildMs": 53506,
+    "functions": 0,
+    "canonicalHostDifferences": [
+      {
+        "route": "/packages/batam-3d2n",
+        "canonical": "https://jnqjourney.com/packages/batam-3d2n"
+      }
+    ],
+    "actualAccountRemainingQuota": "UNKNOWN",
+    "realtimeRevocation": false,
+    "formalMigration": "HOLD",
+    "media": {
+      "renderedUnique": 769,
+      "legacyPublicR2": 681,
+      "identityAndRevocation": "UNVERIFIED_FORMAL_MEDIA",
+      "sharedConsumers": 751
+    },
+    "publicationReceiptSha256": "3f9b8be1540c0d54984bff7562148cb8d2a5803babfa574298f672898b502210"
+  },
+  "tests": {
+    "lint": 0,
+    "typecheck": 0,
+    "http": {
+      "previousFull": {
+        "origin": "https://73fc079b.jnqjourney-static-recovery-candidate.pages.dev",
+        "total": 2604,
+        "pages": 1347,
+        "redirects": 1249
+      },
+      "currentDelta": {
+        "origin": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+        "total": 239,
+        "pages": 2,
+        "redirects": 229
+      },
+      "passed": true
+    },
+    "links": {
+      "pages": 1349,
+      "unresolved": 0
+    },
+    "bytes": {
+      "checks": 19,
+      "passed": true
+    },
+    "browser": {
+      "version": "157.0.8103.40",
+      "viewports": [
+        1440,
+        1920,
+        390,
+        430
+      ],
+      "completedPageVisits": 38,
+      "uniqueRoutes": 17,
+      "pages": [
+        {
+          "route": "/",
+          "viewport": 1440,
+          "title": "JnQ Journey | Jayden & Qing",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 120003,
+          "canonical": "https://www.jnqjourney.com/",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/search",
+          "viewport": 1440,
+          "title": "搜索景点、地区和游记 | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 360,
+          "canonical": "https://www.jnqjourney.com/search",
+          "scripts": 8,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/spot/turtle-alley-636",
+          "viewport": 1440,
+          "title": "Turtle Alley｜登嘉楼唐人街海龟主题壁画小巷",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 3530,
+          "canonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+          "scripts": 18,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/spot/turtle-alley-636",
+          "viewport": 1440,
+          "title": "Turtle Alley | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 4446,
+          "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+          "scripts": 11,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/notes/malaysia-turtle-night-terengganu",
+          "viewport": 1440,
+          "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 4082,
+          "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+          "scripts": 12,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/region/terengganu-23",
+          "viewport": 1440,
+          "title": "登嘉楼 Travel Guide - Spots, Food, Stays and Routes",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 9372,
+          "canonical": "https://www.jnqjourney.com/region/terengganu-23",
+          "scripts": 10,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/packages/batam-3d2n",
+          "viewport": 1440,
+          "title": "巴淡岛3天2夜配套比较｜RM499起｜船票酒店按摩与主题行程｜JnQ Journey | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 6376,
+          "canonical": "https://jnqjourney.com/packages/batam-3d2n",
+          "scripts": 8,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en",
+          "viewport": 1440,
+          "title": "See the world together | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 126570,
+          "canonical": "https://www.jnqjourney.com/en",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/notes",
+          "viewport": 1440,
+          "title": "Longform Notes | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 2865,
+          "canonical": "https://www.jnqjourney.com/en/notes",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/guide",
+          "viewport": 1440,
+          "title": "Travel Guides | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 3310,
+          "canonical": "https://www.jnqjourney.com/en/guide",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-jiangnan-autumn-15d14n",
+          "viewport": 1440,
+          "title": "上海·苏州·乌镇·杭州·黟县·南京 (15天14夜) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 7900,
+          "canonical": "https://www.jnqjourney.com/guide/china-jiangnan-autumn-15d14n",
+          "scripts": 12,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/malaysia-langkawi-5d4n",
+          "viewport": 1440,
+          "title": "Langkawi 6D5N 自驾游 (6 Days / 5 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 4960,
+          "canonical": "https://www.jnqjourney.com/guide/malaysia-langkawi-5d4n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/malaysia-east-coast-route3-10d9n",
+          "viewport": 1440,
+          "title": "马来西亚-关丹·登嘉楼·吉兰丹 (10 Days / 9 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 9346,
+          "canonical": "https://www.jnqjourney.com/guide/malaysia-east-coast-route3-10d9n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+          "viewport": 1440,
+          "title": "哈尔滨·雪谷·长白山·北京 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 7088,
+          "canonical": "https://www.jnqjourney.com/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 1440,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 6913,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/japan-hokkaido-yamagata-tokyo-10d9n",
+          "viewport": 1440,
+          "title": "北海道·东北山形·东京·富士山 (10 Days / 9 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 5538,
+          "canonical": "https://www.jnqjourney.com/guide/japan-hokkaido-yamagata-tokyo-10d9n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-guangzhou-8d7n",
+          "viewport": 1440,
+          "title": "广州·番禺 (8 Days / 7 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 2994,
+          "canonical": "https://www.jnqjourney.com/guide/china-guangzhou-8d7n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 1440,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1440,
+          "bodyText": 6913,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 1920,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 1920,
+          "bodyText": 6913,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/",
+          "viewport": 390,
+          "title": "JnQ Journey | Jayden & Qing",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 99051,
+          "canonical": "https://www.jnqjourney.com/",
+          "scripts": 15,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/search",
+          "viewport": 390,
+          "title": "搜索景点、地区和游记 | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 360,
+          "canonical": "https://www.jnqjourney.com/search",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/spot/turtle-alley-636",
+          "viewport": 390,
+          "title": "Turtle Alley｜登嘉楼唐人街海龟主题壁画小巷",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 3530,
+          "canonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+          "scripts": 18,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/spot/turtle-alley-636",
+          "viewport": 390,
+          "title": "Turtle Alley | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 4446,
+          "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+          "scripts": 11,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/notes/malaysia-turtle-night-terengganu",
+          "viewport": 390,
+          "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 4082,
+          "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+          "scripts": 13,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/region/terengganu-23",
+          "viewport": 390,
+          "title": "登嘉楼 Travel Guide - Spots, Food, Stays and Routes",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 9372,
+          "canonical": "https://www.jnqjourney.com/region/terengganu-23",
+          "scripts": 11,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/packages/batam-3d2n",
+          "viewport": 390,
+          "title": "巴淡岛3天2夜配套比较｜RM499起｜船票酒店按摩与主题行程｜JnQ Journey | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 6408,
+          "canonical": "https://jnqjourney.com/packages/batam-3d2n",
+          "scripts": 12,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en",
+          "viewport": 390,
+          "title": "See the world together | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 105576,
+          "canonical": "https://www.jnqjourney.com/en",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/notes",
+          "viewport": 390,
+          "title": "Longform Notes | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 2865,
+          "canonical": "https://www.jnqjourney.com/en/notes",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/en/guide",
+          "viewport": 390,
+          "title": "Travel Guides | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 3310,
+          "canonical": "https://www.jnqjourney.com/en/guide",
+          "scripts": 9,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-jiangnan-autumn-15d14n",
+          "viewport": 390,
+          "title": "上海·苏州·乌镇·杭州·黟县·南京 (15天14夜) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 7908,
+          "canonical": "https://www.jnqjourney.com/guide/china-jiangnan-autumn-15d14n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/malaysia-langkawi-5d4n",
+          "viewport": 390,
+          "title": "Langkawi 6D5N 自驾游 (6 Days / 5 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 5012,
+          "canonical": "https://www.jnqjourney.com/guide/malaysia-langkawi-5d4n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/malaysia-east-coast-route3-10d9n",
+          "viewport": 390,
+          "title": "马来西亚-关丹·登嘉楼·吉兰丹 (10 Days / 9 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 9450,
+          "canonical": "https://www.jnqjourney.com/guide/malaysia-east-coast-route3-10d9n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+          "viewport": 390,
+          "title": "哈尔滨·雪谷·长白山·北京 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 7164,
+          "canonical": "https://www.jnqjourney.com/guide/china-harbin-xuegu-changbai-beijing-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 390,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 6994,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 13,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/japan-hokkaido-yamagata-tokyo-10d9n",
+          "viewport": 390,
+          "title": "北海道·东北山形·东京·富士山 (10 Days / 9 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 5614,
+          "canonical": "https://www.jnqjourney.com/guide/japan-hokkaido-yamagata-tokyo-10d9n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-guangzhou-8d7n",
+          "viewport": 390,
+          "title": "广州·番禺 (8 Days / 7 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 3048,
+          "canonical": "https://www.jnqjourney.com/guide/china-guangzhou-8d7n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 390,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 390,
+          "bodyText": 6994,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        },
+        {
+          "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+          "viewport": 430,
+          "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+          "h1": 1,
+          "width": 430,
+          "bodyText": 6994,
+          "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+          "scripts": 14,
+          "footers": 1,
+          "eagerVideo": 0,
+          "errors": [],
+          "passed": true
+        }
+      ],
+      "imageEvidence": "Primary-run raw visibility diagnostics are preserved locally but omitted here because the first harness did not filter horizontally offscreen cards. Availability evidence is the separate HEAD inventory and decoded interaction image; final delta visibility diagnostics use corrected viewport bounds.",
+      "guideSmoke": "All 7 published Guides at 1440 and 390; primary Guide sections at all 4 widths.",
+      "interactions": [
+        {
+          "viewport": 1440,
+          "feature": "home-search-map",
+          "initialMarkers": 582,
+          "filteredMarkers": 1,
+          "mapCanvas": 1,
+          "mapStyleResponses": [
+            "api.mapbox.com:200"
+          ]
+        },
+        {
+          "viewport": 1440,
+          "feature": "static-search-document-navigation",
+          "path": "/spot/turtle-alley-636"
+        },
+        {
+          "viewport": 1440,
+          "feature": "lightbox-open-next-close",
+          "imageChanged": false,
+          "passed": true
+        },
+        {
+          "viewport": 1440,
+          "feature": "day-nav",
+          "hash": "#day-2",
+          "passed": true
+        },
+        {
+          "viewport": 1440,
+          "feature": "guide-map",
+          "canvas": 1,
+          "buttons": 7,
+          "textFallback": true
+        },
+        {
+          "viewport": 1440,
+          "feature": "video-click-to-load",
+          "privacyHost": "www.youtube-nocookie.com",
+          "passed": true
+        },
+        {
+          "viewport": 1920,
+          "feature": "lightbox-open-next-close",
+          "imageChanged": false,
+          "passed": true
+        },
+        {
+          "viewport": 1920,
+          "feature": "day-nav",
+          "hash": "#day-2",
+          "passed": true
+        },
+        {
+          "viewport": 1920,
+          "feature": "guide-map",
+          "canvas": 1,
+          "buttons": 7,
+          "textFallback": true
+        },
+        {
+          "viewport": 1920,
+          "feature": "video-click-to-load",
+          "privacyHost": "www.youtube-nocookie.com",
+          "passed": true
+        },
+        {
+          "viewport": 390,
+          "feature": "home-search-map",
+          "initialMarkers": 582,
+          "filteredMarkers": 1,
+          "mapCanvas": 1,
+          "mapStyleResponses": []
+        },
+        {
+          "viewport": 390,
+          "feature": "static-search-document-navigation",
+          "path": "/spot/turtle-alley-636"
+        },
+        {
+          "viewport": 390,
+          "feature": "lightbox-open-next-close",
+          "imageChanged": false,
+          "passed": true
+        },
+        {
+          "viewport": 390,
+          "feature": "day-nav",
+          "hash": "#day-2",
+          "passed": true
+        },
+        {
+          "viewport": 390,
+          "feature": "guide-map",
+          "canvas": 1,
+          "buttons": 7,
+          "textFallback": true
+        },
+        {
+          "viewport": 390,
+          "feature": "video-click-to-load",
+          "privacyHost": "www.youtube-nocookie.com",
+          "passed": true
+        },
+        {
+          "viewport": 430,
+          "feature": "lightbox-open-next-close",
+          "imageChanged": false,
+          "passed": true
+        },
+        {
+          "viewport": 430,
+          "feature": "day-nav",
+          "hash": "#day-2",
+          "passed": true
+        },
+        {
+          "viewport": 430,
+          "feature": "guide-map",
+          "canvas": 1,
+          "buttons": 7,
+          "textFallback": true
+        },
+        {
+          "viewport": 430,
+          "feature": "video-click-to-load",
+          "privacyHost": "www.youtube-nocookie.com",
+          "passed": true
+        },
+        {
+          "feature": "gallery-decode-next-keyboard-close",
+          "before": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/516-1775183885418-93069da3-8e1d-4e34-92ca-e9e8a4ab5709-4-2-4--wa-795a6799-724d-4927-bad1-fef7a41319da.webp",
+          "after": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/516-1775183885418-93069da3-8e1d-4e34-92ca-e9e8a4ab5709-4-2-4--wa-795a6799-724d-4927-bad1-fef7a41319da.webp",
+          "decoded": {
+            "src": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/516-1775183885418-93069da3-8e1d-4e34-92ca-e9e8a4ab5709-4-2-4--wa-795a6799-724d-4927-bad1-fef7a41319da.webp",
+            "width": 1800,
+            "height": 1013
+          },
+          "imageCount": 1,
+          "nextBehavior": "SINGLE_IMAGE_WRAP",
+          "passed": true
+        },
+        {
+          "feature": "multi-image-spot-carousel",
+          "imageChanged": true,
+          "passed": true
+        },
+        {
+          "feature": "region-selection-and-refresh",
+          "path": "/region/terengganu-23",
+          "spotLinks": 39,
+          "passed": true
+        }
+      ],
+      "sameOriginResponses": 2433,
+      "sameOriginHttpFailures": 0,
+      "responseCountScope": "The two primary earlier Preview runs, including the initial mobile readiness failure. Follow-up probe total traffic was not fully instrumented; total across all runs UNKNOWN.",
+      "requestTypes": {
+        "document": 41,
+        "script": 551,
+        "stylesheet": 74,
+        "font": 1567,
+        "other": 84,
+        "fetch": 113,
+        "image": 3
+      },
+      "serverRuntimeRequests": [],
+      "hydrationErrors": 0,
+      "preservedHarnessFailures": [
+        "Desktop run stopped at first mobile search assertion; mobile initialization wait corrected.",
+        "Gallery probe wrongly expected multiple images in a real one-image Guide; original single-image wrap verified.",
+        "Follow-up probe blocked mandatory YouTube iframe API and caused Event. Original error retained; restored required resource and bounded follow-up passed."
+      ],
+      "thirdPartyLimits": "Ad/telemetry and some external video auxiliary resources were blocked. Click-to-load/iframe initialization passed; uninterrupted video playback and ad delivery are not certified.",
+      "currentDeploymentDelta": {
+        "origin": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+        "passed": true,
+        "pages": [
+          {
+            "route": "/",
+            "viewport": 1440,
+            "title": "JnQ Journey | Jayden & Qing",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 120003,
+            "canonical": "https://www.jnqjourney.com/",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Kea Farm"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Cameron Valley Tea House 1"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "海南妹 / Hainan Highlands Kopitiam"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Lata Iskandar"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "浓乡美食轩 / Nong Xiang Restaurant"
+              }
+            ],
+            "scripts": 14,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/spot/turtle-alley-636",
+            "viewport": 1440,
+            "title": "Turtle Alley | JnQ Journey",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 4446,
+            "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+            "visibleImages": [],
+            "scripts": 11,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/packages",
+            "viewport": 1440,
+            "title": "English translation in progress | JnQ Journey",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 924,
+            "canonical": "https://www.jnqjourney.com/en/packages",
+            "visibleImages": [],
+            "scripts": 9,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/disclaimer",
+            "viewport": 1440,
+            "title": "English translation in progress | JnQ Journey",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 924,
+            "canonical": "https://www.jnqjourney.com/en/disclaimer",
+            "visibleImages": [],
+            "scripts": 9,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/spot/pulau-kapas-232",
+            "viewport": 1440,
+            "title": "Pulau Kapas｜登嘉楼棉花岛浮潜与一日游攻略",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 3494,
+            "canonical": "https://www.jnqjourney.com/spot/pulau-kapas-232",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "棉花岛 Pulau Kapas Facebook video"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": ""
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "棉花岛 Pulau Kapas — 照片 1"
+              }
+            ],
+            "scripts": 18,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/notes/malaysia-turtle-night-terengganu",
+            "viewport": 1440,
+            "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 4082,
+            "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "登嘉楼海龟奇妙夜｜放生小海龟 × 等母龟上岸"
+              }
+            ],
+            "scripts": 13,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+            "viewport": 1440,
+            "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+            "h1": 1,
+            "width": 1440,
+            "bodyText": 6913,
+            "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "大理·丽江·香格里拉 完整路线攻略封面"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "大理·丽江·香格里拉 cover image"
+              }
+            ],
+            "scripts": 14,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/",
+            "viewport": 390,
+            "title": "JnQ Journey | Jayden & Qing",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 99051,
+            "canonical": "https://www.jnqjourney.com/",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Kea Farm"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Cameron Valley Tea House 1"
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "海南妹 / Hainan Highlands Kopitiam"
+              }
+            ],
+            "scripts": 12,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/spot/turtle-alley-636",
+            "viewport": 390,
+            "title": "Turtle Alley | JnQ Journey",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 4446,
+            "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": ""
+              },
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "Turtle Alley — photo 1"
+              }
+            ],
+            "scripts": 11,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/packages",
+            "viewport": 390,
+            "title": "English translation in progress | JnQ Journey",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 915,
+            "canonical": "https://www.jnqjourney.com/en/packages",
+            "visibleImages": [],
+            "scripts": 9,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/en/disclaimer",
+            "viewport": 390,
+            "title": "English translation in progress | JnQ Journey",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 915,
+            "canonical": "https://www.jnqjourney.com/en/disclaimer",
+            "visibleImages": [],
+            "scripts": 9,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/spot/pulau-kapas-232",
+            "viewport": 390,
+            "title": "Pulau Kapas｜登嘉楼棉花岛浮潜与一日游攻略",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 3494,
+            "canonical": "https://www.jnqjourney.com/spot/pulau-kapas-232",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "棉花岛 Pulau Kapas Facebook video"
+              }
+            ],
+            "scripts": 18,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/notes/malaysia-turtle-night-terengganu",
+            "viewport": 390,
+            "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 4082,
+            "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "登嘉楼海龟奇妙夜｜放生小海龟 × 等母龟上岸"
+              }
+            ],
+            "scripts": 13,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          },
+          {
+            "route": "/guide/china-dali-shangri-la-lijiang-11d10n",
+            "viewport": 390,
+            "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+            "h1": 1,
+            "width": 390,
+            "bodyText": 6994,
+            "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+            "visibleImages": [
+              {
+                "loaded": true,
+                "pending": false,
+                "alt": "大理·丽江·香格里拉 完整路线攻略封面"
+              }
+            ],
+            "scripts": 14,
+            "footers": 1,
+            "eagerVideo": 0,
+            "errors": [],
+            "passed": true
+          }
+        ],
+        "sameOriginResponseCount": 748,
+        "requestTypes": {
+          "document": 14,
+          "stylesheet": 22,
+          "script": 172,
+          "font": 502,
+          "other": 22,
+          "fetch": 16
+        },
+        "sameOriginFailures": [],
+        "serverRuntimeRequests": []
+      }
+    }
+  },
+  "media": {
+    "renderedHead": {
+      "total": 769,
+      "statuses": {
+        "200": 766,
+        "404": 1,
+        "UNKNOWN": 2
+      },
+      "not200": [
+        {
+          "url": "https://i.ibb.co/vxbYCQkk/gallery-Cafe-Mori-no-Tokei-02.webp",
+          "owners": [
+            "/en/region/hokkaido-47",
+            "/en/region",
+            "/region/hokkaido-47"
+          ],
+          "status": "UNKNOWN",
+          "nativeIdentity": "UNVERIFIED",
+          "revocation": "UNKNOWN",
+          "reason": "PUBLIC_HEAD_FAILED"
+        },
+        {
+          "url": "https://i.ibb.co/mp0JnPH/Timba-Timba2.png",
+          "owners": [
+            "/en/region/malaysia",
+            "/en/region/sabah-77",
+            "/en/region",
+            "/region/sabah-77"
+          ],
+          "status": "UNKNOWN",
+          "nativeIdentity": "UNVERIFIED",
+          "revocation": "UNKNOWN",
+          "reason": "PUBLIC_HEAD_FAILED"
+        },
+        {
+          "url": "https://i.ibb.co/r2FHQynR/Chat-GPT-Image-Apr-8-2026-04-05-23-PM.png",
+          "owners": [
+            "/en/spot/pulau-kapas-232",
+            "/spot/pulau-kapas-232"
+          ],
+          "status": 404,
+          "nativeIdentity": "UNVERIFIED",
+          "revocation": "UNKNOWN",
+          "contentType": "image/png",
+          "bytes": 1031,
+          "etag": null
+        }
+      ]
+    },
+    "sourceReferencedImages": 4775,
+    "legacyR2": 4723,
+    "sharedAcrossModules": 9,
+    "identityAndRevocation": "UNVERIFIED_FORMAL_MEDIA",
+    "sharedReferences": [
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/65-1774941651234-47330b27-2189-4f89-a1d9-7ffee63176f8-3-28-13---a9899121-977c-4696-a082-2f276cb5c412.webp",
+        "owners": [
+          "spot:65",
+          "region:11"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/232-1774857489816-62e10b06-4bff-4e56-b0ce-5f706fbe71bc-3-30-6--w-5105dd01-c679-4a62-819c-1646524e4e28.webp",
+        "owners": [
+          "spot:232",
+          "region:23"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/237-1774850384776-987bff66-8300-4924-8c34-58996f37d86e-3-28--wat-50062240-48d7-44a2-9c11-68247d2bf33c.webp",
+        "owners": [
+          "spot:237",
+          "region:28"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/273-1775533061061-35d413c4-ae3c-434d-a273-1c3a33b543eb-pulau-tio-06c7974f-259c-4fbe-bfae-88c0802761a9.webp",
+        "owners": [
+          "spot:273",
+          "region:90"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-30/337-gallery-le-tao-pathos-07-fb5890e2-b290-4512-ae78-b55df17e0ff1.webp#focus=50,50",
+        "owners": [
+          "spot:337",
+          "region:48"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/404-1774765860534-30ae91c3-81f0-42e4-b2f6-9b64b7469f34-img-e1433-944c7419-bf3d-4b82-a15f-159f8a8edb72.webp",
+        "owners": [
+          "spot:404",
+          "region:40"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/432-4-7-7-watermarked-2fc4afd6-304b-4b2e-afdc-ed339cb648b6.png",
+        "owners": [
+          "spot:432",
+          "region:67"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/2026-05-31/480-1775122814820-e78d724d-81d9-410e-87cd-d7f19293aa2f-img-2447--703300b9-b23b-4ad9-a74b-a35bca377a2a.webp",
+        "owners": [
+          "spot:480",
+          "region:71"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      },
+      {
+        "url": "https://pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev/locations/china/hongcun/hongcun-scenic-area/images/2026-05-31/61dc6dc4-95e6-408e-82f4-368ede4509d7-19.webp#focus=50,50",
+        "owners": [
+          "spot:785",
+          "region:88"
+        ],
+        "fields": [
+          "image_url"
+        ],
+        "legacyR2": true
+      }
+    ]
+  },
+  "publication": {
+    "automatic": false,
+    "localRunner": "npm run cf:recovery -- --deploy-preview",
+    "runnerChecked": "syntax + --check; constituent capture/prepare/build/package/verify/deploy actually passed. Entire new controller was not rerun to avoid a redundant full build.",
+    "sourceRecheck": true,
+    "accountQuota": "UNKNOWN",
+    "realtimeRevocation": false
+  },
+  "unchanged": {
+    "productionSupabaseWrites": 0,
+    "productionR2Writes": 0,
+    "dnsChanges": 0,
+    "vercelChanges": 0,
+    "productionDeploys": 0,
+    "mainMerges": 0,
+    "newPaidServices": 0
+  },
+  "formalBlockers": [
+    "No user-approved static withdrawal propagation policy; old deployments, downloaded HTML and external media can remain accessible.",
+    "jnqjourney-img r2.dev bypass remains public; no production switch was changed.",
+    "Production anonymous database bypass not changed; new private admin write/auth/RLS integration remains pending.",
+    "Automatic authenticated publication/outbox and emergency withdrawal have not been deployed or accepted."
+  ]
+}
