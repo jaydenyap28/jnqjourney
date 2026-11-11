@@ -621,7 +621,7 @@ export default function AdminGuidesPage() {
       }
 
       if (nextGuides.length) {
-        const current = nextGuides.find((guide) => guide.slug === selectedSlug) || nextGuides[0]
+        const current = nextGuides[0]
         setForm({ ...current, days: segmentDaysForEditor(current, nextLocations) })
         setSelectedSlug(current.slug)
         setOriginalSlug(current.slug)
@@ -638,7 +638,7 @@ export default function AdminGuidesPage() {
     } finally {
       setLoading(false)
     }
-  }, [selectedSlug])
+  }, [])
 
   useEffect(() => {
     loadData()
@@ -1048,11 +1048,11 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={createNewGuide}>
+            <Button variant="outline" onClick={createNewGuide} disabled={loading || saving}>
               <Plus className="mr-2 h-4 w-4" />
               New guide
             </Button>
-            <Button onClick={saveGuide} disabled={saving} className="bg-amber-300 text-slate-950 hover:bg-amber-200">
+            <Button onClick={saveGuide} disabled={loading || saving} className="bg-amber-300 text-slate-950 hover:bg-amber-200">
               {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
               Save guide
             </Button>

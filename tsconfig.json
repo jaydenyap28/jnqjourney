@@ -38,6 +38,8 @@
     "**/*.mts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "cloudflare/admin-preview",
+    "artifacts/cloudflare-admin-isolated"
   ]
 }

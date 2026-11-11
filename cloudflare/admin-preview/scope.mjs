@@ -1,0 +1,11 @@
+export const PROJECT_REF = 'rnamstwwbzknwbjwdgrf'
+export const SUPABASE_ORIGIN = `https://${PROJECT_REF}.supabase.co`
+export const PAGES_PROJECT = 'jnqjourney-admin-isolated'
+export const PAGES_BRANCH = 'admin-review'
+export const ADMIN_ORIGIN = `https://${PAGES_BRANCH}.${PAGES_PROJECT}.pages.dev`
+export const FUNCTION = 'jnq-admin-isolated'
+export const PRIVATE_BUCKET = 'jnq-admin-isolated'
+export const FIRST_SPOT_ID = 95000
+export const LAST_SPOT_ID = 95099
+export const MEDIA_PREFIX = '/admin-draft-media/'
+export const MEDIA_NAME = /^[a-f0-9]{64}\.(png|jpg|webp|gif)$/

@@ -1,0 +1,90 @@
+{
+  "adminPreview": {
+    "url": "https://admin-review.jnqjourney-admin-isolated.pages.dev/admin/login",
+    "deploymentId": "383d959e-5b17-4e38-8af3-0a00f2af45e1",
+    "functions": 0,
+    "production": false
+  },
+  "edge": {
+    "projectRef": "rnamstwwbzknwbjwdgrf",
+    "functionId": "0ccabb2e-0668-44bc-8175-35a4c2995b27",
+    "version": 2,
+    "jwt": true,
+    "privateBucket": "jnq-admin-isolated"
+  },
+  "browser": {
+    "deploymentId": "383d959e-5b17-4e38-8af3-0a00f2af45e1",
+    "project": "rnamstwwbzknwbjwdgrf",
+    "frontend": "pages-preview",
+    "checks": {
+      "browserAdminLogin": true,
+      "anonymousAndInvalidJwtDenied": true,
+      "privateR2UploadAndBrowserDecode": true,
+      "spot": {
+        "created": true,
+        "updated": true,
+        "readBack": true,
+        "stale": 409,
+        "draft": true,
+        "slug": true
+      },
+      "spotEnglishDraft": true,
+      "note": {
+        "savedDraft": true,
+        "markdownBlocks": true,
+        "cover": true,
+        "preview": true,
+        "readBack": true,
+        "stale": 409
+      },
+      "noteAutosave": true,
+      "guide": {
+        "created": true,
+        "updated": true,
+        "readBack": true,
+        "dayAndSpotBinding": true,
+        "stale": 409,
+        "budgetValidation": 400
+      },
+      "ordinaryAccountDeniedWithAdminUserMetadata": true,
+      "privatePointersAndDirectLocationReadsDenied": true,
+      "mobileAdminLoginNoteRecoveryAndLogout": true,
+      "temporaryOrdinaryAccountRemoved": true
+    },
+    "passed": true
+  },
+  "extended": {
+    "deploymentId": "383d959e-5b17-4e38-8af3-0a00f2af45e1",
+    "passed": true,
+    "guideBudgetAndCoverReadBack": true,
+    "falseImageSignatureRejected": 415,
+    "publication": "unavailable",
+    "revokedSession": 401
+  },
+  "boundaries": {
+    "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "productionHome": 200,
+    "productionUsesFunctions": false,
+    "adminProduction": false,
+    "isolatedMediaPublicDomains": 0
+  },
+  "focusedLocalTests": {
+    "passed": 38,
+    "failed": 0
+  },
+  "publishRunner": {
+    "connected": false,
+    "status": "unavailable",
+    "localBuildPolicy": {
+      "attemptsPerDay": 8,
+      "attemptsPerMonth": 240,
+      "minimumIntervalMinutes": 10
+    },
+    "accountRemainingQuota": "unknown"
+  },
+  "formalPermissionCutover": {
+    "applied": false,
+    "backupRestoreAndPrivateBuilderRequired": true,
+    "oldR2SwitchChanged": false
+  }
+}

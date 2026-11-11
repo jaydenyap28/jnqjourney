@@ -873,6 +873,7 @@ export default function AdminNotesPage() {
 
   async function saveNote(options: { syncEnglish?: boolean } = {}) {
     if (inFlight.current || saveState === 'Newer cloud version detected') return
+    if (!dirty && selectedSlug && !options.syncEnglish) return
     if (!form.title.trim()) {
       setSaveState('Save failed')
       setMessage('请先填写标题再保存草稿。')

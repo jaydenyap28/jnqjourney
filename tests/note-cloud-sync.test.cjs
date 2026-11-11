@@ -84,6 +84,7 @@ function cloudHarness() {
     },
   }
   const load = loader({
+    'server-only': {},
     'fs/promises': { readFile: async () => JSON.stringify([note('stale-local')]), writeFile: async () => {} },
     '@supabase/supabase-js': { createClient: (_url, _key, opts) => { options = opts; return { storage: { from: () => bucket } } } },
     '@/lib/server/r2': { uploadPublicNotesSnapshot: async () => {} },
@@ -223,6 +224,10 @@ function editorHarness() {
   const ui = new Proxy({}, { get: (_target, key) => key })
   const mocks = { react, 'next/link': 'Link', 'lucide-react': ui,
     '@/lib/supabase': { supabase: { from: () => chain } },
+    '@/lib/admin-location-read': {
+      readAdminLocations: async () => ({ data: [], error: null }),
+      readAdminAffiliateLinks: async () => ({ data: [], error: null }),
+    },
     '@/lib/admin-fetch': { adminFetch: async (url, init) => {
       if (init?.method === 'POST') {
         requests.push(JSON.parse(init.body))
