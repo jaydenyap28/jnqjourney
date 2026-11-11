@@ -1,0 +1,12 @@
+{
+  "inventorySha256": "9edfc23dad17030e63a0057deff49878faf88fc6ecfa177c9e0c267cab970b4d",
+  "basis": "Static Cutover Implementation request explicitly allows a missing-image state for the six documented unavailable files. This decision does not grant permission to copy an image.",
+  "identities": [
+    "2f12a6ab364e7097cc2ea70b0b4418ab22f783be6b23b2316d8f835a798f6fc6",
+    "4d0512f654a239d8760d306667cbd085fbc8e25b9e0e8bc32cc235d1a855ffa4",
+    "e12dab02eccf8f4a54fda854296c0cd00fcbb4f429214d71530d32bfff109885",
+    "2244b1cd2a17e82890fb5e7090705d9585732dc2b63a723bee00391c4714986b",
+    "0e6c7de47c2861d8597e1b7e5c20c72ddb2e9ae5b44b95ae37ef70d8e8a7fbf2",
+    "8ceb97a91dba0f7ad7017f69535f37829a5c7c0b1dde7c4ba527d8aacedf43e5"
+  ]
+}

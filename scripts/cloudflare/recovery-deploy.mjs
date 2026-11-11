@@ -4,13 +4,23 @@ import { promisify } from 'node:util'
 import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { ACCOUNT, privateWranglerToken } from './candidate-cloudflare.mjs'
-import { RECOVERY, PROJECT, BRANCH } from './recovery-sources.mjs'
+import { RECOVERY, PROJECT, BRANCH, fingerprint } from './recovery-sources.mjs'
+import { FINAL_DIR } from './recovery-media-inventory-final.mjs'
+import { readMediaApproval } from './recovery-media-release-gate.mjs'
 
 const run=promisify(execFile)
 export async function deployRecoveryPreview() {
   assert.equal((await run('git',['branch','--show-current'],{windowsHide:true})).stdout.trim(),BRANCH,'WRONG_STATIC_RECOVERY_GIT_BRANCH')
   const verified=JSON.parse(await readFile(path.join(RECOVERY,'verification.json'),'utf8'))
   assert.ok(verified.passed&&verified.functions===0&&verified.files<=20000)
+  const expected=JSON.parse(await readFile(path.join(RECOVERY,'deploy/_publication.json'),'utf8'))
+  if(expected.mediaInventorySha256){
+    const media=JSON.parse(await readFile(path.join(RECOVERY,'media-approval-gate.json'),'utf8'))
+    const inventory=JSON.parse(await readFile(path.join(FINAL_DIR,'inventory.private.json'),'utf8'))
+    const {approval:current}=await readMediaApproval(inventory)
+    assert.ok(media.finalPackageVerified&&media.inventorySha256===expected.mediaInventorySha256
+      &&media.approvalFingerprint===expected.mediaApprovalFingerprint&&media.approvalFingerprint===fingerprint(current),'FINAL_MEDIA_PACKAGE_NOT_VERIFIED')
+  }
   const token=await privateWranglerToken()
   const endpoint=`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects`
   async function api(suffix,options={}) {
@@ -41,9 +51,11 @@ export async function deployRecoveryPreview() {
   const previousIds=new Set(previous.map(item=>item.id))
   await writeFile(path.join(RECOVERY,'wrangler.jsonc'),JSON.stringify({name:PROJECT,pages_build_output_dir:'./deploy'},null,2))
   const commit=(await run('git',['rev-parse','HEAD'],{windowsHide:true})).stdout.trim()
+  Object.assign(report,{commit,preexistingDeploymentIds:[...previousIds]})
+  await writeFile(journal,JSON.stringify(report,null,2))
   try {
     const result=await run(process.execPath,[process.env.JNQ_WRANGLER_CLI,'pages','deploy',path.join(RECOVERY,'deploy'),'--project-name',PROJECT,'--branch',BRANCH,'--commit-hash',commit,'--commit-dirty=true'],
-      {cwd:RECOVERY,windowsHide:true,timeout:180000,maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false'}})
+      {cwd:RECOVERY,windowsHide:true,timeout:expected.mediaInventorySha256?45*60_000:180_000,maxBuffer:4*1024*1024,env:{...process.env,CLOUDFLARE_ACCOUNT_ID:ACCOUNT,WRANGLER_SEND_METRICS:'false'}})
     const log=(result.stdout+'\n'+result.stderr).replaceAll(token,'[redacted]')
     await writeFile(path.join(RECOVERY,'deploy.log'),log)
     assert.ok(!/Uploading (?:Worker|Functions)|Compiled Worker|worker bundle/i.test(log),'UNEXPECTED_FUNCTION_UPLOAD')
@@ -57,8 +69,8 @@ export async function deployRecoveryPreview() {
     assert.equal(receipt.status,200)
     assert.match(receipt.headers.get('x-robots-tag')||'',/noindex/)
     assert.equal(receipt.headers.get('x-jnq-hosting'),'static-recovery-preview')
-    const expected=JSON.parse(await readFile(path.join(RECOVERY,'deploy/_publication.json'),'utf8'))
     assert.deepEqual(await receipt.json(),expected,'DEPLOYMENT_CONTENT_RECEIPT_MISMATCH')
+    if(expected.mediaApprovalFingerprint)report.mediaApprovalFingerprint=expected.mediaApprovalFingerprint
     report.publicationReceiptMatched=true
     report.success=true
   } catch(error) {
@@ -75,7 +87,7 @@ export async function verifyExistingPreview() {
   // Recovery is read-only: never upload again after an ambiguous receipt read.
   const journal=path.join(RECOVERY,'deployment.json')
   const report=JSON.parse(await readFile(journal,'utf8'))
-  assert.ok(report.deploymentId&&report.environment==='preview')
+  assert.ok(report.project===PROJECT&&report.environment==='preview'&&report.branch===BRANCH)
   const token=await privateWranglerToken()
   const base=`https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects/${PROJECT}`
   async function get(suffix='') {
@@ -84,9 +96,23 @@ export async function verifyExistingPreview() {
     assert.ok(response.ok&&data.success,'PREVIEW_READ_ONLY_CHECK_FAILED')
     return data.result
   }
-  const [project,deployment,all]=await Promise.all([get(),get('/deployments/'+report.deploymentId),get('/deployments')])
+  const [project,all]=await Promise.all([get(),get('/deployments')])
+  if(!report.deploymentId){
+    assert.ok(report.commit&&Array.isArray(report.preexistingDeploymentIds),'DEPLOYMENT_ATTEMPT_RECEIPT_INCOMPLETE')
+    const before=new Set(report.preexistingDeploymentIds)
+    const candidates=all.filter(item=>!before.has(item.id)&&item.environment==='preview'&&item.uses_functions===false
+      &&item.deployment_trigger?.metadata?.branch===BRANCH&&item.deployment_trigger?.metadata?.commit_hash===report.commit
+      &&Date.parse(item.created_on)>=Date.parse(report.startedAt)-5_000)
+    assert.equal(candidates.length,1,'UNCONFIRMED_UPLOAD_REQUIRES_MANUAL_RECONCILIATION')
+    Object.assign(report,{deploymentId:candidates[0].id,url:candidates[0].url})
+  }
+  assert.match(report.deploymentId,/^[a-f0-9-]{36}$/)
+  const deployment=await get('/deployments/'+report.deploymentId)
   assert.equal(deployment.environment,'preview')
   assert.equal(deployment.url,report.url)
+  const deploymentUrl=new URL(deployment.url)
+  assert.equal(deploymentUrl.protocol,'https:')
+  assert.ok(deploymentUrl.hostname.endsWith('.'+PROJECT+'.pages.dev'))
   assert.equal(deployment.latest_stage.status,'success')
   assert.ok(!project.canonical_deployment&&!project.source)
   assert.equal(project.production_branch,'main')
@@ -97,7 +123,9 @@ export async function verifyExistingPreview() {
   assert.equal(receipt.status,200)
   assert.match(receipt.headers.get('x-robots-tag')||'',/noindex/)
   assert.equal(receipt.headers.get('x-jnq-hosting'),'static-recovery-preview')
-  assert.deepEqual(await receipt.json(),JSON.parse(await readFile(path.join(RECOVERY,'deploy/_publication.json'),'utf8')))
+  const expected=JSON.parse(await readFile(path.join(RECOVERY,'deploy/_publication.json'),'utf8'))
+  assert.deepEqual(await receipt.json(),expected)
+  if(expected.mediaApprovalFingerprint)report.mediaApprovalFingerprint=expected.mediaApprovalFingerprint
   report.recovery={checkedAt:new Date().toISOString(),readOnly:true,previousFailurePreserved:report.failure,productionDeployments:0,canonicalEmpty:true,receiptMatched:true}
   report.success=true
   await writeFile(journal,JSON.stringify(report,null,2))

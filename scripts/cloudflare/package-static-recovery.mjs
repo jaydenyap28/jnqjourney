@@ -143,7 +143,8 @@ export async function packageRecovery() {
   const sourceManifest=await json('source-manifest.json')
   const receipt={schemaVersion:1,sourceCapturedAt:sourceManifest.capturedAt,sourceFingerprint:manifest.sourceFingerprint,
     sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),publicPages:pages.length,publicSpots:db.locations.length,
-    published:false,hosting:'static-files',runtimeFunctions:0,realtimeRevocation:false,formalMigration:'HOLD'}
+    published:false,hosting:'static-files',runtimeFunctions:0,realtimeRevocation:false,formalMigration:'HOLD',
+    ...(manifest.mediaInventorySha256?{mediaInventorySha256:manifest.mediaInventorySha256,mediaApprovalFingerprint:manifest.mediaApprovalFingerprint}:{})}
   await writeFile(path.join(out,'_publication.json'),JSON.stringify(receipt))
   const result={pages,redirects:[...redirects.values()],linkAliases,sitemap:{kept:accepted.length,removed,added},inlineTiomanOptions:inlineOptions,
     originalGeneratedRoutes:manifest.routes.length,publicHtmlPages:pages.length,files:files.length+3,previewNoindex:true,productionReady:false}

@@ -5,16 +5,20 @@ import {spawn} from 'node:child_process'
 import {randomUUID} from 'node:crypto'
 import path from 'node:path'
 import {RECOVERY_BASE,fingerprint} from './recovery-sources.mjs'
+import {readFinalMediaPlan} from './recovery-media-staging.mjs'
 
 const deploy=process.argv.includes('--deploy-preview')
-assert.ok(process.argv.slice(2).every(arg=>['--deploy-preview','--check'].includes(arg)),'UNSUPPORTED_RECOVERY_ARGUMENT')
+const finalMedia=process.argv.includes('--final-media')
+assert.ok(process.argv.slice(2).every(arg=>['--deploy-preview','--check','--final-media'].includes(arg)),'UNSUPPORTED_RECOVERY_ARGUMENT')
+const media=finalMedia?await readFinalMediaPlan({verifyCache:process.argv.includes('--check')}):null
 await mkdir(RECOVERY_BASE,{recursive:true})
 const lockFile=path.join(RECOVERY_BASE,'publication.lock'),ledgerFile=path.join(RECOVERY_BASE,'publication-attempts.json')
 let ledger=[]
 try{ledger=JSON.parse(await readFile(ledgerFile,'utf8'))}catch(error){if(error.code!=='ENOENT')throw error}
 assert.ok(Array.isArray(ledger),'INVALID_LOCAL_PUBLICATION_LEDGER')
 if(process.argv.includes('--check')) {
-  console.log(JSON.stringify({mode:'LOCAL_PREVIEW_ONLY',dailyBuildCap:8,monthlyBuildCap:240,minimumIntervalMinutes:10,automaticAdminPublishing:false,priorAttempts:ledger.length,formalMigration:'HOLD'}))
+  console.log(JSON.stringify({mode:'LOCAL_PREVIEW_ONLY',dailyBuildCap:8,monthlyBuildCap:240,minimumIntervalMinutes:10,automaticAdminPublishing:false,priorAttempts:ledger.length,formalMigration:'HOLD',
+    ...(media?{approvedMedia:media.images.size,addedBytes:media.addedBytes,inventorySha256:media.inventorySha256}:{})}))
   process.exit(0)
 }
 if(deploy)assert.ok(process.env.JNQ_WRANGLER_CLI,'EXISTING_WRANGLER_CLI_PATH_REQUIRED_NO_NPX_DOWNLOAD')
@@ -22,6 +26,8 @@ const lock=await open(lockFile,'wx') // Never steal an existing lock, including 
 const id=new Date().toISOString().replace(/[^0-9]/g,'')+'-'+randomUUID().slice(0,8)
 const directory=path.join(RECOVERY_BASE,'runs',id)
 const env={...process.env,JNQ_RECOVERY_OUTPUT:directory}
+if(finalMedia)env.JNQ_RECOVERY_FINAL_MEDIA='1'
+else delete env.JNQ_RECOVERY_FINAL_MEDIA
 const record={id,startedAt:new Date().toISOString(),status:'CAPTURING',mode:deploy?'preview':'build-only'}
 const receipt=path.join(directory,'run-result.json')
 let newAttempt=false
@@ -51,7 +57,7 @@ try {
   const codeFiles=[]
   for(const file of inputs)codeFiles.push([file,fingerprint((await readFile(file)).toString('base64'))])
   // Include uncommitted input changes: HEAD alone is not a build identity.
-  record.contentFingerprint=fingerprint({contentFiles,codeCommit,codeFiles})
+  record.contentFingerprint=fingerprint({contentFiles,codeCommit,codeFiles,...(media?{mediaApproval:media.approval}:{})})
   const previous=ledger.findLast(item=>item.contentFingerprint===record.contentFingerprint&&item.status===(deploy?'PREVIEW_DEPLOYED':'STATIC_VERIFIED'))
   if(previous){record.status='COALESCED_UNCHANGED';record.previousRun=previous.id}
   else {
@@ -64,6 +70,7 @@ try {
     for(const name of ['prepare-static-candidate','build-candidate','package-candidate','verify-static-candidate'])await step(name,['--recovery'])
     await step('recovery-links-check')
     await step('recovery-media-inventory')
+    if(finalMedia)await step('recovery-media-release-gate',['--verify-package'])
     record.status='STATIC_VERIFIED'
     if(deploy){await step('recovery-sources',['--verify-capture']);await step('recovery-deploy');record.status='PREVIEW_DEPLOYED';record.preview=JSON.parse(await readFile(path.join(directory,'deployment.json'),'utf8')).url}
   }

@@ -7,11 +7,18 @@ import { buildLocationSlug } from '../../lib/location-routing.ts'
 import { buildRegionSlug } from '../../lib/region-routing.ts'
 import { explicitNoteAffiliateIds } from '../../lib/note-affiliates.ts'
 import { getRenderableNoteBlocks } from '../../lib/notes.ts'
-import { RECOVERY, SOURCE, fingerprint } from './recovery-sources.mjs'
+import { RECOVERY, RECOVERY_BASE, SOURCE, fingerprint } from './recovery-sources.mjs'
 import { normalizeRecoveryCanonical } from './recovery-launch-policy.mjs'
 import { localizeLegacyFeedLinks } from './recovery-delivery-feeds.mjs'
+import { assertNoLegacyImageLiteral, readFinalMediaPlan, stageFinalMedia } from './recovery-media-staging.mjs'
 
-const load = async file => JSON.parse(await readFile(path.join(RECOVERY, 'sources', file), 'utf8'))
+const finalMedia=process.env.JNQ_RECOVERY_FINAL_MEDIA==='1'
+if(finalMedia)assert.notEqual(RECOVERY,RECOVERY_BASE,'FROZEN_PREVIEW_CANNOT_BECOME_FINAL_RELEASE')
+const media=finalMedia?await readFinalMediaPlan({verifyCache:false}):null
+const load = async file => {
+  const value=JSON.parse(await readFile(path.join(RECOVERY,'sources',file),'utf8'))
+  return media&&file!=='english.json'?media.rewriteValue(value):value
+}
 const [db, guidesData, notesData, slugMap, english, costs, sourceManifest] = await Promise.all([
   load('database.json'), load('guides.json'), load('notes.json'), load('location-slugs.json'), load('english.json'), load('guide-trip-costs.json'),
   readFile(path.join(RECOVERY, 'source-manifest.json'), 'utf8').then(JSON.parse),
@@ -20,10 +27,11 @@ assert.equal(db.projectRef, 'vrufunuomioczocdsoer')
 const guides = guidesData.guides
 const notes = notesData.notes
 const canonicalSpot = row => (slugMap[String(row.id)] ? `${slugMap[String(row.id)]}-${row.id}` : buildLocationSlug(row.name,row.id))
-const publicEnglish=localizeLegacyFeedLinks(english,{
+let publicEnglish=localizeLegacyFeedLinks(english,{
   spotSlugs:new Map(db.locations.filter(row=>!row.redirect_url).map(row=>[String(row.id),canonicalSpot(row)])),
   guideSlugs:new Set(guides.map(row=>row.slug)),regionIds:new Set(db.regions.map(row=>String(row.id))),
 })
+if(media)publicEnglish=media.rewriteValue(publicEnglish)
 assert.ok(db.locations.every(row => row.status === 'active' && [null, 'published'].includes(row.publication_status)))
 assert.ok(notes.every(note => note.published === true))
 await mkdir(SOURCE, { recursive: true })
@@ -69,6 +77,11 @@ await json('public-data/i18n/en/records.json', publicEnglish)
 await bodies('lib/server/public-spot-projection.ts', {
   readPublicRows: `const rows = ids ? recoveryRows.filter(row => ids.includes(row.id)) : recoveryRows\nreturn validatePublicRows(rows, ids || rows.map(row => row.id))`,
 }, "import recoveryRows from '@/data/recovery-locations.json'\n")
+// The static reader needs the field contract only. Importing the dynamic
+// publication gateway also initializes its historical absolute-URL probe.
+await edit('lib/server/public-spot-projection.ts',
+  "import { PUBLIC_SPOT_FIELDS } from '../../cloudflare/spot-loop/publication-gate.mjs'",
+  "import { SPOT_FIELDS } from '../../cloudflare/spot-loop/spot-contract.mjs'\nconst PUBLIC_SPOT_FIELDS=SPOT_FIELDS.filter(field=>!['review_jayden','review_qing','is_visited','created_at'].includes(field))")
 await write('lib/server/public-read-source.ts', `import './assert-server'
 import feeds from '@/data/recovery-feeds.json'
 export { PublicReadUnavailable, PUBLIC_READ_LIMITS, publicServiceClient, readPublicRows, validatePublicRows } from './public-spot-projection'
@@ -216,8 +229,27 @@ await write('next.config.mjs',`export default {output:'export',images:{unoptimiz
 await write('tsconfig.json',JSON.stringify({compilerOptions:{target:'ES2017',lib:['dom','dom.iterable','esnext'],allowJs:true,allowImportingTsExtensions:true,skipLibCheck:true,strict:true,noEmit:true,esModuleInterop:true,module:'esnext',moduleResolution:'bundler',resolveJsonModule:true,isolatedModules:true,jsx:'preserve',incremental:true,plugins:[{name:'next'}],paths:{'@/*':['./*']}},include:['next-env.d.ts','app/**/*.ts','app/**/*.tsx','pages/**/*.tsx','components/**/*.tsx','lib/**/*.ts','types/**/*.ts','.next/types/**/*.ts'],exclude:['node_modules']},null,2))
 await edit('lib/supabase.ts','process.env.NEXT_PUBLIC_SUPABASE_URL!',"(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://static-recovery.invalid')")
 await edit('lib/supabase.ts','process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!',"(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'static-no-access')")
+if(media){
+  const videoFile='components/GuideVideoCard.tsx'
+  await edit(videoFile,'src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}','src={approvedPosters[videoId] || "/placeholder-image.jpg"}')
+  const videoSource=await readFile(path.join(SOURCE,videoFile),'utf8')
+  const directive=/^['"]use client['"];?\r?\n/
+  assert.match(videoSource,directive)
+  await write(videoFile,videoSource.replace(directive,match=>match+"import recoveryPosters from '@/data/recovery-video-posters.json'\nconst approvedPosters:Record<string,string>=recoveryPosters\n"))
+  await json('data/recovery-video-posters.json',media.videoPosters)
+  await edit('lib/public-media.ts','legacy\\/[^/?#]+|candidate','legacy\\/[^/?#]+|static\\/[a-f0-9]{64}\\.(?:png|webp|jpe?g|avif|gif)|candidate')
+  for(const file of await walk(SOURCE)){
+    if(!/\.(?:[cm]?[jt]sx?|json|css|html|mdx?|xml)$/i.test(file))continue
+    const previous=await readFile(file,'utf8')
+    const next=file.endsWith('.json')?JSON.stringify(media.rewriteValue(JSON.parse(previous))):media.rewrite(previous)
+    if(/[/\\]data[/\\]recovery-|[/\\]data[/\\](?:notes|guides)\.json$/.test(file))assertNoLegacyImageLiteral(next)
+    if(next!==previous)await writeFile(file,next)
+  }
+  await stageFinalMedia(SOURCE,media)
+}
 const manifest={mode:'full-public-static-recovery',sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),capturedAt:sourceManifest.capturedAt,
   sourceFingerprint:fingerprint(sourceManifest.files),counts:sourceManifest.counts,routes:[...new Set([...routes,...englishPaths])].sort(),params,englishPaths,
-  realtimeRevocation:false,formalMigration:'HOLD',admin:'PENDING',publication:'PENDING'}
+  realtimeRevocation:false,formalMigration:'HOLD',admin:'PENDING',publication:'PENDING',
+  ...(media?{mediaInventorySha256:media.inventorySha256,mediaApprovalFingerprint:fingerprint(media.approval)}:{})}
 await writeFile(path.join(RECOVERY,'manifest.json'),JSON.stringify(manifest,null,2))
 console.log(JSON.stringify({prepared:true,routes:manifest.routes.length,counts:manifest.counts}))

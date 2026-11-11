@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
 import {readFile,writeFile,mkdir} from 'node:fs/promises'
 import path from 'node:path'
-import {RECOVERY} from './recovery-sources.mjs'
+import {CDN,RECOVERY} from './recovery-sources.mjs'
+import {readMediaApproval} from './recovery-media-release-gate.mjs'
+import {FINAL_DIR} from './recovery-media-inventory-final.mjs'
 const json=async name=>JSON.parse(await readFile(path.join(RECOVERY,name),'utf8'))
 const deployment=await json('deployment.json'),guides=(await json('sources/guides.json')).guides
 assert.ok(deployment.success&&deployment.environment==='preview')
@@ -10,17 +12,43 @@ const {chromium}=await import('../../artifacts/cloudflare-upload-fix/browser-too
 const result={checkedAt:new Date().toISOString(),origin,pages:[],interactions:[],network:{sameOrigin:[],external:{},blockedTelemetry:0,blockedOther:[]},passed:false}
 const mobileResume=process.argv.includes('--resume-mobile')
 const delta=process.argv.includes('--delta')
-const output=path.join(RECOVERY,delta?'browser-delta-checks.json':mobileResume?'browser-mobile-checks.json':'browser-checks.json'),screens=path.join(RECOVERY,'screenshots')
+const finalMedia=process.argv.includes('--final-media')
+const legacyHost=new URL(CDN).hostname
+const providerImages=new Set()
+if(finalMedia){
+  const receipt=await json('deploy/_publication.json'),gate=await json('media-approval-gate.json')
+  assert.ok(gate.finalPackageVerified&&receipt.mediaInventorySha256===gate.inventorySha256)
+  assert.equal(deployment.mediaApprovalFingerprint,receipt.mediaApprovalFingerprint,'FINAL_BROWSER_DEPLOYMENT_APPROVAL_MISMATCH')
+  assert.ok(!delta&&!mobileResume,'FINAL_BROWSER_REQUIRES_DESKTOP_AND_MOBILE')
+  result.network.legacyR2=[]
+  result.network.externalContentImages=[]
+  const inventory=JSON.parse(await readFile(path.join(FINAL_DIR,'inventory.private.json'),'utf8'))
+  const {approval}=await readMediaApproval(inventory)
+  const decisions=new Map(approval.decisions.map(item=>[item.identitySha256,item]))
+  for(const item of inventory.records){
+    if(decisions.get(item.sha256)?.disposition==='provider-reference')providerImages.add(item.identity)
+  }
+}
+const output=path.join(RECOVERY,finalMedia?'browser-final-media-checks.json':delta?'browser-delta-checks.json':mobileResume?'browser-mobile-checks.json':'browser-checks.json'),screens=path.join(RECOVERY,'screenshots')
 await mkdir(screens,{recursive:true})
 const save=()=>writeFile(output,JSON.stringify(result,null,2))
 const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--enable-unsafe-swiftshader']})
 result.browserVersion=browser.version()
 try {
-  for(const viewport of [{width:1440,height:900},{width:1920,height:1080},{width:390,height:844},{width:430,height:932}].filter(viewport=>(!mobileResume||viewport.width<500)&&(!delta||[1440,390].includes(viewport.width)))) {
+  for(const viewport of [{width:1440,height:900},{width:1920,height:1080},{width:390,height:844},{width:430,height:932}].filter(viewport=>(!mobileResume||viewport.width<500)&&(!(delta||finalMedia)||[1440,390].includes(viewport.width)))) {
     const context=await browser.newContext({viewport,isMobile:viewport.width<500,hasTouch:viewport.width<500,serviceWorkers:'block'})
     await context.route('**/*',route=>{
       const req=route.request(),url=new URL(req.url())
       if(url.origin===origin)return route.continue()
+      if(finalMedia&&url.hostname===legacyHost){
+        result.network.legacyR2.push({path:url.pathname,type:req.resourceType()})
+        return route.abort()
+      }
+      if(finalMedia&&req.resourceType()==='image'&&req.frame()===page.mainFrame()
+        &&url.protocol==='https:'&&!providerImages.has(url.href)&&!/(?:^|\.)mapbox\.(com|cn)$/.test(url.hostname)){
+        result.network.externalContentImages.push({host:url.hostname,path:url.pathname})
+        return route.abort()
+      }
       if(/events\.mapbox|vercel-(?:insights|analytics)|vitals\.vercel|doubleclick|google-analytics|pagead2|googlesyndication/.test(url.hostname)){result.network.blockedTelemetry++;return route.abort()}
       if(['GET','HEAD'].includes(req.method())&&(
         req.resourceType()==='image'&&['pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev','vrufunuomioczocdsoer.supabase.co','i.ibb.co','i.ytimg.com','lh5.googleusercontent.com'].includes(url.hostname)||
@@ -133,6 +161,9 @@ try {
   result.sameOriginFailures=result.network.sameOrigin.filter(row=>row.status>=400)
   result.serverRuntimeRequests=result.network.sameOrigin.filter(row=>row.method!=='GET'&&row.method!=='HEAD'||row.queryPresent&&row.type==='fetch')
   result.passed=result.pages.every(page=>page.passed)&&result.sameOriginFailures.length===0&&result.serverRuntimeRequests.length===0
+  if(finalMedia)result.passed&&=result.network.legacyR2.length===0&&result.network.externalContentImages.length===0
+    &&result.pages.some(page=>page.visibleImages.some(image=>image.loaded))
+    &&result.pages.every(page=>page.visibleImages.every(image=>image.loaded))
 }catch(error){result.failure={name:error.name,message:error.message.replace(/https?:\/\/\S+/g,'[url]').slice(0,400)}}
 finally {await browser.close();await save()}
 console.log(JSON.stringify({passed:result.passed,pages:result.pages.length,interactions:result.interactions,failedPages:result.pages.filter(page=>!page.passed),sameOriginFailures:result.sameOriginFailures,failure:result.failure}))

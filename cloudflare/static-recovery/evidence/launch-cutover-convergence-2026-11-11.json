@@ -1,0 +1,1613 @@
+{
+  "scope": "Isolated PostgreSQL and already deployed static Preview. No new build or remote write.",
+  "visibility": {
+    "startedAt": "2026-11-11T05:52:50.562Z",
+    "image": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "tests": [
+      {
+        "name": "database-version",
+        "pass": true
+      },
+      {
+        "name": "synthetic-baseline",
+        "pass": true
+      },
+      {
+        "name": "reproduce-table-leak",
+        "pass": true
+      },
+      {
+        "name": "reproduce-storage-rls-leak",
+        "pass": true
+      },
+      {
+        "name": "apply-existing-projection",
+        "pass": true
+      },
+      {
+        "name": "public-storage-flag-must-be-closed",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "private-bucket-fixture",
+        "pass": true
+      },
+      {
+        "name": "dependent-view-negative-control",
+        "pass": true
+      },
+      {
+        "name": "owner-view-causes-transaction-abort",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "remove-view-fixture",
+        "pass": true
+      },
+      {
+        "name": "definer-negative-control",
+        "pass": true
+      },
+      {
+        "name": "default-execute-definer-aborts",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "remove-function-fixture",
+        "pass": true
+      },
+      {
+        "name": "service-missing-update-negative-control",
+        "pass": true
+      },
+      {
+        "name": "missing-service-update-aborts",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "restore-test-service-update",
+        "pass": true
+      },
+      {
+        "name": "apply-scoped-boundaries",
+        "pass": true
+      },
+      {
+        "name": "anon-closed-table",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "anon-closed-internal-column",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "anon-projection-denied",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "anon-target-storage-denied",
+        "pass": true
+      },
+      {
+        "name": "anon-unrelated-storage-preserved",
+        "pass": true
+      },
+      {
+        "name": "authenticated-closed-table",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "authenticated-closed-internal-column",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "authenticated-projection-denied",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "authenticated-target-storage-denied",
+        "pass": true
+      },
+      {
+        "name": "authenticated-unrelated-storage-preserved",
+        "pass": true
+      },
+      {
+        "name": "future-grant-does-not-reopen-rows",
+        "pass": true
+      },
+      {
+        "name": "service-build-projection",
+        "pass": true
+      },
+      {
+        "name": "service-admin-read-and-write",
+        "pass": true
+      },
+      {
+        "name": "service-storage-read-and-write",
+        "pass": true
+      }
+    ],
+    "productionConnections": 0,
+    "storageHttp": "NOT_TESTED",
+    "success": true,
+    "isolation": {
+      "network": "none",
+      "ports": 0,
+      "tmpfsOnly": true
+    },
+    "version": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "cleaned": true,
+    "finishedAt": "2026-11-11T05:52:56.053Z"
+  },
+  "frontend": {
+    "checkedAt": "2026-11-11T05:57:27.223Z",
+    "origin": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+    "pages": [
+      {
+        "path": "/",
+        "status": 200,
+        "title": "JnQ Journey | Jayden & Qing",
+        "robots": "noindex, nofollow"
+      },
+      {
+        "path": "/spot/turtle-alley-636",
+        "status": 200,
+        "title": "Turtle Alley｜登嘉楼唐人街海龟主题壁画小巷",
+        "robots": "noindex, nofollow"
+      },
+      {
+        "path": "/notes/malaysia-turtle-night-terengganu",
+        "status": 200,
+        "title": "马来西亚登嘉楼看海龟｜Pantai Teluk Mak Nik 海龟放生与产卵体验 | JnQ Journey",
+        "robots": "noindex, nofollow"
+      },
+      {
+        "path": "/guide/china-dali-shangri-la-lijiang-11d10n",
+        "status": 200,
+        "title": "大理·丽江·香格里拉 (11 Days / 10 Nights) Travel Guide | JnQ Journey",
+        "robots": "noindex, nofollow"
+      }
+    ],
+    "feeds": [
+      {
+        "path": "/api/locations",
+        "status": 200,
+        "contentType": "application/json",
+        "keys": [
+          "locations",
+          "regions",
+          "source"
+        ],
+        "locations": 582
+      },
+      {
+        "path": "/api/spots/turtle-alley-636",
+        "status": 200,
+        "contentType": "application/json",
+        "keys": [
+          "schemaVersion",
+          "spot"
+        ],
+        "locations": null
+      }
+    ],
+    "blockedHosts": {
+      "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev": 45,
+      "api.mapbox.com": 2,
+      "i.ibb.co": 3,
+      "www.youtube.com": 1,
+      "www.facebook.com": 1
+    },
+    "sameOriginScripts": 60,
+    "attemptedOffOriginDbRequests": 0,
+    "passed": true
+  },
+  "media": {
+    "generatedAt": "2026-11-11T05:58:46.108Z",
+    "sourceUrls": 4775,
+    "publicIdentityRows": 4751,
+    "verifiedPublishedOwners": 668,
+    "controlledR2Objects": 4657,
+    "previousReadbackRecords": 452,
+    "matchedHistoricalPublishedReferences": 3323,
+    "providerHostedContinuation": 41,
+    "approvedCopies": 0,
+    "closedOnly": 33,
+    "shared": [
+      {
+        "identitySha256": "48aa985a90e3b37145d25ed5be038046608a2df1290a2bdbfdb3f6461780eca1",
+        "owners": [
+          "region:48",
+          "spot:337"
+        ]
+      },
+      {
+        "identitySha256": "c979f420d78aa5be094b252f2076ab979c827826d2666707c3a0ab84db8ff6c2",
+        "owners": [
+          "region:23",
+          "spot:232"
+        ]
+      },
+      {
+        "identitySha256": "d98d0deb08c695b7e730753bd5894660d207e4f2cc63a2790ddcddc58e94f2ee",
+        "owners": [
+          "region:28",
+          "spot:237"
+        ]
+      },
+      {
+        "identitySha256": "f89e7be0886efb2c91750b798bda85b036deb572cd8c485ceb60e870831930a1",
+        "owners": [
+          "region:90",
+          "spot:273"
+        ]
+      },
+      {
+        "identitySha256": "d22383bb5251f479ccf858b76bfaf45a1ad0c635629dfacef29e997823ba602b",
+        "owners": [
+          "region:40",
+          "spot:404"
+        ]
+      },
+      {
+        "identitySha256": "222eff0cfd9d7b11241ac98c8fbaff019745602012550aeb17435aefe33a3b04",
+        "owners": [
+          "region:67",
+          "spot:432"
+        ]
+      },
+      {
+        "identitySha256": "3cb51fcb5f1329396e77db5900ad550f3a3ca32ce14190995d8037c74dab58a8",
+        "owners": [
+          "region:71",
+          "spot:480"
+        ]
+      },
+      {
+        "identitySha256": "45849fc50c3d2713f85f432aef9382312e32495dafbd970c0e796b532ce0f5f7",
+        "owners": [
+          "region:11",
+          "spot:65"
+        ]
+      },
+      {
+        "identitySha256": "ca0b6755cd495cffdf41b1b311db495e6d56ca52bdd28c3fdc544e2e01f8aa68",
+        "owners": [
+          "region:88",
+          "spot:785"
+        ]
+      }
+    ],
+    "explicitRevokedPrivateTotal": "UNKNOWN",
+    "unknownProvider": 0,
+    "reviewGroupCount": 5,
+    "groups": [
+      {
+        "group": "SOURCE_UNAVAILABLE",
+        "question": "Recover the documented same image or approve a missing-image treatment.",
+        "archivedPublishedReadback": 0,
+        "examples": [
+          {
+            "identitySha256": "2f12a6ab364e7097cc2ea70b0b4418ab22f783be6b23b2316d8f835a798f6fc6",
+            "owners": [
+              "region:84"
+            ],
+            "host": "i.ibb.co",
+            "http": "UNKNOWN"
+          },
+          {
+            "identitySha256": "4d0512f654a239d8760d306667cbd085fbc8e25b9e0e8bc32cc235d1a855ffa4",
+            "owners": [
+              "guide:china-harbin-xuegu-changbai-beijing-11d10n"
+            ],
+            "host": "i.ibb.co",
+            "http": "UNKNOWN"
+          },
+          {
+            "identitySha256": "e12dab02eccf8f4a54fda854296c0cd00fcbb4f429214d71530d32bfff109885",
+            "owners": [
+              "spot:22"
+            ],
+            "host": "i.ibb.co",
+            "http": 404
+          },
+          {
+            "identitySha256": "2244b1cd2a17e82890fb5e7090705d9585732dc2b63a723bee00391c4714986b",
+            "owners": [
+              "guide:japan-hokkaido-yamagata-tokyo-10d9n"
+            ],
+            "host": "i.ibb.co",
+            "http": 503
+          },
+          {
+            "identitySha256": "0e6c7de47c2861d8597e1b7e5c20c72ddb2e9ae5b44b95ae37ef70d8e8a7fbf2",
+            "owners": [
+              "region:66"
+            ],
+            "host": "i.ibb.co",
+            "http": "UNKNOWN"
+          },
+          {
+            "identitySha256": "8ceb97a91dba0f7ad7017f69535f37829a5c7c0b1dde7c4ba527d8aacedf43e5",
+            "owners": [
+              "spot:232"
+            ],
+            "host": "i.ibb.co",
+            "http": 404
+          }
+        ],
+        "objects": 6,
+        "ownerCount": 6,
+        "individualResolution": true
+      },
+      {
+        "group": "THIRD_PARTY_IMAGE_COLLECTION",
+        "question": "Confirm permission by source collection or supplier. Use an approved replacement or omit unsupported items.",
+        "archivedPublishedReadback": 0,
+        "examples": [],
+        "objects": 23,
+        "ownerCount": 22,
+        "individualResolution": false
+      },
+      {
+        "group": "R2_TRAVEL_PUBLISHER_SCOPE",
+        "question": "Confirm the publisher-owned/cleared collection and the excluded rights or revocation groups once. An upload or historical publish record does not establish rights.",
+        "archivedPublishedReadback": 3323,
+        "examples": [],
+        "objects": 4625,
+        "ownerCount": 600,
+        "individualResolution": false
+      },
+      {
+        "group": "R2_PACKAGE_PROVIDER_SCOPE",
+        "question": "Confirm the existing supplier grant permits same-site static hosting. Confirm exceptions by package or supplier.",
+        "archivedPublishedReadback": 0,
+        "examples": [],
+        "objects": 32,
+        "ownerCount": 15,
+        "individualResolution": false
+      },
+      {
+        "group": "SUPABASE_LEGACY_COLLECTION",
+        "question": "Confirm the legacy collection rights or named exceptions before mirroring and making its mixed bucket private.",
+        "archivedPublishedReadback": 0,
+        "examples": [],
+        "objects": 24,
+        "ownerCount": 24,
+        "individualResolution": false
+      }
+    ],
+    "limit": "Provider continuation is an existing official video reference; no rehosting licence is inferred. Public state and exact storage/publisher records do not prove copyright."
+  },
+  "platform": {
+    "checkedAt": "2026-11-11T05:57:47.525Z",
+    "project": {
+      "http": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "name": "jnqjourney-static-recovery-candidate",
+        "canonicalProduction": null,
+        "domains": [
+          "jnqjourney-static-recovery-candidate.pages.dev"
+        ]
+      }
+    },
+    "old": {
+      "http": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "id": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+        "environment": "preview",
+        "aliases": []
+      }
+    },
+    "latestDrill": {
+      "http": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "id": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+        "environment": "preview",
+        "aliases": [
+          "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev"
+        ]
+      }
+    },
+    "access": {
+      "http": 200,
+      "success": true,
+      "error": null,
+      "data": {
+        "firstPageProjectApplications": 0
+      }
+    }
+  },
+  "propagation": {
+    "startedAt": "2026-11-11T05:47:23.239Z",
+    "withdrawalStartedAt": "2026-11-11T05:28:51.962Z",
+    "deadline": "2026-11-11T05:58:51.962Z",
+    "deployed": [
+      {
+        "id": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+        "url": "https://b4c87404.jnqjourney-static-recovery-candidate.pages.dev",
+        "revision": 1
+      },
+      {
+        "id": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+        "url": "https://bae9901c.jnqjourney-static-recovery-candidate.pages.dev",
+        "revision": 2
+      }
+    ],
+    "alias": "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev",
+    "network": [
+      {
+        "source": "fixed-revision-1",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.240Z",
+        "elapsedMs": 1111278,
+        "status": 200,
+        "sha256": "8a9f8253cc86c9f4042b3c076f91ce9a562dd6bcce3809dac3d40815264dbf40",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081eb480a14-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/en/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.266Z",
+        "elapsedMs": 1111304,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081dbd1fd2f-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/media/shared-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.265Z",
+        "elapsedMs": 1111303,
+        "status": 200,
+        "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081ee86fde7-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/old-withdrawal-fixture",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.266Z",
+        "elapsedMs": 1111304,
+        "status": 301,
+        "sha256": "3081ef31d5485dc8fcbff81ee32ba89993af0850a7a29b66fe6beb3afcf715bb",
+        "locationPath": "/spot/drill-withdrawn",
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b00820b8ffd0b-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.268Z",
+        "elapsedMs": 1111306,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081f8c67373-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/api/spots/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.268Z",
+        "elapsedMs": 1111306,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081dff1fd02-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.269Z",
+        "elapsedMs": 1111307,
+        "status": 200,
+        "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081ff2490ef-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.265Z",
+        "elapsedMs": 1111303,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081fe763fb1-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.262Z",
+        "elapsedMs": 1111300,
+        "status": 200,
+        "sha256": "52224c32ccbc1addffd79bc88a3cc35202f4780a4c99322a58f81eb08147191d",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081db6b410a-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/spot/drill-withdrawn.txt",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.267Z",
+        "elapsedMs": 1111305,
+        "status": 200,
+        "sha256": "4a85daaf59a508f378096643e3a0db921b939f3a46e347ca520956df0211643e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b00820e04ce36-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/_next/data/drill/en/spot/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.267Z",
+        "elapsedMs": 1111305,
+        "status": 200,
+        "sha256": "878f17ed791080e172e2d985e4fe391c333b31a3d1ae3cdf66b22065d163d377",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b00820a535cde-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/sitemap.xml",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.264Z",
+        "elapsedMs": 1111302,
+        "status": 200,
+        "sha256": "807408bbe057c0fcec2575468abf06bb96b942b0d5a98b934fda78ebe1498b28",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081ebbb5c98-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-1",
+        "route": "/public-data/locations.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.263Z",
+        "elapsedMs": 1111301,
+        "status": 200,
+        "sha256": "b206f2236ac32b25182bae631e4964cfd821be09b997bc1b20cca5ea47a59829",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0081f8d19cc9-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/_next/data/drill/en/spot/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.738Z",
+        "elapsedMs": 1111776,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084c854fcfa-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/media/shared-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.736Z",
+        "elapsedMs": 1111774,
+        "status": 200,
+        "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084d855cddd-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.737Z",
+        "elapsedMs": 1111775,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084c855ce55-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.738Z",
+        "elapsedMs": 1111776,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084cb11f87e-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.735Z",
+        "elapsedMs": 1111773,
+        "status": 200,
+        "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084dfed9010-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/spot/drill-withdrawn.txt",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.737Z",
+        "elapsedMs": 1111775,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084ea44fe85-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/sitemap.xml",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.736Z",
+        "elapsedMs": 1111774,
+        "status": 200,
+        "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084db587979-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/public-data/locations.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.736Z",
+        "elapsedMs": 1111774,
+        "status": 200,
+        "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084de984095-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/api/spots/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.738Z",
+        "elapsedMs": 1111776,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084ebd2fdb3-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.739Z",
+        "elapsedMs": 1111777,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084efe31dd6-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.735Z",
+        "elapsedMs": 1111773,
+        "status": 200,
+        "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084fac59f71-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/en/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.737Z",
+        "elapsedMs": 1111775,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084eb298348-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "fixed-revision-2",
+        "route": "/old-withdrawal-fixture",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:23.737Z",
+        "elapsedMs": 1111775,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0084fd2e91c6-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/sitemap.xml",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.439Z",
+        "elapsedMs": 1113477,
+        "status": 200,
+        "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f5896c63b-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/old-withdrawal-fixture",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.440Z",
+        "elapsedMs": 1113478,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f4b547dca-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/en/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.440Z",
+        "elapsedMs": 1113478,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f6b892f0a-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/locations.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.439Z",
+        "elapsedMs": 1113477,
+        "status": 200,
+        "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f7f36f8d0-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.438Z",
+        "elapsedMs": 1113476,
+        "status": 200,
+        "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f592155ec-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.441Z",
+        "elapsedMs": 1113480,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1113",
+        "cacheControl": "no-store",
+        "ray": "a58b008f6b33fde4-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/api/spots/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.442Z",
+        "elapsedMs": 1113480,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f6c4555de-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/media/shared-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.439Z",
+        "elapsedMs": 1113477,
+        "status": 200,
+        "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f6f843fd5-SIN",
+        "containsWithdrawn": false,
+        "deployment": "IDENTICAL_BOTH_DEPLOYMENTS"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn.txt",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.441Z",
+        "elapsedMs": 1113479,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f8dcbfda7-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.440Z",
+        "elapsedMs": 1113478,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1113",
+        "cacheControl": "no-store",
+        "ray": "a58b008f8ac2ff87-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/_next/data/drill/en/spot/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.441Z",
+        "elapsedMs": 1113479,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f8dc5ff81-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.438Z",
+        "elapsedMs": 1113476,
+        "status": 200,
+        "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b008f5affb2f4-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:47:25.442Z",
+        "elapsedMs": 1113480,
+        "status": 200,
+        "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1113",
+        "cacheControl": "no-store",
+        "ray": "a58b008f7c2fff96-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias-query-diagnostic",
+        "route": "/spot/drill-withdrawn",
+        "query": "?drill-observation=1794376043239",
+        "startedAt": "2026-11-11T05:47:25.691Z",
+        "elapsedMs": 1113729,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b0090acfd55ec-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:48:25.446Z",
+        "elapsedMs": 1173484,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1173",
+        "cacheControl": "no-store",
+        "ray": "a58b02067d28eb9d-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:48:25.446Z",
+        "elapsedMs": 1173484,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1173",
+        "cacheControl": "no-store",
+        "ray": "a58b02066e1dfe1f-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:48:25.444Z",
+        "elapsedMs": 1173482,
+        "status": 200,
+        "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b02067b2ff904-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:48:25.447Z",
+        "elapsedMs": 1173485,
+        "status": 200,
+        "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1173",
+        "cacheControl": "no-store",
+        "ray": "a58b02067f251bd5-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:52:25.443Z",
+        "elapsedMs": 1413481,
+        "status": 200,
+        "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b07e25938c50c-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:52:25.446Z",
+        "elapsedMs": 1413484,
+        "status": 200,
+        "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1413",
+        "cacheControl": "no-store",
+        "ray": "a58b07e27834ccd6-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:52:25.445Z",
+        "elapsedMs": 1413483,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1413",
+        "cacheControl": "no-store",
+        "ray": "a58b07e26f0e6d97-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:52:25.444Z",
+        "elapsedMs": 1413482,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1413",
+        "cacheControl": "no-store",
+        "ray": "a58b07e26fde0519-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/media/withdrawn-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.968Z",
+        "elapsedMs": 1785006,
+        "status": 200,
+        "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1785",
+        "cacheControl": "no-store",
+        "ray": "a58b10f49f290fb7-SIN",
+        "containsWithdrawn": false,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/spots/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.967Z",
+        "elapsedMs": 1785005,
+        "status": 200,
+        "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1785",
+        "cacheControl": "no-store",
+        "ray": "a58b10f4a9565d5e-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/sitemap.xml",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.964Z",
+        "elapsedMs": 1785002,
+        "status": 200,
+        "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4cc0f6014-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/api/spots/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.967Z",
+        "elapsedMs": 1785005,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f49bc8c90f-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/_publication.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.962Z",
+        "elapsedMs": 1785000,
+        "status": 200,
+        "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4a98b4448-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.963Z",
+        "elapsedMs": 1785001,
+        "status": 200,
+        "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4aae661c2-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/old-withdrawal-fixture",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.966Z",
+        "elapsedMs": 1785004,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4bc2fd98b-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/media/shared-fixture.png",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.965Z",
+        "elapsedMs": 1785003,
+        "status": 200,
+        "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4ccf0899b-SIN",
+        "containsWithdrawn": false,
+        "deployment": "IDENTICAL_BOTH_DEPLOYMENTS"
+      },
+      {
+        "source": "alias",
+        "route": "/_next/data/drill/en/spot/drill-withdrawn.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.967Z",
+        "elapsedMs": 1785005,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4afb0797f-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.965Z",
+        "elapsedMs": 1785003,
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "locationPath": null,
+        "cache": "HIT",
+        "age": "1785",
+        "cacheControl": "no-store",
+        "ray": "a58b10f4bbd4d987-SIN",
+        "containsWithdrawn": true,
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053"
+      },
+      {
+        "source": "alias",
+        "route": "/en/spot/drill-withdrawn",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.966Z",
+        "elapsedMs": 1785004,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4cf9d4c1a-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/public-data/locations.json",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.964Z",
+        "elapsedMs": 1785002,
+        "status": 200,
+        "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4da723fb8-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      },
+      {
+        "source": "alias",
+        "route": "/spot/drill-withdrawn.txt",
+        "query": "",
+        "startedAt": "2026-11-11T05:58:36.966Z",
+        "elapsedMs": 1785004,
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "locationPath": null,
+        "cache": null,
+        "age": null,
+        "cacheControl": "no-store",
+        "ray": "a58b10f4c92240aa-SIN",
+        "containsWithdrawn": false,
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a"
+      }
+    ],
+    "browser": [
+      {
+        "label": "simulated-host-before",
+        "route": "/spot/drill-withdrawn",
+        "observedAt": "2026-11-11T05:47:24.822Z",
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+        "browserCache": false,
+        "serviceWorker": false,
+        "transferSize": 526
+      },
+      {
+        "label": "simulated-host-after-same-browser",
+        "route": "/spot/drill-withdrawn",
+        "observedAt": "2026-11-11T05:47:24.981Z",
+        "status": 404,
+        "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+        "deployment": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+        "browserCache": false,
+        "serviceWorker": false,
+        "transferSize": 371
+      },
+      {
+        "label": "alias-same-browser-first",
+        "route": "/spot/drill-withdrawn",
+        "observedAt": "2026-11-11T05:47:25.083Z",
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+        "cache": "HIT",
+        "age": "1113",
+        "ray": "a58b008d3f7bce45-SIN",
+        "browserCache": false,
+        "serviceWorker": false,
+        "transferSize": 424
+      },
+      {
+        "label": "alias-same-browser-repeat",
+        "route": "/spot/drill-withdrawn",
+        "observedAt": "2026-11-11T05:47:25.293Z",
+        "status": 200,
+        "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+        "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+        "cache": "HIT",
+        "age": "1113",
+        "ray": "a58b008e39b0a8c7-SIN",
+        "browserCache": false,
+        "serviceWorker": false,
+        "transferSize": 424
+      }
+    ],
+    "rounds": [
+      {
+        "at": "2026-11-11T05:47:25.754Z",
+        "elapsedMs": 1113792,
+        "complete": true,
+        "passed": false,
+        "failures": [
+          {
+            "route": "/spot/drill-withdrawn",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1113",
+            "cache": "HIT"
+          },
+          {
+            "route": "/public-data/spots/drill-withdrawn.json",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1113",
+            "cache": "HIT"
+          },
+          {
+            "route": "/media/withdrawn-fixture.png",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1113",
+            "cache": "HIT"
+          }
+        ]
+      },
+      {
+        "at": "2026-11-11T05:48:25.577Z",
+        "elapsedMs": 1173615,
+        "complete": false,
+        "passed": false,
+        "failures": [
+          {
+            "route": "/spot/drill-withdrawn",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1173",
+            "cache": "HIT"
+          },
+          {
+            "route": "/public-data/spots/drill-withdrawn.json",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1173",
+            "cache": "HIT"
+          },
+          {
+            "route": "/media/withdrawn-fixture.png",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1173",
+            "cache": "HIT"
+          }
+        ]
+      },
+      {
+        "at": "2026-11-11T05:52:25.590Z",
+        "elapsedMs": 1413628,
+        "complete": false,
+        "passed": false,
+        "failures": [
+          {
+            "route": "/spot/drill-withdrawn",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1413",
+            "cache": "HIT"
+          },
+          {
+            "route": "/public-data/spots/drill-withdrawn.json",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1413",
+            "cache": "HIT"
+          },
+          {
+            "route": "/media/withdrawn-fixture.png",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1413",
+            "cache": "HIT"
+          }
+        ]
+      },
+      {
+        "at": "2026-11-11T05:58:37.286Z",
+        "elapsedMs": 1785324,
+        "complete": true,
+        "passed": false,
+        "failures": [
+          {
+            "route": "/spot/drill-withdrawn",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1785",
+            "cache": "HIT"
+          },
+          {
+            "route": "/public-data/spots/drill-withdrawn.json",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1785",
+            "cache": "HIT"
+          },
+          {
+            "route": "/media/withdrawn-fixture.png",
+            "status": 200,
+            "deployment": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "age": "1785",
+            "cache": "HIT"
+          }
+        ]
+      }
+    ],
+    "cloudWrites": 0,
+    "simulation": "Loopback HTTP origin whose target is switched between the two verified fixed Preview deployments. No real custom domain, zone rules or production TLS.",
+    "fixedNewPassed": true,
+    "simulatedHostPassed": true,
+    "oldImmutableReachable": true,
+    "aliasPassedWithinWindow": false,
+    "result": "BLOCKED",
+    "finishedAt": "2026-11-11T05:58:37.544Z"
+  }
+}

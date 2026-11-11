@@ -15,6 +15,15 @@ const cases=[
   ...['regions.json','guides.json','notes.json','guide-trip-costs.json','i18n/en/records.json','spots/index.json','affiliate-links.json','fx/MYR.json'].map(file=>['/public-data/'+file,'public-data/'+file]),
   ['/sitemap.xml','sitemap.xml'],['/robots.txt','robots.txt'],['/definitely-not-a-page-20261111','404.html'],
 ]
+if(process.argv.includes('--final-media')){
+  const gate=JSON.parse(await readFile(path.join(RECOVERY,'media-approval-gate.json'),'utf8'))
+  assert.ok(gate.finalPackageVerified)
+  const {FINAL_DIR}=await import('./recovery-media-inventory-final.mjs')
+  const approval=JSON.parse(await readFile(path.join(FINAL_DIR,'owner-approved-media.json'),'utf8'))
+  const copies=approval.decisions.filter(item=>item.disposition==='static-copy').sort((a,b)=>b.bytes-a.bytes)
+  for(const item of copies.slice(0,3))cases.push([item.path,item.path.slice(1)])
+  cases.push(['/placeholder-image.jpg','placeholder-image.jpg'])
+}
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex')
 const report={checkedAt:new Date().toISOString(),buildId,checks:[],passed:false}
 for(const [route,file] of cases) {

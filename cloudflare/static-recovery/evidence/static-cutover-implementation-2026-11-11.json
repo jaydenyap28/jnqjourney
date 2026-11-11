@@ -1,0 +1,814 @@
+{
+  "result": "STATIC_CUTOVER_BLOCKED",
+  "formal": "HOLD",
+  "finalBuilds": 0,
+  "productionWrites": 0,
+  "realMediaBodiesDownloaded": 0,
+  "existingPreview": {
+    "url": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+    "pages": 1349,
+    "files": 3621,
+    "functions": 0,
+    "bytes": 226642240
+  },
+  "media": {
+    "gate": {
+      "inventorySha256": "9edfc23dad17030e63a0057deff49878faf88fc6ecfa177c9e0c267cab970b4d",
+      "approvalFilePresent": false,
+      "reviewedDecisions": 6,
+      "eligibleStaticCopies": 0,
+      "pending": 4745,
+      "mediaReviewComplete": false,
+      "finalPackageVerified": false,
+      "packageResult": null,
+      "formalDeploymentAuthorized": false
+    },
+    "sourceUrls": 4775,
+    "groups": [
+      {
+        "group": "SOURCE_UNAVAILABLE",
+        "question": "Recover the documented same image or approve a missing-image treatment.",
+        "archivedPublishedReadback": 0,
+        "objects": 6,
+        "ownerCount": 6,
+        "individualResolution": true
+      },
+      {
+        "group": "THIRD_PARTY_IMAGE_COLLECTION",
+        "question": "Confirm permission by source collection or supplier. Use an approved replacement or omit unsupported items.",
+        "archivedPublishedReadback": 0,
+        "objects": 23,
+        "ownerCount": 22,
+        "individualResolution": false
+      },
+      {
+        "group": "R2_TRAVEL_PUBLISHER_SCOPE",
+        "question": "Confirm the publisher-owned/cleared collection and the excluded rights or revocation groups once. An upload or historical publish record does not establish rights.",
+        "archivedPublishedReadback": 3323,
+        "objects": 4625,
+        "ownerCount": 600,
+        "individualResolution": false
+      },
+      {
+        "group": "R2_PACKAGE_PROVIDER_SCOPE",
+        "question": "Confirm the existing supplier grant permits same-site static hosting. Confirm exceptions by package or supplier.",
+        "archivedPublishedReadback": 0,
+        "objects": 32,
+        "ownerCount": 15,
+        "individualResolution": false
+      },
+      {
+        "group": "SUPABASE_LEGACY_COLLECTION",
+        "question": "Confirm the legacy collection rights or named exceptions before mirroring and making its mixed bucket private.",
+        "archivedPublishedReadback": 0,
+        "objects": 24,
+        "ownerCount": 24,
+        "individualResolution": false
+      }
+    ],
+    "closedOnly": 33,
+    "shared": 9,
+    "providerPosterDecisionsPending": 41,
+    "r2SizeBytes": 6949330473,
+    "r2MaxBytes": 13551052,
+    "projectedFilesUpperBound": 8372,
+    "projectedBytesApprox": 7221742607,
+    "availableDiskBytesSample": 39522791424,
+    "fullUpload": "NOT_TESTED",
+    "accountQuota": "UNKNOWN"
+  },
+  "deploymentInventory": {
+    "checkedAt": "2026-11-11T06:37:06.728Z",
+    "readOnly": true,
+    "projects": [
+      {
+        "project": "jnqjourney-cutover-drill-4e181c14",
+        "defaultUrl": "https://jnqjourney-cutover-drill-4e181c14.pages.dev",
+        "canonicalProduction": null,
+        "customDomains": [],
+        "productionDeployments": 0,
+        "previews": [
+          {
+            "id": "bd64706d-6546-46f2-aedf-df10ec235281",
+            "url": "https://bd64706d.jnqjourney-cutover-drill-4e181c14.pages.dev",
+            "branch": "withdrawal-check",
+            "aliases": [
+              "https://withdrawal-check.jnqjourney-cutover-drill-4e181c14.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          }
+        ]
+      },
+      {
+        "project": "jnqjourney-static-recovery-candidate",
+        "defaultUrl": "https://jnqjourney-static-recovery-candidate.pages.dev",
+        "canonicalProduction": null,
+        "customDomains": [],
+        "productionDeployments": 0,
+        "previews": [
+          {
+            "id": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+            "url": "https://bae9901c.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "withdrawal-drill-mwbohuxp",
+            "aliases": [
+              "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+            "url": "https://b4c87404.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "withdrawal-drill-mwbohuxp",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "31fe48fa-19f5-4bd1-b750-27120d4afb8e",
+            "url": "https://31fe48fa.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "withdrawal-drill-mwbod6tf",
+            "aliases": [
+              "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "15cb0eaa-c1c9-416d-931d-28f9467cc956",
+            "url": "https://15cb0eaa.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "withdrawal-drill-mwbod6tf",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "921277e0-81c7-46a0-ae65-c869a4f3e947",
+            "url": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "codex/cloudflare-static-recovery",
+            "aliases": [
+              "https://codex-cloudflare-static-reco.jnqjourney-static-recovery-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "73fc079b-fdb4-42e7-acee-318a29b2e8b4",
+            "url": "https://73fc079b.jnqjourney-static-recovery-candidate.pages.dev",
+            "branch": "codex/cloudflare-static-recovery",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": false,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          }
+        ]
+      },
+      {
+        "project": "jnqjourney-spot-loop-migration-candidate",
+        "defaultUrl": "https://jnqjourney-spot-loop-migration-candidate.pages.dev",
+        "canonicalProduction": null,
+        "customDomains": [],
+        "productionDeployments": 0,
+        "previews": [
+          {
+            "id": "763e3adf-a713-4049-bb47-22322152df15",
+            "url": "https://763e3adf.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/snapshot-poc",
+            "aliases": [
+              "https://codex-snapshot-poc.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+            "url": "https://f86d4e0e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/snapshot-poc",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "f62a26a3-64a3-4eb9-96f1-f4e9d8229532",
+            "url": "https://f62a26a3.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/p0-consumers",
+            "aliases": [
+              "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+            "url": "https://74daccaf.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/p0-source-fault",
+            "aliases": [
+              "https://codex-p0-source-fault.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+            "url": "https://b1bf921e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/p0-publication-gate",
+            "aliases": [
+              "https://codex-p0-publication-gate.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "c7569e24-a6e4-4905-8748-d79341cf6c43",
+            "url": "https://c7569e24.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/public-readiness",
+            "aliases": [
+              "https://codex-public-readiness.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+            "url": "https://3be78ab5.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/spot-media-integration",
+            "aliases": [
+              "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "8333108c-052e-4684-a0a2-51f05f3f266d",
+            "url": "https://8333108c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/r2-identity-bridge",
+            "aliases": [
+              "https://codex-r2-identity-bridge.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "df43d68d-744c-47f7-94d7-163f4b83529a",
+            "url": "https://df43d68d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/r2-identity-bridge",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "ebd1f8ea-1892-43b9-a77f-4e3cb07f6b41",
+            "url": "https://ebd1f8ea.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/r2-identity-bridge",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+            "url": "https://8ea5d57f.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [
+              "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev"
+            ],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "PROTECT_OR_REPLACE_FIRST"
+          },
+          {
+            "id": "5332ce56-643d-4c5c-9882-4487c516c563",
+            "url": "https://5332ce56.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+            "url": "https://bd7af17d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+            "url": "https://c592d40c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+            "url": "https://97cb9bd0.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "50f3962e-5eb5-47a6-8662-319d992b4113",
+            "url": "https://50f3962e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+            "url": "https://62dbbd59.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "730e582e-530a-4026-9478-5ccebd5fd248",
+            "url": "https://730e582e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          },
+          {
+            "id": "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95",
+            "url": "https://ed4e084d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+            "branch": "codex/cloudflare-free-migration",
+            "aliases": [],
+            "status": "success",
+            "usesFunctions": true,
+            "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+          }
+        ]
+      }
+    ]
+  },
+  "isolatedCloudflare": {
+    "project": "jnqjourney-cutover-drill-4e181c14",
+    "branch": "withdrawal-check",
+    "alias": "https://withdrawal-check.jnqjourney-cutover-drill-4e181c14.pages.dev",
+    "defaultUrl": "https://jnqjourney-cutover-drill-4e181c14.pages.dev",
+    "checkedAt": "2026-11-11T06:29:04.120Z",
+    "events": [
+      {
+        "name": "before",
+        "alias": {
+          "status": 200,
+          "oldBytes": true,
+          "newBytes": false,
+          "cache": null,
+          "age": null,
+          "ray": "a58b458d8be29fd1-SIN",
+          "locationHost": null
+        },
+        "fixed": {
+          "status": 200,
+          "oldBytes": true,
+          "newBytes": false,
+          "cache": null,
+          "age": null,
+          "ray": "a58b458d5902fd27-SIN",
+          "locationHost": null
+        }
+      },
+      {
+        "name": "after-replace",
+        "alias": {
+          "status": 200,
+          "oldBytes": false,
+          "newBytes": true,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45e0ba1081f6-SIN",
+          "locationHost": null
+        },
+        "freshDiagnostic": {
+          "status": 200,
+          "oldBytes": false,
+          "newBytes": true,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45e1aac181f6-SIN",
+          "locationHost": null
+        },
+        "newFixed": {
+          "status": 200,
+          "oldBytes": false,
+          "newBytes": true,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45dc38938089-SIN",
+          "locationHost": null
+        }
+      },
+      {
+        "name": "after-delete",
+        "oldFixed": {
+          "status": 404,
+          "oldBytes": false,
+          "newBytes": false,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45f0e89afdc8-SIN",
+          "locationHost": null
+        },
+        "oldFixedFresh": {
+          "status": 404,
+          "oldBytes": false,
+          "newBytes": false,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45f13977fdc8-SIN",
+          "locationHost": null
+        },
+        "alias": {
+          "status": 200,
+          "oldBytes": false,
+          "newBytes": true,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45f17aeb81f6-SIN",
+          "locationHost": null
+        },
+        "defaultRoot": {
+          "status": 404,
+          "oldBytes": false,
+          "newBytes": false,
+          "cache": null,
+          "age": null,
+          "ray": "a58b45f26917600d-SIN",
+          "locationHost": null
+        }
+      }
+    ],
+    "access": {
+      "status": 403,
+      "codes": [
+        1010
+      ],
+      "created": false,
+      "appId": null
+    },
+    "purge": "BLOCKED_NO_ISOLATED_OWNED_ZONE",
+    "deployments": [
+      {
+        "id": "bff77ec5-f36e-4087-84df-7bcd2cb48453",
+        "url": "https://bff77ec5.jnqjourney-cutover-drill-4e181c14.pages.dev",
+        "environment": "preview",
+        "functions": false,
+        "revision": 1
+      },
+      {
+        "id": "bd64706d-6546-46f2-aedf-df10ec235281",
+        "url": "https://bd64706d.jnqjourney-cutover-drill-4e181c14.pages.dev",
+        "environment": "preview",
+        "functions": false,
+        "revision": 2
+      }
+    ],
+    "initialFailure": "fetch failed",
+    "delete": {
+      "status": 200,
+      "codes": [],
+      "confirmed": true
+    },
+    "productionDeployments": 0
+  },
+  "isolatedSupabase": {
+    "checkedAt": "2026-11-11T06:30:59.405Z",
+    "project": "rnamstwwbzknwbjwdgrf",
+    "tests": [
+      {
+        "name": "fixture-id-free",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "fixture-created",
+        "http": 201,
+        "pass": true
+      },
+      {
+        "name": "private-fixture-bucket",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "service-upload",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "ordinary-fixture-create",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "ordinary-login",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "admin-fixture-create",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "admin-login",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "anon-direct-table-denied",
+        "http": 401,
+        "pass": true
+      },
+      {
+        "name": "anon-storage/public/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "anon-storage/authenticated/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "ordinary-direct-table-denied",
+        "http": 403,
+        "pass": true
+      },
+      {
+        "name": "ordinary-storage/public/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "ordinary-storage/authenticated/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "admin-direct-direct-table-denied",
+        "http": 403,
+        "pass": true
+      },
+      {
+        "name": "admin-direct-storage/public/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "admin-direct-storage/authenticated/",
+        "http": 400,
+        "pass": true
+      },
+      {
+        "name": "ordinary-actual-admin-guard",
+        "http": 403,
+        "pass": true
+      },
+      {
+        "name": "admin-actual-auth-guard",
+        "pass": true
+      },
+      {
+        "name": "authorized-server-save",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "authorized-server-saved-one",
+        "pass": true
+      },
+      {
+        "name": "authorized-server-readback",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "authorized-server-readback-value",
+        "pass": true
+      },
+      {
+        "name": "hidden-omitted-in-build-projection",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "hidden-absent",
+        "pass": true
+      },
+      {
+        "name": "server-private-image-readback",
+        "http": 200,
+        "pass": true
+      },
+      {
+        "name": "server-private-bytes-match",
+        "pass": true
+      }
+    ],
+    "cleanup": [
+      {
+        "name": "synthetic-object",
+        "http": 200,
+        "success": true
+      },
+      {
+        "name": "synthetic-bucket",
+        "http": 200,
+        "success": true
+      },
+      {
+        "name": "synthetic-row",
+        "http": 204,
+        "success": true
+      },
+      {
+        "name": "synthetic-auth-user",
+        "http": 200,
+        "success": true
+      },
+      {
+        "name": "synthetic-auth-user",
+        "http": 200,
+        "success": true
+      }
+    ],
+    "success": true
+  },
+  "rollbackFirst": {
+    "startedAt": "2026-11-11T06:36:59.418Z",
+    "image": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "tests": [
+      {
+        "name": "database-version",
+        "pass": true
+      },
+      {
+        "name": "synthetic-baseline",
+        "pass": true
+      },
+      {
+        "name": "rollback-aborts-before-protections",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "existing-projection",
+        "pass": true
+      },
+      {
+        "name": "private-bucket-fixture",
+        "pass": true
+      },
+      {
+        "name": "apply-scoped-boundaries",
+        "pass": true
+      },
+      {
+        "name": "simulate-acl-drift",
+        "pass": true
+      },
+      {
+        "name": "safe-rollback",
+        "pass": true
+      },
+      {
+        "name": "rollback-still-denies-table",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "rollback-still-denies-rpc",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "rollback-retains-private-policy",
+        "pass": true
+      }
+    ],
+    "productionConnections": 0,
+    "storageHttp": "NOT_TESTED",
+    "success": false,
+    "isolation": {
+      "network": "none",
+      "ports": 0,
+      "tmpfsOnly": true
+    },
+    "version": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "failure": "Expected values to be strictly equal:\n\n'19' !== '3'\n",
+    "cleaned": true,
+    "finishedAt": "2026-11-11T06:37:05.730Z"
+  },
+  "rollback": {
+    "startedAt": "2026-11-11T06:37:45.936Z",
+    "image": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "tests": [
+      {
+        "name": "database-version",
+        "pass": true
+      },
+      {
+        "name": "synthetic-baseline",
+        "pass": true
+      },
+      {
+        "name": "rollback-aborts-before-protections",
+        "pass": true,
+        "sqlstate": "P0001"
+      },
+      {
+        "name": "existing-projection",
+        "pass": true
+      },
+      {
+        "name": "private-bucket-fixture",
+        "pass": true
+      },
+      {
+        "name": "apply-scoped-boundaries",
+        "pass": true
+      },
+      {
+        "name": "simulate-acl-drift",
+        "pass": true
+      },
+      {
+        "name": "safe-rollback",
+        "pass": true
+      },
+      {
+        "name": "rollback-still-denies-table",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "rollback-still-denies-rpc",
+        "pass": true,
+        "sqlstate": "42501"
+      },
+      {
+        "name": "rollback-retains-private-policy",
+        "pass": true
+      },
+      {
+        "name": "rollback-retains-service-reader",
+        "pass": true
+      }
+    ],
+    "productionConnections": 0,
+    "storageHttp": "NOT_TESTED",
+    "success": true,
+    "isolation": {
+      "network": "none",
+      "ports": 0,
+      "tmpfsOnly": true
+    },
+    "version": "17.11 (Debian 17.11-1.pgdg13+2)",
+    "cleaned": true,
+    "finishedAt": "2026-11-11T06:37:48.965Z"
+  },
+  "formalStorageCatalog": {
+    "result": "BLOCKED",
+    "cli": "LegacyDbQueryMutuallyExclusiveFlagsError",
+    "autoApproval": "DENIED_LINKED_PROJECT_SELECTION",
+    "sqlSubmitted": false,
+    "localBrowserEnabled": false,
+    "supabaseSqlMcpExposed": false
+  },
+  "localTargetedTests": {
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "build": "NOT_RUN",
+    "productionBrowser": "NOT_RUN"
+  }
+}
