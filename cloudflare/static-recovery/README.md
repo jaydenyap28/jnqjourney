@@ -3,6 +3,8 @@
 Preview-only, with Production migration on HOLD. No Functions or admin routes are shipped.
 The original Next 14 public components, CSS, map, galleries and static English adapter are reused. Root app/admin and all production APIs remain intact.
 
+The [P0 launch readiness checklist](P0-LAUNCH-READINESS-2026-11-11.md) records the follow-up media probes, proposed withdrawal policies, and production indexing and rollback prerequisites.
+
 ## Repeatable local publication fallback
 
 Use the existing Node/dependencies and existing Wrangler login. Do not install or upgrade frameworks.

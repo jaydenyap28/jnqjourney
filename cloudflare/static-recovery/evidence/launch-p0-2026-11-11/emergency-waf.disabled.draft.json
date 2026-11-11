@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "action": "block",
+  "description": "REVIEW ONLY - public website emergency stop",
+  "expression": "http.host in {\"jnqjourney.com\" \"www.jnqjourney.com\"}",
+  "scope": "Only proxied custom-domain requests; does not protect r2.dev, pages.dev or client caches."
+}

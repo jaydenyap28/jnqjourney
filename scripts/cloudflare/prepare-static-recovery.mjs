@@ -8,6 +8,7 @@ import { buildRegionSlug } from '../../lib/region-routing.ts'
 import { explicitNoteAffiliateIds } from '../../lib/note-affiliates.ts'
 import { getRenderableNoteBlocks } from '../../lib/notes.ts'
 import { RECOVERY, SOURCE, fingerprint } from './recovery-sources.mjs'
+import { normalizeRecoveryCanonical } from './recovery-launch-policy.mjs'
 
 const load = async file => JSON.parse(await readFile(path.join(RECOVERY, 'sources', file), 'utf8'))
 const [db, guidesData, notesData, slugMap, english, costs, sourceManifest] = await Promise.all([
@@ -51,7 +52,9 @@ async function bodies(file, replacements, importLine = '') {
 await json('data/recovery-locations.json', db.locations)
 await json('data/recovery-feeds.json', { 'regions.json': { regions: db.regions }, 'guides.json': guidesData, 'notes.json': notesData,
   'i18n/en/records.json': english, 'guide-trip-costs.json': costs })
-await json('data/recovery-packages.json', { packages: db.packages, options: db.options })
+// Normalize local build metadata, never the authoritative database records.
+const canonicalPackage = item => ({...item,canonical_url:normalizeRecoveryCanonical(item.canonical_url)})
+await json('data/recovery-packages.json', { packages: db.packages.map(canonicalPackage), options: db.options.map(canonicalPackage) })
 await json('data/location-slugs.json', slugMap)
 await json('data/notes.json', notes)
 await json('data/guides.json', guides)

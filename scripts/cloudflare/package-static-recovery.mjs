@@ -5,6 +5,7 @@ import { readFile, writeFile, mkdir, readdir, stat, copyFile } from 'node:fs/pro
 import path from 'node:path'
 import { buildLocationSlug } from '../../lib/location-routing.ts'
 import { RECOVERY, SOURCE, fingerprint } from './recovery-sources.mjs'
+import { staticRecoveryIndexingPolicy } from './recovery-launch-policy.mjs'
 
 export const decode = value => value.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#x27;',"'")
 export function pageMetadata(html) {
@@ -107,8 +108,10 @@ export async function packageRecovery() {
   const redirectText=[...redirects.values()].map(item=>`${item.from} ${item.to} ${item.status}`)
   redirectText.push('/api/locations /public-data/locations.json 200','/api/spots/:slug /public-data/spots/:slug.json 200')
   await writeFile(path.join(out,'_redirects'),redirectText.join('\n')+'\n')
-  await writeFile(path.join(out,'_headers'),'/*\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: public, max-age=0, must-revalidate\n  X-Content-Type-Options: nosniff\n  X-JnQ-Hosting: static-recovery-preview\n/_next/static/*\n  Cache-Control: public, max-age=31536000, immutable\n')
-  await writeFile(path.join(out,'robots.txt'),'User-agent: *\nDisallow: /\n')
+  // Never select Production policy from environment variables or a deploy flag.
+  const indexing=staticRecoveryIndexingPolicy('preview')
+  await writeFile(path.join(out,'_headers'),indexing.headers)
+  await writeFile(path.join(out,'robots.txt'),indexing.robots)
   const originalSitemap=await readFile(path.join(out,'sitemap.xml'),'utf8')
   const blocks=[...originalSitemap.matchAll(/<url>[\s\S]*?<\/url>/g)].map(match=>match[0])
   const removed=[]

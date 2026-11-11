@@ -1,0 +1,710 @@
+{
+  "date": "2026-11-11",
+  "timezone": "Asia/Singapore",
+  "baseline": "2ce2e88f0ddfa6eaebb4ce702a67806689cbfce3",
+  "formalLaunch": "HOLD",
+  "policiesApproved": false,
+  "preserved": {
+    "preview": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+    "pages": 1349,
+    "files": 3621,
+    "receiptSha256": "3f9b8be1540c0d54984bff7562148cb8d2a5803babfa574298f672898b502210",
+    "unchanged": true,
+    "functions": 0
+  },
+  "images": {
+    "confirmed404": [
+      {
+        "url": "https://i.ibb.co/r2FHQynR/Chat-GPT-Image-Apr-8-2026-04-05-23-PM.png",
+        "owners": [
+          "/en/spot/pulau-kapas-232",
+          "/spot/pulau-kapas-232"
+        ],
+        "method": "HEAD",
+        "status": 404,
+        "type": "image/png",
+        "etag": null,
+        "contentLength": "1031"
+      },
+      {
+        "url": "https://i.ibb.co/r2FHQynR/Chat-GPT-Image-Apr-8-2026-04-05-23-PM.png",
+        "owners": [
+          "/en/spot/pulau-kapas-232",
+          "/spot/pulau-kapas-232"
+        ],
+        "method": "GET",
+        "status": 404,
+        "type": "image/png",
+        "etag": null,
+        "contentLength": "1031",
+        "bytes": 1031,
+        "sha256": "63e3696c5e5e8b037e28e8fbef871184b0d1d60a7314c965b1426d9cce84dd69",
+        "magic": "89504e470d0a1a0a0000000d",
+        "dimensions": {
+          "width": 180,
+          "height": 180
+        },
+        "validPublicResponse": false
+      }
+    ],
+    "nodeTimeoutsPreserved": [
+      {
+        "url": "https://i.ibb.co/vxbYCQkk/gallery-Cafe-Mori-no-Tokei-02.webp",
+        "owners": [
+          "/en/region/hokkaido-47",
+          "/en/region",
+          "/region/hokkaido-47"
+        ],
+        "method": "HEAD",
+        "status": "UNKNOWN",
+        "reason": 23
+      },
+      {
+        "url": "https://i.ibb.co/mp0JnPH/Timba-Timba2.png",
+        "owners": [
+          "/en/region/malaysia",
+          "/en/region/sabah-77",
+          "/en/region",
+          "/region/sabah-77"
+        ],
+        "method": "HEAD",
+        "status": "UNKNOWN",
+        "reason": 23
+      },
+      {
+        "url": "https://i.ibb.co/vxbYCQkk/gallery-Cafe-Mori-no-Tokei-02.webp",
+        "owners": [
+          "/en/region/hokkaido-47",
+          "/en/region",
+          "/region/hokkaido-47"
+        ],
+        "method": "GET",
+        "status": "UNKNOWN",
+        "reason": 23
+      },
+      {
+        "url": "https://i.ibb.co/mp0JnPH/Timba-Timba2.png",
+        "owners": [
+          "/en/region/malaysia",
+          "/en/region/sabah-77",
+          "/en/region",
+          "/region/sabah-77"
+        ],
+        "method": "GET",
+        "status": "UNKNOWN",
+        "reason": 23
+      }
+    ],
+    "newChromeEvidence": {
+      "checkedAt": "2026-11-11T04:44:08.916Z",
+      "browser": "157.0.8103.40",
+      "results": [
+        {
+          "url": "https://i.ibb.co/vxbYCQkk/gallery-Cafe-Mori-no-Tokei-02.webp",
+          "status": 200,
+          "type": "image/webp",
+          "decoded": {
+            "width": 1536,
+            "height": 2048
+          }
+        },
+        {
+          "url": "https://i.ibb.co/mp0JnPH/Timba-Timba2.png",
+          "status": 200,
+          "type": "image/png",
+          "decoded": {
+            "width": 640,
+            "height": 480
+          }
+        }
+      ]
+    },
+    "fix": "Exact missing price-info image now renders a truthful unavailable notice in local source; no guessed photo, no source data rewrite.",
+    "patchDeployed": false
+  },
+  "media": {
+    "checkedAt": "2026-11-11T04:47:34.572Z",
+    "sourceCheckedAt": "2026-11-11T04:38:12.776389+00:00",
+    "projectRef": "vrufunuomioczocdsoer",
+    "rules": "Exact origin/path, strip focus fragment/query for native public R2 object identity. Published references are not permanent-public rights approval. Index pages are consumers, not independent owner consent.",
+    "sourceImageUrls": 4775,
+    "sourceR2Urls": 4723,
+    "knownR2Objects": 4690,
+    "publicReferencedR2Objects": 4657,
+    "nonPublicSpotRecords": [
+      {
+        "id": 31,
+        "status": "permanently_closed",
+        "publication_status": null
+      },
+      {
+        "id": 676,
+        "status": "permanently_closed",
+        "publication_status": null
+      },
+      {
+        "id": 754,
+        "status": "temporarily_closed",
+        "publication_status": null
+      },
+      {
+        "id": 762,
+        "status": "temporarily_closed",
+        "publication_status": null
+      }
+    ],
+    "closedOnlyR2Objects": 33,
+    "closedAndPublicSharedR2Objects": 0,
+    "explicitCrossModuleR2Objects": 9,
+    "closedOnly": [
+      {
+        "objectIdentitySha256": "a3aa55bc6d5cca9f535cf4c7f82f6d29268d238263a1b388937cade21ee09eb6",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "1a5ea0b0d0bf4cf21b1924b954aabf05ee9fd115d4721a3d8f39fbb446db0e9e",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "85cdc73a3e5502378898d89c8a2f0dc14710e58a6081473a08c0d6514cb8e671",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "6fb9373de3c38066c4172f7b775e9a997908af9a95888aa6126ca4f3896db927",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "c8b53f0277f722d5778271f81f956f1b72e7c55ded6b0d5e691d76f1fdbc502a",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "dd67fc3680aba3ba05782307b929b0ba9ea937b695858cb50e3c89e25688fcb9",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "a286c9e06f9cfd29fc9b685e34d6ea6cbb2095d0425bd86e05f7531bb275db26",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:31"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "6f588e54190e3d5a8198758c733101f9e800ceeef15ff1c4e852d156c3555162",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:676"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "5b64d1be408ede08fff8a39dec7df51708241916d70c92dc66a13efe3ca2e23c",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:676"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "c2624a537faf87e8f0b227365cda77617059c889cf46250ef8d813bd53d865ea",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:676"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "9834501c5401779ea01e03e0165ca83dd1842692313949a39e6ee360766ec4ed",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:676"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "4051764c2bfcf36695a56864d7fab04b3b777b27dea608f535d962279bedf30b",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "aa3d0943bc053a0c8a961e36451cfefd04ceca0f5ae78f5b11a7f29c190434dd",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "012cd4438183b094b8c44b13621a4665c75c01965f7c63f6909507e311e943c8",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "779ebea33e85bb8e5de07db58663e2411e85747065622575cea7252e779bd863",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "32c896720046e1c309edecf3458bb538c2fb69483beb2da90b2df6bb666bcfca",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "c0a83a228a8c504cb0a2514d29423be81f34844ce70e0d3d89ecd35d37511887",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "711f82734bb51817e748b4ba685cb816b2cf878ca79d95df89afbf6c6e2f562a",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "412e6be6ad1241863bae5b851313d04426f88d7f9c6664cd96f0493143721444",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "a1b81367a23d6fd1128a036dd7ca1bd7ac336c15825b5ddbb0682c0c36f747fb",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "5fab67068ef44fa435a1d15d0523d0c7d34d87f0e137c72f02d095b08f49c969",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "4c6958b5d39e09e4a823572adf501abe5bfe3caac4f944dfce544f2dbe3e283b",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "597f47d21229e81acb3c303691b413f791705932e644ff2bd5e2753dbd7d1814",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "366616b7d8fc552cf3f22d5669ae75c227369e9e832fe7707591ba21d3d29da4",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "d439b4489ed3dec8b4ad8034aa6e62acb5eb66fc3368e73448db8f086b554c74",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "69b78872eb66774ac046c577567482baad88f8cf2a5f6b67c57e76b9fd38c584",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:754"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "5138ea8e8f1b17d6f2baccf491a85dcbcc4394e93552aff2b154ab1646b3b621",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "1f233f190f2374ba1e069646829c941bd3e7a3a7d537637381a059bbdedf717f",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "b55b891ce9844ffe518a2a1240df23b71d1e3d5c06a393239e368fa10f8b6351",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "08c9ea4f508b6d885fff3d822f8b4ce6dabd5a33ea1d8060b8eae411eb458cb8",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "957f7dc3397bffb15b113f1b8216cb1492a8610a232134f1b17baf0d28b86614",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "daabd3c2ca71b7078cb9b732dcccfd69156edd85fcd93388a28d36f246eca2aa",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      },
+      {
+        "objectIdentitySha256": "9b3165366d8a39941f16cf6c6964ed65e72a5c4cf6181afa31ecadda7bcab164",
+        "publicOwners": [],
+        "nonPublicOwners": [
+          "spot:762"
+        ],
+        "renderedConsumerCount": 0
+      }
+    ],
+    "closedAndPublicShared": [],
+    "crossModuleShared": [
+      {
+        "objectIdentitySha256": "45849fc50c3d2713f85f432aef9382312e32495dafbd970c0e796b532ce0f5f7",
+        "publicOwners": [
+          "spot:65",
+          "region:11"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 16
+      },
+      {
+        "objectIdentitySha256": "c979f420d78aa5be094b252f2076ab979c827826d2666707c3a0ab84db8ff6c2",
+        "publicOwners": [
+          "spot:232",
+          "region:23"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 36
+      },
+      {
+        "objectIdentitySha256": "d98d0deb08c695b7e730753bd5894660d207e4f2cc63a2790ddcddc58e94f2ee",
+        "publicOwners": [
+          "spot:237",
+          "region:28"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 18
+      },
+      {
+        "objectIdentitySha256": "f89e7be0886efb2c91750b798bda85b036deb572cd8c485ceb60e870831930a1",
+        "publicOwners": [
+          "spot:273",
+          "region:90"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 10
+      },
+      {
+        "objectIdentitySha256": "48aa985a90e3b37145d25ed5be038046608a2df1290a2bdbfdb3f6461780eca1",
+        "publicOwners": [
+          "spot:337",
+          "region:48"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 21
+      },
+      {
+        "objectIdentitySha256": "d22383bb5251f479ccf858b76bfaf45a1ad0c635629dfacef29e997823ba602b",
+        "publicOwners": [
+          "spot:404",
+          "region:40"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 16
+      },
+      {
+        "objectIdentitySha256": "222eff0cfd9d7b11241ac98c8fbaff019745602012550aeb17435aefe33a3b04",
+        "publicOwners": [
+          "spot:432",
+          "region:67"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 23
+      },
+      {
+        "objectIdentitySha256": "3cb51fcb5f1329396e77db5900ad550f3a3ca32ce14190995d8037c74dab58a8",
+        "publicOwners": [
+          "spot:480",
+          "region:71"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 22
+      },
+      {
+        "objectIdentitySha256": "ca0b6755cd495cffdf41b1b311db495e6d56ca52bdd28c3fdc544e2e01f8aa68",
+        "publicOwners": [
+          "spot:785",
+          "region:88"
+        ],
+        "nonPublicOwners": [],
+        "renderedConsumerCount": 30
+      }
+    ],
+    "permanentPublicConsent": "NOT_ESTABLISHED",
+    "privateOrRevokedObjectCount": "UNKNOWN",
+    "unattributedBucketObjectCount": "UNKNOWN",
+    "draftNotesGuideMedia": "NOT_READ",
+    "productionRegistryExists": false,
+    "nonPublicBytesFetched": 0,
+    "productionWrites": 0,
+    "staticMirrorLowerBound": {
+      "currentSiteFiles": 3621,
+      "additionalPublicR2Images": 4657,
+      "combinedFiles": 8278,
+      "allImageSizesAndAggregateBytes": "UNKNOWN",
+      "copyApproved": false
+    },
+    "classification": "PUBLIC_REFERENCE_CANDIDATE / NONPUBLIC_REFERENCE_ONLY / SHARED / UNKNOWN_PRIVATE_OR_REVOKED"
+  },
+  "platform": {
+    "checkedAt": "2026-11-11T04:43:30.781Z",
+    "methods": [
+      "GET"
+    ],
+    "bucket": "jnqjourney-img",
+    "managed": {
+      "status": 200,
+      "success": true,
+      "result": {
+        "enabled": true,
+        "bucketId": "8ecf7356fcc84618a26557ed36fc53a1",
+        "domain": "pub-8ecf7356fcc84618a26557ed36fc53a1.r2.dev"
+      },
+      "errorCodes": []
+    },
+    "custom": {
+      "status": 200,
+      "success": true,
+      "result": {
+        "domains": []
+      },
+      "errorCodes": []
+    },
+    "previewProject": {
+      "status": 200,
+      "success": true,
+      "productionCanonicalEmpty": true,
+      "customDomains": [],
+      "environments": {
+        "preview": {
+          "variableCount": 0,
+          "r2Bindings": 0
+        },
+        "production": {
+          "variableCount": 0,
+          "r2Bindings": 0
+        }
+      }
+    },
+    "dns": {
+      "nameservers": [
+        "daniella.ns.cloudflare.com",
+        "kirk.ns.cloudflare.com"
+      ],
+      "wwwCname": "UNKNOWN_ENODATA"
+    },
+    "writes": 0
+  },
+  "seoAndDeployment": {
+    "checkedAt": "2026-11-11T04:49:53.152Z",
+    "scope": "Frozen artifact metadata and three live Preview files; not another whole-site PoC",
+    "preserved": {
+      "preview": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+      "pages": 1349,
+      "files": 3621,
+      "receiptSha256": "3f9b8be1540c0d54984bff7562148cb8d2a5803babfa574298f672898b502210",
+      "unchanged": true,
+      "functions": 0
+    },
+    "seo": {
+      "sitemap": 706,
+      "indexable": 706,
+      "noindex": 643,
+      "hreflangTargetsValid": true,
+      "currentCanonicalChanges": [
+        {
+          "route": "/packages/batam-3d2n",
+          "before": "https://jnqjourney.com/packages/batam-3d2n",
+          "proposed": "https://www.jnqjourney.com/packages/batam-3d2n"
+        }
+      ],
+      "canonicalPatch": "NEXT_BUILD_ONLY"
+    },
+    "ads": {
+      "adsTxtValid": true,
+      "publisherId": "pub-3371680133104731",
+      "previewScriptEnabled": false,
+      "englishScriptEnabled": false,
+      "accountApprovalAndRevenue": "UNKNOWN",
+      "productionActivation": "SEPARATE_APPROVAL_REQUIRED"
+    },
+    "live": [
+      {
+        "path": "/_publication.json",
+        "status": 200,
+        "type": "application/json",
+        "noindex": "noindex, nofollow",
+        "byteMatched": true
+      },
+      {
+        "path": "/robots.txt",
+        "status": 200,
+        "type": "text/plain; charset=utf-8",
+        "noindex": "noindex, nofollow",
+        "byteMatched": true
+      },
+      {
+        "path": "/ads.txt",
+        "status": 200,
+        "type": "text/plain; charset=utf-8",
+        "noindex": "noindex, nofollow",
+        "byteMatched": true
+      }
+    ],
+    "formalLaunch": "HOLD",
+    "writesToProduction": 0,
+    "rebuilds": 0,
+    "deployments": 0
+  },
+  "reachability": {
+    "checkedAt": "2026-11-11T05:07:30.198Z",
+    "method": "HEAD",
+    "scope": "One exact R2 reference per closed Spot, two existing domain roots. No media body read.",
+    "results": [
+      {
+        "spotId": 31,
+        "objectIdentitySha256": "a3aa55bc6d5cca9f535cf4c7f82f6d29268d238263a1b388937cade21ee09eb6",
+        "status": 200,
+        "contentType": "image/webp"
+      },
+      {
+        "spotId": 676,
+        "objectIdentitySha256": "6f588e54190e3d5a8198758c733101f9e800ceeef15ff1c4e852d156c3555162",
+        "status": 200,
+        "contentType": "image/png"
+      },
+      {
+        "spotId": 754,
+        "objectIdentitySha256": "4051764c2bfcf36695a56864d7fab04b3b777b27dea608f535d962279bedf30b",
+        "status": 200,
+        "contentType": "image/webp"
+      },
+      {
+        "spotId": 762,
+        "objectIdentitySha256": "5138ea8e8f1b17d6f2baccf491a85dcbcc4394e93552aff2b154ab1646b3b621",
+        "status": 200,
+        "contentType": "image/webp"
+      }
+    ],
+    "hosts": [
+      {
+        "url": "https://jnqjourney.com/",
+        "status": 402,
+        "location": null,
+        "providerError": "DEPLOYMENT_DISABLED"
+      },
+      {
+        "url": "https://www.jnqjourney.com/",
+        "status": 402,
+        "location": null,
+        "providerError": "DEPLOYMENT_DISABLED"
+      }
+    ]
+  },
+  "freshness": {
+    "status": "CONTENT_MATCHED_FX_CHANGED",
+    "evidence": "verify-capture sequentially matched database/guides/notes/slugs/English/costs/historical slugs, then stopped at fx.json. No snapshot was overwritten.",
+    "fullVerificationExit": 1,
+    "rebuildRequiredBeforeFormalRelease": true
+  },
+  "validation": {
+    "focusedTests": {
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "includesActualReactSSR": true
+    },
+    "lintExit": 0,
+    "affectedTypecheckExit": 0,
+    "rootTypecheckExit": 2,
+    "rootTypecheckIssue": "Root include **/*.ts also includes historical artifact/Deno projects. Kept original diagnostics; not repaired or passed off as a clean global check.",
+    "builds": 0,
+    "deployments": 0
+  },
+  "confidentialEvidence": "Raw nonpublic media URLs remain local under artifacts/cloudflare-static-launch-p0. The report contains hashed identities and owner IDs. No nonpublic image body was fetched.",
+  "unresolved": [
+    "No policy A/B approval",
+    "Permanent-public rights/allowlist approval missing",
+    "33 R2 objects referenced only by currently ineligible Spots; privacy/revocation is not inferred from business closure",
+    "Mixed public r2.dev exposure remains enabled",
+    "Old public Preview URLs need a separately approved archive/access policy",
+    "Native emergency block and formal rollback have not been deployed or tested",
+    "Account quota/AdSense approval UNKNOWN"
+  ]
+}

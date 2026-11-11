@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic'
 import { useEffect, useMemo, useState } from 'react'
 import {PublicLink as Link} from '@/components/PublicLocale'
 import FallbackImage from '@/components/FallbackImage'
+import PriceInfoImage from '@/components/PriceInfoImage'
 import AffiliateCard from '@/components/AffiliateCard'
 import SupportSidebarCard from '@/components/SupportSidebarCard'
 import { getDisplayTitle, getSpotDescription } from '@/lib/content-display'
@@ -994,28 +995,7 @@ export default function SpotContent({
                     <p className="text-xs uppercase tracking-[0.22em] text-amber-100/70"><PublicCopy text={"Price Board / 现场价目图"}/></p>
                     <div className="mt-4 grid grid-cols-2 gap-2.5 md:grid-cols-2 xl:grid-cols-3">
                       {priceInfo.infoImages.map((url, index) => (
-                        <a
-                          key={`${url}-${index}`}
-                          href={url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="group overflow-hidden rounded-[22px] border border-white/10 bg-white/5 transition hover:-translate-y-1 hover:bg-white/10"
-                        >
-                          <div className="relative aspect-[4/3] overflow-hidden">
-                            <FallbackImage
-                              src={url}
-                              alt={`price info ${index + 1}`}
-                              fill
-                              sizes="(max-width: 768px) 100vw, 420px"
-                              className="object-cover transition duration-500 group-hover:scale-105"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
-                          </div>
-                          <div className="flex items-center justify-between gap-3 px-4 py-3 text-sm text-white/88">
-                            <span><PublicCopy text={"Open image / 查看原图"}/></span>
-                            <ExternalLink className="h-4 w-4" />
-                          </div>
-                        </a>
+                        <PriceInfoImage key={`${url}-${index}`} url={url} index={index} />
                       ))}
                     </div>
                   </div>

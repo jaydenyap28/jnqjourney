@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "product": "Cloudflare Single Redirects",
+  "matchExpression": "http.host eq \"jnqjourney.com\"",
+  "targetExpression": "concat(\"https://www.jnqjourney.com\", http.request.uri.path)",
+  "statusCode": 301,
+  "preserveQueryString": true,
+  "reviewOnly": true
+}

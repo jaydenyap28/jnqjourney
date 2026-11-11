@@ -1,0 +1,14 @@
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  X-JnQ-Hosting: production-review-only
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+/public-data/*
+  X-Robots-Tag: noindex, nofollow
+/_next/data/*
+  X-Robots-Tag: noindex, nofollow
+/api/*
+  X-Robots-Tag: noindex, nofollow
+/*.txt
+  X-Robots-Tag: noindex, nofollow
