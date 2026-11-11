@@ -1,0 +1,170 @@
+{
+  "result": "PRODUCTION_DEPLOYED_DNS_BLOCKED",
+  "publicSiteLive": false,
+  "productionId": "088f1889-0c3d-4c7a-a012-771a35decb61",
+  "productionUrl": "https://jnqjourney-static-recovery-candidate.pages.dev",
+  "fixedUrl": "https://088f1889.jnqjourney-static-recovery-candidate.pages.dev",
+  "productionBranch": "main",
+  "implementationCommit": "5aee04456087422245656105370236dd56b6fb09",
+  "frozenCandidateCommit": "74fd49a",
+  "previewId": "368a3f26-1e0b-42c0-8c90-f38caa2cf84e",
+  "files": 8136,
+  "bytes": 7039269641,
+  "htmlPages": 1349,
+  "mediaFiles": 4515,
+  "functions": 0,
+  "sitemapUrls": 704,
+  "assets": {
+    "uploaded": 7,
+    "reused": 8127,
+    "assetUploadSeconds": 0.98
+  },
+  "verified": {
+    "http": true,
+    "httpChecks": 13,
+    "legacyRedirect": {
+      "http": 301,
+      "path": "/spot/turtle-alley-636"
+    },
+    "browser": true,
+    "browserPages": 12,
+    "browserLegacyRequests": 0,
+    "errors": 0,
+    "browserFailedRequests": 0
+  },
+  "source": {
+    "capturedAt": "2026-11-11T10:36:43.708Z",
+    "counts": {
+      "totalSpots": 586,
+      "publicSpots": 582,
+      "excludedSpots": 4,
+      "regions": 58,
+      "guides": 7,
+      "notes": 6,
+      "packages": 3,
+      "options": 12,
+      "localizations": 402,
+      "affiliates": 360
+    },
+    "databaseFingerprint": "3b0fd0e7ea23640f3496537246e358e14e6b099f86d353c65fb1c505356cb55e",
+    "fxDate": "2026-11-11"
+  },
+  "backup": {
+    "manifestSha256": "d940fb9b414bca20cb4170be8469c1158ba9c91fdaf0db0ed42407bfe3d70592",
+    "acceptedFiles": 8136,
+    "retainedLocalPackage": true,
+    "changed": [
+      {
+        "path": "_headers",
+        "sha256": "d1dae5baac2d308e562a3d5916ba25146758d1164b009b115158c6f0bd3b07d6"
+      },
+      {
+        "path": "robots.txt",
+        "sha256": "d944d834d7c04f570ec68925cfae8a7b69e4a28ed26e4b0395c4229a7825d776"
+      },
+      {
+        "path": "public-data/fx/MYR.json",
+        "sha256": "f5103f12c5e0b7f2e55261c3b5d4429181f096192f5c1f70864853357b65ac85"
+      },
+      {
+        "path": "public-data/fx/CNY.json",
+        "sha256": "5ae02efca094443abae4486a6487902bda79291673a069fdc6b9143726a02173"
+      },
+      {
+        "path": "public-data/fx/JPY.json",
+        "sha256": "f77634a853a534521147bfac1cd394505a50943c57e83a4efb6ba8788b19d8c7"
+      },
+      {
+        "path": "public-data/fx/SGD.json",
+        "sha256": "aec19745e4bb502cebd4e119aeb14c776b291963744f8e4529e88900eabcd802"
+      },
+      {
+        "path": "public-data/fx/USD.json",
+        "sha256": "013599d724e6de5df20f907701e8ef0765795e183610faf2be5e9263db55d093"
+      },
+      {
+        "path": "_publication.json",
+        "sha256": "e3f5ac9d53d1997f8cb7b0c6467a0d719a0e41409d53a057a7492a4a2e9cc14d"
+      }
+    ]
+  },
+  "domains": {
+    "at": "2026-11-11T10:55:23.748Z",
+    "api": 200,
+    "domains": [
+      {
+        "name": "jnqjourney.com",
+        "status": "pending",
+        "validation": "pending",
+        "verification": "pending"
+      },
+      {
+        "name": "www.jnqjourney.com",
+        "status": "pending",
+        "validation": "pending",
+        "verification": "pending"
+      }
+    ],
+    "http": [
+      {
+        "host": "www.jnqjourney.com",
+        "http": 402,
+        "location": null,
+        "hosting": null,
+        "vercel": "DEPLOYMENT_DISABLED",
+        "old402": true
+      },
+      {
+        "host": "jnqjourney.com",
+        "http": 402,
+        "location": null,
+        "hosting": null,
+        "vercel": "DEPLOYMENT_DISABLED",
+        "old402": true
+      }
+    ]
+  },
+  "capabilityGaps": {
+    "dns": {
+      "http": 403,
+      "code": 10000
+    },
+    "redirectRules": {
+      "http": 403,
+      "code": 10000
+    },
+    "browser": "WINDOWS_CURRENT_URL_COULD_NOT_BE_CONFIRMED_SAFETY_STOP",
+    "supabaseSql": "AUTO_APPROVAL_REJECTED_LINKED_CHANNEL_NO_QUERY_SENT"
+  },
+  "hardening": {
+    "r2": {
+      "bucket": "jnqjourney-img",
+      "managedEnabled": true,
+      "configSnapshotSaved": true,
+      "localVerifiedSourceObjects": 4625,
+      "fullObjectBackupComplete": false,
+      "publicSwitchChanged": false,
+      "knownDependencies": [
+        "historical Preview",
+        "old public-data feed",
+        "build source capture",
+        "legacy publisher read-back"
+      ]
+    },
+    "supabase": {
+      "permissionsChanged": false,
+      "authChanged": false,
+      "catalogSnapshotComplete": false,
+      "adminUi": "NOT_IN_PUBLIC_STATIC_PACKAGE"
+    },
+    "previews": {
+      "inventoryProjects": 3,
+      "previewDeployments": 27,
+      "deletedThisRecovery": 0,
+      "access": "PREVIOUS_HTTP_403_NO_RETRY"
+    }
+  },
+  "withdrawalPolicy": "A_STATIC_REPUBLISH_NO_HARD_30_MINUTE_GUARANTEE",
+  "paidServicesAdded": 0,
+  "accountQuota": "UNKNOWN"
+}

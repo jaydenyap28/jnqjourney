@@ -1,0 +1,300 @@
+{
+  "checkedAt": "2026-11-11T10:53:44.755Z",
+  "readOnly": true,
+  "projects": [
+    {
+      "project": "jnqjourney-static-recovery-candidate",
+      "defaultUrl": "https://jnqjourney-static-recovery-candidate.pages.dev",
+      "canonicalProduction": "088f1889-0c3d-4c7a-a012-771a35decb61",
+      "customDomains": [],
+      "productionDeployments": 1,
+      "previews": [
+        {
+          "id": "368a3f26-1e0b-42c0-8c90-f38caa2cf84e",
+          "url": "https://368a3f26.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "codex/cloudflare-static-recovery",
+          "aliases": [
+            "https://codex-cloudflare-static-reco.jnqjourney-static-recovery-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+          "url": "https://bae9901c.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "withdrawal-drill-mwbohuxp",
+          "aliases": [
+            "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+          "url": "https://b4c87404.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "withdrawal-drill-mwbohuxp",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "31fe48fa-19f5-4bd1-b750-27120d4afb8e",
+          "url": "https://31fe48fa.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "withdrawal-drill-mwbod6tf",
+          "aliases": [
+            "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "15cb0eaa-c1c9-416d-931d-28f9467cc956",
+          "url": "https://15cb0eaa.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "withdrawal-drill-mwbod6tf",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "921277e0-81c7-46a0-ae65-c869a4f3e947",
+          "url": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "codex/cloudflare-static-recovery",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "73fc079b-fdb4-42e7-acee-318a29b2e8b4",
+          "url": "https://73fc079b.jnqjourney-static-recovery-candidate.pages.dev",
+          "branch": "codex/cloudflare-static-recovery",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        }
+      ]
+    },
+    {
+      "project": "jnqjourney-cutover-drill-4e181c14",
+      "defaultUrl": "https://jnqjourney-cutover-drill-4e181c14.pages.dev",
+      "canonicalProduction": null,
+      "customDomains": [],
+      "productionDeployments": 0,
+      "previews": [
+        {
+          "id": "bd64706d-6546-46f2-aedf-df10ec235281",
+          "url": "https://bd64706d.jnqjourney-cutover-drill-4e181c14.pages.dev",
+          "branch": "withdrawal-check",
+          "aliases": [
+            "https://withdrawal-check.jnqjourney-cutover-drill-4e181c14.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": false,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        }
+      ]
+    },
+    {
+      "project": "jnqjourney-spot-loop-migration-candidate",
+      "defaultUrl": "https://jnqjourney-spot-loop-migration-candidate.pages.dev",
+      "canonicalProduction": null,
+      "customDomains": [],
+      "productionDeployments": 0,
+      "previews": [
+        {
+          "id": "763e3adf-a713-4049-bb47-22322152df15",
+          "url": "https://763e3adf.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/snapshot-poc",
+          "aliases": [
+            "https://codex-snapshot-poc.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "f86d4e0e-365d-4f5a-8064-b1a6455e0949",
+          "url": "https://f86d4e0e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/snapshot-poc",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "f62a26a3-64a3-4eb9-96f1-f4e9d8229532",
+          "url": "https://f62a26a3.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/p0-consumers",
+          "aliases": [
+            "https://codex-p0-consumers.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "74daccaf-3d0b-47d6-8974-03f919c3786f",
+          "url": "https://74daccaf.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/p0-source-fault",
+          "aliases": [
+            "https://codex-p0-source-fault.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "b1bf921e-65a7-46f3-853e-73e40f4e5824",
+          "url": "https://b1bf921e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/p0-publication-gate",
+          "aliases": [
+            "https://codex-p0-publication-gate.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "c7569e24-a6e4-4905-8748-d79341cf6c43",
+          "url": "https://c7569e24.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/public-readiness",
+          "aliases": [
+            "https://codex-public-readiness.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "3be78ab5-1e3e-4902-b2c3-719953b3ca36",
+          "url": "https://3be78ab5.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/spot-media-integration",
+          "aliases": [
+            "https://codex-spot-media-integration.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "8333108c-052e-4684-a0a2-51f05f3f266d",
+          "url": "https://8333108c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/r2-identity-bridge",
+          "aliases": [
+            "https://codex-r2-identity-bridge.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "df43d68d-744c-47f7-94d7-163f4b83529a",
+          "url": "https://df43d68d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/r2-identity-bridge",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "ebd1f8ea-1892-43b9-a77f-4e3cb07f6b41",
+          "url": "https://ebd1f8ea.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/r2-identity-bridge",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "8ea5d57f-6dcb-4ddc-beae-b232d643bc51",
+          "url": "https://8ea5d57f.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [
+            "https://codex-cloudflare-free-migrat.jnqjourney-spot-loop-migration-candidate.pages.dev"
+          ],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "PROTECT_OR_REPLACE_FIRST"
+        },
+        {
+          "id": "5332ce56-643d-4c5c-9882-4487c516c563",
+          "url": "https://5332ce56.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "bd7af17d-0d90-4781-90df-d409ba376428",
+          "url": "https://bd7af17d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "c592d40c-394e-4cbc-b842-f3cb2aa71535",
+          "url": "https://c592d40c.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "97cb9bd0-4865-4ff5-b59c-092df66d34ab",
+          "url": "https://97cb9bd0.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "50f3962e-5eb5-47a6-8662-319d992b4113",
+          "url": "https://50f3962e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "62dbbd59-fea7-40d4-ac1e-b270e4677e98",
+          "url": "https://62dbbd59.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "730e582e-530a-4026-9478-5ccebd5fd248",
+          "url": "https://730e582e.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        },
+        {
+          "id": "ed4e084d-43fc-45d1-8f19-28ab3e7a5c95",
+          "url": "https://ed4e084d.jnqjourney-spot-loop-migration-candidate.pages.dev",
+          "branch": "codex/cloudflare-free-migration",
+          "aliases": [],
+          "status": "success",
+          "usesFunctions": true,
+          "disposition": "OLD_FIXED_DELETE_ELIGIBLE"
+        }
+      ]
+    }
+  ]
+}

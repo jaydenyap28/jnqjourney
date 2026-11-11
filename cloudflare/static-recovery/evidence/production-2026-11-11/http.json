@@ -1,0 +1,128 @@
+{
+  "checkedAt": "2026-11-11T10:46:10.399Z",
+  "origin": "https://jnqjourney-static-recovery-candidate.pages.dev",
+  "deploymentId": "088f1889-0c3d-4c7a-a012-771a35decb61",
+  "checks": [
+    {
+      "path": "/",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/",
+      "indexable": true
+    },
+    {
+      "path": "/en",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/en",
+      "indexable": false
+    },
+    {
+      "path": "/spot/turtle-alley-636",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/spot/turtle-alley-636",
+      "indexable": true
+    },
+    {
+      "path": "/en/spot/turtle-alley-636",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/en/spot/turtle-alley-636",
+      "indexable": false
+    },
+    {
+      "path": "/notes/malaysia-turtle-night-terengganu",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/notes/malaysia-turtle-night-terengganu",
+      "indexable": true
+    },
+    {
+      "path": "/guide/china-dali-shangri-la-lijiang-11d10n",
+      "http": 200,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true,
+      "canonical": "https://www.jnqjourney.com/guide/china-dali-shangri-la-lijiang-11d10n",
+      "indexable": true
+    },
+    {
+      "path": "/robots.txt",
+      "http": 200,
+      "matched": true,
+      "type": "text/plain; charset=utf-8",
+      "robots": "noindex, nofollow",
+      "passed": true
+    },
+    {
+      "path": "/sitemap.xml",
+      "http": 200,
+      "matched": true,
+      "type": "application/xml",
+      "robots": null,
+      "passed": true
+    },
+    {
+      "path": "/ads.txt",
+      "http": 200,
+      "matched": true,
+      "type": "text/plain; charset=utf-8",
+      "robots": "noindex, nofollow",
+      "passed": true
+    },
+    {
+      "path": "/api/locations",
+      "http": 200,
+      "matched": true,
+      "type": "application/json",
+      "robots": "noindex, nofollow",
+      "passed": true
+    },
+    {
+      "path": "/public-data/fx/MYR.json",
+      "http": 200,
+      "matched": true,
+      "type": "application/json",
+      "robots": "noindex, nofollow",
+      "passed": true
+    },
+    {
+      "path": "/not-found-production-recovery-20261111",
+      "http": 404,
+      "matched": true,
+      "type": "text/html; charset=utf-8",
+      "robots": null,
+      "passed": true
+    },
+    {
+      "path": "/media/static/9b05591bf2a77aa7212d1a2cb0f3e2feff22707a0f66bf79bdb80fb20b847597.webp",
+      "http": 200,
+      "matched": true,
+      "type": "image/webp",
+      "robots": null,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "alias": {
+    "http": 301,
+    "path": "/spot/turtle-alley-636"
+  }
+}

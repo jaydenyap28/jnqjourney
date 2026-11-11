@@ -1,0 +1,36 @@
+{
+  "at": "2026-11-11T10:55:23.748Z",
+  "api": 200,
+  "domains": [
+    {
+      "name": "jnqjourney.com",
+      "status": "pending",
+      "validation": "pending",
+      "verification": "pending"
+    },
+    {
+      "name": "www.jnqjourney.com",
+      "status": "pending",
+      "validation": "pending",
+      "verification": "pending"
+    }
+  ],
+  "http": [
+    {
+      "host": "www.jnqjourney.com",
+      "http": 402,
+      "location": null,
+      "hosting": null,
+      "vercel": "DEPLOYMENT_DISABLED",
+      "old402": true
+    },
+    {
+      "host": "jnqjourney.com",
+      "http": 402,
+      "location": null,
+      "hosting": null,
+      "vercel": "DEPLOYMENT_DISABLED",
+      "old402": true
+    }
+  ]
+}

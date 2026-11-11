@@ -1,5 +1,7 @@
 # Full public static recovery candidate
 
+The [Production recovery record](PRODUCTION-RECOVERY-2026-11-11.md) contains the deployed Production URL and the remaining formal DNS blocker.
+
 The [owner-confirmed media deployment](OWNER-MEDIA-DEPLOYMENT-2026-11-11.md) is the current complete-media Preview. It passes 1,349 pages, 4,515 packaged media files and 0 Functions. Production remains on HOLD.
 
 Preview-only, with Production migration on HOLD. No Functions or admin routes are shipped.
