@@ -5,6 +5,8 @@ The original Next 14 public components, CSS, map, galleries and static English a
 
 The [P0 launch readiness checklist](P0-LAUNCH-READINESS-2026-11-11.md) records the follow-up media probes, proposed withdrawal policies, and production indexing and rollback prerequisites.
 
+The [final media readiness report](FINAL-MEDIA-LAUNCH-2026-11-11.md) records the full source inventory, formal read-only checks and synthetic Pages withdrawal results. The frozen Preview remains available while the media and safety gates are open.
+
 ## Repeatable local publication fallback
 
 Use the existing Node/dependencies and existing Wrangler login. Do not install or upgrade frameworks.

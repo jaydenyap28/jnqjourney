@@ -9,6 +9,7 @@ import { explicitNoteAffiliateIds } from '../../lib/note-affiliates.ts'
 import { getRenderableNoteBlocks } from '../../lib/notes.ts'
 import { RECOVERY, SOURCE, fingerprint } from './recovery-sources.mjs'
 import { normalizeRecoveryCanonical } from './recovery-launch-policy.mjs'
+import { localizeLegacyFeedLinks } from './recovery-delivery-feeds.mjs'
 
 const load = async file => JSON.parse(await readFile(path.join(RECOVERY, 'sources', file), 'utf8'))
 const [db, guidesData, notesData, slugMap, english, costs, sourceManifest] = await Promise.all([
@@ -18,6 +19,11 @@ const [db, guidesData, notesData, slugMap, english, costs, sourceManifest] = awa
 assert.equal(db.projectRef, 'vrufunuomioczocdsoer')
 const guides = guidesData.guides
 const notes = notesData.notes
+const canonicalSpot = row => (slugMap[String(row.id)] ? `${slugMap[String(row.id)]}-${row.id}` : buildLocationSlug(row.name,row.id))
+const publicEnglish=localizeLegacyFeedLinks(english,{
+  spotSlugs:new Map(db.locations.filter(row=>!row.redirect_url).map(row=>[String(row.id),canonicalSpot(row)])),
+  guideSlugs:new Set(guides.map(row=>row.slug)),regionIds:new Set(db.regions.map(row=>String(row.id))),
+})
 assert.ok(db.locations.every(row => row.status === 'active' && [null, 'published'].includes(row.publication_status)))
 assert.ok(notes.every(note => note.published === true))
 await mkdir(SOURCE, { recursive: true })
@@ -51,7 +57,7 @@ async function bodies(file, replacements, importLine = '') {
 }
 await json('data/recovery-locations.json', db.locations)
 await json('data/recovery-feeds.json', { 'regions.json': { regions: db.regions }, 'guides.json': guidesData, 'notes.json': notesData,
-  'i18n/en/records.json': english, 'guide-trip-costs.json': costs })
+  'i18n/en/records.json': publicEnglish, 'guide-trip-costs.json': costs })
 // Normalize local build metadata, never the authoritative database records.
 const canonicalPackage = item => ({...item,canonical_url:normalizeRecoveryCanonical(item.canonical_url)})
 await json('data/recovery-packages.json', { packages: db.packages.map(canonicalPackage), options: db.options.map(canonicalPackage) })
@@ -59,7 +65,7 @@ await json('data/location-slugs.json', slugMap)
 await json('data/notes.json', notes)
 await json('data/guides.json', guides)
 await json('public-data/guide-trip-costs.json', costs)
-await json('public-data/i18n/en/records.json', english)
+await json('public-data/i18n/en/records.json', publicEnglish)
 await bodies('lib/server/public-spot-projection.ts', {
   readPublicRows: `const rows = ids ? recoveryRows.filter(row => ids.includes(row.id)) : recoveryRows\nreturn validatePublicRows(rows, ids || rows.map(row => row.id))`,
 }, "import recoveryRows from '@/data/recovery-locations.json'\n")
@@ -82,7 +88,6 @@ await bodies('lib/server/travel-packages.ts', {
   readPublishedPackageOption: 'return (recoveryPackages.options.find(item=>item.package_id===packageId && item.slug===optionSlug) || null) as TravelPackageOption | null',
 }, "import recoveryPackages from '@/data/recovery-packages.json'\n")
 
-const canonicalSpot = row => (slugMap[String(row.id)] ? `${slugMap[String(row.id)]}-${row.id}` : buildLocationSlug(row.name, row.id))
 const spotParams = db.locations.filter(row => !row.redirect_url).map(row => ({ slug: canonicalSpot(row) }))
 const regionParams = db.regions.map(row => ({ slug: buildRegionSlug(row.name, row.id) }))
 const byPackageId = new Map(db.packages.map(item => [item.id,item]))

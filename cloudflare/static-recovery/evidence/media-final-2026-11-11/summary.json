@@ -1,0 +1,2019 @@
+{
+  "p0Checkpoint": "37154bb",
+  "formalRelease": "HOLD",
+  "publicSite": "BLOCKED",
+  "mediaCutover": "BLOCKED",
+  "supabaseSecurity": "BLOCKED",
+  "frozenPreview": {
+    "url": "https://921277e0.jnqjourney-static-recovery-candidate.pages.dev",
+    "pages": 1349,
+    "files": 3621,
+    "functions": 0,
+    "receiptVerified": true
+  },
+  "inventory": {
+    "checkedAt": "2026-11-11T05:21:17.983Z",
+    "files": 3621,
+    "textFiles": 3387,
+    "sourceUrls": 4775,
+    "sourceUrlsAccountedFor": 4775,
+    "sourceIdentities": 4709,
+    "activeSourceOrArtifactIdentities": 4751,
+    "observedInArtifact": 4751,
+    "artifactOnly": 42,
+    "sourceOnly": 0,
+    "excludedClosedOnly": 33,
+    "closedWithConsumers": 0,
+    "multiOwner": 9,
+    "crossModule": 9,
+    "approvedForStaticCopy": 0,
+    "privateDraftRevokedTotal": "UNKNOWN",
+    "inventorySha256": "9edfc23dad17030e63a0057deff49878faf88fc6ecfa177c9e0c267cab970b4d",
+    "legacyHostTextFiles": 3248,
+    "legacyFeedReferences": [
+      {
+        "pathname": "/public-data/guides.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/regions.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/otaru-canal-339.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/ningle-terrace-374.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/spot-446.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/spot-449.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/langkawi-sky-bridge-810.json",
+        "fileCount": 1
+      },
+      {
+        "pathname": "/public-data/spots/golden-bamboo-cafe-829.json",
+        "fileCount": 1
+      }
+    ],
+    "scope": "Exact captured source URLs and known image-host literals in existing deployable HTML, JSON, RSC text, JS, CSS and XML. Source-only references are not proof of a rendered request. Rights are not inferred from public readability."
+  },
+  "approval": {
+    "inventorySha256": "9edfc23dad17030e63a0057deff49878faf88fc6ecfa177c9e0c267cab970b4d",
+    "approvalFilePresent": false,
+    "reviewedDecisions": 0,
+    "eligibleStaticCopies": 0,
+    "pending": 4751,
+    "mediaReviewComplete": false,
+    "finalPackageVerified": false,
+    "formalDeploymentAuthorized": false
+  },
+  "r2Measurement": {
+    "checkedAt": "2026-11-11T05:22:15.258Z",
+    "requests": 7,
+    "prefixResults": [
+      {
+        "prefix": "locations/",
+        "requests": 5,
+        "completed": true
+      },
+      {
+        "prefix": "notes/",
+        "requests": 1,
+        "completed": true
+      },
+      {
+        "prefix": "packages/",
+        "requests": 1,
+        "completed": true
+      }
+    ],
+    "matched": 4690,
+    "candidateR2": 4657,
+    "matchedPublicCandidates": 4657,
+    "unresolvedPublicCandidates": 0,
+    "knownBytes": 6949330473,
+    "maxKnownBytes": 13551052,
+    "over25MiB": [],
+    "totalPublicCandidateBytes": 6949330473,
+    "objectBodiesRead": 0,
+    "remoteWrites": 0,
+    "accountR2Quota": "UNKNOWN",
+    "method": "Cloudflare R2 List Objects metadata for known source prefixes; exact keys retained by identity hash only."
+  },
+  "externalImageSummary": {
+    "checkedAt": "2026-11-11T05:26:13.855Z",
+    "requests": 94,
+    "sourceIdentities": 52,
+    "statusCounts": {
+      "200": 88,
+      "404": 2,
+      "503": 1,
+      "UNKNOWN": 3
+    },
+    "decoded": 88,
+    "knownBytes": 45769894,
+    "largestKnownBytes": 3814946,
+    "over25MiB": 0,
+    "hostingRights": "NOT_ESTABLISHED",
+    "publishedCopies": 0
+  },
+  "externalImageFailures": [
+    {
+      "identitySha256": "2f12a6ab364e7097cc2ea70b0b4418ab22f783be6b23b2316d8f835a798f6fc6",
+      "host": "i.ibb.co",
+      "status": "UNKNOWN",
+      "source": true,
+      "decode": false,
+      "error": "TimeoutError"
+    },
+    {
+      "identitySha256": "4d0512f654a239d8760d306667cbd085fbc8e25b9e0e8bc32cc235d1a855ffa4",
+      "host": "i.ibb.co",
+      "status": "UNKNOWN",
+      "source": true,
+      "decode": false,
+      "error": "TimeoutError"
+    },
+    {
+      "identitySha256": "e12dab02eccf8f4a54fda854296c0cd00fcbb4f429214d71530d32bfff109885",
+      "host": "i.ibb.co",
+      "status": 404,
+      "source": true,
+      "decode": false,
+      "type": "image/png"
+    },
+    {
+      "identitySha256": "2244b1cd2a17e82890fb5e7090705d9585732dc2b63a723bee00391c4714986b",
+      "host": "i.ibb.co",
+      "status": 503,
+      "source": true,
+      "decode": false,
+      "type": "image/png"
+    },
+    {
+      "identitySha256": "0e6c7de47c2861d8597e1b7e5c20c72ddb2e9ae5b44b95ae37ef70d8e8a7fbf2",
+      "host": "i.ibb.co",
+      "status": "UNKNOWN",
+      "source": true,
+      "decode": false,
+      "error": "TimeoutError"
+    },
+    {
+      "identitySha256": "8ceb97a91dba0f7ad7017f69535f37829a5c7c0b1dde7c4ba527d8aacedf43e5",
+      "host": "i.ibb.co",
+      "status": 404,
+      "source": true,
+      "decode": false,
+      "type": "image/png"
+    }
+  ],
+  "formalReadonly": {
+    "checkedAt": "2026-11-11T05:22:56.203Z",
+    "method": "HEAD only, no row/object bodies or credential output",
+    "projectRef": "vrufunuomioczocdsoer",
+    "remoteWrites": 0,
+    "checks": [
+      {
+        "id": "anon-active-locations",
+        "status": 206,
+        "range": "0-0/582",
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": null
+      },
+      {
+        "id": "anon-closed-locations",
+        "status": 206,
+        "range": "0-0/4",
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": null
+      },
+      {
+        "id": "anon-internal-column",
+        "status": 200,
+        "range": "0-0/1",
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": null
+      },
+      {
+        "id": "anon-closed-media-column",
+        "status": 200,
+        "range": "0-0/1",
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": null
+      },
+      {
+        "id": "without-api-key",
+        "status": 401,
+        "range": null,
+        "contentType": "application/json;charset=UTF-8",
+        "contentLength": "101"
+      },
+      {
+        "id": "storage-notes-pointer",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "32"
+      },
+      {
+        "id": "storage-notes-snapshot",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "337250"
+      },
+      {
+        "id": "storage-notes-authenticated-route-anon",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "337250"
+      },
+      {
+        "id": "storage-guides-pointer",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "33"
+      },
+      {
+        "id": "storage-guides-snapshot",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "157417"
+      },
+      {
+        "id": "storage-guides-authenticated-route-anon",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "157417"
+      },
+      {
+        "id": "storage-image",
+        "status": 200,
+        "range": null,
+        "contentType": "image/webp",
+        "contentLength": "125752"
+      },
+      {
+        "id": "r2-public-locations-feed",
+        "status": 200,
+        "range": null,
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": "542184"
+      },
+      {
+        "id": "r2-public-guides-feed",
+        "status": 200,
+        "range": null,
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": "99460"
+      },
+      {
+        "id": "r2-public-notes-feed",
+        "status": 200,
+        "range": null,
+        "contentType": "application/json; charset=utf-8",
+        "contentLength": "270829"
+      }
+    ]
+  },
+  "zone": {
+    "checkedAt": "2026-11-11T05:30:04.437Z",
+    "remoteWrites": 0,
+    "zoneLookup": {
+      "status": 200,
+      "codes": []
+    },
+    "customRuleCount": "UNKNOWN",
+    "freeRuleSlots": "UNKNOWN",
+    "rulesTested": false,
+    "zone": {
+      "name": "jnqjourney.com",
+      "status": "active",
+      "plan": "Free Website"
+    },
+    "wafLookup": {
+      "status": 403,
+      "codes": [
+        10000
+      ]
+    }
+  },
+  "localFeedPatch": {
+    "rewrittenReferences": 14,
+    "verifiedDistinctTargets": 8,
+    "rawCapturePreserved": true
+  },
+  "withdrawal": {
+    "result": "BLOCKED_STALE_ALIAS",
+    "formal30MinuteTargetProven": false,
+    "drills": [
+      {
+        "policy": "max-age=0, must-revalidate",
+        "staleLastMs": 738022,
+        "first": {
+          "startedAt": "2026-11-11T05:24:58.948Z",
+          "branch": "withdrawal-drill-mwbod6tf",
+          "project": "jnqjourney-static-recovery-candidate",
+          "scope": "Synthetic release and withdrawal on separate Preview alias",
+          "functions": 0,
+          "deployments": [
+            {
+              "revision": 1,
+              "id": "15cb0eaa-c1c9-416d-931d-28f9467cc956",
+              "url": "https://15cb0eaa.jnqjourney-static-recovery-candidate.pages.dev",
+              "alias": "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev",
+              "environment": "preview",
+              "wallMs": 15584,
+              "files": 20,
+              "after": {
+                "productionCount": 0,
+                "canonicalEmpty": true,
+                "bindings": 0,
+                "customDomains": 0
+              }
+            },
+            {
+              "revision": 2,
+              "id": "31fe48fa-19f5-4bd1-b750-27120d4afb8e",
+              "url": "https://31fe48fa.jnqjourney-static-recovery-candidate.pages.dev",
+              "alias": "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev",
+              "environment": "preview",
+              "wallMs": 11703,
+              "files": 14,
+              "after": {
+                "productionCount": 0,
+                "canonicalEmpty": true,
+                "bindings": 0,
+                "customDomains": 0
+              }
+            }
+          ],
+          "requests": [
+            {
+              "group": "frozen-before",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 363,
+              "sha256": "3f9b8be1540c0d54984bff7562148cb8d2a5803babfa574298f672898b502210",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 70,
+              "sha256": "8a9f8253cc86c9f4042b3c076f91ce9a562dd6bcce3809dac3d40815264dbf40",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/public-data/spots/drill-withdrawn.json",
+              "status": 200,
+              "bytes": 168,
+              "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/media/withdrawn-fixture.png",
+              "status": 200,
+              "bytes": 89,
+              "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 70,
+              "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+              "noindex": "noindex, nofollow",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cache": "HIT",
+              "age": "13"
+            }
+          ],
+          "passed": false,
+          "before": {
+            "productionCount": 0,
+            "canonicalEmpty": true,
+            "bindings": 0,
+            "customDomains": 0
+          },
+          "withdrawalStartedAt": "2026-11-11T05:25:19.985Z",
+          "rejectedBeforeUpload": [
+            "stale release rollback",
+            "invalid release with withdrawn reference"
+          ],
+          "failure": "ERR_ASSERTION",
+          "finishedAt": "2026-11-11T05:25:33.184Z"
+        },
+        "later": {
+          "checkedAt": "2026-11-11T05:27:09.908Z",
+          "branch": "withdrawal-drill-mwbod6tf",
+          "alias": "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev",
+          "deployment": "https://31fe48fa.jnqjourney-static-recovery-candidate.pages.dev",
+          "originalFailure": "ERR_ASSERTION",
+          "initialStale": [
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cache": "HIT",
+              "age": "13"
+            }
+          ],
+          "rounds": [
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.909Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.943Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.944Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.945Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.946Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.947Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.948Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:09.949Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.949Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "110",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.950Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.951Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.951Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.952Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.952Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "110",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.952Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:09.953Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "110",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ],
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.440Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.443Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.444Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.444Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.444Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.445Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.445Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:15.445Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.446Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "116",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.446Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.446Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.447Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.447Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.448Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "115",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.448Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:15.448Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "115",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ],
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.750Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.751Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.751Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.751Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.752Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.752Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.752Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:27:20.753Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.753Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "121",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.753Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.753Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.754Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.754Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.754Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "121",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.755Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:27:20.755Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "120",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ]
+          ],
+          "remoteWrites": 0,
+          "oldImmutable": {
+            "oldObject": {
+              "url": "/media/withdrawn-fixture.png",
+              "expected": 200,
+              "observedAt": "2026-11-11T05:27:20.914Z",
+              "status": 200,
+              "passed": true,
+              "cache": null,
+              "age": null,
+              "noindex": "noindex, nofollow",
+              "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+            },
+            "oldPage": {
+              "url": "/spot/drill-withdrawn",
+              "expected": 200,
+              "observedAt": "2026-11-11T05:27:20.915Z",
+              "status": 200,
+              "passed": true,
+              "cache": null,
+              "age": null,
+              "noindex": "noindex, nofollow",
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+            },
+            "bytesStillAvailable": true
+          },
+          "frozenPreserved": true,
+          "newFixed": {
+            "url": "/media/withdrawn-fixture.png",
+            "expected": 404,
+            "observedAt": "2026-11-11T05:27:20.915Z",
+            "status": 404,
+            "passed": true,
+            "cache": null,
+            "age": null,
+            "noindex": "noindex, nofollow",
+            "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+          },
+          "chrome": {
+            "width": 1,
+            "height": 1
+          },
+          "passed": false
+        },
+        "finalCacheObservation": {
+          "checkedAt": "2026-11-11T05:37:38.166Z",
+          "readOnly": true,
+          "alias": "https://withdrawal-drill-mwbod6tf.jnqjourney-static-recovery-candidate.pages.dev",
+          "rows": [
+            {
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "age": "738",
+              "cache": "HIT",
+              "cacheControl": "public, max-age=0, must-revalidate",
+              "elapsedMs": 737985
+            },
+            {
+              "url": "/public-data/spots/drill-withdrawn.json",
+              "status": 200,
+              "age": "738",
+              "cache": "HIT",
+              "cacheControl": "public, max-age=0, must-revalidate",
+              "elapsedMs": 738020
+            },
+            {
+              "url": "/media/withdrawn-fixture.png",
+              "status": 200,
+              "age": "738",
+              "cache": "HIT",
+              "cacheControl": "public, max-age=0, must-revalidate",
+              "elapsedMs": 738022
+            }
+          ]
+        }
+      },
+      {
+        "policy": "no-store",
+        "staleLastMs": 526209,
+        "first": {
+          "startedAt": "2026-11-11T05:28:36.831Z",
+          "branch": "withdrawal-drill-mwbohuxp",
+          "project": "jnqjourney-static-recovery-candidate",
+          "scope": "Synthetic release and withdrawal on separate Preview alias",
+          "cachePolicy": "no-store",
+          "functions": 0,
+          "deployments": [
+            {
+              "revision": 1,
+              "id": "b4c87404-f8f3-491b-afd1-9c2c92a4a053",
+              "url": "https://b4c87404.jnqjourney-static-recovery-candidate.pages.dev",
+              "alias": "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev",
+              "environment": "preview",
+              "wallMs": 11135,
+              "files": 20,
+              "after": {
+                "productionCount": 0,
+                "canonicalEmpty": true,
+                "bindings": 0,
+                "customDomains": 0
+              }
+            },
+            {
+              "revision": 2,
+              "id": "bae9901c-bc87-44b1-9436-fb188cd9d53a",
+              "url": "https://bae9901c.jnqjourney-static-recovery-candidate.pages.dev",
+              "alias": "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev",
+              "environment": "preview",
+              "wallMs": 11332,
+              "files": 14,
+              "after": {
+                "productionCount": 0,
+                "canonicalEmpty": true,
+                "bindings": 0,
+                "customDomains": 0
+              }
+            }
+          ],
+          "requests": [
+            {
+              "group": "frozen-before",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 363,
+              "sha256": "3f9b8be1540c0d54984bff7562148cb8d2a5803babfa574298f672898b502210",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "public, max-age=0, must-revalidate",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 70,
+              "sha256": "8a9f8253cc86c9f4042b3c076f91ce9a562dd6bcce3809dac3d40815264dbf40",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/public-data/spots/drill-withdrawn.json",
+              "status": 200,
+              "bytes": 168,
+              "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "prewithdrawal",
+              "url": "/media/withdrawn-fixture.png",
+              "status": 200,
+              "bytes": 89,
+              "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/_publication.json",
+              "status": 200,
+              "bytes": 70,
+              "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/sitemap.xml",
+              "status": 200,
+              "bytes": 153,
+              "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": "HIT",
+              "age": "12"
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/en/spot/drill-withdrawn",
+              "status": 404,
+              "bytes": 71,
+              "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/public-data/spots/drill-shared.json",
+              "status": 200,
+              "bytes": 131,
+              "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/old-withdrawal-fixture",
+              "status": 404,
+              "bytes": 71,
+              "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/media/withdrawn-fixture.png",
+              "status": 200,
+              "bytes": 89,
+              "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": "HIT",
+              "age": "12"
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/public-data/spots/drill-withdrawn.json",
+              "status": 200,
+              "bytes": 168,
+              "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": "HIT",
+              "age": "12"
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/public-data/locations.json",
+              "status": 200,
+              "bytes": 138,
+              "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+              "status": 404,
+              "bytes": 71,
+              "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/api/spots/drill-withdrawn",
+              "status": 404,
+              "bytes": 71,
+              "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-shared",
+              "status": 200,
+              "bytes": 155,
+              "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/media/shared-fixture.png",
+              "status": 200,
+              "bytes": 68,
+              "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/api/locations",
+              "status": 200,
+              "bytes": 138,
+              "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-withdrawn.txt",
+              "status": 404,
+              "bytes": 71,
+              "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            },
+            {
+              "group": "postwithdrawal",
+              "url": "/",
+              "status": 200,
+              "bytes": 149,
+              "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": null,
+              "age": null
+            }
+          ],
+          "passed": false,
+          "before": {
+            "productionCount": 0,
+            "canonicalEmpty": true,
+            "bindings": 0,
+            "customDomains": 0
+          },
+          "withdrawalStartedAt": "2026-11-11T05:28:51.962Z",
+          "rejectedBeforeUpload": [
+            "stale release rollback",
+            "invalid release with withdrawn reference"
+          ],
+          "failure": "UNEXPECTED_STATUS_postwithdrawal_/spot/drill-withdrawn",
+          "finishedAt": "2026-11-11T05:29:04.644Z"
+        },
+        "later": {
+          "checkedAt": "2026-11-11T05:30:00.346Z",
+          "branch": "withdrawal-drill-mwbohuxp",
+          "alias": "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev",
+          "deployment": "https://bae9901c.jnqjourney-static-recovery-candidate.pages.dev",
+          "originalFailure": "UNEXPECTED_STATUS_postwithdrawal_/spot/drill-withdrawn",
+          "initialStale": [
+            {
+              "group": "postwithdrawal",
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "bytes": 226,
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af",
+              "noindex": "noindex, nofollow",
+              "cacheControl": "no-store",
+              "cache": "HIT",
+              "age": "12"
+            }
+          ],
+          "rounds": [
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.347Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.385Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.386Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.387Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.388Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.389Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.390Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:00.391Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.392Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "68",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.393Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.393Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.394Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.394Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.395Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "68",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.395Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:00.395Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "68",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ],
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.622Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.623Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.623Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.623Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.624Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.624Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.624Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:05.625Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.625Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "73",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.625Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.626Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.626Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.626Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.626Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "73",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.627Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:05.627Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "73",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ],
+            [
+              {
+                "url": "/_publication.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.830Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1700eebb29881f22d7ff4d56c9cf367da4d6f17d0181021d8bcffe76acca6d31"
+              },
+              {
+                "url": "/",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.831Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "0b7add95a7d8b8d9b7def3c38c5f283bff11c1193c96622d5299fd73d99715ef"
+              },
+              {
+                "url": "/spot/drill-shared",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.831Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "a751d86c2bee59b82de37458d82f88604cfa794a3e7dec0c84b267b7571453ab"
+              },
+              {
+                "url": "/public-data/locations.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.832Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/public-data/spots/drill-shared.json",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.832Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "645110f5ab46754cff384592ac52d52072b4550f9dc622d39ba53e818a05a502"
+              },
+              {
+                "url": "/api/locations",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.833Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "1d717a22aa8596275b0968723469604d572d8e25f2057a74349696b9f736ad63"
+              },
+              {
+                "url": "/sitemap.xml",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.833Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "6d9ecb9ebb10263af7a264c8d185e81e5352c6252f2379c0fc4c63b457fd6e98"
+              },
+              {
+                "url": "/media/shared-fixture.png",
+                "expected": 200,
+                "observedAt": "2026-11-11T05:30:10.833Z",
+                "status": 200,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "718ccded3a8ed48b04801dca87d3e1ac5267131d39c515f397aebabfb35d8b8c"
+              },
+              {
+                "url": "/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.834Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "79",
+                "noindex": "noindex, nofollow",
+                "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+              },
+              {
+                "url": "/en/spot/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.834Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/old-withdrawal-fixture",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.835Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/spot/drill-withdrawn.txt",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.835Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/_next/data/drill/en/spot/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.835Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/public-data/spots/drill-withdrawn.json",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.836Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "79",
+                "noindex": "noindex, nofollow",
+                "sha256": "2c217debf7ded3e456194c7e7e76943f26ee892c35c2862be816b4d991621866"
+              },
+              {
+                "url": "/api/spots/drill-withdrawn",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.836Z",
+                "status": 404,
+                "passed": true,
+                "cache": null,
+                "age": null,
+                "noindex": "noindex, nofollow",
+                "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+              },
+              {
+                "url": "/media/withdrawn-fixture.png",
+                "expected": 404,
+                "observedAt": "2026-11-11T05:30:10.837Z",
+                "status": 200,
+                "passed": false,
+                "cache": "HIT",
+                "age": "78",
+                "noindex": "noindex, nofollow",
+                "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+              }
+            ]
+          ],
+          "remoteWrites": 0,
+          "oldImmutable": {
+            "oldObject": {
+              "url": "/media/withdrawn-fixture.png",
+              "expected": 200,
+              "observedAt": "2026-11-11T05:30:11.077Z",
+              "status": 200,
+              "passed": true,
+              "cache": null,
+              "age": null,
+              "noindex": "noindex, nofollow",
+              "sha256": "a67cb17fbe8994a74aaf9e3a16ebe13eca5b3b986285166f3d07360ff6d2dc91"
+            },
+            "oldPage": {
+              "url": "/spot/drill-withdrawn",
+              "expected": 200,
+              "observedAt": "2026-11-11T05:30:11.078Z",
+              "status": 200,
+              "passed": true,
+              "cache": null,
+              "age": null,
+              "noindex": "noindex, nofollow",
+              "sha256": "93a75adc78b58454fc140d6c36483f03b9de988f2bfd743c57c292d5039d90af"
+            },
+            "bytesStillAvailable": true
+          },
+          "frozenPreserved": true,
+          "newFixed": {
+            "url": "/media/withdrawn-fixture.png",
+            "expected": 404,
+            "observedAt": "2026-11-11T05:30:11.079Z",
+            "status": 404,
+            "passed": true,
+            "cache": null,
+            "age": null,
+            "noindex": "noindex, nofollow",
+            "sha256": "ecc403bcec3477156c94fd29b7b5a0db7cbcf51823529a01d10316170319568e"
+          },
+          "chrome": {
+            "width": 1,
+            "height": 1
+          },
+          "passed": false
+        },
+        "finalCacheObservation": {
+          "checkedAt": "2026-11-11T05:37:38.309Z",
+          "readOnly": true,
+          "alias": "https://withdrawal-drill-mwbohuxp.jnqjourney-static-recovery-candidate.pages.dev",
+          "rows": [
+            {
+              "url": "/spot/drill-withdrawn",
+              "status": 200,
+              "age": "526",
+              "cache": "HIT",
+              "cacheControl": "no-store",
+              "elapsedMs": 526207
+            },
+            {
+              "url": "/public-data/spots/drill-withdrawn.json",
+              "status": 200,
+              "age": "526",
+              "cache": "HIT",
+              "cacheControl": "no-store",
+              "elapsedMs": 526208
+            },
+            {
+              "url": "/media/withdrawn-fixture.png",
+              "status": 200,
+              "age": "526",
+              "cache": "HIT",
+              "cacheControl": "no-store",
+              "elapsedMs": 526209
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "boundary": {
+    "realMediaUploads": 0,
+    "syntheticPreviewDeployments": 4,
+    "productionDeployments": 0,
+    "formalDatabaseWrites": 0,
+    "formalR2Writes": 0,
+    "dnsChanges": 0,
+    "wafChanges": 0
+  },
+  "localValidation": {
+    "targetedTestsPassed": 7,
+    "targetedTestsFailed": 0,
+    "realSiteBuildRun": false,
+    "finalPreviewDeployed": false
+  }
+}
