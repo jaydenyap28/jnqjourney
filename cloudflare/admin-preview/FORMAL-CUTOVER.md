@@ -1,5 +1,7 @@
 # 正式后台与完整静态发布准备
 
+最新状态见 [正式 Admin 只读部署](FORMAL-ADMIN-READONLY-2026-11-12.md)。独立 Admin 前端和正式只读 Edge 已部署，写入、上传、发布保持 OFF。正式管理员浏览器登录与会话验收等待用户本人完成。
+
 正式站基线为 Pages deployment `333e51aa-506e-4a66-a7c6-4f28e3e890a1`。本轮允许正式来源只读和 noindex Preview。现有隔离后台及 Windows 任务继续独立运行。正式写入、正式发布、DNS 和旧入口开关都需要各自批准。
 
 ## 本轮验收
@@ -74,7 +76,7 @@ node scripts/cloudflare/formal-postgres-backup.mjs --restore vrufunuomioczocdsoe
 
 - 已完成 [变更版](https://5426cbf4.jnqjourney-static-recovery-candidate.pages.dev) 与 [撤销版](https://ced4e3e3.jnqjourney-static-recovery-candidate.pages.dev)，均为 1,349 路由、582 个公开 Spot、6 篇 Note、7 篇 Guide、0 Functions、全站 noindex。Chrome 在原模板看到三项改动，测试图返回 200 并解码为 96×64。撤销后内容复原，测试图在新固定地址及 [分支别名](https://full-drill-nov12-merge.jnqjourney-static-recovery-candidate.pages.dev) 均返回 404。旧固定 Preview 保留为历史部署。三条英文路由因译文待复核暂时退出 sitemap，撤销后 sitemap 恢复 704 条。正式线上回执和 Deployment ID 保持原值。[本次脱敏证据](formal-cutover-rehearsal-evidence.json)
 - 演练使用通过验收的完整公开快照。三项修改按原记录 ID 和版本哈希覆盖，其他记录保持原样。正式预览比较完整集合，任何记录移除都会生成本机 `withdrawal-review.json`，需要额外批准其精确差异摘要 `JNQ_FORMAL_APPROVED_REMOVAL_SHA256`。浏览器选中少量记录的结果不能作为完整站点输入。
-- 正式 Admin 前端使用原隔离编辑界面，以 `--formal-read-only vrufunuomioczocdsoer` 在本机生成只读包。只使用项目 anon key 和单独的 Edge 入口。正式私有运行目录已有独立凭据、日志和队列回执目录。正式 Edge、远端队列和 Windows 任务尚未部署。编辑、上传和发布端点仍需接通正式权威来源并验收。
+- 正式 Admin 前端使用原隔离编辑界面，以 `--formal-read-only vrufunuomioczocdsoer` 生成只读包并部署至独立项目的 `read-only` 分支。只使用项目 anon key 和正式只读 Edge。正式私有运行目录已有独立凭据、日志和队列回执目录；正式任务以 Disabled 注册，远端队列未创建。编辑、上传和发布端点仍需接通正式权威来源并另行批准验收。
 - 正式 Auth 管理接口确认了用户指定的运营账号，邮箱已验证且账号有效。分别生成 Editor 和 Publisher 的 UUID 清单并写入本机正式配置，两项仍为禁用。身份原值只保留在私有目录。正式 Admin 部署后仍需用真实账号验证登录与两个独立的服务端权限。
 - 正式发布前核对当前 canonical、域名及部署环境，验证批准的完整修订、撤销差异、noindex Preview、当前权威资格和回退包。正式上传后核对 canonical 指向新 Deployment、线上回执匹配、首页及变更链接可用，并确认仍为 0 Functions。任务仅在全部通过后记为成功。
 - 故障时停用并停止 `JnQ Journey Production Publisher`，关闭已获批准启用的 Edge 写入与队列领取，保留不明提交回执。先确认 Cloudflare Deployment ID。回退前核对当前撤销清单，保留私有权限，必要时使用维护页。待正式权限另行审批，再按上方 SQL 与依赖检查收紧匿名表读取和 Storage 访问。旧 r2.dev 另行审批。

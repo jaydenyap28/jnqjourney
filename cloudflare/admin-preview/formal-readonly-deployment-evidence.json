@@ -1,0 +1,84 @@
+{
+  "result": "FORMAL_ADMIN_READONLY_DEPLOYED_LOGIN_PENDING",
+  "checkedAt": "2026-11-12T12:12:22.086Z",
+  "edge": {
+    "projectRef": "vrufunuomioczocdsoer",
+    "function": "jnq-admin-formal",
+    "id": "5c6d8e41-dae4-4eb8-a5c1-379c5675e193",
+    "version": 1,
+    "verifyJwt": true,
+    "adminOrigin": "https://read-only.jnqjourney-admin-formal.pages.dev",
+    "sourceSha256": "9b4f4ee4d751f2653f1fb024556dc284a56315732c2140f8b2705be038eb8461",
+    "writesEnabled": false,
+    "publishEnabled": false,
+    "deployedAt": "2026-11-12T11:55:36.481Z"
+  },
+  "pages": {
+    "url": "https://read-only.jnqjourney-admin-formal.pages.dev/admin/login",
+    "fixedUrl": "https://d396aa13.jnqjourney-admin-formal.pages.dev",
+    "deploymentId": "d396aa13-7cad-4fc9-9da1-059e117f0e56",
+    "project": "jnqjourney-admin-formal",
+    "branch": "read-only",
+    "environment": "preview",
+    "noindex": true,
+    "functions": 0,
+    "formalDataReadOnly": true,
+    "writesEnabled": false,
+    "publishEnabled": false
+  },
+  "denials": [
+    {
+      "kind": "anonymous",
+      "status": 401,
+      "contentReturned": false
+    },
+    {
+      "kind": "invalid-token",
+      "status": 401,
+      "contentReturned": false
+    },
+    {
+      "kind": "wrong-origin",
+      "status": 403,
+      "contentReturned": false
+    }
+  ],
+  "task": {
+    "state": "Disabled",
+    "lastRunTime": "1999-11-30T00:00:00.0000000+08:00",
+    "started": false,
+    "action": "Read-only disabled-state guard",
+    "taskName": "JnQ Journey Production Publisher"
+  },
+  "operatorAllowlistConfirmed": true,
+  "writeFlags": {
+    "editor": false,
+    "upload": false,
+    "publisher": false
+  },
+  "formalOperatorBrowserLogin": "PENDING_USER_LOGIN",
+  "businessReads": "PENDING_USER_LOGIN",
+  "ordinaryFormalAccount": "NOT_TESTED_NO_SEPARATE_APPROVED_ACCOUNT",
+  "logoutReplay": "PENDING_USER_LOGIN",
+  "sourceContracts": {
+    "spotPrimaryKey": "bigint identity",
+    "spotVersion": "nullable updated_at",
+    "storageBucket": "location-images",
+    "notesGuidePointers": "immutable version and latest pointer",
+    "isolatedIdAllocatorReusableInProduction": false,
+    "isolatedUploadBucketReusableInProduction": false
+  },
+  "offsiteBackup": {
+    "state": "PENDING_DESTINATION_APPROVAL",
+    "mountedDriveLetters": [
+      "X:",
+      "Y:",
+      "Z:"
+    ],
+    "copied": false
+  },
+  "publicSite": {
+    "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "homeStatus": 200
+  }
+}

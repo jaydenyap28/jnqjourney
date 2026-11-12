@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.93.3'
 import { SPOT_FIELDS } from '../spot-loop/spot-contract.mjs'
 import { createFormalAdminRead, FORMAL_PROJECT, FORMAL_STORAGE_BUCKET } from './formal-admin-read.mjs'
+import { verifiedFormalIdentity } from './formal-session.mjs'
 
 const origin = `https://${FORMAL_PROJECT}.supabase.co`
 const readEnv = (name: string) => Deno.env.get(name) || ''
@@ -32,7 +33,7 @@ async function collection(name: 'notes' | 'guides') {
   return rows
 }
 
-async function load(route: string, { id, slug }: { id: number | null, slug: string | null }) {
+async function load(route: string, { id, slug, resource }: { id: number | null, slug: string | null, resource?: string }) {
   if (route === '/admin/notes') return { notes: await collection('notes') }
   if (route === '/admin/guides') return { guides: await collection('guides') }
   if (route === '/admin/location-slugs') {
@@ -49,6 +50,16 @@ async function load(route: string, { id, slug }: { id: number | null, slug: stri
     return { data }
   }
   if (slug !== null) return null
+  if (resource === 'affiliate-links') {
+    const links: unknown[] = []
+    for (let offset = 0; offset < 10000; offset += 200) {
+      const { data, error } = await db.from('affiliate_links').select('*').order('id').range(offset, offset + 199)
+      if (error || !data) throw Error('FORMAL_AFFILIATES_NOT_READABLE')
+      links.push(...data)
+      if (data.length < 200) return { data: links, hasMore: false }
+    }
+    throw Error('FORMAL_AFFILIATES_LIMIT')
+  }
   const fields = SPOT_FIELDS.join(',') + ',regions:region_id(id,name,name_cn,country,parent_id)'
   if (id !== null) {
     const { data, error } = await db.from('locations').select(fields).eq('id', id).maybeSingle()
@@ -71,8 +82,10 @@ Deno.serve(createFormalAdminRead({
   editors: ids('JNQ_FORMAL_EDITOR_IDS'),
   publishers: ids('JNQ_FORMAL_PUBLISHER_IDS'),
   async getIdentity(token: string) {
-    const { data, error } = await auth.getUser(token)
-    return error || data.user?.role !== 'authenticated' || data.user.is_anonymous ? null : data.user.id
+    return verifiedFormalIdentity(token, async (current: string) => {
+      const { data, error } = await auth.getUser(current)
+      return error ? null : data.user
+    })
   },
   load,
 }))

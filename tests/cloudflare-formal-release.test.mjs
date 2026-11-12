@@ -4,6 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { createFormalAdminRead, FORMAL_PROJECT } from '../cloudflare/admin-preview/formal-admin-read.mjs'
+import { verifiedFormalIdentity } from '../cloudflare/admin-preview/formal-session.mjs'
 import { formalReadTransport } from '../scripts/cloudflare/formal-read-source.mjs'
 import { rewriteApprovedAdditionValues } from '../scripts/cloudflare/full-release-media.mjs'
 import { renderedStaticMedia } from '../scripts/cloudflare/recovery-media-staging.mjs'
@@ -38,6 +39,41 @@ test('production editor and publication capabilities use only verified user iden
   assert.equal(result.status, 200)
   assert.match(result.headers.get('cache-control'), /no-store/)
   assert.deepEqual(calls, [['/admin/locations', { id: 582, slug: null }]])
+})
+
+test('formal requests require a live Auth lookup and a project-bound session token', async () => {
+  const claims = { iss: `https://${FORMAL_PROJECT}.supabase.co/auth/v1`, sub: editor,
+    session_id: publisher, role: 'authenticated', aud: 'authenticated', exp: Math.floor(Date.now() / 1000) + 300 }
+  const token = value => 'header.' + Buffer.from(JSON.stringify(value)).toString('base64url') + '.signature'
+  let active = true, calls = 0
+  const lookup = async () => {
+    calls++
+    return active ? { id: editor, role: 'authenticated', email_confirmed_at: '2026-01-01' } : null
+  }
+  assert.equal(await verifiedFormalIdentity(token(claims), lookup), editor)
+  active = false
+  assert.equal(await verifiedFormalIdentity(token(claims), lookup), null)
+  assert.equal(calls, 2, 'Auth identity must never be cached between requests')
+  for (const change of [{ session_id: null }, { session_id: '00000000-0000-0000-0000-000000000000' },
+    { iss: 'https://rnamstwwbzknwbjwdgrf.supabase.co/auth/v1' }, { exp: 1 }, { role: 'service_role' }]) {
+    assert.equal(await verifiedFormalIdentity(token({ ...claims, ...change }), lookup), null)
+  }
+  assert.equal(calls, 2)
+})
+
+test('formal affiliate reads cannot be confused with location records or arbitrary resources', async () => {
+  const calls = []
+  const handler = createFormalAdminRead({ projectRef: FORMAL_PROJECT, origin, editors: [editor], publishers: [],
+    getIdentity: async () => editor,
+    load: async (route, query) => { calls.push({ route, query }); return { data: [], hasMore: false } },
+  })
+  const result = await handler(request('/admin/locations?resource=affiliate-links', editor))
+  assert.equal(result.status, 200)
+  assert.equal(calls[0].query.resource, 'affiliate-links')
+  for (const route of ['/admin/locations?resource=users', '/admin/locations?resource=affiliate-links&id=1']) {
+    assert.equal((await handler(request(route, editor))).status, 400)
+  }
+  assert.equal(calls.length, 1)
 })
 
 test('formal source is authenticated, non-redirecting and rejects isolated or arbitrary resources', async () => {

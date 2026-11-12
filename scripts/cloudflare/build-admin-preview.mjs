@@ -63,6 +63,7 @@ if (formal) {
     return Response.json({ error: '正式资料只读验收，写入尚未启用。' }, { status: 405 })
   }
   const { data } = await supabase.auth.getSession()`)
+  await replace('components/AdminAuthShell.tsx', 'await supabase.auth.signOut()', "await supabase.auth.signOut({ scope: 'local' })")
 }
 await write('lib/admin-preview-config.ts', `export const ADMIN_API = ${JSON.stringify(SUPABASE_ORIGIN + '/functions/v1/' + FUNCTION)}\n`)
 await write('types/admin-preview.d.ts', 'interface Window { gtag?: (...args: unknown[]) => void }\n')

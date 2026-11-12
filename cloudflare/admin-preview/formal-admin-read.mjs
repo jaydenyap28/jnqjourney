@@ -1,4 +1,4 @@
-// Read boundary for the future standalone formal Admin. No deployment or writes.
+// Server-side read boundary for the standalone formal Admin.
 export const FORMAL_PROJECT = 'vrufunuomioczocdsoer'
 export const FORMAL_ADMIN_API = 'jnq-admin-formal'
 export const FORMAL_STORAGE_BUCKET = 'location-images'
@@ -25,7 +25,7 @@ export function createFormalAdminRead({ projectRef, origin, editors, publishers,
       ...headers, 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization',
     } })
     const token = request.headers.get('authorization')?.match(/^Bearer ([\w.-]+)$/i)?.[1]
-    if (!token) return json({ error: '请先登录。' }, 401)
+    if (!token || token.length > 8192) return json({ error: '请先登录。' }, 401)
     try {
       // Only the project Auth server can assert a user ID. Browser metadata is ignored.
       const id = await getIdentity(token)
@@ -43,7 +43,12 @@ export function createFormalAdminRead({ projectRef, origin, editors, publishers,
       }
       const recordSlug = url.searchParams.get('slug')
       if (recordSlug !== null && (recordSlug.length > 120 || !slug.test(recordSlug))) return json({ error: '别名无效。' }, 400)
-      const result = await load(route, { id: recordId === null ? null : Number(recordId), slug: recordSlug })
+      const resource = url.searchParams.get('resource')
+      if (resource !== null && (route !== '/admin/locations' || resource !== 'affiliate-links' || recordId !== null)) {
+        return json({ error: '读取资源无效。' }, 400)
+      }
+      const result = await load(route, { id: recordId === null ? null : Number(recordId), slug: recordSlug,
+        ...(resource === null ? {} : { resource }) })
       return result === null ? json({ error: '资料不存在。' }, 404) : json(result)
     } catch { return json({ error: '正式资料暂不可用。' }, 503) }
   }
