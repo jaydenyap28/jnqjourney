@@ -65,6 +65,7 @@ if (formal) {
     </aside>
   }`)
   await copy(adapter + 'formal-readonly-check.tsx', 'app/readonly-check/page.tsx')
+  await copy(adapter + 'formal-readonly-result.mjs', 'lib/formal-readonly-result.mjs')
   await replace('lib/admin-fetch.ts', '  const { data } = await supabase.auth.getSession()', `  if (init.method && init.method.toUpperCase() !== 'GET') {
     return Response.json({ error: '正式资料只读验收，写入尚未启用。' }, { status: 405 })
   }

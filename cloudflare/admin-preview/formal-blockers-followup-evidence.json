@@ -1,0 +1,44 @@
+{
+  "result": "WAITING_FOR_MANUAL_ACCEPTANCE_AND_APPROVED_PRIVATE_NAS_TARGET",
+  "readonlyCheck": {
+    "url": "https://read-only.jnqjourney-admin-formal.pages.dev/readonly-check",
+    "deploymentId": "f21ad2ee-b1ef-4e58-9776-a36b74a5a667",
+    "environment": "preview",
+    "branch": "read-only",
+    "noindex": true,
+    "pagesFunctions": 0,
+    "unknownErrorsSanitized": true,
+    "tokenExpiryCheckedBeforeAndAfterReplay": true,
+    "realManualResultReceived": false,
+    "realSessionAcceptance": "PENDING",
+    "computerControlAttempted": false
+  },
+  "nas": {
+    "effectivePrivateAccess": "UNKNOWN_PENDING_USER_CONFIRMATION_AND_ACCESS_TESTS",
+    "sidMappingRequiredForNas": false,
+    "nasPermissionChanged": false,
+    "newPrivateTargetApproved": false,
+    "archiveCreatedThisRound": false,
+    "encryptionExecutedThisRound": false,
+    "nasTransferThisRound": false,
+    "independentDeviceRestore": "PENDING"
+  },
+  "localValidation": {
+    "readonlyAndDocumentTestsPassed": 10,
+    "nasPrivacyAndCleanupSyntheticAssertionsPassed": 17,
+    "nasTestsPerformRemoteIo": false,
+    "backupScriptSyntax": "PASS",
+    "smallReadonlyAdminBuildAndTypes": "PASS"
+  },
+  "formalBoundaries": {
+    "publicProductionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "publicProductionFingerprintUnchanged": true,
+    "readonlyEdgeVersion": 2,
+    "formalDocumentPlanDeployed": false,
+    "writesEnabled": false,
+    "uploadsEnabled": false,
+    "publisherEnabled": false,
+    "newDatabaseDump": false,
+    "historicalMediaScan": false
+  }
+}

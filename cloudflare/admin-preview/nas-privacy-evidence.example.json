@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "source": "NAS_UI_AND_ACCESS_TESTS",
+  "userApproved": false,
+  "target": "W:\\REPLACE_WITH_APPROVED_PRIVATE_TARGET",
+  "share": "\\\\REPLACE_NAS\\REPLACE_PRIVATE_SHARE",
+  "permissionModel": "weline-personal-space",
+  "account": "REPLACE_LOCALLY_DO_NOT_COMMIT_REAL_ACCOUNT",
+  "onlyNamedAccountHasAccess": false,
+  "publicAndGroupSpaceExcluded": false,
+  "sharingLinksDisabled": false,
+  "guestAccess": "UNKNOWN",
+  "nonOwnerAccess": "UNKNOWN",
+  "ownerReadWrite": "UNKNOWN",
+  "confirmedAt": null
+}

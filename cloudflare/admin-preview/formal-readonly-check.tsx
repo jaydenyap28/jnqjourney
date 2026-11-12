@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { ADMIN_API } from '@/lib/admin-preview-config'
+import { safeReadonlyFailure, requireUnexpiredReplayWindow } from '@/lib/formal-readonly-result.mjs'
 
 // Runs inside the existing signed-in application. Tokens never enter a URL,
 // receipt, console, download, or test-tool output.
@@ -54,7 +55,7 @@ export default function FormalReadonlyCheck() {
       }
       add('PASS 拒绝请求前后三类资料完全一致')
       setReadyToLogout(true)
-    } catch (error) { add('FAIL ' + (error instanceof Error ? error.message : '核验失败')) }
+    } catch (error) { add('FAIL ' + safeReadonlyFailure(error)) }
     finally { setRunning(false) }
   }
   async function logoutAndReplay() {
@@ -64,17 +65,20 @@ export default function FormalReadonlyCheck() {
       const { data } = await supabase.auth.getSession()
       if (!data.session || (data.session.expires_at || 0) * 1000 < Date.now() + 30000) throw Error('需有仍有效的会话，避免将过期误认为退出保护。')
       token = data.session.access_token
+      const expiresAtMs = (data.session.expires_at || 0) * 1000
       const { error } = await supabase.auth.signOut({ scope: 'local' })
       if (error) throw Error('退出服务端会话失败。')
+      requireUnexpiredReplayWindow(expiresAtMs)
       const response = await fetch(ADMIN_API + '/admin/locations', {
         headers: { Authorization: 'Bearer ' + token }, cache: 'no-store', redirect: 'error',
         credentials: 'omit', signal: AbortSignal.timeout(45000),
       })
       await response.body?.cancel()
+      requireUnexpiredReplayWindow(expiresAtMs)
       if (response.status !== 401) throw Error('旧会话重放未被拒绝，HTTP ' + response.status)
       add('PASS 登出成功；未到期旧会话重放 HTTP 401')
       setReadyToLogout(false)
-    } catch (error) { add('FAIL ' + (error instanceof Error ? error.message : '退出核验失败')) }
+    } catch (error) { add('FAIL ' + safeReadonlyFailure(error)) }
     finally { token = ''; setRunning(false) }
   }
   return <main className="mx-auto max-w-4xl space-y-5 p-8 text-white">

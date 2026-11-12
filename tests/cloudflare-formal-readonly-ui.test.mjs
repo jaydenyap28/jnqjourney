@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { freezeFormalEditor } from '../scripts/cloudflare/formal-readonly-markup.mjs'
 import { planFormalSpotMutation, assertFormalAuthorityVersion } from '../cloudflare/admin-preview/formal-write-plan.mjs'
+import { safeReadonlyFailure, requireUnexpiredReplayWindow } from '../cloudflare/admin-preview/formal-readonly-result.mjs'
 
 test('readonly editor disables mutation and preserves navigation, filters and source handlers', () => {
   const source = `<><Input value={form.title} onChange={edit} /><Input onChange={e => setSearchQuery(e.target.value)} />
@@ -47,4 +48,20 @@ test('Note/Guide authority preparations reject absent or stale versions', () => 
   assert.throws(() => assertFormalAuthorityVersion({}, undefined))
   assert.throws(() => assertFormalAuthorityVersion({ updatedAt: '2026-11-12T00:00:00Z' }, null))
   assert.equal(assertFormalAuthorityVersion({ updatedAt: null }, null), true)
+})
+
+test('manual receipt never echoes unexpected SDK/JSON errors containing private data', () => {
+  const privateText='synthetic.private@example.invalid token=synthetic-secret database-private-row'
+  assert.ok(!safeReadonlyFailure(new Error(privateText)).includes(privateText))
+  assert.ok(!safeReadonlyFailure(new SyntaxError('Unexpected token ' + privateText)).includes(privateText))
+  assert.equal(safeReadonlyFailure(new Error('旧会话重放未被拒绝，HTTP 200')), '旧会话重放未被拒绝，HTTP 200')
+  assert.equal(safeReadonlyFailure(new Error('资料读取或数量不符：notes')), '资料读取或数量不符：notes')
+  assert.ok(!safeReadonlyFailure(new Error('资料读取或数量不符：' + privateText)).includes(privateText))
+})
+
+test('expired-during-logout or delayed replay responses never count as logout protection PASS', () => {
+  requireUnexpiredReplayWindow(2000, 1000)
+  assert.throws(() => requireUnexpiredReplayWindow(2000, 2000))
+  assert.throws(() => requireUnexpiredReplayWindow(2000, 3000))
+  assert.throws(() => requireUnexpiredReplayWindow(NaN, 1000))
 })
