@@ -1,0 +1,176 @@
+{
+  "status": "PRODUCTION_CUTOVER_BLOCKED",
+  "postgres": {
+    "officialProjectRef": "vrufunuomioczocdsoer",
+    "supabaseCli": "2.116.0",
+    "pgDump": "17.11",
+    "privateConnectionProvided": false,
+    "formalLogicalBackup": false,
+    "formalRestore": false,
+    "offMachineEncryptedCopy": false,
+    "cloudPostgresDumpStarted": false,
+    "autoReviewRejectedUnconfiguredInvocation": true
+  },
+  "operator": {
+    "editorConfirmed": false,
+    "publisherConfirmed": false,
+    "allowlistsEnabled": false
+  },
+  "rehearsal": {
+    "base": "full-review-20261112-b",
+    "productionWrites": 0,
+    "identityRemovals": 0,
+    "identityAdditions": 0,
+    "foreignExchangePinnedToBaseline": true,
+    "changed": {
+      "phase": "changed",
+      "fullRoutesUnchanged": 1349,
+      "counts": {
+        "totalSpots": 586,
+        "publicSpots": 582,
+        "excludedSpots": 4,
+        "regions": 58,
+        "guides": 7,
+        "notes": 6,
+        "packages": 3,
+        "options": 12,
+        "localizations": 402,
+        "affiliates": 360
+      },
+      "revision": "c406e177cf8931bdbe548c508702b2b20d39c0d49296c2ee2e4f25667be51edd",
+      "deploymentId": "5426cbf4-d46e-4455-a66a-2822d94db8f0",
+      "url": "https://5426cbf4.jnqjourney-static-recovery-candidate.pages.dev",
+      "branchAliasMatches": true,
+      "samples": {
+        "spot": {
+          "route": "/spot/turtle-alley-636",
+          "markerVisibleInHtml": true
+        },
+        "note": {
+          "route": "/notes/malaysia-turtle-night-terengganu",
+          "markerVisibleInHtml": true
+        },
+        "guide": {
+          "route": "/guide/malaysia-langkawi-5d4n",
+          "markerVisibleInHtml": true
+        }
+      },
+      "imageStatus": 200,
+      "sitemapEntries": 701,
+      "translationReviewRoutes": [
+        "/en/guide/malaysia-langkawi-5d4n",
+        "/en/notes",
+        "/en/notes/malaysia-turtle-night-terengganu"
+      ],
+      "browser": [
+        {
+          "kind": "spot",
+          "visibleMarker": true,
+          "testImageDecoded": false
+        },
+        {
+          "kind": "note",
+          "visibleMarker": true,
+          "testImageDecoded": true
+        },
+        {
+          "kind": "guide",
+          "visibleMarker": true,
+          "testImageDecoded": false
+        }
+      ],
+      "localBuildMs": 85646,
+      "files": 8137,
+      "cloudflareUploaded": 2163,
+      "cloudflareReused": 5972,
+      "functions": 0
+    },
+    "reverted": {
+      "phase": "reverted",
+      "fullRoutesUnchanged": 1349,
+      "counts": {
+        "totalSpots": 586,
+        "publicSpots": 582,
+        "excludedSpots": 4,
+        "regions": 58,
+        "guides": 7,
+        "notes": 6,
+        "packages": 3,
+        "options": 12,
+        "localizations": 402,
+        "affiliates": 360
+      },
+      "revision": "76d6811e4743ffd555192aefdd87ec76c59f480ff5ed90ed35547b6a4ca17a06",
+      "deploymentId": "ced4e3e3-dc4b-4348-b506-28389d911706",
+      "url": "https://ced4e3e3.jnqjourney-static-recovery-candidate.pages.dev",
+      "branchAliasMatches": true,
+      "samples": {
+        "spot": {
+          "route": "/spot/turtle-alley-636",
+          "markerVisibleInHtml": false
+        },
+        "note": {
+          "route": "/notes/malaysia-turtle-night-terengganu",
+          "markerVisibleInHtml": false
+        },
+        "guide": {
+          "route": "/guide/malaysia-langkawi-5d4n",
+          "markerVisibleInHtml": false
+        }
+      },
+      "imageStatus": 404,
+      "sitemapEntries": 704,
+      "translationReviewRoutes": [],
+      "browser": [
+        {
+          "kind": "spot",
+          "visibleMarker": false,
+          "testImageDecoded": false
+        },
+        {
+          "kind": "note",
+          "visibleMarker": false,
+          "testImageDecoded": false
+        },
+        {
+          "kind": "guide",
+          "visibleMarker": false,
+          "testImageDecoded": false
+        }
+      ],
+      "localBuildMs": 59190,
+      "files": 8136,
+      "cloudflareUploaded": 2054,
+      "cloudflareReused": 6080,
+      "functions": 0
+    },
+    "branches": [
+      "full-drill-nov12-merge"
+    ],
+    "unchangedMediaDownloaded": 0
+  },
+  "formalAdmin": {
+    "formalFrontendBuilt": true,
+    "frontendEntries": 302,
+    "formalEdgeBundleChecked": true,
+    "formalEdgeDeployed": false,
+    "formalWritesEnabled": false,
+    "formalRemoteQueueActive": false,
+    "formalRunnerKeyPrepared": true,
+    "formalLogsPrepared": true,
+    "formalTaskRegistered": false,
+    "isolatedTaskRunning": true,
+    "nonSqlConfigurationSha256": "c27b0fa1fc95eec75891988b9e1a5e60a84120356022955e4d53518287e16e02",
+    "formalEdgeFunctions": 0,
+    "fullAuthServerConfig": false
+  },
+  "production": {
+    "checkedAt": "2026-11-12T01:55:26.932Z",
+    "productionHttp": 200,
+    "productionReceiptUnchanged": true,
+    "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "branchAliasImageHttp": 404,
+    "branchAliasReceiptMatched": true
+  },
+  "targetedTests": 24
+}

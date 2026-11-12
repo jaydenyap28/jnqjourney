@@ -2,13 +2,14 @@
 import assert from 'node:assert/strict'
 import { execFile, spawn } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, readdir, realpath, symlink, writeFile, open, unlink } from 'node:fs/promises'
+import { lstat, mkdir, readFile, readdir, realpath, symlink, writeFile, open, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { ACCOUNT, privateWranglerToken } from './candidate-cloudflare.mjs'
 import { connectFormalReadSource, FORMAL_REF } from './formal-read-source.mjs'
-import { BRANCH, captureRecoverySources, fingerprint, PROJECT, RECOVERY, RECOVERY_BASE, SOURCE, recoveryContentRevision } from './recovery-sources.mjs'
+import { BRANCH, captureRecoverySources, fingerprint, PROJECT, RECOVERY, RECOVERY_BASE, SOURCE } from './recovery-sources.mjs'
 import { budgetBlockedUntil } from './publication-budget.mjs'
+import { loadReleaseSnapshot, prepareRehearsal, publicIdentityDelta, requireWithdrawalApproval, verifyRehearsal } from './full-release-rehearsal.mjs'
 
 const acceptedProduction = '333e51aa-506e-4a66-a7c6-4f28e3e890a1'
 const run = promisify(execFile)
@@ -17,12 +18,12 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex')
 const hashPattern = /^[a-f0-9]{64}$/
 const mode = process.argv[2]
 const workspace = path.resolve(process.env.JNQ_RECOVERY_WORKSPACE || '.')
-const manifestFile = path.join(RECOVERY, 'source-manifest.json')
 const output = path.join(RECOVERY, 'deploy')
 
 async function checkWorkspace() {
   assert.deepEqual(process.argv.slice(3), [FORMAL_REF], 'EXACT_FORMAL_REF_REQUIRED')
-  assert.ok(['--capture', '--build', '--resume-export', '--preview', '--verify-preview', '--check-operator'].includes(mode),
+  assert.ok(['--capture', '--build', '--resume-export', '--preview', '--verify-preview', '--check-operator', '--prepare-operators',
+    '--prepare-rehearsal'].includes(mode),
     'FULL_RELEASE_PREVIEW_COMMAND_REQUIRED')
   assert.equal((await run('git', ['branch', '--show-current'], { windowsHide: true })).stdout.trim(), BRANCH)
   assert.notEqual(RECOVERY, RECOVERY_BASE)
@@ -55,17 +56,9 @@ async function runStep(script, env, args = []) {
 }
 
 async function verifyCapturedFiles() {
-  const manifest = await json(manifestFile)
-  assert.equal(manifest.readMode, 'authenticated-server')
+  const { manifest, feeds } = await loadReleaseSnapshot(RECOVERY)
+  assert.ok(['authenticated-server', 'isolated-rehearsal'].includes(manifest.readMode))
   assert.equal(manifest.productionWrites, 0)
-  const feeds = {}
-  for (const [name, item] of Object.entries(manifest.files)) {
-    assert.match(name, /^[a-z-]+\.json$/)
-    const bytes = await readFile(path.join(RECOVERY, 'sources', name))
-    assert.ok(bytes.length === item.bytes && sha(bytes) === item.sha256, 'CAPTURE_FILE_DIGEST_MISMATCH')
-    feeds[name] = JSON.parse(bytes)
-  }
-  assert.equal(recoveryContentRevision(feeds), manifest.contentRevision, 'APPROVED_CONTENT_REVISION_MISMATCH')
   const approved = process.env.JNQ_FORMAL_APPROVED_REVISION
   if (approved) {
     assert.match(approved, hashPattern)
@@ -74,11 +67,50 @@ async function verifyCapturedFiles() {
   const db = feeds['database.json']
   assert.equal(db.projectRef, FORMAL_REF)
   assert.ok(db.locations.every(row => row.id < 95000 || row.id > 95099), 'ISOLATED_FIXTURE_IN_FORMAL_BUILD')
-  return manifest
+  if (manifest.readMode === 'isolated-rehearsal') {
+    return { manifest, ...await verifyRehearsal(workspace, RECOVERY, manifest, feeds) }
+  }
+  const previous = process.env.JNQ_FORMAL_BASELINE_RUN || 'full-review-20261112-b'
+  assert.match(previous, /^full-review-[a-z0-9-]+$/)
+  const baseline = path.join(workspace, 'runs', previous)
+  const snapshot = await loadReleaseSnapshot(baseline)
+  const receipt = await json(path.join(baseline, 'deployment.json'))
+  assert.equal(snapshot.manifest.readMode, 'authenticated-server')
+  assert.ok(receipt.success && receipt.environment === 'preview' && receipt.revision === snapshot.manifest.contentRevision)
+  const delta = publicIdentityDelta(snapshot.feeds, feeds)
+  if (Object.values(delta.removed).some(rows => rows.length)) {
+    await writeFile(path.join(RECOVERY, 'withdrawal-review.json'), JSON.stringify({
+      baseline: snapshot.manifest.contentRevision, proposed: manifest.contentRevision, ...delta,
+      removalDigest: fingerprint(delta.removed),
+    }, null, 2))
+  }
+  requireWithdrawalApproval(snapshot.feeds, feeds, process.env.JNQ_FORMAL_APPROVED_REMOVAL_SHA256)
+  return { manifest, authority: RECOVERY, branch: 'full-review-' + manifest.contentRevision.slice(0, 16) }
+}
+
+async function prepareOperators() {
+  const root = path.join(workspace, 'production-publisher')
+  const file = path.join(root, 'operator-confirmations.json')
+  const stat = await lstat(file)
+  assert.ok(stat.isFile() && !stat.isSymbolicLink() && stat.size <= 4096 && await realpath(file) === file)
+  const { editors, publishers } = await json(file)
+  assert.ok([editors, publishers].every(group => Array.isArray(group) && group.length > 0 && group.length <= 10 &&
+    group.every(account => typeof account === 'string')))
+  const settings = await json(path.join(root, 'settings.json'))
+  assert.ok(settings.projectRef === FORMAL_REF && settings.enabled === false)
+  const source = await connectFormalReadSource()
+  const ids = new Map()
+  for (const account of new Set([...editors, ...publishers])) ids.set(account, await source.confirmedOperator(account))
+  const roles = { editorAuthIds: [...new Set(editors.map(account => ids.get(account)))],
+    publisherAuthIds: [...new Set(publishers.map(account => ids.get(account)))] }
+  await writeFile(path.join(root, 'verified-operator-allowlists.json'), JSON.stringify({
+    projectRef: FORMAL_REF, verifiedAt: new Date().toISOString(), enabled: false, ...roles,
+  }, null, 2), { flag: 'wx' })
+  return { editorsVerified: roles.editorAuthIds.length, publishersVerified: roles.publisherAuthIds.length, enabled: false }
 }
 
 async function build(mediaRoot, { resume = false } = {}) {
-  const manifest = await verifyCapturedFiles()
+  const { manifest } = await verifyCapturedFiles()
   const env = {
     ...process.env, JNQ_RECOVERY_FINAL_MEDIA: '1', JNQ_RECOVERY_REUSE_MEDIA: '1',
     JNQ_RECOVERY_VERIFIED_MEDIA: mediaRoot,
@@ -147,7 +179,7 @@ async function buildWithBudget(mediaRoot, resume) {
 }
 
 async function preview({ verifyOnly }) {
-  const manifest = await verifyCapturedFiles()
+  const { manifest, authority, branch } = await verifyCapturedFiles()
   const verified = await json(path.join(RECOVERY, 'verification.json'))
   const media = await json(path.join(RECOVERY, 'media-approval-gate.json'))
   const body = await readFile(path.join(output, '_publication.json'))
@@ -176,14 +208,16 @@ async function preview({ verifyOnly }) {
   }
   const before = boundary(await get())
   const revision = manifest.contentRevision
-  const branch = 'full-review-' + revision.slice(0, 16)
   assert.notEqual(branch, before.branch, 'PRODUCTION_BRANCH_FORBIDDEN')
   const commit = (await run('git', ['rev-parse', 'HEAD'], { windowsHide: true })).stdout.trim()
   const journal = path.join(RECOVERY, 'deployment.json')
+  const checkAuthority = async () => captureRecoverySources({
+    privateSource: await connectFormalReadSource(), verifyOnly: true, verifySourcesFrom: authority,
+    preserveCapturedRates: manifest.readMode === 'isolated-rehearsal',
+  })
   let receipt
   if (!verifyOnly) {
-    const source = await connectFormalReadSource()
-    await captureRecoverySources({ privateSource: source, verifyOnly: true })
+    await checkAuthority()
     receipt = { project: PROJECT, branch, environment: 'preview', revision, commit,
       startedAt: new Date().toISOString(), before, success: false }
     await writeFile(journal, JSON.stringify(receipt, null, 2), { flag: 'wx' })
@@ -215,7 +249,7 @@ async function preview({ verifyOnly }) {
   assert.equal(check.status, 200)
   assert.match(check.headers.get('x-robots-tag') || '', /noindex/)
   assert.equal(sha(Buffer.from(await check.arrayBuffer())), sha(body), 'PREVIEW_RELEASE_HASH_MISMATCH')
-  await captureRecoverySources({ privateSource: await connectFormalReadSource(), verifyOnly: true })
+  await checkAuthority()
   Object.assign(receipt, { url: deployed.url, deploymentId: deployed.id, functions: 0,
     mediaApprovalFingerprint: media.approvalFingerprint, success: true, verifiedAt: new Date().toISOString() })
   await writeFile(journal, JSON.stringify(receipt, null, 2))
@@ -227,6 +261,12 @@ try {
   if (mode === '--check-operator') {
     const source = await connectFormalReadSource()
     console.log(JSON.stringify(await source.verifyOperator(process.env.JNQ_FORMAL_OPERATOR_AUTH_ID || '')))
+  } else if (mode === '--prepare-operators') {
+    console.log(JSON.stringify(await prepareOperators()))
+  } else if (mode === '--prepare-rehearsal') {
+    console.log(JSON.stringify(await prepareRehearsal({ workspace, directory: RECOVERY,
+      baseRun: process.env.JNQ_FORMAL_BASELINE_RUN || 'full-review-20261112-b',
+      phase: process.env.JNQ_FORMAL_DRILL_PHASE, id: process.env.JNQ_FORMAL_DRILL_ID })))
   } else if (mode === '--capture') {
     await mkdir(RECOVERY, { recursive: true })
     assert.equal((await readdir(RECOVERY)).length, 0, 'PREVIOUS_CAPTURE_MUST_BE_PRESERVED')

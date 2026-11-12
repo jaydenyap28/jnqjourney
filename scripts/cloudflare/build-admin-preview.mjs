@@ -1,12 +1,27 @@
 import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
-import { copyFile, cp, mkdir, readFile, readdir, statfs, writeFile } from 'node:fs/promises'
+import { copyFile, cp, mkdir, readFile, readdir, realpath, statfs, symlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { FUNCTION, SUPABASE_ORIGIN } from '../../cloudflare/admin-preview/scope.mjs'
+import { FUNCTION as ISOLATED_FUNCTION, SUPABASE_ORIGIN as ISOLATED_ORIGIN, PROJECT_REF as ISOLATED_REF } from '../../cloudflare/admin-preview/scope.mjs'
+import { FORMAL_ADMIN_API, FORMAL_PROJECT } from '../../cloudflare/admin-preview/formal-admin-read.mjs'
 
 const workspace = process.cwd()
-const root = path.resolve('artifacts/cloudflare-admin-isolated')
-const disk = await statfs(workspace)
+const formal = process.argv[2] === '--formal-read-only'
+assert.deepEqual(process.argv.slice(2), formal ? ['--formal-read-only', FORMAL_PROJECT] : [])
+const projectRef = formal ? FORMAL_PROJECT : ISOLATED_REF
+const FUNCTION = formal ? FORMAL_ADMIN_API : ISOLATED_FUNCTION
+const SUPABASE_ORIGIN = formal ? `https://${projectRef}.supabase.co` : ISOLATED_ORIGIN
+const privateWorkspace = path.resolve(process.env.JNQ_RECOVERY_WORKSPACE || '.')
+const root = formal ? path.join(privateWorkspace, 'production-publisher', 'frontend-review') :
+  path.resolve('artifacts/cloudflare-admin-isolated')
+if (formal) {
+  assert.ok(process.env.JNQ_RECOVERY_WORKSPACE && await realpath(privateWorkspace) === privateWorkspace)
+  const settings = JSON.parse(await readFile(path.join(privateWorkspace, 'production-publisher/settings.json'), 'utf8'))
+  assert.equal(settings.projectRef, FORMAL_PROJECT)
+  assert.equal(settings.enabled, false)
+  await mkdir(root, { recursive: true })
+}
+const disk = await statfs(formal ? privateWorkspace : workspace)
 assert.ok(disk.bavail * disk.bsize >= 250 * 1024 * 1024, 'ADMIN_BUILD_DISK_HEADROOM')
 const stage = path.join(root, 'site-' + Date.now())
 const adapter = 'cloudflare/admin-preview/'
@@ -20,11 +35,14 @@ const replace = async (file, from, to) => {
   assert.ok(typeof from === 'string' ? text.includes(from) : from.test(text), 'ADMIN_ADAPTER_SOURCE_CHANGED: ' + file)
   await write(file, text.replace(from, to))
 }
-const anon = JSON.parse(await readFile(path.join(root, 'anon-build.json'), 'utf8'))
+const input = JSON.parse(await readFile(formal ? 'artifacts/cloudflare-static-recovery/.public-read-key.json' :
+  path.join(root, 'anon-build.json'), 'utf8'))
+if (formal) assert.equal(input.projectRef, FORMAL_PROJECT)
+const anon = formal ? { origin: SUPABASE_ORIGIN, key: input.apiKey } : input
 assert.equal(anon.origin, SUPABASE_ORIGIN)
 const keyClaims = JSON.parse(Buffer.from(anon.key.split('.')[1], 'base64url').toString())
 assert.equal(keyClaims.role, 'anon')
-assert.equal(keyClaims.ref, 'rnamstwwbzknwbjwdgrf')
+assert.equal(keyClaims.ref, projectRef)
 
 await mkdir(stage, { recursive: true })
 for (const directory of ['components', 'lib', 'types', 'data']) {
@@ -37,6 +55,15 @@ await copy('app/admin/edit/[id]/page.tsx', 'app/admin/edit/page.tsx')
 await copy(adapter + 'browser-fetch.ts', 'lib/admin-fetch.ts')
 await copy(adapter + 'browser-image.ts', 'lib/admin-preview-image.ts')
 await copy(adapter + 'publication-panel.tsx', 'components/PublicationPanel.tsx')
+if (formal) {
+  await write('components/PublicationPanel.tsx', `export default function PublicationPanel() {
+    return <p role="status">正式资料只读验收。编辑、上传及发布尚未启用。</p>
+  }`)
+  await replace('lib/admin-fetch.ts', '  const { data } = await supabase.auth.getSession()', `  if (init.method && init.method.toUpperCase() !== 'GET') {
+    return Response.json({ error: '正式资料只读验收，写入尚未启用。' }, { status: 405 })
+  }
+  const { data } = await supabase.auth.getSession()`)
+}
 await write('lib/admin-preview-config.ts', `export const ADMIN_API = ${JSON.stringify(SUPABASE_ORIGIN + '/functions/v1/' + FUNCTION)}\n`)
 await write('types/admin-preview.d.ts', 'interface Window { gtag?: (...args: unknown[]) => void }\n')
 await mkdir(path.join(stage, 'public'), { recursive: true })
@@ -44,12 +71,12 @@ await cp('public/fonts', path.join(stage, 'public/fonts'), { recursive: true })
 await copyFile('public/placeholder-image.jpg', path.join(stage, 'public/placeholder-image.jpg'))
 
 await write('app/layout.tsx', `import './globals.css'
-export const metadata = { title: 'JnQ Journey Admin Preview', robots: { index: false, follow: false } }
+export const metadata = { title: '${formal ? 'JnQ Journey 正式后台只读验收' : 'JnQ Journey Admin Preview'}', robots: { index: false, follow: false } }
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <html lang="zh"><body>{children}</body></html>
 }`)
 await write('app/page.tsx', `import Link from 'next/link'
-export default function Page() { return <main className="p-8"><Link href="/admin">打开 JnQ Journey 隔离后台</Link></main> }`)
+export default function Page() { return <main className="p-8"><Link href="/admin">${formal ? '打开 JnQ Journey 正式后台只读验收' : '打开 JnQ Journey 隔离后台'}</Link></main> }`)
 await replace('app/admin/layout.tsx', "import AdminAuthShell", "import { Suspense } from 'react'\nimport AdminAuthShell")
 await replace('app/admin/layout.tsx', '<AdminAuthShell>{children}</AdminAuthShell>', '<Suspense><AdminAuthShell>{children}</AdminAuthShell></Suspense>')
 await replace('app/admin/login/page.tsx', "searchParams.get('next') || '/admin'",
@@ -160,7 +187,8 @@ await write('public/robots.txt', 'User-agent: *\nDisallow: /\n')
 
 const env = Object.fromEntries(Object.entries(process.env).filter(([key]) =>
   /^(PATH|SystemRoot|WINDIR|TEMP|TMP|COMSPEC|PATHEXT|APPDATA|LOCALAPPDATA|USERPROFILE|NUMBER_OF_PROCESSORS)$/i.test(key)))
-const result = spawnSync(process.execPath, [path.join(workspace, 'node_modules/next/dist/bin/next'), 'build'], {
+if (formal) await symlink(path.join(privateWorkspace, 'build-dependencies/node_modules'), path.join(stage, 'node_modules'), 'junction')
+const result = spawnSync(process.execPath, [path.join(formal ? stage : workspace, 'node_modules/next/dist/bin/next'), 'build'], {
   cwd: stage, stdio: 'inherit',
   env: { ...env, NEXT_TELEMETRY_DISABLED: '1', NODE_ENV: 'production',
     NEXT_PUBLIC_SUPABASE_URL: SUPABASE_ORIGIN, NEXT_PUBLIC_SUPABASE_ANON_KEY: anon.key },
@@ -171,8 +199,9 @@ const entries = await readdir(out, { recursive: true })
 assert.ok(entries.includes('admin.html') && entries.some(file => file.endsWith('notes.html')))
 for (const file of entries.filter(file => /\.(?:html|json|js|txt)$/.test(file))) {
   const text = await readFile(path.join(out, file), 'utf8')
-  assert.doesNotMatch(text.replaceAll(anon.key, 'PUBLIC_ANON_KEY'), /vrufunuomioczocdsoer|sb_secret_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_-]+\.eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/,
-    'Unexpected credentials or Production target in ' + file)
+  const unexpected = new RegExp(`${formal ? ISOLATED_REF : FORMAL_PROJECT}|sb_secret_[A-Za-z0-9_-]+|eyJ[A-Za-z0-9_-]+\\.eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+`)
+  assert.doesNotMatch(text.replaceAll(anon.key, 'PUBLIC_ANON_KEY'), unexpected, 'Unexpected credentials or cross-environment target in ' + file)
 }
-await writeFile(path.join(root, 'package.json'), JSON.stringify({ out, zeroFunctions: true, files: entries.length }))
-console.log(JSON.stringify({ built: true, out, entries: entries.length }))
+await writeFile(path.join(root, 'package.json'), JSON.stringify({ out, zeroFunctions: true, files: entries.length,
+  ...(formal ? { projectRef, readOnly: true, deployed: false } : {}) }))
+console.log(JSON.stringify({ built: true, out, entries: entries.length, ...(formal ? { projectRef, readOnly: true, deployed: false } : {}) }))

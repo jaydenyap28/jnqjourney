@@ -48,3 +48,26 @@ node scripts/cloudflare/recovery-browser-check.mjs --final-media
 6. 发生异常时暂停正式后台写入与队列领取，保留故障版本和不明提交的日志。优先维持当前安全版本。只回退到经最新撤销清单验证的静态包或可控维护页。权限 [安全回退](../static-recovery/review/static-read-boundary.rollback.sql) 保持草稿、桶和旧接口关闭。撤销通过重新发布传播，历史固定部署及外部下载另行处理。
 
 [Supabase 逻辑备份和恢复](https://supabase.com/docs/guides/platform/migrating-within-supabase/backup-restore) · [Storage 对象备份范围](https://supabase.com/docs/guides/platform/backups) · [Pages Preview 与 noindex](https://developers.cloudflare.com/pages/configuration/preview-deployments/)
+
+## 正式 PostgreSQL 备份入口
+
+在 Supabase Dashboard 的正式项目 `vrufunuomioczocdsoer` → Connect 获取 Direct Connection 或 Session Pooler（5432）。将现有连接 URI 保存到 Windows 仅当前用户和 SYSTEM 可访问的文件。也可使用含 `host`、`user`、`password`、`port`、`database` 和可选 `caFile` 的本机私有 JSON。若使用 `caFile`，指定已从正式连接设置取得的 CA PEM 的绝对路径。不要把凭据填入终端参数、聊天、浏览器或 Git。
+
+```powershell
+$env:JNQ_RECOVERY_WORKSPACE = 'E:\JnQ-Private-Backups\production-admin-20261112'
+$env:JNQ_FORMAL_PG_CONNECTION_FILE = '<已保护的连接文件绝对路径>'
+node scripts/cloudflare/formal-postgres-backup.mjs --backup vrufunuomioczocdsoer
+$env:JNQ_FORMAL_PG_BACKUP_NAME = '<成功回执中的 postgres-logical-* 目录名>'
+node scripts/cloudflare/formal-postgres-backup.mjs --restore vrufunuomioczocdsoer
+```
+
+备份使用已安装的 PostgreSQL 17 客户端、`verify-full`、明确项目主机或 pooler 用户名、只读事务和同步快照。完整 archive 包括业务、Auth 和 Storage metadata，另外保留 schema、无角色密码的角色定义、目录核对和 SHA-256。恢复只向临时 Docker PostgreSQL 写入，网络为 none，无对外端口。若源库包含本机没有的扩展，须先提供兼容的已审核镜像，再按固定镜像 ID 执行恢复。角色、ACL、RLS、表行数、主外键和 Storage 指针关联必须一致。完整实例恢复成功后，另将加密备份写入获确认的异机目的地并复核哈希。CLI 2.116.0 与本机 `pg_dump` 17.11 已核对，正式连接文件仍待提供，本轮未生成正式数据库 archive。[PostgreSQL pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html) · [Supabase 连接方式](https://supabase.com/docs/guides/database/connecting-to-postgres)
+
+## 全站演练与正式执行检查点
+
+- 已完成 [变更版](https://5426cbf4.jnqjourney-static-recovery-candidate.pages.dev) 与 [撤销版](https://ced4e3e3.jnqjourney-static-recovery-candidate.pages.dev)，均为 1,349 路由、582 个公开 Spot、6 篇 Note、7 篇 Guide、0 Functions、全站 noindex。Chrome 在原模板看到三项改动，测试图返回 200 并解码为 96×64。撤销后内容复原，测试图在新固定地址及 [分支别名](https://full-drill-nov12-merge.jnqjourney-static-recovery-candidate.pages.dev) 均返回 404。旧固定 Preview 保留为历史部署。三条英文路由因译文待复核暂时退出 sitemap，撤销后 sitemap 恢复 704 条。正式线上回执和 Deployment ID 保持原值。[本次脱敏证据](formal-cutover-rehearsal-evidence.json)
+- 演练使用通过验收的完整公开快照。三项修改按原记录 ID 和版本哈希覆盖，其他记录保持原样。正式预览比较完整集合，任何记录移除都会生成本机 `withdrawal-review.json`，需要额外批准其精确差异摘要 `JNQ_FORMAL_APPROVED_REMOVAL_SHA256`。浏览器选中少量记录的结果不能作为完整站点输入。
+- 正式 Admin 前端使用原隔离编辑界面，以 `--formal-read-only vrufunuomioczocdsoer` 在本机生成只读包。只使用项目 anon key 和单独的 Edge 入口。正式私有运行目录已有独立凭据、日志和队列回执目录。远端队列、正式 Edge 和 Windows 任务均未启用。当前编辑、上传、发布端点仍待批准与验收。
+- 将用户明确确认的准确邮箱或 Auth UUID 分别写入私有目录 `production-publisher/operator-confirmations.json` 的 `editors` 与 `publishers` 数组。运行 `full-admin-release.mjs --prepare-operators vrufunuomioczocdsoer` 后，两个 UUID 清单只写入同目录的 `verified-operator-allowlists.json`。Publisher 能力不会自动授予 Editor。正式登录和角色仍需用真实确认账号验收。
+- 正式发布前核对当前 canonical、域名及部署环境，验证批准的完整修订、撤销差异、noindex Preview、当前权威资格和回退包。正式上传后核对 canonical 指向新 Deployment、线上回执匹配、首页及变更链接可用，并确认仍为 0 Functions。任务仅在全部通过后记为成功。
+- 故障时停用并停止 `JnQ Journey Production Publisher`，关闭已获批准启用的 Edge 写入与队列领取，保留不明提交回执。先确认 Cloudflare Deployment ID。回退前核对当前撤销清单，保留私有权限，必要时使用维护页。待正式权限另行审批，再按上方 SQL 与依赖检查收紧匿名表读取和 Storage 访问。旧 r2.dev 另行审批。

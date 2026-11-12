@@ -10,8 +10,7 @@ const reads = new Set(['/session', '/publication', '/admin/locations', '/admin/l
 export function createFormalAdminRead({ projectRef, origin, editors, publishers, getIdentity, load }) {
   if (projectRef !== FORMAL_PROJECT || !origin || new URL(origin).origin !== origin ||
       !origin.startsWith('https://') || !editors.length ||
-      ![...editors, ...publishers].every(id => uuid.test(id)) ||
-      !publishers.every(id => editors.includes(id))) throw Error('FORMAL_ADMIN_SCOPE_INVALID')
+      ![...editors, ...publishers].every(id => uuid.test(id))) throw Error('FORMAL_ADMIN_SCOPE_INVALID')
   const editorSet = new Set(editors), publisherSet = new Set(publishers)
   return async request => {
     const allowed = request.headers.get('origin') === origin
@@ -31,12 +30,12 @@ export function createFormalAdminRead({ projectRef, origin, editors, publishers,
       // Only the project Auth server can assert a user ID. Browser metadata is ignored.
       const id = await getIdentity(token)
       if (!id) return json({ error: '会话失效，请重新登录。' }, 401)
-      if (!editorSet.has(id)) return json({ error: '这个账号没有后台权限。' }, 403)
+      if (!editorSet.has(id) && !publisherSet.has(id)) return json({ error: '这个账号没有后台权限。' }, 403)
       if (request.method !== 'GET') return json({ error: '正式后台仍处于只读准备阶段。' }, 405)
       const url = new URL(request.url)
       const route = url.pathname.replace(new RegExp(`^/(?:functions/v1/)?${FORMAL_ADMIN_API}(?=/|$)`), '')
       if (!reads.has(route)) return json({ error: '未知后台请求。' }, 404)
-      if (route === '/session') return json({ authorized: true, canPublish: publisherSet.has(id), writesEnabled: false })
+      if (route === '/session') return json({ authorized: true, canEdit: editorSet.has(id), canPublish: publisherSet.has(id), writesEnabled: false })
       if (route === '/publication') return json({ state: 'disabled', canPublish: publisherSet.has(id) })
       const recordId = url.searchParams.get('id')
       if (recordId !== null && (!/^\d{1,15}$/.test(recordId) || !Number.isSafeInteger(Number(recordId)) || Number(recordId) < 1)) {

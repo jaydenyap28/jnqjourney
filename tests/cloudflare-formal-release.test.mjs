@@ -7,7 +7,8 @@ import { createFormalAdminRead, FORMAL_PROJECT } from '../cloudflare/admin-previ
 import { formalReadTransport } from '../scripts/cloudflare/formal-read-source.mjs'
 import { rewriteApprovedAdditionValues } from '../scripts/cloudflare/full-release-media.mjs'
 import { renderedStaticMedia } from '../scripts/cloudflare/recovery-media-staging.mjs'
-import { eligibleRecoverySpot, projectRecoveryDocuments, recoveryContentRevision } from '../scripts/cloudflare/recovery-sources.mjs'
+import { applyApprovedChanges, requireWithdrawalApproval } from '../scripts/cloudflare/full-release-rehearsal.mjs'
+import { eligibleRecoverySpot, fingerprint, projectRecoveryDocuments, recoveryContentRevision } from '../scripts/cloudflare/recovery-sources.mjs'
 
 const origin = 'https://formal-admin.example'
 const editor = 'aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa'
@@ -20,7 +21,7 @@ const request = (route, id, method = 'GET', from = origin) => new Request(origin
 
 test('production editor and publication capabilities use only verified user identity', async () => {
   const calls = []
-  const handler = createFormalAdminRead({ projectRef: FORMAL_PROJECT, origin, editors: [editor, publisher], publishers: [publisher],
+  const handler = createFormalAdminRead({ projectRef: FORMAL_PROJECT, origin, editors: [editor], publishers: [publisher],
     getIdentity: async token => [editor, publisher, ordinary].includes(token) ? token : null,
     load: async (route, query) => { calls.push([route, query]); return { data: [] } },
   })
@@ -31,8 +32,8 @@ test('production editor and publication capabilities use only verified user iden
   assert.equal((await handler(request('/admin/locations', publisher, 'PATCH'))).status, 405)
   assert.equal((await handler(request('/publication', publisher, 'POST'))).status, 405)
   assert.deepEqual(calls, [])
-  assert.deepEqual(await (await handler(request('/session', editor))).json(), { authorized: true, canPublish: false, writesEnabled: false })
-  assert.deepEqual(await (await handler(request('/session', publisher))).json(), { authorized: true, canPublish: true, writesEnabled: false })
+  assert.deepEqual(await (await handler(request('/session', editor))).json(), { authorized: true, canEdit: true, canPublish: false, writesEnabled: false })
+  assert.deepEqual(await (await handler(request('/session', publisher))).json(), { authorized: true, canEdit: false, canPublish: true, writesEnabled: false })
   const result = await handler(request('/admin/locations?id=582', editor))
   assert.equal(result.status, 200)
   assert.match(result.headers.get('cache-control'), /no-store/)
@@ -58,6 +59,23 @@ test('formal source is authenticated, non-redirecting and rejects isolated or ar
   assert.match(seen[1].url, /\/object\/authenticated\//)
   assert.match(seen[2].url, /^https:\/\/api\.cloudflare\.com\//)
   assert.equal(seen[2].headers.apikey, undefined)
+})
+
+test('operator lookup requires an exact confirmed email or UUID in the formal Auth API', async () => {
+  const confirmed = { id: editor, email: 'owner@example.test', role: 'authenticated', email_confirmed_at: '2026-01-01' }
+  const similar = { ...confirmed, id: ordinary, email: 'other-owner@example.test' }
+  const requests = []
+  const source = formalReadTransport({ key: roleKey(FORMAL_PROJECT, 'service_role'), token: 'example',
+    fetcher: async (url, options) => {
+      requests.push({ url: String(url), method: options.method })
+      return Response.json(String(url).endsWith('/' + editor) ? confirmed : { users: [similar, confirmed] })
+    },
+  })
+  assert.equal(await source.confirmedOperator('OWNER@example.test'), editor)
+  assert.equal(await source.confirmedOperator(editor), editor)
+  await assert.rejects(source.confirmedOperator('missing@example.test'), /FORMAL_OPERATOR_NOT_ACTIVE/)
+  assert.ok(requests.every(request => request.url.startsWith(`https://${FORMAL_PROJECT}.supabase.co/auth/v1/admin/users`) &&
+    request.method === 'GET'))
 })
 
 test('withdrawal and edits change the content revision; capture time alone does not', () => {
@@ -103,4 +121,29 @@ test('media staging links only assets referenced by the rendered export', async 
     await unlink(json)
     await rmdir(directory)
   }
+})
+
+test('partial approvals apply to the full baseline and stale rows cannot be replaced', () => {
+  const spot = { id: 1, description: 'old' }
+  const baseline = { 'database.json': { locations: [spot, { id: 2 }] },
+    'notes.json': { notes: [{ slug: 'one' }] }, 'guides.json': { guides: [{ slug: 'other' }] } }
+  const change = { kind: 'spot', key: 1, expected: fingerprint(spot), value: { ...spot, description: 'approved' } }
+  const result = applyApprovedChanges(baseline, [change])
+  assert.deepEqual(result['database.json'].locations, [change.value, { id: 2 }])
+  assert.deepEqual(result['notes.json'], baseline['notes.json'])
+  assert.deepEqual(result['guides.json'], baseline['guides.json'])
+  assert.throws(() => applyApprovedChanges(result, [change]), /APPROVED_RECORD_VERSION_CHANGED/)
+  assert.throws(() => applyApprovedChanges(baseline, [{ ...change, value: { id: 3 } }]), /APPROVAL_CANNOT_CHANGE_IDENTITY/)
+})
+
+test('missing public identities require an approval for the exact deletion set', () => {
+  const baseline = { 'database.json': { locations: [{ id: 1 }, { id: 2 }] },
+    'notes.json': { notes: [{ slug: 'old' }] }, 'guides.json': { guides: [{ slug: 'same' }] } }
+  const result = structuredClone(baseline)
+  result['database.json'].locations.pop()
+  result['notes.json'].notes.pop()
+  const expected = { spot: [2], note: ['old'], guide: [] }
+  assert.throws(() => requireWithdrawalApproval(baseline, result), /EXPLICIT_WITHDRAWAL_DIFF_APPROVAL_REQUIRED/)
+  assert.throws(() => requireWithdrawalApproval(baseline, result, fingerprint({ ...expected, note: [] })), /EXPLICIT_WITHDRAWAL/)
+  assert.deepEqual(requireWithdrawalApproval(baseline, result, fingerprint(expected)).removed, expected)
 })

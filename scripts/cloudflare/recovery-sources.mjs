@@ -51,8 +51,9 @@ async function boundedRead(url, headers = {}) {
   return { bytes, etag: response.headers.get('etag'), sha256: sha(bytes) }
 }
 
-export async function captureRecoverySources({verifyOnly=false, privateSource=null}={}) {
-  const directory = path.join(RECOVERY, 'sources')
+export async function captureRecoverySources({verifyOnly=false, privateSource=null, verifySourcesFrom=RECOVERY, preserveCapturedRates=false}={}) {
+  if (preserveCapturedRates) assert.ok(verifyOnly && privateSource && verifySourcesFrom !== RECOVERY)
+  const directory = path.join(verifyOnly ? verifySourcesFrom : RECOVERY, 'sources')
   await mkdir(directory, { recursive: true })
   let source = privateSource
   if (!source) {
@@ -147,7 +148,8 @@ export async function captureRecoverySources({verifyOnly=false, privateSource=nu
     if (record.canonicalPath?.startsWith('/notes/')) return notePaths.has(record.canonicalPath)
     return ['/','/about','/region','/guide','/notes','/search','/contact','/privacy','/editorial-policy','/affiliate-disclosure','/copyright'].includes(record.canonicalPath)
   })
-  const fx = (await captureExchangeRates({persist:!verifyOnly})).data
+  const fx = preserveCapturedRates ? JSON.parse(await readFile(path.join(directory, 'fx.json'), 'utf8')) :
+    (await captureExchangeRates({persist:!verifyOnly})).data
   const feeds = {
     'database.json': { schemaVersion: 1, capturedAt: new Date().toISOString(), projectRef: 'vrufunuomioczocdsoer', ...before },
     'guides.json': { schemaVersion: 1, guides: publicGuides }, 'notes.json': { schemaVersion: 1, notes: publishedNotes },
@@ -161,7 +163,8 @@ export async function captureRecoverySources({verifyOnly=false, privateSource=nu
       if(file==='database.json'){delete captured.capturedAt;delete value.capturedAt}
       assert.equal(fingerprint(value),fingerprint(captured),'PUBLIC_SOURCE_CHANGED_REBUILD_REQUIRED_'+file)
     }
-    const checked={checkedAt:new Date().toISOString(),matched:true,files:Object.keys(feeds),productionWrites:0,realtimeRevocation:false}
+    const checked={checkedAt:new Date().toISOString(),matched:true,files:Object.keys(feeds),productionWrites:0,realtimeRevocation:false,
+      ...(preserveCapturedRates?{exchangeRatesPinnedForRehearsal:true}:{})}
     await writeFile(path.join(RECOVERY,'source-freshness.json'),JSON.stringify(checked,null,2))
     return checked
   }

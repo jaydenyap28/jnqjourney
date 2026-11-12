@@ -67,6 +67,32 @@ export function formalReadTransport({ key, token, fetcher = fetch }) {
     const bytes = Buffer.concat(chunks)
     return { bytes, sha256: createHash('sha256').update(bytes).digest('hex'), etag: response.headers.get('etag') }
   }
+  async function confirmedOperator(account) {
+    assert.ok(typeof account === 'string' && account === account.trim() && account.length <= 254, 'EXPLICIT_OPERATOR_REQUIRED')
+    let match
+    if (uuid.test(account)) {
+      const { bytes } = await read('AUTH_ADMIN', `${SUPABASE}/auth/v1/admin/users/${account}`, supabaseHeaders)
+      match = JSON.parse(bytes)
+      assert.equal(match.id, account.toLowerCase(), 'FORMAL_AUTH_UUID_MISMATCH')
+    } else {
+      assert.match(account, /^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'EXACT_OPERATOR_EMAIL_REQUIRED')
+      for (let page = 1; page <= 30; page++) {
+        const { bytes } = await read('AUTH_ADMIN', `${SUPABASE}/auth/v1/admin/users?page=${page}&per_page=100`, supabaseHeaders)
+        const { users } = JSON.parse(bytes)
+        assert.ok(Array.isArray(users))
+        for (const user of users) {
+          if (typeof user.email !== 'string' || user.email.toLowerCase() !== account.toLowerCase()) continue
+          assert.ok(!match, 'FORMAL_OPERATOR_EMAIL_NOT_UNIQUE')
+          match = user
+        }
+        if (users.length < 100) break
+        assert.notEqual(page, 30, 'FORMAL_OPERATOR_LOOKUP_LIMIT')
+      }
+    }
+    assert.ok(uuid.test(match?.id || '') && match.role === 'authenticated' && !match.is_anonymous &&
+      match.email_confirmed_at && !(Date.parse(match.banned_until) > Date.now()), 'FORMAL_OPERATOR_NOT_ACTIVE')
+    return match.id
+  }
   return {
     database(resource) {
       const url = new URL(resource, SUPABASE)
@@ -91,12 +117,10 @@ export function formalReadTransport({ key, token, fetcher = fetch }) {
     },
     async verifyOperator(id) {
       assert.match(id, uuid, 'EXPLICIT_OPERATOR_AUTH_ID_REQUIRED')
-      const { bytes } = await read('AUTH_ADMIN', `${SUPABASE}/auth/v1/admin/users/${id}`, supabaseHeaders)
-      const user = JSON.parse(bytes)
-      assert.ok(user.id === id && user.role === 'authenticated' && user.email_confirmed_at &&
-        !(Date.parse(user.banned_until) > Date.now()), 'FORMAL_OPERATOR_NOT_ACTIVE')
+      await confirmedOperator(id)
       return { activeAuthUser: true, allowlistEnabled: false }
     },
+    confirmedOperator,
     async storageConfig() {
       const storage = await read('STORAGE_CONFIG', `${SUPABASE}/storage/v1/bucket/${FORMAL_STORAGE}`, supabaseHeaders)
       const config = JSON.parse(storage.bytes)
