@@ -10,7 +10,7 @@ import { connectFormalReadSource } from './formal-read-source.mjs'
 import { FORMAL_ADMIN_API, FORMAL_PROJECT } from '../../cloudflare/admin-preview/formal-admin-read.mjs'
 
 const [mode, ref] = process.argv.slice(2)
-assert.ok(['--preflight', '--edge', '--pages', '--verify-pages'].includes(mode) && ref === FORMAL_PROJECT)
+assert.ok(['--preflight', '--edge', '--edge-update', '--pages', '--verify-pages'].includes(mode) && ref === FORMAL_PROJECT)
 const workspace = path.resolve(process.env.JNQ_RECOVERY_WORKSPACE || '.')
 assert.ok(process.env.JNQ_RECOVERY_WORKSPACE && await realpath(workspace) === workspace)
 const root = path.join(workspace, 'production-publisher')
@@ -28,6 +28,7 @@ const settings = await json(path.join(root, 'settings.json'))
 const roles = await json(path.join(root, 'verified-operator-allowlists.json'))
 assert.ok(settings.projectRef === FORMAL_PROJECT && roles.projectRef === FORMAL_PROJECT &&
   settings.enabled === false && roles.enabled === false)
+for (const field of ['formalWritesEnabled', 'formalUploadsEnabled', 'formalPublishingEnabled']) assert.equal(settings[field], false)
 assert.equal(settings.formalAdminPagesProject, projectName)
 assert.deepEqual(settings.formalEditorAuthIds, roles.editorAuthIds)
 assert.deepEqual(settings.formalPublisherAuthIds, roles.publisherAuthIds)
@@ -88,10 +89,16 @@ try {
     console.log(JSON.stringify({ projectRef: FORMAL_PROJECT, editors: roles.editorAuthIds.length,
       publishers: roles.publisherAuthIds.length, functionExists: false, adminProjectExists: Boolean(project),
       adminOrigin: origin, production: currentProduction, writesEnabled: false, publishEnabled: false }))
-  } else if (mode === '--edge') {
+  } else if (mode === '--edge' || mode === '--edge-update') {
     const before = await functions()
-    assert.ok(!before.some(item => item.slug === FORMAL_ADMIN_API), 'FORMAL_FUNCTION_ALREADY_EXISTS_RECONCILE')
-    const work = path.join(root, 'read-only-edge')
+    if (mode === '--edge') assert.ok(!before.some(item => item.slug === FORMAL_ADMIN_API), 'FORMAL_FUNCTION_ALREADY_EXISTS_RECONCILE')
+    else {
+      const prior = await json(path.join(root, 'read-only-edge-deployment.json'))
+      const current = before.find(item => item.slug === FORMAL_ADMIN_API)
+      assert.ok(current?.id === prior.id && current.version === prior.version && current.verify_jwt && current.status === 'ACTIVE', 'FORMAL_FUNCTION_CHANGED_RECONCILE')
+      await writeFile(path.join(root, 'read-only-edge-prior-' + Date.now() + '.json'), JSON.stringify(prior), { flag: 'wx' })
+    }
+    const work = path.join(root, mode === '--edge' ? 'read-only-edge' : 'read-only-edge-' + Date.now())
     const folder = path.join(work, 'supabase/functions', FORMAL_ADMIN_API)
     await mkdir(folder, { recursive: true })
     const { build } = await import(pathToFileURL(path.resolve(path.dirname(wrangler), '../../esbuild/lib/main.js')).href)
@@ -104,9 +111,11 @@ try {
     const secrets = { JNQ_FORMAL_ADMIN_ORIGIN: origin, JNQ_FORMAL_EDITOR_IDS: roles.editorAuthIds.join(','),
       JNQ_FORMAL_PUBLISHER_IDS: roles.publisherAuthIds.join(',') }
     await writeFile(environment, Object.entries(secrets).map(([key, value]) => key + '=' + value).join('\n') + '\n', { flag: 'wx' })
-    try { await supabase(['secrets', 'set', '--env-file', environment]) }
-    finally { await unlink(environment) }
-    await writeFile(path.join(root, 'read-only-edge-submission.json'), JSON.stringify({
+    if (mode === '--edge') {
+      try { await supabase(['secrets', 'set', '--env-file', environment]) }
+      finally { await unlink(environment) }
+    } else await unlink(environment) // Existing verified server-only allowlists stay unchanged.
+    await writeFile(path.join(work, 'submission.json'), JSON.stringify({
       projectRef: FORMAL_PROJECT, function: FORMAL_ADMIN_API, sha256: sha(bundle),
       requestedAt: new Date().toISOString(), writesEnabled: false, publishEnabled: false,
     }), { flag: 'wx' })
@@ -140,10 +149,23 @@ try {
       const existing = await cloud(projectName)
       const project = existing ?? await cloud('', 'POST', { name: projectName, production_branch: 'reserved-production' })
       adminBoundary(project)
+      try {
+        const prior = await json(journalFile)
+        const receipt = await json(path.join(root, 'read-only-pages-deployment.json'))
+        const old = await cloud(projectName + '/deployments/' + receipt.deploymentId)
+        assert.ok(old?.environment === 'preview' && old.deployment_trigger?.metadata?.branch === branch &&
+          old.deployment_trigger.metadata.commit_hash === prior.commit, 'PREVIOUS_ADMIN_DEPLOYMENT_UNCONFIRMED')
+        assert.ok(receipt.deploymentId === project.latest_deployment?.id, 'ADMIN_LATEST_CHANGED_RECONCILE')
+        await writeFile(path.join(root, 'read-only-pages-prior-' + Date.now() + '.json'), JSON.stringify({ prior, receipt }), { flag: 'wx' })
+        await unlink(journalFile)
+      } catch (error) { if (error.code !== 'ENOENT') throw error }
       const commit = (await run('git', ['rev-parse', 'HEAD'], { windowsHide: true })).stdout.trim()
       journal = { project: projectName, branch, commit, submittedAt: new Date().toISOString() }
       await writeFile(journalFile, JSON.stringify(journal), { flag: 'wx' })
-      await writeFile(path.join(root, 'wrangler.jsonc'), JSON.stringify({ name: projectName, pages_build_output_dir: out }), { flag: 'wx' })
+      const configFile = path.join(root, 'wrangler.jsonc')
+      try { assert.equal((await json(configFile)).name, projectName) }
+      catch (error) { if (error.code !== 'ENOENT') throw error }
+      await writeFile(configFile, JSON.stringify({ name: projectName, pages_build_output_dir: out }))
       try {
         await run(process.execPath, [wrangler, 'pages', 'deploy', out,
           '--project-name', projectName, '--branch', branch, '--commit-hash', commit, '--commit-dirty=true', '--force'], {

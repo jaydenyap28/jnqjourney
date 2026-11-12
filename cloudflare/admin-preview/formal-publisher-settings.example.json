@@ -1,5 +1,8 @@
 {
   "enabled": false,
+  "formalWritesEnabled": false,
+  "formalUploadsEnabled": false,
+  "formalPublishingEnabled": false,
   "projectRef": "vrufunuomioczocdsoer",
   "formalAdminPagesProject": "jnqjourney-admin-formal",
   "formalAdminOrigin": "https://jnqjourney-admin-formal.pages.dev",

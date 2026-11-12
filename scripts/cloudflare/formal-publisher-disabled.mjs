@@ -11,5 +11,8 @@ const root = path.join(directory, 'production-publisher')
 const settings = JSON.parse(await readFile(path.join(root, 'settings.json'), 'utf8'))
 assert.equal(settings.projectRef, projectRef)
 assert.equal(settings.enabled, false, 'FORMAL_PUBLISHING_REQUIRES_SEPARATE_APPROVAL')
+for (const field of ['formalWritesEnabled', 'formalUploadsEnabled', 'formalPublishingEnabled']) {
+  assert.equal(settings[field], false, 'FORMAL_CAPABILITY_REQUIRES_SEPARATE_APPROVAL')
+}
 assert.equal(settings.expectedCurrentProductionId, '333e51aa-506e-4a66-a7c6-4f28e3e890a1')
 console.log(JSON.stringify({ projectRef, publishingEnabled: false, deploymentSubmitted: false }))

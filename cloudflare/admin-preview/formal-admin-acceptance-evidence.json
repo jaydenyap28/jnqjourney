@@ -1,0 +1,64 @@
+{
+  "formalProject": "vrufunuomioczocdsoer",
+  "admin": {
+    "url": "https://read-only.jnqjourney-admin-formal.pages.dev/admin",
+    "deploymentId": "48d4052d-1a9c-4984-bede-c4de6a822648",
+    "environment": "preview",
+    "branch": "read-only",
+    "noindex": true,
+    "pagesFunctions": 0,
+    "productionCanonicalEmpty": true,
+    "edgeFunction": "jnq-admin-formal",
+    "edgeVersion": 2,
+    "edgeJwtVerification": true,
+    "edgeBundleSha256": "0a4cbb126a781b58e07d3a1e1eb656a82348f0117de166b2920af9294bac589f",
+    "writesEnabled": false,
+    "uploadsEnabled": false,
+    "publishingEnabled": false
+  },
+  "verified": {
+    "userConfirmedFormalLogin": true,
+    "userConfirmedSpotListCount": 586,
+    "newAdminNextBuildAndTypecheck": "PASS",
+    "existingBoundaryTests": 10,
+    "newReadonlyAndPreparationTests": 4,
+    "readonlyCheckPageHttp": 200,
+    "trustedOriginPreflightHttp": 204,
+    "anonymousReadHttp": 401,
+    "publicHomepageHttp": 200,
+    "publicProductionFingerprintUnchanged": true,
+    "publicProductionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "formalPublisherScheduledTask": "Disabled"
+  },
+  "pendingRealSessionChecks": [
+    "Spot editor detail",
+    "6 Notes editor reads",
+    "7 Guides editor reads",
+    "authenticated server mutation refusals and unchanged readback",
+    "logout then still-unexpired old-session replay"
+  ],
+  "ordinaryFormalAccount": "NOT_TESTED_NO_SEPARATE_APPROVED_ACCOUNT",
+  "computerUseBlockers": [
+    "GetCursorPos failed: Access is denied (0x80070005)",
+    "black screenshot",
+    "window is minimized"
+  ],
+  "nas": {
+    "mappingVerified": true,
+    "freeBytes": 760365510656,
+    "targetCreatedEmpty": true,
+    "targetFiles": 0,
+    "everyoneReadStillPresent": true,
+    "privateAclResult": "BLOCKED",
+    "errors": ["SeSecurityPrivilege required", "NAS SID has no account-name mapping"],
+    "archiveCreated": false,
+    "encryptedCopyTransferred": false,
+    "plaintextTransferred": false,
+    "newDatabaseDump": false,
+    "encryptionHelperSyntax": "PASS",
+    "realEncryptionAndNasReadback": "PENDING",
+    "independentDeviceRecovery": "PENDING"
+  },
+  "formalWritePreparation": "LOCAL_ONLY_NOT_IMPORTED_BY_FORMAL_EDGE",
+  "result": "READONLY_ACCEPTANCE_PENDING_BACKUP_BLOCKED"
+}

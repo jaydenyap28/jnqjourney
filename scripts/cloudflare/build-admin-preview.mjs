@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { spawnSync } from 'node:child_process'
 import { copyFile, cp, mkdir, readFile, readdir, realpath, statfs, symlink, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { freezeFormalEditor } from './formal-readonly-markup.mjs'
 import { FUNCTION as ISOLATED_FUNCTION, SUPABASE_ORIGIN as ISOLATED_ORIGIN, PROJECT_REF as ISOLATED_REF } from '../../cloudflare/admin-preview/scope.mjs'
 import { FORMAL_ADMIN_API, FORMAL_PROJECT } from '../../cloudflare/admin-preview/formal-admin-read.mjs'
 
@@ -57,8 +58,13 @@ await copy(adapter + 'browser-image.ts', 'lib/admin-preview-image.ts')
 await copy(adapter + 'publication-panel.tsx', 'components/PublicationPanel.tsx')
 if (formal) {
   await write('components/PublicationPanel.tsx', `export default function PublicationPanel() {
-    return <p role="status">正式资料只读验收。编辑、上传及发布尚未启用。</p>
+    return <aside role="status" className="mx-auto my-4 max-w-7xl rounded border border-amber-500/40 bg-amber-500/10 p-4 text-amber-100">
+      <strong>正式后台 · 只读模式</strong>
+      <p>可查看真实资料。新增、编辑、删除、上传和发布均未启用。</p>
+      <a className="underline" href="/readonly-check">运行只读安全验收</a>
+    </aside>
   }`)
+  await copy(adapter + 'formal-readonly-check.tsx', 'app/readonly-check/page.tsx')
   await replace('lib/admin-fetch.ts', '  const { data } = await supabase.auth.getSession()', `  if (init.method && init.method.toUpperCase() !== 'GET') {
     return Response.json({ error: '正式资料只读验收，写入尚未启用。' }, { status: 405 })
   }
@@ -168,6 +174,16 @@ export default function GuidePreview() {
 await replace('components/FallbackImage.tsx', "import Image,", "import { useDraftImage } from '@/lib/admin-preview-image'\nimport Image,")
 await replace('components/FallbackImage.tsx', '  const mergedStyle =', "  const previewSrc = useDraftImage(resolvedImage.src || fallbackSrc)\n  const mergedStyle =")
 await replace('components/FallbackImage.tsx', 'src={resolvedImage.src || fallbackSrc}', 'src={previewSrc}')
+if (formal) {
+  for (const file of ['app/admin/page.tsx', 'app/admin/notes/page.tsx', 'app/admin/guides/page.tsx',
+    'components/AdminLocationForm.tsx', 'components/SpotEnglishEditor.tsx', 'components/SpotContentEditor.tsx',
+    'components/SpotDescriptionEditor.tsx', 'components/AdminGuideActualSpendPanel.tsx',
+    'components/AdminAffiliateLinksPanel.tsx', 'components/OrderedRelationPicker.tsx']) {
+    await write(file, freezeFormalEditor(await readFile(path.join(stage, file), 'utf8'), file))
+  }
+  await replace('app/admin/page.tsx', '  Edit,', '  Eye,')
+  await replace('app/admin/page.tsx', '<Edit ', '<Eye ')
+}
 await write('next.config.mjs', "export default { output: 'export', images: { unoptimized: true }, experimental: { cpus: 2 }, eslint: { ignoreDuringBuilds: true } }\n")
 await write('tsconfig.json', JSON.stringify({
   compilerOptions: { target: 'ES2017', lib: ['dom', 'dom.iterable', 'esnext'], allowJs: true, allowImportingTsExtensions: true, skipLibCheck: true, strict: true,

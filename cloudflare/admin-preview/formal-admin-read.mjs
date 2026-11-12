@@ -22,7 +22,9 @@ export function createFormalAdminRead({ projectRef, origin, editors, publishers,
     const json = (data, status = 200) => Response.json(data, { status, headers })
     if (!allowed) return json({ error: '不允许此来源。' }, 403)
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: {
-      ...headers, 'Access-Control-Allow-Methods': 'GET, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization',
+      // Let the trusted Admin receive the explicit 405 for denied methods.
+      // This advertises transport only; every non-GET remains hard denied below.
+      ...headers, 'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization',
     } })
     const token = request.headers.get('authorization')?.match(/^Bearer ([\w.-]+)$/i)?.[1]
     if (!token || token.length > 8192) return json({ error: '请先登录。' }, 401)
