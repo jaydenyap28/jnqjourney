@@ -1,0 +1,164 @@
+{
+  "result": "PRODUCTION_CUTOVER_BLOCKED",
+  "formalProject": "vrufunuomioczocdsoer",
+  "capture": {
+    "checkedAt": "2026-11-12T00:23:35.892Z",
+    "readMode": "authenticated-server",
+    "counts": {
+      "totalSpots": 586,
+      "publicSpots": 582,
+      "excludedSpots": 4,
+      "regions": 58,
+      "guides": 7,
+      "notes": 6,
+      "packages": 3,
+      "options": 12,
+      "localizations": 402,
+      "affiliates": 360
+    },
+    "contentRevision": "76d6811e4743ffd555192aefdd87ec76c59f480ff5ed90ed35547b6a4ca17a06",
+    "publicRecordsMatchBaseline": true,
+    "oldPublicOriginReads": false,
+    "preAndPostDeployFreshnessVerified": true
+  },
+  "fullBuild": {
+    "pages": 1349,
+    "files": 8136,
+    "staticMedia": 4515,
+    "bytes": 7039396815,
+    "sitemapEntries": 704,
+    "redirects": 1478,
+    "functions": 0,
+    "buildMs": 78623,
+    "buildAttempts": 2,
+    "reusedPriorExportAfterMediaImportFix": true,
+    "cloudflareAssetsReused": 6022,
+    "cloudflareAssetsUploaded": 2112
+  },
+  "preview": {
+    "verifiedAt": "2026-11-12T00:33:49.102Z",
+    "url": "https://983aa1ec.jnqjourney-static-recovery-candidate.pages.dev",
+    "deploymentId": "983aa1ec-ed89-44a8-bc2f-191ff52142dc",
+    "htmlSamples": 8,
+    "publicSpotIds": 582,
+    "hiddenSpots": 4,
+    "sitemapEntries": 704,
+    "repairedImagesVerified": 40,
+    "functions": 0,
+    "noindex": true,
+    "branch": "full-review-76d6811e4743ffd5",
+    "sourceBaseCommit": "c4f4d8519e85bc7d1e6263e769e8526ea940343f"
+  },
+  "browser": {
+    "pages": 36,
+    "passed": true,
+    "interactions": 12,
+    "visibleImagesDecoded": 58,
+    "visibleImagesPending": 0,
+    "legacyR2Requests": 0,
+    "lightboxAndCarousel": [
+      {
+        "viewport": 1440,
+        "guide": "/guide/china-dali-shangri-la-lijiang-11d10n",
+        "guideGalleryImages": 1,
+        "lightboxDecodedWidth": 1800,
+        "lightboxClosed": true,
+        "spot": "/spot/turtle-alley-636",
+        "carouselChanged": true
+      },
+      {
+        "viewport": 390,
+        "guide": "/guide/china-dali-shangri-la-lijiang-11d10n",
+        "guideGalleryImages": 1,
+        "lightboxDecodedWidth": 1800,
+        "lightboxClosed": true,
+        "spot": "/spot/turtle-alley-636",
+        "carouselChanged": true
+      }
+    ]
+  },
+  "publication": {
+    "staleRevisionDeniedBeforeSubmission": true,
+    "newWithdrawalOnFullCloudflareSite": "NOT_RUN",
+    "newFormalContentWrite": "NOT_RUN"
+  },
+  "backups": {
+    "staticArchive": {
+      "archiveSha256": "0191ecf069986d3e065062bc9d153ca08b4e94204c70d2cdc293c85cef447841",
+      "archiveBytes": 7046536192,
+      "mediaMapSha256": "43f63f7c76ad8bb14857497b49c06c59203a18347ecf5c97ae8b03be4c82cd66",
+      "receiptSha256": "1051363f3ba30d8836c1f4e5b7ae1f890754b7eb3d3a3cee65a3ab5694bbc8bd",
+      "files": 8136,
+      "media": 4515,
+      "restoresToFreshDirectory": true,
+      "backupContainsPublicStaticAssetsOnly": true
+    },
+    "authority": {
+      "files": 293,
+      "totalBytes": 48118890,
+      "current": {
+        "notes": {
+          "restoredRecords": 6,
+          "restoredVersions": 235,
+          "pointerAndDigestVerified": true
+        },
+        "guides": {
+          "restoredRecords": 7,
+          "restoredVersions": 51,
+          "pointerAndDigestVerified": true
+        }
+      },
+      "r2AuthorityFeeds": 3,
+      "r2BucketConfig": true,
+      "localRestore": true
+    },
+    "mediaExceptions": {
+      "r2-closed": {
+        "checked": 33,
+        "restored": 33,
+        "unavailable": []
+      },
+      "storage-reviewed": {
+        "checked": 24,
+        "restored": 24,
+        "unavailable": []
+      }
+    },
+    "fullDatabaseDump": false,
+    "fullAuthConfig": false,
+    "clientAuthConfig": true,
+    "fullDatabaseRestore": false
+  },
+  "access": {
+    "formalAllowlistLogicTested": true,
+    "formalAdminSpotFieldsRead": 36,
+    "formalAdminRegionRelationshipRead": true,
+    "formalOperatorVerified": false,
+    "formalApiDeployed": false,
+    "writesEnabled": false,
+    "legacyAnonLocationsHttp": 200,
+    "historicalBackupTableAnonHttp": 401,
+    "legacyPublicStoragePointerHttp": 200,
+    "authenticatedStoragePointerWithAnonHttp": 200,
+    "storageStillPublic": true
+  },
+  "windows": {
+    "formalConfigured": true,
+    "formalTaskRegistered": false,
+    "formalEnabled": false,
+    "isolatedTaskRunning": true
+  },
+  "production": {
+    "canonicalDeploymentId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "homeHttp": 200,
+    "receiptHttp": 200,
+    "receiptSha256": "1051363f3ba30d8836c1f4e5b7ae1f890754b7eb3d3a3cee65a3ab5694bbc8bd",
+    "pagesProductionSettingsMatched": true,
+    "formalWrites": 0,
+    "remainingAccountQuota": "UNKNOWN"
+  },
+  "tests": {
+    "passed": 31,
+    "skipped": 1
+  }
+}

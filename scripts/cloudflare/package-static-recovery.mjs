@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { readFile, writeFile, mkdir, readdir, stat, copyFile } from 'node:fs/promises'
+import { readFile, writeFile, mkdir, readdir, stat, copyFile, link } from 'node:fs/promises'
 import path from 'node:path'
 import { buildLocationSlug } from '../../lib/location-routing.ts'
 import { RECOVERY, SOURCE, fingerprint } from './recovery-sources.mjs'
@@ -38,7 +38,13 @@ export async function packageRecovery() {
       assert.ok(!/(^|\/)(?:_worker\.js|functions|admin)(?:\/|$)/.test(name),'DYNAMIC_OR_ADMIN_BUNDLE_IN_PUBLIC_PACKAGE')
       const target=path.join(out,name)
       if(entry.isDirectory()){await mkdir(target,{recursive:true});await copy(name)}
-      else {assert.ok((await stat(path.join(built,name))).size<=25*1024*1024);await copyFile(path.join(built,name),target);files.push(name)}
+      else {
+        assert.ok((await stat(path.join(built,name))).size<=25*1024*1024)
+        if(process.env.JNQ_RECOVERY_REUSE_MEDIA==='1'&&manifest.mediaInventorySha256&&name.startsWith('media/static/')){
+          await link(path.join(built,name),target)
+        }else await copyFile(path.join(built,name),target)
+        files.push(name)
+      }
     }
   }
   await copy()

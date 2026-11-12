@@ -4,6 +4,8 @@
 
 [Admin Preview 登录](https://admin-review.jnqjourney-admin-isolated.pages.dev/admin/login) · [脱敏实测结果](evidence.json)
 
+正式资料只读接入、完整静态网站 Preview、备份及正式启用步骤见 [正式切换准备](FORMAL-CUTOVER.md)。
+
 实际 Chrome 已通过 Spot 新增、修改、slug 与封面保存，手工英文草稿保存，Note 长文、封面、预览、自动保存和重新登录恢复，Guide 每日景点关联、预算、封面保存与重新读取。三个模块的旧版本保存均返回 409，无效 Guide 预算返回 400，伪造图片返回 415。普通登录账号带有管理员样式的用户 metadata 仍被拒绝。手机登录、登出和旧会话失效已验证。
 
 Preview 仅恢复三个编辑模块及相关私有图片操作。旧报表、联盟管理、配套、Klook 独立管理和外部英文生成服务未迁移。独立后台可编辑隔离测试数据，尚未连接正式资料。正式操作员的 Auth ID、生产数据源和生产发布执行器需分别核准。

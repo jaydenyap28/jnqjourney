@@ -13,8 +13,9 @@ import { localizeLegacyFeedLinks } from './recovery-delivery-feeds.mjs'
 import { assertNoLegacyImageLiteral, readFinalMediaPlan, stageFinalMedia } from './recovery-media-staging.mjs'
 
 const finalMedia=process.env.JNQ_RECOVERY_FINAL_MEDIA==='1'
+const reuseMedia=process.env.JNQ_RECOVERY_REUSE_MEDIA==='1'
 if(finalMedia)assert.notEqual(RECOVERY,RECOVERY_BASE,'FROZEN_PREVIEW_CANNOT_BECOME_FINAL_RELEASE')
-const media=finalMedia?await readFinalMediaPlan({verifyCache:false}):null
+const media=finalMedia?await readFinalMediaPlan({verifyCache:false,reuseExistingMedia:reuseMedia}):null
 const load = async file => {
   const value=JSON.parse(await readFile(path.join(RECOVERY,'sources',file),'utf8'))
   return media&&file!=='english.json'?media.rewriteValue(value):value
@@ -245,7 +246,7 @@ if(media){
     if(/[/\\]data[/\\]recovery-|[/\\]data[/\\](?:notes|guides)\.json$/.test(file))assertNoLegacyImageLiteral(next)
     if(next!==previous)await writeFile(file,next)
   }
-  await stageFinalMedia(SOURCE,media)
+  if(!reuseMedia)await stageFinalMedia(SOURCE,media)
 }
 const manifest={mode:'full-public-static-recovery',sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),capturedAt:sourceManifest.capturedAt,
   sourceFingerprint:fingerprint(sourceManifest.files),counts:sourceManifest.counts,routes:[...new Set([...routes,...englishPaths])].sort(),params,englishPaths,

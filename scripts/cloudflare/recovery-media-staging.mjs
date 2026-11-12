@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
 import {constants} from 'node:fs'
-import {copyFile,lstat,mkdir,readFile,statfs,writeFile} from 'node:fs/promises'
+import {copyFile,link,lstat,mkdir,readFile,readdir,statfs,writeFile} from 'node:fs/promises'
 import path from 'node:path'
-import {CDN,RECOVERY_BASE,SUPABASE} from './recovery-sources.mjs'
+import {CDN,RECOVERY,RECOVERY_BASE,SUPABASE} from './recovery-sources.mjs'
 import {FINAL_DIR,mediaIdentity} from './recovery-media-inventory-final.mjs'
 import {assertApprovedImageBytes,readMediaApproval,validateMediaApproval} from './recovery-media-release-gate.mjs'
+import {readApprovedAdditions,rewriteApprovedAdditions,rewriteApprovedAdditionValues} from './full-release-media.mjs'
 
 const placeholder='/placeholder-image.jpg'
 const candidates=/https:\/\/[^\s"'<>\x60\\\[\]{}]+/g
@@ -79,20 +80,66 @@ export async function verifyCachedMedia(directory,decision){
   return file
 }
 
-export async function readFinalMediaPlan({verifyCache=true}={}){
+export async function readFinalMediaPlan({verifyCache=true,reuseExistingMedia=false}={}){
   const json=async name=>JSON.parse(await readFile(path.join(FINAL_DIR,name),'utf8'))
   const inventory=await json('inventory.private.json')
   const {approval}=await readMediaApproval(inventory)
   const plan=mediaPlan(inventory,approval)
+  const additions=await readApprovedAdditions()
   assert.equal(plan.pending.length,0,`MEDIA_DECISIONS_PENDING_${plan.pending.length}`)
   const cache=path.join(FINAL_DIR,'approved-image-cache')
-  const disk=await statfs(RECOVERY_BASE)
+  const disk=await statfs(reuseExistingMedia?RECOVERY:RECOVERY_BASE)
   // Next's public tree, export and Pages package may temporarily coexist.
   const availableBytes=disk.bavail*disk.bsize
-  const requiredBuildBytes=3*plan.addedBytes+1024**3
+  const requiredBuildBytes=reuseExistingMedia?2*1024**3:3*plan.addedBytes+1024**3
   assert.ok(availableBytes>=requiredBuildBytes,'MEDIA_BUILD_DISK_HEADROOM')
   if(verifyCache)for(const decision of plan.images.values())await verifyCachedMedia(cache,decision)
-  return {...plan,cache,approval,availableBytes,requiredBuildBytes,inventorySha256:inventory.summary.inventorySha256}
+  return {...plan,cache,approval,additions,availableBytes,requiredBuildBytes,inventorySha256:inventory.summary.inventorySha256,
+    rewrite:text=>rewriteApprovedAdditions(plan.rewrite(text),additions),
+    rewriteValue:value=>rewriteApprovedAdditionValues(plan.rewriteValue(value),additions)}
+}
+export async function linkFinalMediaToExport(directory,plan){
+  const target=path.join(directory,'media/static')
+  await mkdir(target,{recursive:true})
+  const verifiedRoot=process.env.JNQ_RECOVERY_VERIFIED_MEDIA
+  if(verifiedRoot){
+    const paths=await renderedStaticMedia(directory)
+    for(const name of paths){
+      const addition=plan.additions.get(name)
+      if(addition){
+        const source=await verifyCachedMedia(path.join(RECOVERY,'approved-incremental-media'),addition)
+        await link(source,path.join(target,name))
+        continue
+      }
+      const decision=plan.images.get('/media/static/'+name)
+      assert.ok(decision,'RENDERED_IMAGE_NOT_APPROVED')
+      const source=path.join(verifiedRoot,name)
+      const entry=await lstat(source)
+      assert.ok(entry.isFile()&&!entry.isSymbolicLink()&&entry.size===decision.bytes,'VERIFIED_BASELINE_MEDIA_CHANGED')
+      await link(source,path.join(target,name))
+    }
+    return paths.size
+  }
+  for(const decision of plan.images.values()){
+    const source=await verifyCachedMedia(plan.cache,decision)
+    await link(source,path.join(target,path.basename(decision.path)))
+  }
+}
+
+export async function renderedStaticMedia(directory){
+  const names=new Set()
+  async function visit(relative=''){
+    for(const entry of await readdir(path.join(directory,relative),{withFileTypes:true})){
+      const name=path.posix.join(relative,entry.name)
+      assert.ok(!entry.isSymbolicLink(),'UNEXPECTED_EXPORT_LINK')
+      if(entry.isDirectory()){await visit(name);continue}
+      if(!/\.(html|json|txt|js|css|xml)$/.test(name))continue
+      const text=(await readFile(path.join(directory,name),'utf8')).replaceAll('\\/','/').replaceAll('\\u002F','/')
+      for(const match of text.matchAll(/\/media\/static\/([a-f0-9]{64}\.(?:webp|png|jpe?g|avif|gif))/g))names.add(match[1])
+    }
+  }
+  await visit()
+  return names
 }
 export async function stageFinalMedia(directory,plan){
   const target=path.join(directory,'public/media/static')

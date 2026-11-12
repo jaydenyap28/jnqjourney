@@ -4,5 +4,11 @@ const root = process.cwd()
 const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => /^(PATH|SystemRoot|WINDIR|TEMP|TMP|COMSPEC|PATHEXT|APPDATA|LOCALAPPDATA|USERPROFILE|NUMBER_OF_PROCESSORS)$/i.test(k)))
 Object.assign(env, { NODE_ENV:'production', NEXT_TELEMETRY_DISABLED:'1', NEXT_PUBLIC_SITE_URL:'https://www.jnqjourney.com' })
 const source = process.argv.includes('--recovery') ? (await import('./recovery-sources.mjs')).SOURCE : process.argv.includes('--public-readiness') ? 'artifacts/cloudflare-public-readiness/source' : 'artifacts/cloudflare-candidate/source'
-const result = spawnSync(process.execPath, [path.join(root,'node_modules/next/dist/bin/next'),'build'], {cwd:path.resolve(root,source),env,stdio:'inherit'})
+const dependencies=process.env.JNQ_RECOVERY_VERIFIED_MEDIA&&process.argv.includes('--recovery')?source:root
+const result = spawnSync(process.execPath, [path.join(dependencies,'node_modules/next/dist/bin/next'),'build'], {cwd:path.resolve(root,source),env,stdio:'inherit'})
 process.exitCode = result.status || (result.error ? 1 : 0)
+if(process.exitCode===0&&process.argv.includes('--recovery')&&process.env.JNQ_RECOVERY_REUSE_MEDIA==='1'){
+  const {readFinalMediaPlan,linkFinalMediaToExport}=await import('./recovery-media-staging.mjs')
+  const media=await readFinalMediaPlan({reuseExistingMedia:true})
+  await linkFinalMediaToExport(path.resolve(root,source,'out'),media)
+}

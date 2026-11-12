@@ -1,9 +1,10 @@
 // Review exact objects before any real media copy or deployment.
 import assert from 'node:assert/strict'
-import {readFile,readdir,stat,writeFile} from 'node:fs/promises'
+import {lstat,readFile,readdir,stat,writeFile} from 'node:fs/promises'
 import path from 'node:path'
 import {CDN,RECOVERY,RECOVERY_BASE,fingerprint} from './recovery-sources.mjs'
 import {FINAL_DIR,hash} from './recovery-media-inventory-final.mjs'
+import {readApprovedAdditions} from './full-release-media.mjs'
 
 const SHA256=/^[a-f0-9]{64}$/
 const MAX_BYTES=25*1024*1024
@@ -88,11 +89,14 @@ async function verifyLocalPackage(inventory,authorized){
   assert.ok(files.length<=20000,'PAGES_FILE_COUNT_LIMIT')
   assert.ok(!files.some(file=>/(^|\/)(functions|_worker\.js)(\/|$)/.test(file)||file==='_routes.json'),'UNEXPECTED_RUNTIME')
   const approvedFiles=new Map([...authorized.values()].filter(row=>row.disposition==='static-copy').map(row=>[row.path.slice(1),row]))
+  const additions=await readApprovedAdditions()
+  for(const row of additions.values())approvedFiles.set(row.path.slice(1),row)
   const legacySources=new Set(inventory.records.filter(row=>authorized.get(row.sha256)?.disposition!=='provider-reference').map(row=>row.identity))
   const approvedExternal=new Set(inventory.records.filter(row=>authorized.get(row.sha256)?.disposition==='provider-reference').map(row=>row.identity))
   const referenced=new Set()
   const nonContentSdkReferences=[]
   const fileSet=new Set(files)
+  const verifiedRoot=process.env.JNQ_RECOVERY_VERIFIED_MEDIA
   let totalBytes=0,maxBytes=0
   for(const file of files){
     const source=path.join(out,file),{size}=await stat(source)
@@ -101,13 +105,19 @@ async function verifyLocalPackage(inventory,authorized){
     if(file.startsWith('media/static/')){
       const decision=approvedFiles.get(file)
       assert.ok(decision,'UNAPPROVED_STATIC_IMAGE')
-      assertApprovedImageBytes(decision,await readFile(source))
+      if(verifiedRoot&&!additions.has(path.basename(file))){
+        const baseline=await lstat(path.join(verifiedRoot,path.basename(file)),{bigint:true})
+        const actual=await lstat(source,{bigint:true})
+        assert.ok(baseline.isFile()&&!baseline.isSymbolicLink()&&baseline.ino!==0n&&
+          baseline.ino===actual.ino&&baseline.dev===actual.dev&&size===decision.bytes,'MEDIA_NOT_LINKED_TO_VERIFIED_BASELINE')
+      }else assertApprovedImageBytes(decision,await readFile(source))
     }else if(IMAGE_EXTENSION.test(file)){
       const original=await readFile(path.join(RECOVERY_BASE,'deploy',file)).catch(()=>null)
       assert.ok(original&&size===original.length&&original.equals(await readFile(source)),'UNREVIEWED_IMAGE_OUTSIDE_STATIC_MEDIA')
     }
     if(!/\.(html|json|txt|js|css|xml)$/.test(file))continue
     const text=(await readFile(source,'utf8')).replaceAll('\\/','/').replaceAll('\\u002F','/').replaceAll('\\u0026','&').replaceAll('&amp;','&')
+    assert.ok(!/\/admin-draft-media\/[a-f0-9]{64}|_admin-drafts\//.test(text),'PRIVATE_DRAFT_MEDIA_REFERENCE')
     try{assertNoLegacyDelivery(text)}catch(error){throw new Error(error.message+' '+file)}
     for(const match of text.matchAll(/https:\/\/[^\s"'<>`\\\[\]{}]+/g)){
       let url
@@ -128,11 +138,12 @@ async function verifyLocalPackage(inventory,authorized){
       referenced.add(target)
     }
   }
-  for(const name of approvedFiles.keys()){
+  for(const name of verifiedRoot?files.filter(file=>file.startsWith('media/static/')):approvedFiles.keys()){
     assert.ok(fileSet.has(name),'APPROVED_IMAGE_FILE_MISSING')
     assert.ok(referenced.has(name),'UNREFERENCED_PUBLIC_IMAGE_FILE')
   }
-  return {files:files.length,totalBytes,maxBytes,approvedStaticImages:approvedFiles.size,functions:0,nonContentSdkReferences}
+  if(verifiedRoot)for(const name of referenced)assert.ok(fileSet.has(name),'RENDERED_STATIC_IMAGE_FILE_MISSING')
+  return {files:files.length,totalBytes,maxBytes,approvedStaticImages:verifiedRoot?referenced.size:approvedFiles.size,functions:0,nonContentSdkReferences}
 }
 
 if(process.argv[1]?.endsWith('recovery-media-release-gate.mjs')){
@@ -150,7 +161,7 @@ if(process.argv[1]?.endsWith('recovery-media-release-gate.mjs')){
   const report={inventorySha256:inventory.summary.inventorySha256,approvalFilePresent:ownerApprovalPresent,reviewedDecisions:authorized.size,
     eligibleStaticCopies:[...authorized.values()].filter(row=>row.disposition==='static-copy').length,pending:pending.length,
     mediaReviewComplete:pending.length===0,finalPackageVerified:Boolean(packageResult),packageResult,formalDeploymentAuthorized:false}
-  await writeFile(path.join(FINAL_DIR,'media-approval-gate.json'),JSON.stringify(report,null,2))
+  if(!process.env.JNQ_RECOVERY_VERIFIED_MEDIA)await writeFile(path.join(FINAL_DIR,'media-approval-gate.json'),JSON.stringify(report,null,2))
   if(packageResult)await writeFile(path.join(RECOVERY,'media-approval-gate.json'),JSON.stringify({...report,approvalFingerprint:fingerprint(approval)},null,2))
   console.log(JSON.stringify(report))
   if(pending.length)process.exitCode=1

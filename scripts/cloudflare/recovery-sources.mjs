@@ -5,8 +5,9 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 
 export const RECOVERY_BASE = path.resolve('artifacts/cloudflare-static-recovery')
+const workspace = process.env.JNQ_RECOVERY_WORKSPACE ? path.resolve(process.env.JNQ_RECOVERY_WORKSPACE) : RECOVERY_BASE
 export const RECOVERY = process.env.JNQ_RECOVERY_OUTPUT ? path.resolve(process.env.JNQ_RECOVERY_OUTPUT) : RECOVERY_BASE
-if (RECOVERY !== RECOVERY_BASE) assert.match(path.relative(RECOVERY_BASE, RECOVERY).replaceAll('\\','/'), /^runs\/[a-zA-Z0-9_-]+$/, 'RECOVERY_OUTPUT_OUTSIDE_OWN_RUN')
+if (RECOVERY !== RECOVERY_BASE) assert.match(path.relative(workspace, RECOVERY).replaceAll('\\','/'), /^runs\/[a-zA-Z0-9_-]+$/, 'RECOVERY_OUTPUT_OUTSIDE_OWN_RUN')
 export const SOURCE = path.join(RECOVERY, 'source')
 export const PROJECT = 'jnqjourney-static-recovery-candidate'
 export const BRANCH = 'codex/cloudflare-static-recovery'
@@ -19,6 +20,20 @@ function canonical(value) {
   return value && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])])) : value
 }
 export const fingerprint = value => sha(JSON.stringify(canonical(value)))
+export function recoveryContentRevision(feeds) {
+  const { capturedAt, ...database } = feeds['database.json']
+  return fingerprint({ ...feeds, 'database.json': database })
+}
+export function eligibleRecoverySpot(row) {
+  return row.id !== 450 && row.status === 'active' && [null, 'published'].includes(row.publication_status)
+}
+export function projectRecoveryDocuments(notes, guides) {
+  return {
+    publishedNotes: notes.filter(item => item.published === true && item.slug && item.title),
+    publicGuides: guides.filter(item => item.slug && item.title && item.published !== false &&
+      (item.publication_status == null || item.publication_status === 'published')),
+  }
+}
 const origins = new Set([SUPABASE, CDN, 'https://api.frankfurter.dev'])
 
 async function boundedRead(url, headers = {}) {
@@ -36,13 +51,21 @@ async function boundedRead(url, headers = {}) {
   return { bytes, etag: response.headers.get('etag'), sha256: sha(bytes) }
 }
 
-export async function captureRecoverySources({verifyOnly=false}={}) {
+export async function captureRecoverySources({verifyOnly=false, privateSource=null}={}) {
   const directory = path.join(RECOVERY, 'sources')
   await mkdir(directory, { recursive: true })
-  const publicKey = JSON.parse(await readFile(path.join(RECOVERY_BASE, '.public-read-key.json'), 'utf8'))
-  assert.equal(publicKey.projectRef, 'vrufunuomioczocdsoer')
-  assert.equal(JSON.parse(Buffer.from(publicKey.apiKey.split('.')[1], 'base64url').toString()).role, 'anon', 'ADMIN_CREDENTIAL_REJECTED')
-  const headers = { apikey: publicKey.apiKey, Authorization: `Bearer ${publicKey.apiKey}` }
+  let source = privateSource
+  if (!source) {
+    const publicKey = JSON.parse(await readFile(path.join(RECOVERY_BASE, '.public-read-key.json'), 'utf8'))
+    assert.equal(publicKey.projectRef, 'vrufunuomioczocdsoer')
+    assert.equal(JSON.parse(Buffer.from(publicKey.apiKey.split('.')[1], 'base64url').toString()).role, 'anon', 'ADMIN_CREDENTIAL_REJECTED')
+    const headers = { apikey: publicKey.apiKey, Authorization: `Bearer ${publicKey.apiKey}` }
+    source = {
+      database: resource => boundedRead(SUPABASE + resource, headers),
+      storage: key => boundedRead(`${SUPABASE}/storage/v1/object/public/location-images/${key}?static-recovery=${Date.now()}`),
+      feed: key => boundedRead(`${CDN}/public-data/${key}?static-recovery=${Date.now()}`),
+    }
+  }
   const packageModule = await readFile('lib/server/travel-packages.ts', 'utf8')
   const packageColumns = packageModule.match(/const PACKAGE_SELECT = '([^']+)'/)[1]
   const optionColumns = packageModule.match(/const PACKAGE_OPTION_SELECT = '([^']+)'/)[1]
@@ -50,8 +73,8 @@ export async function captureRecoverySources({verifyOnly=false}={}) {
   async function rows(table, select, filters = '') {
     const result = []
     for (let offset = 0; offset < 10000; offset += 200) {
-      const url = `${SUPABASE}/rest/v1/${table}?select=${select}&order=id&limit=200&offset=${offset}${filters}`
-      const response = await boundedRead(url, headers)
+      const resource = `/rest/v1/${table}?select=${select}&order=id&limit=200&offset=${offset}${filters}`
+      const response = await source.database(resource)
       const page = JSON.parse(response.bytes)
       assert.ok(Array.isArray(page), 'PUBLIC_ROW_RESPONSE_INVALID')
       requestLog.push({ source: table, offset, count: page.length, sha256: response.sha256 })
@@ -71,29 +94,28 @@ export async function captureRecoverySources({verifyOnly=false}={}) {
     ])
     const packageIds = new Set(packages.map(item => item.id))
     assert.ok(locations.length && new Set(locations.map(item => item.id)).size === locations.length)
-    assert.ok(locations.every(item => item.status === 'active' && [null, 'published'].includes(item.publication_status)))
+    assert.ok(locations.every(eligibleRecoverySpot))
+    assert.deepEqual(locations.map(item => item.id), inventory.filter(eligibleRecoverySpot).map(item => item.id),
+      'PUBLIC_PROJECTION_DIFFERS_FROM_AUTHORITY')
     return { locations, regions, packages, options: options.filter(item => packageIds.has(item.package_id)), inventory, affiliateLinks }
   }
   const before = await database()
-  const storage = key => `${SUPABASE}/storage/v1/object/public/location-images/${key}?static-recovery=${Date.now()}`
+  const storage = source.storage
   async function document(name) {
     const key = `_system/${name}-latest.webp`
-    const pointer = await boundedRead(storage(key))
+    const pointer = await storage(key)
     const target = pointer.bytes.toString().trim()
-    assert.match(target, new RegExp(`^_system/${name}/[0-9]+\\.webp$`), 'AUTHORITY_POINTER_INVALID')
-    const document = await boundedRead(storage(target))
+    assert.match(target, new RegExp(`^_system/${name}/[0-9]+(?:-[a-f0-9-]{36})?\\.webp$`), 'AUTHORITY_POINTER_INVALID')
+    const document = await storage(target)
     const parsed = JSON.parse(document.bytes)
     assert.ok(Array.isArray(parsed), 'AUTHORITY_DOCUMENT_INVALID')
     return { key, target, pointer, document, records: parsed }
   }
   const [guides, notes, slugs, english, tripCosts, historicalSlugs] = await Promise.all([
-    document('guides'), document('notes'), boundedRead(storage('_system/location-slugs.webp')),
-    boundedRead(CDN + '/public-data/i18n/en/records.json?static-recovery=' + Date.now()),
-    boundedRead(CDN + '/public-data/guide-trip-costs.json?static-recovery=' + Date.now()),
-    boundedRead(CDN + '/public-data/spots/index.json?static-recovery=' + Date.now()),
+    document('guides'), document('notes'), storage('_system/location-slugs.webp'),
+    source.feed('i18n/en/records.json'), source.feed('guide-trip-costs.json'), source.feed('spots/index.json'),
   ])
-  const publishedNotes = notes.records.filter(item => item.published === true && item.slug && item.title)
-  const publicGuides = guides.records.filter(item => item.slug && item.title)
+  const { publishedNotes, publicGuides } = projectRecoveryDocuments(notes.records, guides.records)
   // Guide drafts are a separate store. The existing public Guide reader serves
   // this authoritative guides collection without a per-item publication flag.
   assert.ok(publicGuides.length && publishedNotes.length)
@@ -104,12 +126,13 @@ export async function captureRecoverySources({verifyOnly=false}={}) {
   assert.ok(englishSnapshot.schemaVersion === 1 && englishSnapshot.locale === 'en' && Array.isArray(englishSnapshot.records))
   assert.ok(costs.schemaVersion === 1 && Array.isArray(costs.tripCosts))
   for (const doc of [guides, notes]) {
-    const check = await boundedRead(storage(doc.key))
+    const check = await storage(doc.key)
     assert.equal(check.sha256, doc.pointer.sha256, 'AUTHORITY_CHANGED_DURING_CAPTURE')
+    if (privateSource) assert.equal((await storage(doc.target)).sha256, doc.document.sha256, 'AUTHORITY_VERSION_BYTES_CHANGED')
   }
-  assert.equal((await boundedRead(storage('_system/location-slugs.webp'))).sha256, slugs.sha256)
-  for (const [key, source] of [['i18n/en/records.json', english], ['guide-trip-costs.json', tripCosts]]) {
-    assert.equal((await boundedRead(CDN + '/public-data/' + key + '?static-recovery=' + Date.now())).sha256, source.sha256)
+  assert.equal((await storage('_system/location-slugs.webp')).sha256, slugs.sha256)
+  for (const [key, captured] of [['i18n/en/records.json', english], ['guide-trip-costs.json', tripCosts]]) {
+    assert.equal((await source.feed(key)).sha256, captured.sha256)
   }
   const after = await database()
   assert.equal(fingerprint(after), fingerprint(before), 'DATABASE_CHANGED_DURING_CAPTURE')
@@ -144,8 +167,11 @@ export async function captureRecoverySources({verifyOnly=false}={}) {
   }
   for (const [file, value] of Object.entries(feeds)) await writeFile(path.join(directory, file), JSON.stringify(value))
   const manifest = { capturedAt: new Date().toISOString(), databaseFingerprint: fingerprint(before),
-    consistency: 'Single SQL export provenance plus bounded public REST before/after equality and stable authority pointers; no cross-system atomic transaction.',
-    origins: [SUPABASE, CDN], files: Object.fromEntries(Object.entries(feeds).map(([file, value]) => [file, { sha256: sha(JSON.stringify(value)), bytes: Buffer.byteLength(JSON.stringify(value)) }])),
+    consistency: 'Bounded REST before/after equality and stable authority pointers; no cross-system atomic transaction.',
+    origins: privateSource ? [SUPABASE, 'https://api.cloudflare.com'] : [SUPABASE, CDN],
+    readMode: privateSource ? 'authenticated-server' : 'legacy-public',
+    contentRevision: recoveryContentRevision(feeds),
+    files: Object.fromEntries(Object.entries(feeds).map(([file, value]) => [file, { sha256: sha(JSON.stringify(value)), bytes: Buffer.byteLength(JSON.stringify(value)) }])),
     authority: { guides: { pointer: guides.key, target: guides.target, sha256: guides.document.sha256 }, notes: { pointer: notes.key, target: notes.target, sha256: notes.document.sha256 }, slugs: { sha256: slugs.sha256 }, english: { sha256: english.sha256, version: englishSnapshot.version } },
     counts: { totalSpots: before.inventory.length, publicSpots: before.locations.length, excludedSpots: before.inventory.length - before.locations.length, regions: before.regions.length, guides: publicGuides.length, notes: publishedNotes.length, packages: before.packages.length, options: before.options.length, localizations: englishSnapshot.records.length, affiliates: before.affiliateLinks.length },
     reads: requestLog, productionWrites: 0 }
