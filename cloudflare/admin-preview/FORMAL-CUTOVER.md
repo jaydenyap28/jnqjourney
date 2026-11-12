@@ -70,7 +70,7 @@ node scripts/cloudflare/formal-postgres-backup.mjs --restore vrufunuomioczocdsoe
 
 ## 全站演练与正式执行检查点
 
-2026-11-12 后台最后准备的最新状态见 [本轮检查点](FINAL-ADMIN-PREPARATION-2026-11-12.md)。运营账号与两个禁用名单已确认。真实队列已完成完整新增包构建，云端 Preview 与撤销演练因部署目标审批暂停，尚未达到正式切换条件。
+2026-11-12 后台最后准备的最新状态见 [本轮检查点](FINAL-ADMIN-PREPARATION-2026-11-12.md)。运营账号与两个禁用名单已确认。用户批准指定 Preview 分支后，真实队列的全站新增与撤销发布、Chrome 与 HTTP 验收均已通过。异机备份和正式后台启用仍待完成与批准，正式切换保持 HOLD。
 
 - 已完成 [变更版](https://5426cbf4.jnqjourney-static-recovery-candidate.pages.dev) 与 [撤销版](https://ced4e3e3.jnqjourney-static-recovery-candidate.pages.dev)，均为 1,349 路由、582 个公开 Spot、6 篇 Note、7 篇 Guide、0 Functions、全站 noindex。Chrome 在原模板看到三项改动，测试图返回 200 并解码为 96×64。撤销后内容复原，测试图在新固定地址及 [分支别名](https://full-drill-nov12-merge.jnqjourney-static-recovery-candidate.pages.dev) 均返回 404。旧固定 Preview 保留为历史部署。三条英文路由因译文待复核暂时退出 sitemap，撤销后 sitemap 恢复 704 条。正式线上回执和 Deployment ID 保持原值。[本次脱敏证据](formal-cutover-rehearsal-evidence.json)
 - 演练使用通过验收的完整公开快照。三项修改按原记录 ID 和版本哈希覆盖，其他记录保持原样。正式预览比较完整集合，任何记录移除都会生成本机 `withdrawal-review.json`，需要额外批准其精确差异摘要 `JNQ_FORMAL_APPROVED_REMOVAL_SHA256`。浏览器选中少量记录的结果不能作为完整站点输入。

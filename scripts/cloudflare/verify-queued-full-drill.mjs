@@ -67,12 +67,12 @@ if (!withdrawn) {
       assert.ok((await page.locator('h1').first().innerText()).trim())
       assert.ok((await main.innerText()).includes(plan.marker), kind + ' browser marker')
       if (kind === 'spot') {
-        const photo = page.locator('img[src="' + imagePath + '"]').first()
+        const photo = page.locator('main img[src$="' + imagePath + '"]').first()
         await photo.scrollIntoViewIfNeeded()
-        assert.ok(await photo.evaluate(async img => {
+        assert.ok(await photo.evaluate(async (img, expected) => {
           await img.decode()
-          return img.naturalWidth === 71 && img.naturalHeight === 49
-        }))
+          return img.currentSrc === expected && img.naturalWidth === 71 && img.naturalHeight === 49
+        }, origin + imagePath))
       }
       browserResults[kind] = { renderedChange: true, imageDecoded: kind === 'spot' }
       await page.close()

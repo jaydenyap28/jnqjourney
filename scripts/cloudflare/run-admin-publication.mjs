@@ -29,7 +29,10 @@ const config = await readJson(path.join(root, 'settings.json'))
 assert.equal(config?.projectRef, PROJECT_REF)
 assert.equal(config?.pagesProject, RELEASE_PROJECT)
 const releaseProject = config.fullSiteDrill ? config.fullSitePagesProject : RELEASE_PROJECT
-if (config.fullSiteDrill) assert.equal(releaseProject, 'jnqjourney-static-recovery-candidate')
+if (config.fullSiteDrill) {
+  assert.equal(releaseProject, 'jnqjourney-static-recovery-candidate')
+  assert.equal(config.fullSitePagesBranch, 'full-queue-mwd3sln4')
+}
 for (const [key, file] of [['JNQ_SUPABASE_CLI', config.supabaseCli], ['JNQ_WRANGLER_CLI', config.wranglerCli]]) {
   assert.ok(typeof file === 'string' && path.isAbsolute(file) && file.endsWith('.js'))
   process.env[key] = file
@@ -230,6 +233,7 @@ async function tick() {
   if (!['queued', 'building'].includes(progress.state)) return
   const drill = config.fullSiteDrill ? await readJson(path.join(root, 'full-site-drill.json')) : null
   if (config.fullSiteDrill && drill?.jobId !== job.id) return
+  if (drill) assert.equal(drill.marker, 'JNQ-QUEUE-MWD3SLN4', 'APPROVED_DRILL_SCOPE_REQUIRED')
   const lock = await acquireBuildLock()
   if (!lock) return
   let submitted = false
@@ -260,6 +264,7 @@ async function tick() {
     await verifyAuthority({ ...job, drill })
     const commit = (await sha256(job.id + ':' + progress.attempt)).slice(0, 40)
     const branch = drill ? 'full-queue-' + drill.marker.slice('JNQ-QUEUE-'.length).toLowerCase() : 'release-' + commit.slice(0, 18)
+    if (drill) assert.equal(branch, config.fullSitePagesBranch, 'APPROVED_PREVIEW_BRANCH_REQUIRED')
     const previous = await queue.read(ROOT + '/live.json')
     const deployments = await client.deployments()
     assert.ok(!deployments.some(row => row.deployment_trigger?.metadata?.commit_hash === commit),
@@ -280,11 +285,14 @@ async function tick() {
     submitted = true
     await storageProgress(job, { state: 'verifying', attempt: progress.attempt, reason: '正在提交隔离 Preview。' })
     try {
-      await run(process.execPath, [config.wranglerCli, 'pages', 'deploy', output,
+      const upload = await run(process.execPath, [config.wranglerCli, 'pages', 'deploy', output,
         '--project-name', releaseProject, '--branch', branch, '--commit-hash', commit, '--commit-dirty=true'], {
         cwd: root, windowsHide: true, timeout: drill ? 45 * 60_000 : 120000, maxBuffer: 2 * 1024 * 1024,
         env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: ACCOUNT, WRANGLER_SEND_METRICS: 'false' },
       })
+      const progress = (upload.stdout + upload.stderr).match(/Uploading\.\.\. \(\d+\/\d+\)|Success! Uploaded \d+ files(?: \(\d+ already uploaded\))?/g) ?? []
+      await writeFile(path.join(root, 'upload-summary-' + job.id + '-' + record.attempt + '.json'),
+        JSON.stringify({ project: releaseProject, branch, progress: progress.slice(-5) }))
     } catch { log('upload-needs-reconciliation', { jobId: job.id }) }
     await reconcile(record)
   } catch (error) {

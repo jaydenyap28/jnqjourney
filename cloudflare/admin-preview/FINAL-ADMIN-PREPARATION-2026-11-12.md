@@ -34,9 +34,26 @@ Windows 计划任务实际领取任务，使用原 Next 14 静态构建器，将
 
 第三次尝试向独立 `jnqjourney-publish-isolated` 项目上传。该项目未复用已有全站资产，Wrangler 开始重复上传，因此停止本轮专属执行器及上传子进程。其日志仍处于资产上传阶段，未出现 deployment 创建请求，官方 API 再次确认该分支和提交无 Deployment。取消回执、构建产物与原队列输入已保留，任务被明确标为失败等待审批，没有成功回执。
 
-复用现有全站项目创建同名独立 Preview 的操作被自动审批拒绝。拒绝原因是目标项目同时承载正式 canonical deployment，需要用户明确批准此 Preview 目标。没有执行被拒绝的操作。隔离计划任务当前禁用，避免未经批准的重试。
+此前自动审批因目标项目承载正式 canonical deployment 而拒绝复用该项目。用户随后明确批准 `jnqjourney-static-recovery-candidate` 项目的唯一分支 `full-queue-mwd3sln4`，环境限定为 noindex Preview。本次按该批准恢复原队列和已有产物，未更换身份或凭据。执行器新增了固定项目、分支与演练标识检查。
 
-本轮尚无新增或撤销 Preview，也未执行撤销构建和 Chrome 验收。此前人工修改/撤销演练的结果继续保留，不能替代本轮真实队列演练。
+## 真实 Preview 新增与撤销验收通过
+
+| 版本 | 固定 Preview | Deployment ID | 页面 / 公开 Spot / 媒体 |
+| --- | --- | --- | --- |
+| 新增版 | [查看新增版](https://883232a6.jnqjourney-static-recovery-candidate.pages.dev) | `883232a6-20ee-4165-96bb-e5b22fccfaba` | 1,351 / 583 / 4,516 |
+| 撤销版 | [查看撤销版](https://d2d9a39b.jnqjourney-static-recovery-candidate.pages.dev) | `d2d9a39b-85dd-40ee-b5a1-a712d639632b` | 1,349 / 582 / 4,515 |
+
+两版均由现有隔离队列和 Windows 执行器提交，同属获批分支，Cloudflare 官方部署记录确认为 Preview、success、0 Functions。两版全站 noindex，Note / Guide 数量保持 6 / 7，原有页面及跳转集合均已对账。
+
+新增版在真实 Chrome 中确认新增 Spot、原 Note 段落及原 Guide 摘要可见，手机宽度检查用于 Note。新增测试图的 HTTP 字节哈希一致，Chrome 解码为 71×49。首次验证器使用仅匹配相对路径的选择器，在页面规范化成绝对 URL 后超时。定点修正选择器后通过，仍检查完整图片 URL、哈希和尺寸，网站实现未因此变更。
+
+通过现有管理员接口将隔离 Spot 95004 设为 hidden，再提交只保留已批准 Note / Guide 的撤销任务 `83c9219961477a4b6b95588bdb242d47959eeb5540f7466d5adc77aa1651189f`。全站构建器恢复原有 582 条公开 Spot，独占测试图片不再进入包。新固定地址与 [当前分支别名](https://full-queue-mwd3sln4.jnqjourney-static-recovery-candidate.pages.dev) 的测试中英文详情、四条历史格式别名、详情 JSON 和独占图片返回 404；新固定地址的公开 API 也返回 404。首页、完整 feed、Note 和 Guide 字节与当前包匹配，抽查未修改的中英文 Spot 与地区页面均为原模板的 200 响应。
+
+本次从 hidden 写入到执行器确认撤销版成功，实测 500.393 秒，约 8 分 20 秒。该样本不构成时限保证。第一版固定 Preview 仍保留历史快照，实际测试 Spot 返回 200；本次撤销覆盖第二版和当前分支别名，未删除第一版历史部署或清除浏览器、第三方已保存副本。
+
+新增版 Wrangler 记录上传 2,137 个文件、复用 6,004 个文件；撤销版上传 2,056 个文件、复用 6,079 个文件。4,515 张旧媒体复用原有内容身份和 Cloudflare 资产，没有重新下载或重复上传整套 7 GB。第二版 Next 构建为 109,063 ms。当地执行器的今日构建账本达到 8 次保护上限，未清空计数，账户实际剩余额度仍 UNKNOWN。
+
+结束前已核对正式首页 200、正式发布回执 SHA-256 未变、canonical Deployment 仍为 `333e51aa-506e-4a66-a7c6-4f28e3e890a1`、域名和运行时配置未变。测试 Spot 保持 hidden，队列保留真实成功回执，专属执行器在无待确认部署和无构建锁后停止。原始资料保留。[本轮脱敏证据](full-site-queue-preview-evidence.json)
 
 ## 正式后台状态
 
@@ -44,10 +61,8 @@ Windows 计划任务实际领取任务，使用原 Next 14 静态构建器，将
 
 ## 剩余执行顺序
 
-1. 用户明确批准使用现有全站 Pages 项目的 `full-queue-mwd3sln4` 分支进行 noindex Preview。仅在 canonical 和域名保持原值时恢复已构建包，不重传旧媒体。否则保留独立项目并明确处理其整包上传成本。
-2. 完成真实部署回执和 Chrome 变更验收，再隐藏隔离 Spot 95004。队列合并完整基线，生成第二个 Preview，验证中英文页面、别名、详情 JSON 和独占图片 404，首页索引回到原集合。
-3. 完成指定目的地的异机加密备份，并校验密文传输及可恢复性。
-4. 另行批准正式 Admin/Edge、私有队列和禁用状态的正式计划任务部署，验证真实账号登录和只读权限，再单独批准正式编辑、上传和发布的启用及真实回退演练。
-5. 正式权限、Storage Public 和旧 r2.dev 的收紧继续按既有快照、依赖与回滚方案单独审批。
+1. 完成指定目的地的异机加密备份，并校验密文传输及可恢复性。
+2. 另行批准正式 Admin/Edge、私有队列和禁用状态的正式计划任务部署，验证真实账号登录和只读权限，再单独批准正式编辑、上传和发布的启用及真实回退演练。
+3. 正式权限、Storage Public 和旧 r2.dev 的收紧继续按既有快照、依赖与回滚方案单独审批。
 
 生产故障时先关闭编辑与队列领取，停止正式计划任务，保留不明提交回执。查明 Deployment ID 和当前撤销清单后才决定回退。当前正式站、DNS、Supabase 权限及旧 R2 开关均未修改。

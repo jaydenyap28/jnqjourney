@@ -1,0 +1,152 @@
+{
+  "result": "FULL_SITE_QUEUE_PREVIEW_PASS",
+  "checkedAt": "2026-11-12T09:09:07.357Z",
+  "scope": {
+    "project": "jnqjourney-static-recovery-candidate",
+    "branch": "full-queue-mwd3sln4",
+    "environment": "preview",
+    "noindex": true,
+    "functions": 0
+  },
+  "added": {
+    "id": "883232a6-20ee-4165-96bb-e5b22fccfaba",
+    "url": "https://883232a6.jnqjourney-static-recovery-candidate.pages.dev",
+    "environment": "preview",
+    "createdAt": "2026-11-12T08:56:26.35708Z",
+    "functions": 0,
+    "stage": "success",
+    "origin": "https://883232a6.jnqjourney-static-recovery-candidate.pages.dev",
+    "phase": "--added",
+    "jobId": "8901a8e923cd29bdd0790da3fd9cf5645678d6148b9c864bebcc7db973f11954",
+    "revision": "f0ec0884e76a6ac1227f58ac56feb82f008f45abcc2b4fbdb70ddd6922ee8f81",
+    "statuses": {
+      "/_admin-publication.json": 200,
+      "/public-data/locations.json": 200,
+      "/public-data/guides.json": 200,
+      "/sitemap.xml": 200,
+      "/public-data/notes.json": 200,
+      "/media/static/10e30f8e73d51b871c1fe3ec088b5df7bc837b3293374ac43167d057d52afcef.png": 200,
+      "/en/spot/full-queue-drill-mwd3sln4-95004": 200,
+      "/public-data/spots/full-queue-drill-mwd3sln4-95004.json": 200,
+      "/api/spots/full-queue-drill-mwd3sln4-95004": 200
+    },
+    "browserResults": {
+      "spot": {
+        "renderedChange": true,
+        "imageDecoded": true
+      },
+      "note": {
+        "renderedChange": true,
+        "imageDecoded": false
+      },
+      "guide": {
+        "renderedChange": true,
+        "imageDecoded": false
+      }
+    },
+    "publicPages": 1351,
+    "publicSpots": 583,
+    "notes": 6,
+    "guides": 7,
+    "staticMedia": 4516,
+    "assetUpload": "Success! Uploaded 2137 files (6004 already uploaded)"
+  },
+  "withdrawn": {
+    "id": "d2d9a39b-85dd-40ee-b5a1-a712d639632b",
+    "url": "https://d2d9a39b.jnqjourney-static-recovery-candidate.pages.dev",
+    "environment": "preview",
+    "createdAt": "2026-11-12T09:07:55.364352Z",
+    "functions": 0,
+    "stage": "success",
+    "origin": "https://d2d9a39b.jnqjourney-static-recovery-candidate.pages.dev",
+    "phase": "--withdrawn",
+    "jobId": "83c9219961477a4b6b95588bdb242d47959eeb5540f7466d5adc77aa1651189f",
+    "revision": "280724c51cea88e1171fa754c65c0ed8174de3edadb56cfb2184a64ad9e5203d",
+    "statuses": {
+      "/_admin-publication.json": 200,
+      "/public-data/guides.json": 200,
+      "/public-data/locations.json": 200,
+      "/sitemap.xml": 200,
+      "/public-data/notes.json": 200,
+      "/media/static/10e30f8e73d51b871c1fe3ec088b5df7bc837b3293374ac43167d057d52afcef.png": 404,
+      "/en/spot/full-queue-drill-mwd3sln4-95004": 404,
+      "/public-data/spots/full-queue-drill-mwd3sln4-95004.json": 404,
+      "/api/spots/full-queue-drill-mwd3sln4-95004": 404,
+      "/spot/full-queue-drill-mwd3sln4-95004": 404
+    },
+    "browserResults": {},
+    "publicPages": 1349,
+    "publicSpots": 582,
+    "notes": 6,
+    "guides": 7,
+    "staticMedia": 4515,
+    "assetUpload": "Success! Uploaded 2056 files (6079 already uploaded)",
+    "fixtureId": 95004,
+    "fixtureHidden": true,
+    "queueReceipt": {
+      "jobId": "83c9219961477a4b6b95588bdb242d47959eeb5540f7466d5adc77aa1651189f",
+      "state": "published",
+      "deploymentId": "d2d9a39b-85dd-40ee-b5a1-a712d639632b",
+      "url": "https://d2d9a39b.jnqjourney-static-recovery-candidate.pages.dev",
+      "verifiedAt": "2026-11-12T09:08:12.073Z",
+      "functions": 0,
+      "evidence": {
+        "removedPages": [
+          "/spot/full-queue-drill-mwd3sln4-95004"
+        ],
+        "removedMedia": [
+          "/media/static/10e30f8e73d51b871c1fe3ec088b5df7bc837b3293374ac43167d057d52afcef.png"
+        ]
+      }
+    },
+    "unaffectedPages": [
+      {
+        "route": "/spot/turtle-alley-636",
+        "http": 200,
+        "originalTemplate": true,
+        "noindex": true
+      },
+      {
+        "route": "/en/spot/turtle-alley-636",
+        "http": 200,
+        "originalTemplate": true,
+        "noindex": true
+      },
+      {
+        "route": "/region/bangkok-82",
+        "http": 200,
+        "originalTemplate": true,
+        "noindex": true
+      }
+    ],
+    "observedWithdrawalSeconds": 500.393
+  },
+  "production": {
+    "canonical": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "homeHttp": 200,
+    "receiptUnchanged": true,
+    "domainsAndRuntimeConfigUnchanged": true
+  },
+  "historicalPreview": {
+    "retained": true,
+    "testSpotHttp": 200,
+    "revocationScope": "Second fixed deployment and current branch alias. The first fixed deployment retains its approved historical snapshot."
+  },
+  "limits": {
+    "accountRemainingQuota": "UNKNOWN",
+    "localBuildsToday": 8,
+    "localDailyBuildLimit": 8,
+    "withdrawalTimingIsGuarantee": false
+  },
+  "knownCorrections": [
+    "Browser image selector accepts the absolute URL produced by the existing component and still verifies the exact image URL and decoded dimensions."
+  ],
+  "excludedWork": [
+    "Production deployment",
+    "Production database writes or permissions",
+    "DNS",
+    "R2 public switch",
+    "Historical media rescan",
+    "Database restore"
+  ]
+}
