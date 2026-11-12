@@ -9,6 +9,8 @@ import { buildLocationSlug } from '../../lib/location-routing.ts'
 import { SPOT_FIELDS, validateSpotFields, validVersion } from '../spot-loop/spot-contract.mjs'
 import { createAdminStore, AdminError } from './store.ts'
 import { createDraftMedia } from './media.ts'
+import { handlePublication } from './publication-api.ts'
+import { PublicationError, sha256 } from './publication.mjs'
 import { ADMIN_ORIGIN, FIRST_SPOT_ID, FUNCTION, LAST_SPOT_ID, PRIVATE_BUCKET, SUPABASE_ORIGIN } from './scope.mjs'
 import config from './operator.json' with { type: 'json' }
 
@@ -70,20 +72,27 @@ Deno.serve(async (request: Request) => {
         !/^[a-f0-9-]{36}$/.test(config.adminId)) throw new AdminError(503, '隔离服务配置无效。')
     const token = request.headers.get('authorization')?.match(/^Bearer ([\w.-]+)$/i)?.[1]
     if (!token) throw new AdminError(401, '请先登录。')
-    const { data: identity, error: authError } = await createClient(SUPABASE_ORIGIN, anon, dbOptions).auth.getUser(token)
-    if (authError || !identity.user) throw new AdminError(401, '会话失效，请重新登录。')
-    if (identity.user.id !== config.adminId) throw new AdminError(403, '这个账号没有后台权限。')
+    const url = new URL(request.url)
+    const route = url.pathname.replace(new RegExp(`^/(?:functions/v1/)?${FUNCTION}(?=/|$)`), '')
+    const runner = route.startsWith('/publication/runner/')
+    if (runner) {
+      const proof = request.headers.get('x-jnq-runner-key') || ''
+      if (origin || !/^[a-f0-9]{64}$/.test(proof) ||
+          await sha256(proof) !== config.runnerKeyHash) throw new AdminError(403, '仅允许隔离执行器读取。')
+    } else {
+      const { data: identity, error: authError } = await createClient(SUPABASE_ORIGIN, anon, dbOptions).auth.getUser(token)
+      if (authError || !identity.user) throw new AdminError(401, '会话失效，请重新登录。')
+      if (identity.user.id !== config.adminId) throw new AdminError(403, '这个账号没有后台权限。')
+    }
 
     const db = createClient(SUPABASE_ORIGIN, service, dbOptions)
     const store = createAdminStore(db)
     const media = createDraftMedia(readEnv)
-    const url = new URL(request.url)
-    const route = url.pathname.replace(new RegExp(`^/(?:functions/v1/)?${FUNCTION}(?=/|$)`), '')
     const method = request.method
     if (route === '/session' && method === 'GET') return json({ authorized: true })
-    if (route === '/publication' && method === 'GET') return json({
-      state: 'unavailable', message: '发布执行器尚未接通。保存内容保留在隔离后台。',
-    })
+    if (route === '/publication' || route.startsWith('/publication/')) {
+      return await handlePublication({ db, store, media, route, method, headers, runner, read: () => readBody(request) })
+    }
     if (route === '/upload/r2' && method === 'POST') {
       const item = await media.upload(request)
       return json({ items: [item], files: [item], ...item })
@@ -264,7 +273,7 @@ Deno.serve(async (request: Request) => {
     }
     return json({ error: '此功能尚未接入独立后台。' }, 501)
   } catch (error) {
-    if (error instanceof AdminError) return json({ error: error.message }, error.status)
+    if (error instanceof AdminError || error instanceof PublicationError) return json({ error: error.message }, error.status)
     if (error instanceof NoteConflictError) return json({ error: '云端已有较新版本，请保留编辑内容并重新读取。' }, 409)
     return json({ error: '隔离服务暂不可用，请检查保存状态后再试。' }, 503)
   }

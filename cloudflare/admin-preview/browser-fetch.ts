@@ -7,7 +7,7 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
   const route = typeof input === 'string' ? input : ''
   const target = new URL(route, 'https://editor.invalid')
   if (target.origin !== 'https://editor.invalid' || !route.startsWith('/') ||
-      !/^\/(?:api\/(?:admin\/|upload\/r2$)|session$|publication$)/.test(target.pathname)) {
+      !/^\/(?:api\/(?:admin\/|upload\/r2$)|session$|publication(?:\/(?:catalog|retry))?$)/.test(target.pathname)) {
     throw new Error('后台请求路径不受支持。')
   }
   const { data } = await supabase.auth.getSession()

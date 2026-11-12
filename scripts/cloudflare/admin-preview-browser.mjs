@@ -271,7 +271,7 @@ try {
   assert.match(await phone.locator('textarea[placeholder^="在此输入您的旅行故事"]').inputValue(), /自动保存已读回/)
   const publication = await call('/publication')
   assert.equal(publication.status, 200)
-  assert.equal(publication.body.state, 'unavailable')
+  assert.ok(['draft', 'waiting', 'queued', 'building', 'verifying', 'published', 'failed'].includes(publication.body.state))
   record('publication', publication.body.state)
   await phone.getByRole('button', { name: 'Sign out' }).click()
   await phone.waitForURL(url => url.pathname === '/admin/login')

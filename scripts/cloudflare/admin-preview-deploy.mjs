@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash, randomBytes } from 'node:crypto'
 import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
@@ -39,6 +40,17 @@ if (mode === '--prepare') {
   const work = path.join(root, 'edge')
   const folder = path.join(work, 'supabase/functions', FUNCTION)
   await mkdir(folder, { recursive: true })
+  const runnerFile = path.join(root, 'publisher/.runner-key')
+  await mkdir(path.dirname(runnerFile), { recursive: true })
+  let runnerKey
+  try { runnerKey = (await readFile(runnerFile, 'utf8')).trim() }
+  catch (error) {
+    if (error.code !== 'ENOENT') throw error
+    runnerKey = randomBytes(32).toString('hex')
+    await writeFile(runnerFile, runnerKey, { flag: 'wx', mode: 0o600 })
+  }
+  assert.match(runnerKey, /^[a-f0-9]{64}$/)
+  const runnerKeyHash = createHash('sha256').update(runnerKey).digest('hex')
   await build({
     entryPoints: ['cloudflare/admin-preview/index.ts'], bundle: true, format: 'esm',
     platform: 'neutral', target: 'es2022', external: ['npm:*'],
@@ -46,12 +58,12 @@ if (mode === '--prepare') {
     plugins: [{ name: 'isolated-operator', setup(builder) {
       builder.onResolve({ filter: /^\.\/operator\.json$/ }, () => ({ path: 'admin', namespace: 'operator' }))
       builder.onLoad({ filter: /.*/, namespace: 'operator' }, () => ({
-        contents: JSON.stringify({ adminId: identity.userId }), loader: 'json',
+        contents: JSON.stringify({ adminId: identity.userId, runnerKeyHash }), loader: 'json',
       }))
     } }],
   })
   const result = await readFile(path.join(folder, 'index.ts'), 'utf8')
-  assert.ok(result.includes(PROJECT_REF) && !result.includes('vrufunuomioczocdsoer') && !result.includes(keys.service))
+  assert.ok(result.includes(PROJECT_REF) && !result.includes('vrufunuomioczocdsoer') && !result.includes(keys.service) && !result.includes(runnerKey))
   const db = createClient(SUPABASE_ORIGIN, keys.service, { auth: { persistSession: false, autoRefreshToken: false } })
   const { data: bucket, error } = await db.storage.getBucket(PRIVATE_BUCKET)
   const functions = async () => JSON.parse((await run(process.execPath, [cli, 'functions', 'list', '--project-ref', PROJECT_REF, '--output', 'json'],

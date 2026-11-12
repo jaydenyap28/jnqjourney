@@ -1,0 +1,129 @@
+{
+  "admin": {
+    "url": "https://admin-review.jnqjourney-admin-isolated.pages.dev/admin/login",
+    "fixedUrl": "https://88538571.jnqjourney-admin-isolated.pages.dev",
+    "deploymentId": "88538571-2231-4658-8ca8-7cd9b3c1d0c9",
+    "functions": 0,
+    "production": false
+  },
+  "edge": {
+    "projectRef": "rnamstwwbzknwbjwdgrf",
+    "functionId": "0ccabb2e-0668-44bc-8175-35a4c2995b27",
+    "version": 5,
+    "jwt": true,
+    "privateBucket": "jnq-admin-isolated"
+  },
+  "queue": {
+    "draftSaveDidNotQueue": true,
+    "staleVersionHttp": 409,
+    "offlineWaitingInChrome": true,
+    "duplicateCoalesced": true,
+    "firstFailure": "AUTHORITY_VERIFICATION_FAILED",
+    "successfulRetryAttempt": 2,
+    "withdrawnVersionHttp": 409,
+    "invalidatedJobId": "30283c1cde5af7f5fc9991e40cc6b22c81f910fcb361b17bb925490b2b9189a0",
+    "invalidatedJobFailure": "APPROVED_VERSION_CHANGED",
+    "staleQueuedJobPreservedPrevious": true
+  },
+  "initial": {
+    "id": "7910033e3caafd6ca3a5777f2ce2a2a5657b5ce192f1fbb0d18171face077ef8",
+    "deploymentId": "71e1652c-c52a-4b52-a1e4-bb6647d5dc90",
+    "url": "https://71e1652c.jnqjourney-publish-isolated.pages.dev",
+    "verifiedAt": "2026-11-11T15:50:30.781Z",
+    "pages": [
+      "/guide/isolated-guide-mwc8sp3w",
+      "/notes/isolated-note-mwc8sp3w",
+      "/spot/publication-spot-mwcaemit-95003"
+    ],
+    "media": [
+      "/media/static/523e1894519df4ce3ee45b6b458cde041b321bc0ba6f1a10dd0713d7315c21db.png",
+      "/media/static/d033b5d0b7ada73f743e5a53e0024b7964a4fc603162556565257fde727ed67f.png",
+      "/media/static/e4529f7ed45740b61ebc0f427851c2d2c14e8d2a1beff5659af43cae4fa16367.png"
+    ],
+    "evidence": {
+      "removedPages": [],
+      "removedMedia": []
+    },
+    "downloaded": 3,
+    "reused": 0,
+    "functions": 0
+  },
+  "withdrawal": {
+    "id": "9528ce5fc6133d9cb649ed3df4318aed25234d07571940fe6358aa97a4f1a8c6",
+    "deploymentId": "5ae205d8-1177-4d9e-9457-4737d68bf33a",
+    "url": "https://5ae205d8.jnqjourney-publish-isolated.pages.dev",
+    "verifiedAt": "2026-11-11T23:57:14.229Z",
+    "pages": [
+      "/guide/isolated-guide-mwc8sp3w",
+      "/notes/isolated-note-mwc8sp3w"
+    ],
+    "media": [
+      "/media/static/523e1894519df4ce3ee45b6b458cde041b321bc0ba6f1a10dd0713d7315c21db.png",
+      "/media/static/d033b5d0b7ada73f743e5a53e0024b7964a4fc603162556565257fde727ed67f.png"
+    ],
+    "evidence": {
+      "removedPages": [
+        "/spot/publication-spot-mwcaemit-95003"
+      ],
+      "removedMedia": [
+        "/media/static/e4529f7ed45740b61ebc0f427851c2d2c14e8d2a1beff5659af43cae4fa16367.png"
+      ]
+    },
+    "downloaded": 0,
+    "reused": 2,
+    "functions": 0
+  },
+  "targetedHttp": {
+    "routes": [
+      {
+        "path": "/spot/publication-spot-mwcaemit-95003",
+        "status": 404
+      },
+      {
+        "path": "/media/static/e4529f7ed45740b61ebc0f427851c2d2c14e8d2a1beff5659af43cae4fa16367.png",
+        "status": 404
+      },
+      {
+        "path": "/public-data/locations.json",
+        "status": 200
+      },
+      {
+        "path": "/notes/isolated-note-mwc8sp3w",
+        "status": 200
+      },
+      {
+        "path": "/guide/isolated-guide-mwc8sp3w",
+        "status": 200
+      }
+    ],
+    "latestRevisedNoteVerified": true,
+    "anonymousQueueHttp": 400
+  },
+  "scheduler": {
+    "task": "JnQ Journey Isolated Publisher",
+    "state": "Running",
+    "watchdogRestartVerified": true,
+    "heartbeat": "2026-11-11T23:58:35.846Z",
+    "logonTrigger": true,
+    "repetitionMinutes": 1,
+    "pollSeconds": 30
+  },
+  "boundaries": {
+    "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "productionHome": 200,
+    "productionUsesFunctions": false,
+    "adminProduction": false,
+    "publicPreviewProduction": false,
+    "isolatedR2PublicDomains": 0
+  },
+  "localBuildBudget": {
+    "daily": 8,
+    "monthly": 240,
+    "minimumSpacingMinutes": 10,
+    "accountQuotaRemaining": "UNKNOWN",
+    "attemptTimes": [
+      "2026-11-11T15:48:06.552Z",
+      "2026-11-11T23:56:50.521Z"
+    ]
+  }
+}

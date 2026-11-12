@@ -26,11 +26,33 @@ Spot 使用隔离 ID 95000–95099，单记录修改要求读到的 `updated_at`
 
 草稿图片使用隔离 R2 的 `_admin-drafts/` 前缀。服务器验证 MIME、文件签名、大小和 SHA-256，浏览器通过管理员请求取得临时 Blob 预览。移除图片引用不删除仍可能被其他草稿使用的对象。尚无自动回收草稿媒体或过期文档版本的任务。
 
-## 一键发布前置条件
+## 隔离一键发布
 
-后台显示实际发布执行器状态。当前执行器未接通。原 `publication-outbox.sql` 与 `publication-worker.mjs` 的隔离测试继续可用，现有全量恢复构建器仍读取正式匿名数据库、旧公共 Storage、R2 权威 feed。直接调用会跳过隔离草稿来源，并可能与当前正式媒体授权清单不一致。接通前需要把批准发布的版本投影和增量图片清单绑定到一次发布任务，并在独立公开 Preview 完成真实静态构建、部署和回执核对。
+[首轮 Preview](https://71e1652c.jnqjourney-publish-isolated.pages.dev) · [撤销版 Preview](https://5ae205d8.jnqjourney-publish-isolated.pages.dev) · [线上撤销版回执](https://5ae205d8.jnqjourney-publish-isolated.pages.dev/_publication.json) · [脱敏验收证据](publication-evidence.json)
 
-优先选用本机 Direct Upload 执行器。现有恢复脚本有本机互斥、来源复核及 SHA-256 校验，已证明 Pages 能复用资产。`--check` 实测本机保护值为每天 8 次、每月 240 次、至少间隔 10 分钟。执行器还需要持久在线、凭据隔离和运维授权。任务按发布内容版本去重，草稿保存不入队。若提交结果不明，先查部署和精确版本回执，禁止直接重试。回退包须再次通过最新撤回与媒体资格核对。私有仓库的托管 Actions 用量受分钟数、缓存及制品配额限制，不能以存放或传输全量 7 GB 包为免费前提。[GitHub Actions 计费](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
+Chrome 实测保存草稿未创建任务、重复点击合并、旧版本被拒绝及执行器离线时显示等待。首个任务因旧执行器凭据收到 403，改用独立执行器密钥后重试同一任务成功。撤销演练中的排队任务因 Note 已修改被拒绝，后台保留上一条成功链接。重新批准后，计划任务自动发布新版。新版 Spot 页面和独占图片均返回 404，Note 和 Guide 仍可读取。新版复用了两个图片文件，未从 R2 下载新图片。停下执行器后，已实测计划任务自动启动新进程。
+
+在后台展开「网站发布」，点击「准备发布」，勾选这次允许公开的完整范围，核对后点击「发布网站」。Spot 必须处于 active + published，Note 必须先标为 Published，Guide 以发布面板明确勾选的版本为准。未选内容从新版本撤下。保存动作只写编辑资料。点击发布才生成持久任务。
+
+隔离流程沿用原发布 outbox 的修订号、单任务领取、按修订确认及不明部署核对约束。任务、重试标记和回执放在现有隔离私有 Storage 桶的 `_publication/`。不执行候选 SQL DDL。Edge 通过现有管理员授权读取隔离表及 Note、Guide 的版本文件与最新指针，服务端投影只保留获准字段、版本号和被引用图片。任务 ID 为投影的 SHA-256。重复点击同一版本只返回现有任务。已经被后续选择取代的旧任务不可直接重放。
+
+执行器复用静态恢复的 Pages 文件与 noindex 规则、HTML 元数据验证、SHA-256 媒体映射和 Direct Upload。隔离适配器生成所选内容的 Spot、Note、Guide 页面及 JSON，用于验证发布链路。全量正式构建器继续保留原有模板和来源。执行器只读取批准清单中的隔离 R2 对象，新图片按摘要获取，已缓存图片按摘要复用。部署前后复核任务版本。后台只在 Pages API 显示该部署成功，且线上 HTML、JSON、图片及版本回执字节全部匹配后显示成功链接。
+
+每个任务使用独立 Preview 分支，构建或验证失败不会替换上一次成功链接。提交结果不明时，本地 `pending.json` 保留部署分支和提交指纹，重启只查 Deployment ID 和实际回执。不要为了重试删除这个文件。若批准范围在构建期间变化，重新准备并批准新版本。撤销通过重新构建实现。新 Preview 排除撤销内容及无引用图片，历史固定 Preview 和已缓存副本仍可能可访问。正式撤销策略须另行批准。
+
+### Windows 执行器
+
+使用同一台电脑、同一 Windows 登录用户的已授权 Supabase CLI 和 Wrangler。完成上面的隔离 Edge 部署后，执行：
+
+```powershell
+& scripts/cloudflare/install-admin-publisher.ps1 -SupabaseCli $env:JNQ_SUPABASE_CLI -WranglerCli $env:JNQ_WRANGLER_CLI
+Start-ScheduledTask -TaskName 'JnQ Journey Isolated Publisher'
+Get-ScheduledTask -TaskName 'JnQ Journey Isolated Publisher'
+```
+
+任务在该 Windows 用户登录时启动，每分钟检查并可自动重新启动，已运行时忽略重复启动。运行用户退出、电脑关机或网络离线时，未执行任务留在隔离私有 Storage，恢复登录与联网后可继续领取。执行器每 30 秒更新心跳。浏览器只看进度，无法调用执行器路由。执行器密钥保存在 Git 忽略的 `artifacts/cloudflare-admin-isolated/publisher/.runner-key`，Edge 部署仅包含其摘要。任务配置仅包含 CLI 路径和固定隔离目标。
+
+本地状态和错误日志位于 `artifacts/cloudflare-admin-isolated/publisher/`。暂停时先禁用该计划任务，再停止运行实例。恢复时启用并启动。状态中的等待冷却时间是 UTC。执行器与恢复脚本共用本机锁和尝试账本，限制每天 8 次、每月 240 次、至少间隔 10 分钟。预检在占用构建预算前失败。正式账户剩余额度需另查，私有仓库的托管 Actions 也受配额限制。[GitHub Actions 计费](https://docs.github.com/en/billing/concepts/product-billing/github-actions)
 
 静态后台为 0 Pages Functions。Supabase Free Edge 公布额度为每月 500,000 次调用，并有每请求 CPU、内存及请求超时限制。后台按操作调用，Note 自动保存、图片读回、版本历史和 R2 出入站仍消耗账户额度。Cloudflare Pages Free 单站最多 20,000 文件，单文件 25 MiB，托管构建 500 次/月。直接上传、本机磁盘与账户真实剩余额度需要分别核对。[Supabase Edge 配额](https://supabase.com/docs/guides/functions/pricing) · [Supabase Edge 运行限制](https://supabase.com/docs/guides/functions/limits) · [Cloudflare Pages 限制](https://developers.cloudflare.com/pages/platform/limits/)
 

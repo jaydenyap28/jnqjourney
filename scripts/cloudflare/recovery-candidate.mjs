@@ -6,6 +6,7 @@ import {randomUUID} from 'node:crypto'
 import path from 'node:path'
 import {RECOVERY_BASE,fingerprint} from './recovery-sources.mjs'
 import {readFinalMediaPlan} from './recovery-media-staging.mjs'
+import {budgetBlockedUntil,publicationBudget} from './publication-budget.mjs'
 
 const deploy=process.argv.includes('--deploy-preview')
 const finalMedia=process.argv.includes('--final-media')
@@ -17,7 +18,7 @@ let ledger=[]
 try{ledger=JSON.parse(await readFile(ledgerFile,'utf8'))}catch(error){if(error.code!=='ENOENT')throw error}
 assert.ok(Array.isArray(ledger),'INVALID_LOCAL_PUBLICATION_LEDGER')
 if(process.argv.includes('--check')) {
-  console.log(JSON.stringify({mode:'LOCAL_PREVIEW_ONLY',dailyBuildCap:8,monthlyBuildCap:240,minimumIntervalMinutes:10,automaticAdminPublishing:false,priorAttempts:ledger.length,formalMigration:'HOLD',
+  console.log(JSON.stringify({mode:'LOCAL_PREVIEW_ONLY',dailyBuildCap:publicationBudget.daily,monthlyBuildCap:publicationBudget.monthly,minimumIntervalMinutes:publicationBudget.spacingMs/60000,automaticAdminPublishing:false,priorAttempts:ledger.length,formalMigration:'HOLD',
     ...(media?{approvedMedia:media.images.size,addedBytes:media.addedBytes,inventorySha256:media.inventorySha256}:{})}))
   process.exit(0)
 }
@@ -33,6 +34,8 @@ const receipt=path.join(directory,'run-result.json')
 let newAttempt=false
 try {
   await lock.writeFile(JSON.stringify({id,pid:process.pid,createdAt:record.startedAt}))
+  try{ledger=JSON.parse(await readFile(ledgerFile,'utf8'))}catch(error){if(error.code!=='ENOENT')throw error;ledger=[]}
+  assert.ok(Array.isArray(ledger),'INVALID_LOCAL_PUBLICATION_LEDGER')
   await mkdir(directory,{recursive:true})
   const step=async(name,args=[])=>{
     record.step=name;await writeFile(receipt,JSON.stringify(record,null,2))
@@ -61,11 +64,9 @@ try {
   const previous=ledger.findLast(item=>item.contentFingerprint===record.contentFingerprint&&item.status===(deploy?'PREVIEW_DEPLOYED':'STATIC_VERIFIED'))
   if(previous){record.status='COALESCED_UNCHANGED';record.previousRun=previous.id}
   else {
-    const now=Date.now(),day=record.startedAt.slice(0,10),month=day.slice(0,7)
-    assert.ok(ledger.filter(item=>item.startedAt.startsWith(day)).length<8,'LOCAL_DAILY_BUILD_BUDGET')
-    assert.ok(ledger.filter(item=>item.startedAt.startsWith(month)).length<240,'LOCAL_MONTHLY_BUILD_BUDGET')
-    assert.ok(!ledger.some(item=>now-Date.parse(item.startedAt)<10*60*1000),'LOCAL_BUILD_COOLDOWN')
-    record.status='BUILDING';ledger.push(record);newAttempt=true
+    const blocked=budgetBlockedUntil(ledger)
+    assert.ok(!blocked,'LOCAL_BUILD_BUDGET_BLOCKED_UNTIL_'+blocked)
+    record.startedAt=new Date().toISOString();record.status='BUILDING';ledger.push(record);newAttempt=true
     await writeFile(ledgerFile,JSON.stringify(ledger,null,2)) // Failed builds consume the budget too.
     for(const name of ['prepare-static-candidate','build-candidate','package-candidate','verify-static-candidate'])await step(name,['--recovery'])
     await step('recovery-links-check')
