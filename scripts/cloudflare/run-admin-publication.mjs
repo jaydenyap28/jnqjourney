@@ -10,6 +10,7 @@ import { jobState, publicationStore, RELEASE_PROJECT, ROOT, sha256 } from '../..
 import { ACCOUNT, privateWranglerToken } from './candidate-cloudflare.mjs'
 import { isolatedKeys } from './isolated-supabase.mjs'
 import { buildAdminRelease } from './build-admin-release.mjs'
+import { buildQueuedFullDrill } from './queued-full-drill.mjs'
 import { budgetBlockedUntil } from './publication-budget.mjs'
 
 assert.deepEqual(process.argv.slice(2), ['--watch', PROJECT_REF])
@@ -27,6 +28,8 @@ const sharedLock = path.join(recovery, 'publication.lock')
 const config = await readJson(path.join(root, 'settings.json'))
 assert.equal(config?.projectRef, PROJECT_REF)
 assert.equal(config?.pagesProject, RELEASE_PROJECT)
+const releaseProject = config.fullSiteDrill ? config.fullSitePagesProject : RELEASE_PROJECT
+if (config.fullSiteDrill) assert.equal(releaseProject, 'jnqjourney-static-recovery-candidate')
 for (const [key, file] of [['JNQ_SUPABASE_CLI', config.supabaseCli], ['JNQ_WRANGLER_CLI', config.wranglerCli]]) {
   assert.ok(typeof file === 'string' && path.isAbsolute(file) && file.endsWith('.js'))
   process.env[key] = file
@@ -43,7 +46,7 @@ const db = createClient(SUPABASE_ORIGIN, keys.service, {
 const bucket = await db.storage.getBucket(PRIVATE_BUCKET)
 assert.ok(!bucket.error && bucket.data?.public === false)
 const queue = publicationStore(db)
-await writeFile(path.join(root, 'wrangler.jsonc'), JSON.stringify({ name: RELEASE_PROJECT, pages_build_output_dir: './releases' }))
+await writeFile(path.join(root, 'wrangler.jsonc'), JSON.stringify({ name: releaseProject, pages_build_output_dir: './releases' }))
 const storageProgress = (job, value) => queue.write(`${ROOT}/progress/${job.id}.json`, {
   ...value, updatedAt: new Date().toISOString(),
 })
@@ -57,6 +60,13 @@ async function verifyAuthority(job) {
   })
   if (response.status === 409) throw failure('APPROVED_VERSION_CHANGED', false)
   if (!response.ok || (await response.json()).revision !== job.id) throw failure('AUTHORITY_VERIFICATION_FAILED')
+  if (job.drill?.withdrawn) {
+    const { data, error } = await db.from('locations').select('publication_status,updated_at').eq('id', job.drill.spotId).single()
+    if (error || !data) throw failure('WITHDRAWAL_VERIFICATION_UNAVAILABLE')
+    if (data.publication_status !== 'hidden' || data.updated_at !== job.drill.withdrawalVersion) {
+      throw failure('APPROVED_VERSION_CHANGED', false)
+    }
+  }
 }
 
 async function cloud() {
@@ -75,10 +85,17 @@ async function cloud() {
     return value.result
   }
   function boundary(project) {
-    assert.equal(project?.name, RELEASE_PROJECT, 'PAGES_PROJECT_MISMATCH')
-    assert.equal(project.production_branch, 'reserved-production', 'PAGES_PRODUCTION_BRANCH_MISMATCH')
-    assert.ok(!project.canonical_deployment && !project.source, 'ISOLATED_PROJECT_HAS_PRODUCTION_OR_GIT')
-    assert.ok((project.domains || []).every(domain => domain === RELEASE_PROJECT + '.pages.dev'), 'ISOLATED_PROJECT_HAS_CUSTOM_DOMAIN')
+    assert.equal(project?.name, releaseProject, 'PAGES_PROJECT_MISMATCH')
+    assert.ok(!project.source, 'ISOLATED_PROJECT_HAS_GIT')
+    if (config.fullSiteDrill) {
+      assert.equal(project.production_branch, 'main')
+      assert.equal(project.canonical_deployment?.id, '333e51aa-506e-4a66-a7c6-4f28e3e890a1', 'PRODUCTION_CHANGED')
+      assert.deepEqual([...project.domains].sort(), ['jnqjourney-static-recovery-candidate.pages.dev', 'jnqjourney.com', 'www.jnqjourney.com'])
+    } else {
+      assert.equal(project.production_branch, 'reserved-production', 'PAGES_PRODUCTION_BRANCH_MISMATCH')
+      assert.ok(!project.canonical_deployment, 'ISOLATED_PROJECT_HAS_PRODUCTION')
+      assert.ok((project.domains || []).every(domain => domain === releaseProject + '.pages.dev'), 'ISOLATED_PROJECT_HAS_CUSTOM_DOMAIN')
+    }
     for (const cfg of Object.values(project.deployment_configs ?? {})) {
       for (const name of ['env_vars', 'r2_buckets', 'kv_namespaces', 'd1_databases', 'services', 'durable_object_namespaces']) {
         assert.equal(Object.keys(cfg[name] ?? {}).length, 0, 'ISOLATED_PROJECT_HAS_RUNTIME_BINDINGS')
@@ -87,15 +104,16 @@ async function cloud() {
   }
   return {
     async project(create = false) {
-      const exists = await request('/' + RELEASE_PROJECT)
+      const exists = await request('/' + releaseProject)
       boundary(exists ?? (create ? await request('', 'POST', {
-        name: RELEASE_PROJECT, production_branch: 'reserved-production',
+        name: releaseProject, production_branch: 'reserved-production',
       }) : null))
     },
     async deployments() {
-      const rows = await request('/' + RELEASE_PROJECT + '/deployments')
-      assert.ok(Array.isArray(rows) && rows.every(row => row.environment === 'preview'))
-      return rows
+      const rows = await request('/' + releaseProject + '/deployments')
+      assert.ok(Array.isArray(rows))
+      if (!config.fullSiteDrill) assert.ok(rows.every(row => row.environment === 'preview'))
+      return rows.filter(row => row.environment === 'preview')
     },
   }
 }
@@ -123,18 +141,19 @@ async function acquireBuildLock() {
 async function verifyDeployment(record, deployment) {
   const origin = new URL(deployment.url)
   assert.equal(origin.protocol, 'https:')
-  assert.match(origin.hostname, new RegExp('^[a-z0-9]+\\.' + RELEASE_PROJECT + '\\.pages\\.dev$'))
+  assert.match(origin.hostname, new RegExp('^[a-z0-9]+\\.' + releaseProject + '\\.pages\\.dev$'))
   assert.equal(origin.origin, deployment.url)
-  const read = async (route, status) => {
-    const response = await fetch(origin.origin + route, { redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(15000) })
+  const read = async (route, status, site = origin.origin) => {
+    const response = await fetch(site + route, { redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(15000) })
     assert.equal(response.status, status)
     assert.match(response.headers.get('x-robots-tag') || '', /noindex/)
     return Buffer.from(await response.arrayBuffer())
   }
-  const release = JSON.parse((await read('/_publication.json', 200)).toString())
+  const receiptPath = record.drill ? '/_admin-publication.json' : '/_publication.json'
+  const release = JSON.parse((await read(receiptPath, 200)).toString())
   assert.deepEqual(release, record.receipt, 'DEPLOYED_PUBLICATION_RECEIPT_MISMATCH')
   for (const file of release.files) {
-    const route = file.path === 'index.html' ? '/' : '/' + file.path.replace(/\.html$/, '')
+    const route = file.path === 'index.html' ? '/' : '/' + file.path.replace(/\/index\.html$|\.html$/, '')
     const status = file.path === '404.html' ? 404 : 200
     if (file.path === '404.html') continue
     const bytes = await read(route, status)
@@ -144,11 +163,17 @@ async function verifyDeployment(record, deployment) {
   await read('/jnq-publication-missing', 404)
   const removedPages = (record.previous?.pages ?? []).filter(route => !release.pages.includes(route))
   const removedMedia = (record.previous?.media ?? []).filter(url => !release.media.some(row => row.url === url))
-  for (const route of [...removedPages, ...removedMedia]) await read(route, 404)
+  for (const route of new Set([...removedPages, ...removedMedia, ...(release.withdrawnPaths ?? [])])) await read(route, 404)
+  if (record.drill) {
+    const alias = `https://${record.branch}.${releaseProject}.pages.dev`
+    assert.deepEqual(JSON.parse((await read(receiptPath, 200, alias)).toString()), release, 'PREVIEW_ALIAS_NOT_CURRENT')
+    for (const route of release.withdrawnPaths) await read(route, 404, alias)
+  }
   return { removedPages, removedMedia }
 }
 
 async function reconcile(record) {
+  if (record.drill) assert.equal(record.project, releaseProject, 'PENDING_DEPLOYMENT_PROJECT_CHANGED')
   const client = await cloud()
   await client.project()
   const matching = (await client.deployments()).filter(row =>
@@ -203,37 +228,52 @@ async function tick() {
   if (!job) return
   const progress = await jobState(queue, job)
   if (!['queued', 'building'].includes(progress.state)) return
+  const drill = config.fullSiteDrill ? await readJson(path.join(root, 'full-site-drill.json')) : null
+  if (config.fullSiteDrill && drill?.jobId !== job.id) return
   const lock = await acquireBuildLock()
   if (!lock) return
   let submitted = false
   try {
-    await verifyAuthority(job)
+    await verifyAuthority({ ...job, drill })
     const client = await cloud()
     await client.project(true)
     const ledger = (await readJson(ledgerFile)) ?? []
     assert.ok(Array.isArray(ledger))
-    const blocked = budgetBlockedUntil(ledger)
+    if (drill?.resumeRun) assert.ok(ledger.some(row => row.id === job.id && row.mode === 'admin-isolated'),
+      'REUSE_REQUIRES_PRIOR_BUILD_RESERVATION')
+    const blocked = drill?.resumeRun ? null : budgetBlockedUntil(ledger)
     if (blocked) {
       await storageProgress(job, { state: 'queued', attempt: progress.attempt,
         reason: '本机构建冷却至 ' + blocked })
       return
     }
-    ledger.push({ startedAt: new Date().toISOString(), status: 'BUILDING', mode: 'admin-isolated', id: job.id })
-    const temp = path.join(recovery, 'publication-attempts-' + process.pid + '.tmp')
-    await writeFile(temp, JSON.stringify(ledger, null, 2))
-    await rename(temp, ledgerFile)
+    if (!drill?.resumeRun) {
+      ledger.push({ startedAt: new Date().toISOString(), status: 'BUILDING', mode: 'admin-isolated', id: job.id })
+      const temp = path.join(recovery, 'publication-attempts-' + process.pid + '.tmp')
+      await writeFile(temp, JSON.stringify(ledger, null, 2))
+      await rename(temp, ledgerFile)
+    }
     await storageProgress(job, { state: 'building', attempt: progress.attempt })
-    const output = path.join(root, 'releases', job.id, Date.now().toString(), 'out')
-    const built = await buildAdminRelease({ job, output, cache: path.join(root, 'approved-media'), runnerHeaders })
-    await verifyAuthority(job)
+    const built = drill ? await buildQueuedFullDrill({ job, drill, workspace: config.fullSiteDrill, runnerHeaders }) : null
+    const output = built?.output ?? path.join(root, 'releases', job.id, Date.now().toString(), 'out')
+    const result = built ?? await buildAdminRelease({ job, output, cache: path.join(root, 'approved-media'), runnerHeaders })
+    await verifyAuthority({ ...job, drill })
     const commit = (await sha256(job.id + ':' + progress.attempt)).slice(0, 40)
-    const branch = 'release-' + commit.slice(0, 18)
-    assert.ok(!(await client.deployments()).some(row =>
-      row.deployment_trigger?.metadata?.branch === branch ||
-      row.deployment_trigger?.metadata?.commit_hash === commit), 'DEPLOYMENT_ALREADY_EXISTS_RECONCILE')
-    const record = { id: job.id, attempt: progress.attempt, branch, commit,
-      receipt: built.receipt, downloaded: built.downloaded, reused: built.reused,
-      previous: await queue.read(ROOT + '/live.json') }
+    const branch = drill ? 'full-queue-' + drill.marker.slice('JNQ-QUEUE-'.length).toLowerCase() : 'release-' + commit.slice(0, 18)
+    const previous = await queue.read(ROOT + '/live.json')
+    const deployments = await client.deployments()
+    assert.ok(!deployments.some(row => row.deployment_trigger?.metadata?.commit_hash === commit),
+      'DEPLOYMENT_ALREADY_EXISTS_RECONCILE')
+    const branchDeployments = deployments.filter(row => row.deployment_trigger?.metadata?.branch === branch)
+    if (drill?.withdrawn) {
+      assert.ok(previous?.id === drill.firstJobId &&
+        branchDeployments.some(row => row.id === previous.deploymentId), 'WITHDRAWAL_REQUIRES_VERIFIED_ADDED_PREVIEW')
+    } else {
+      assert.equal(branchDeployments.length, 0, 'DEPLOYMENT_BRANCH_ALREADY_EXISTS_RECONCILE')
+    }
+    const record = { id: job.id, attempt: progress.attempt, branch, commit, project: releaseProject,
+      receipt: result.receipt, downloaded: result.downloaded, reused: result.reused, drill,
+      previous }
     // Journal before submission. After a crash only the read-only reconciler
     // runs. No unknown upload is ever replaced by an automatic resubmission.
     await writeFile(pendingFile, JSON.stringify(record), { flag: 'wx' })
@@ -241,8 +281,8 @@ async function tick() {
     await storageProgress(job, { state: 'verifying', attempt: progress.attempt, reason: '正在提交隔离 Preview。' })
     try {
       await run(process.execPath, [config.wranglerCli, 'pages', 'deploy', output,
-        '--project-name', RELEASE_PROJECT, '--branch', branch, '--commit-hash', commit, '--commit-dirty=true'], {
-        cwd: root, windowsHide: true, timeout: 120000, maxBuffer: 2 * 1024 * 1024,
+        '--project-name', releaseProject, '--branch', branch, '--commit-hash', commit, '--commit-dirty=true'], {
+        cwd: root, windowsHide: true, timeout: drill ? 45 * 60_000 : 120000, maxBuffer: 2 * 1024 * 1024,
         env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: ACCOUNT, WRANGLER_SEND_METRICS: 'false' },
       })
     } catch { log('upload-needs-reconciliation', { jobId: job.id }) }
@@ -257,6 +297,14 @@ async function tick() {
     await unlink(sharedLock)
   }
 }
+
+// Builds and Direct Upload may exceed the UI heartbeat window. Publishing
+// status remains tied to the job's verified receipt.
+const heartbeat = setInterval(() => {
+  void queue.write(ROOT + '/heartbeat.json', { at: new Date().toISOString() })
+    .catch(() => log('heartbeat-unavailable'))
+}, 30000)
+heartbeat.unref()
 
 for (;;) {
   try {

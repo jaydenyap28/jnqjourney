@@ -1,13 +1,14 @@
 // Production data is read-only. This entry point can upload a noindex branch preview only.
 import assert from 'node:assert/strict'
-import { execFile, spawn } from 'node:child_process'
+import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { lstat, mkdir, readFile, readdir, realpath, symlink, writeFile, open, unlink } from 'node:fs/promises'
+import { lstat, mkdir, readFile, realpath, writeFile, open, unlink } from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { ACCOUNT, privateWranglerToken } from './candidate-cloudflare.mjs'
 import { connectFormalReadSource, FORMAL_REF } from './formal-read-source.mjs'
-import { BRANCH, captureRecoverySources, fingerprint, PROJECT, RECOVERY, RECOVERY_BASE, SOURCE } from './recovery-sources.mjs'
+import { BRANCH, captureRecoverySources, fingerprint, PROJECT, RECOVERY, RECOVERY_BASE } from './recovery-sources.mjs'
+import { buildFullStaticPackage } from './full-static-package.mjs'
 import { budgetBlockedUntil } from './publication-budget.mjs'
 import { loadReleaseSnapshot, prepareRehearsal, publicIdentityDelta, requireWithdrawalApproval, verifyRehearsal } from './full-release-rehearsal.mjs'
 
@@ -41,18 +42,6 @@ async function checkWorkspace() {
   assert.equal(production.deploymentId, acceptedProduction)
   assert.ok(production.success && production.usesFunctions === false)
   return path.join(baseline, 'media/static')
-}
-
-async function runStep(script, env, args = []) {
-  const log = await open(path.join(RECOVERY, script + '.log'), 'wx')
-  try {
-    await new Promise((resolve, reject) => {
-      const child = spawn(process.execPath, [path.resolve('scripts/cloudflare', script + '.mjs'), ...args],
-        { env, windowsHide: true, stdio: ['ignore', log.fd, log.fd] })
-      child.on('error', reject)
-      child.on('exit', code => code === 0 ? resolve() : reject(Error(`FULL_RELEASE_${script}_${code}`)))
-    })
-  } finally { await log.close() }
 }
 
 async function verifyCapturedFiles() {
@@ -111,44 +100,7 @@ async function prepareOperators() {
 
 async function build(mediaRoot, { resume = false } = {}) {
   const { manifest } = await verifyCapturedFiles()
-  const env = {
-    ...process.env, JNQ_RECOVERY_FINAL_MEDIA: '1', JNQ_RECOVERY_REUSE_MEDIA: '1',
-    JNQ_RECOVERY_VERIFIED_MEDIA: mediaRoot,
-  }
-  if (resume) {
-    const stage = await json(path.join(RECOVERY, 'manifest.json'))
-    assert.equal(stage.sourceFingerprint, fingerprint(manifest.files))
-    const buildLog = await readFile(path.join(RECOVERY, 'build-candidate.log'), 'utf8')
-    assert.match(buildLog, /Generating static pages \(\d+\/\d+\)/)
-    assert.match(buildLog, /at linkFinalMediaToExport/, 'EXPORT_COMPLETION_NOT_PROVEN')
-    const exported = path.join(SOURCE, 'out')
-    await readFile(path.join(exported, '404.html'))
-    assert.equal((await readdir(path.join(exported, 'media/static'))).length, 0, 'MEDIA_LINK_PHASE_ALREADY_STARTED')
-    process.env.JNQ_RECOVERY_VERIFIED_MEDIA = mediaRoot
-    const { linkFinalMediaToExport, readFinalMediaPlan } = await import('./recovery-media-staging.mjs')
-    await linkFinalMediaToExport(exported, await readFinalMediaPlan({ verifyCache: false, reuseExistingMedia: true }))
-  } else {
-    await mkdir(SOURCE, { recursive: true })
-    assert.equal((await readdir(SOURCE)).length, 0, 'PREVIOUS_SOURCE_MUST_BE_PRESERVED')
-    // Stage existing UI, then resolve installed dependencies without copying the repository or credentials.
-    const dependencies = path.join(workspace, 'build-dependencies', 'node_modules')
-    assert.equal((await json(path.join(dependencies, 'next/package.json'))).version,
-      (await json('node_modules/next/package.json')).version, 'FORMAL_BUILD_DEPENDENCIES_MISMATCH')
-    await runStep('prepare-static-candidate', env, ['--recovery'])
-    await symlink(dependencies, path.join(SOURCE, 'node_modules'), 'junction')
-    await runStep('build-candidate', env, ['--recovery'])
-  }
-  for (const [script, args] of [
-    ['package-candidate', ['--recovery']], ['verify-static-candidate', ['--recovery']], ['recovery-links-check', []],
-    ['recovery-media-release-gate', ['--verify-package']],
-  ]) await runStep(script, env, args)
-  const evidence = await json(path.join(RECOVERY, 'verification.json'))
-  const media = await json(path.join(RECOVERY, 'media-approval-gate.json'))
-  assert.ok(evidence.passed && evidence.functions === 0 && media.finalPackageVerified)
-  assert.equal(evidence.publicSpotDetails, manifest.counts.publicSpots)
-  const receipt = await json(path.join(output, '_publication.json'))
-  assert.equal(receipt.sourceFingerprint, fingerprint(manifest.files))
-  return { ...evidence, staticMedia: media.packageResult.approvedStaticImages }
+  return buildFullStaticPackage({ workspace, directory: RECOVERY, manifest, mediaRoot, resume })
 }
 
 async function buildWithBudget(mediaRoot, resume) {

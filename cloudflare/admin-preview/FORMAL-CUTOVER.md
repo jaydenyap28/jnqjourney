@@ -51,23 +51,30 @@ node scripts/cloudflare/recovery-browser-check.mjs --final-media
 
 ## 正式 PostgreSQL 备份入口
 
-在 Supabase Dashboard 的正式项目 `vrufunuomioczocdsoer` → Connect 获取 Direct Connection 或 Session Pooler（5432）。将现有连接 URI 保存到 Windows 仅当前用户和 SYSTEM 可访问的文件。也可使用含 `host`、`user`、`password`、`port`、`database` 和可选 `caFile` 的本机私有 JSON。若使用 `caFile`，指定已从正式连接设置取得的 CA PEM 的绝对路径。不要把凭据填入终端参数、聊天、浏览器或 Git。
+2026-11-12 已通过正式项目的只读逻辑备份与本机隔离恢复。使用项目 CA 做 `verify-full`，5 个文件 SHA-256 全部复核。固定 Supabase PostgreSQL 17.6 镜像在无网络临时容器内还原并匹配 62 张表、21 条 RLS 策略、17 个角色、扩展版本和 Note/Guide 版本指针。恢复容器已清理，异机加密副本待安排。完整备份及恢复回执保留在本机私有目录。
+
+在 Supabase Dashboard 的正式项目 `vrufunuomioczocdsoer` → Connect 获取 Direct Connection 或 Session Pooler（5432）。使用同一 Windows 用户和 PowerShell 7 读取仅本机用户可访问的 `production-db.json` 和 `production-db-password.dpapi`。密码解密后只通过标准输入写入临时容器的内存文件系统。官方项目 CA 从 Database Settings 的 SSL Configuration 下载，作为客户端 `verify-full` 的信任链使用。
 
 ```powershell
 $env:JNQ_RECOVERY_WORKSPACE = 'E:\JnQ-Private-Backups\production-admin-20261112'
-$env:JNQ_FORMAL_PG_CONNECTION_FILE = '<已保护的连接文件绝对路径>'
+$env:JNQ_FORMAL_PG_DPAPI_DIR = '<已保护的 DPAPI 配置目录>'
+$env:JNQ_FORMAL_PG_CA_FILE = '<正式 Supabase CA PEM 绝对路径>'
+node scripts/cloudflare/formal-postgres-backup.mjs --probe vrufunuomioczocdsoer
 node scripts/cloudflare/formal-postgres-backup.mjs --backup vrufunuomioczocdsoer
 $env:JNQ_FORMAL_PG_BACKUP_NAME = '<成功回执中的 postgres-logical-* 目录名>'
+$env:JNQ_RESTORE_POSTGRES_IMAGE = '<匹配源版本的本机 Supabase PostgreSQL 镜像 ID>'
 node scripts/cloudflare/formal-postgres-backup.mjs --restore vrufunuomioczocdsoer
 ```
 
-备份使用已安装的 PostgreSQL 17 客户端、`verify-full`、明确项目主机或 pooler 用户名、只读事务和同步快照。完整 archive 包括业务、Auth 和 Storage metadata，另外保留 schema、无角色密码的角色定义、目录核对和 SHA-256。恢复只向临时 Docker PostgreSQL 写入，网络为 none，无对外端口。若源库包含本机没有的扩展，须先提供兼容的已审核镜像，再按固定镜像 ID 执行恢复。角色、ACL、RLS、表行数、主外键和 Storage 指针关联必须一致。完整实例恢复成功后，另将加密备份写入获确认的异机目的地并复核哈希。CLI 2.116.0 与本机 `pg_dump` 17.11 已核对，正式连接文件仍待提供，本轮未生成正式数据库 archive。[PostgreSQL pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html) · [Supabase 连接方式](https://supabase.com/docs/guides/database/connecting-to-postgres)
+备份使用已安装的 PostgreSQL 17 客户端、`verify-full`、明确项目主机或 pooler 用户名、只读事务和同步快照。完整 archive 包括业务、Auth 和 Storage metadata，另外保留 schema、无角色密码的角色定义、目录核对和 SHA-256。恢复只向临时 Docker PostgreSQL 写入，网络为 none，无对外端口，数据库与工作副本均位于 tmpfs。以 `supabase_admin` 初始化临时实例，保留归档中的原授权者。角色、ACL、RLS、表行数、主外键、扩展版本和 Storage 指针关联必须一致。异机副本应另存到获确认的加密目的地并复核哈希。[PostgreSQL pg_dump](https://www.postgresql.org/docs/17/app-pgdump.html) · [Supabase 连接方式](https://supabase.com/docs/guides/database/connecting-to-postgres)
 
 ## 全站演练与正式执行检查点
 
+2026-11-12 后台最后准备的最新状态见 [本轮检查点](FINAL-ADMIN-PREPARATION-2026-11-12.md)。运营账号与两个禁用名单已确认。真实队列已完成完整新增包构建，云端 Preview 与撤销演练因部署目标审批暂停，尚未达到正式切换条件。
+
 - 已完成 [变更版](https://5426cbf4.jnqjourney-static-recovery-candidate.pages.dev) 与 [撤销版](https://ced4e3e3.jnqjourney-static-recovery-candidate.pages.dev)，均为 1,349 路由、582 个公开 Spot、6 篇 Note、7 篇 Guide、0 Functions、全站 noindex。Chrome 在原模板看到三项改动，测试图返回 200 并解码为 96×64。撤销后内容复原，测试图在新固定地址及 [分支别名](https://full-drill-nov12-merge.jnqjourney-static-recovery-candidate.pages.dev) 均返回 404。旧固定 Preview 保留为历史部署。三条英文路由因译文待复核暂时退出 sitemap，撤销后 sitemap 恢复 704 条。正式线上回执和 Deployment ID 保持原值。[本次脱敏证据](formal-cutover-rehearsal-evidence.json)
 - 演练使用通过验收的完整公开快照。三项修改按原记录 ID 和版本哈希覆盖，其他记录保持原样。正式预览比较完整集合，任何记录移除都会生成本机 `withdrawal-review.json`，需要额外批准其精确差异摘要 `JNQ_FORMAL_APPROVED_REMOVAL_SHA256`。浏览器选中少量记录的结果不能作为完整站点输入。
-- 正式 Admin 前端使用原隔离编辑界面，以 `--formal-read-only vrufunuomioczocdsoer` 在本机生成只读包。只使用项目 anon key 和单独的 Edge 入口。正式私有运行目录已有独立凭据、日志和队列回执目录。远端队列、正式 Edge 和 Windows 任务均未启用。当前编辑、上传、发布端点仍待批准与验收。
-- 将用户明确确认的准确邮箱或 Auth UUID 分别写入私有目录 `production-publisher/operator-confirmations.json` 的 `editors` 与 `publishers` 数组。运行 `full-admin-release.mjs --prepare-operators vrufunuomioczocdsoer` 后，两个 UUID 清单只写入同目录的 `verified-operator-allowlists.json`。Publisher 能力不会自动授予 Editor。正式登录和角色仍需用真实确认账号验收。
+- 正式 Admin 前端使用原隔离编辑界面，以 `--formal-read-only vrufunuomioczocdsoer` 在本机生成只读包。只使用项目 anon key 和单独的 Edge 入口。正式私有运行目录已有独立凭据、日志和队列回执目录。正式 Edge、远端队列和 Windows 任务尚未部署。编辑、上传和发布端点仍需接通正式权威来源并验收。
+- 正式 Auth 管理接口确认了用户指定的运营账号，邮箱已验证且账号有效。分别生成 Editor 和 Publisher 的 UUID 清单并写入本机正式配置，两项仍为禁用。身份原值只保留在私有目录。正式 Admin 部署后仍需用真实账号验证登录与两个独立的服务端权限。
 - 正式发布前核对当前 canonical、域名及部署环境，验证批准的完整修订、撤销差异、noindex Preview、当前权威资格和回退包。正式上传后核对 canonical 指向新 Deployment、线上回执匹配、首页及变更链接可用，并确认仍为 0 Functions。任务仅在全部通过后记为成功。
 - 故障时停用并停止 `JnQ Journey Production Publisher`，关闭已获批准启用的 Edge 写入与队列领取，保留不明提交回执。先确认 Cloudflare Deployment ID。回退前核对当前撤销清单，保留私有权限，必要时使用维护页。待正式权限另行审批，再按上方 SQL 与依赖检查收紧匿名表读取和 Storage 访问。旧 r2.dev 另行审批。
