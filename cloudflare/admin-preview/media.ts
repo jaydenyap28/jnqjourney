@@ -26,15 +26,25 @@ function imageMatches(bytes: Uint8Array, ext: string) {
 }
 
 export function createDraftMedia(env: (key: string) => string | undefined) {
+  return createScopedDraftMedia(env, { bucket: BUCKET, prefix: '_admin-drafts',
+    mediaPrefix: MEDIA_PREFIX, accessName: 'CANDIDATE_R2_ACCESS_KEY_ID', secretName: 'CANDIDATE_R2_SECRET_ACCESS_KEY' })
+}
+
+export function createScopedDraftMedia(env: (key: string) => string | undefined, scope: {
+  bucket: string, prefix: string, mediaPrefix: string, accessName: string, secretName: string,
+  requireRightsEvidence?: boolean,
+}) {
+  if (!/^[a-z0-9][a-z0-9-]{2,62}$/.test(scope.bucket) || scope.bucket === 'jnqjourney-img' ||
+      !/^_admin-(?:drafts|formal-drafts)$/.test(scope.prefix) || scope.mediaPrefix !== MEDIA_PREFIX) throw new AdminError(503, '私有媒体范围无效。')
   async function request(method: 'GET' | 'PUT' | 'HEAD', name: string, bytes?: Uint8Array<ArrayBuffer>) {
     if (!MEDIA_NAME.test(name)) throw new AdminError(400, '图片标识无效。')
-    const access = env('CANDIDATE_R2_ACCESS_KEY_ID')
-    const secret = env('CANDIDATE_R2_SECRET_ACCESS_KEY')
+    const access = env(scope.accessName)
+    const secret = env(scope.secretName)
     if (!access || !secret) throw new AdminError(503, '隔离 R2 未配置。')
-    const path = `/${BUCKET}/_admin-drafts/${name}`
+    const path = `/${scope.bucket}/${scope.prefix}/${name}`
     const date = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '')
     const day = date.slice(0, 8)
-    const scope = `${day}/auto/s3/aws4_request`
+    const credentialScope = `${day}/auto/s3/aws4_request`
     const digest = bytes ? name.slice(0, 64) : await hash(new Uint8Array())
     const headers: Record<string, string> = {
       host: HOST, 'x-amz-content-sha256': digest, 'x-amz-date': date,
@@ -44,8 +54,8 @@ export function createDraftMedia(env: (key: string) => string | undefined) {
     const canonical = [method, path, '', names.map(key => `${key}:${headers[key]}\n`).join(''), names.join(';'), digest].join('\n')
     let signingKey = await sign(encoder.encode('AWS4' + secret), day)
     for (const part of ['auto', 's3', 'aws4_request']) signingKey = await sign(signingKey, part)
-    const signature = hex(await sign(signingKey, `AWS4-HMAC-SHA256\n${date}\n${scope}\n${await hash(encoder.encode(canonical))}`))
-    headers.authorization = `AWS4-HMAC-SHA256 Credential=${access}/${scope}, SignedHeaders=${names.join(';')}, Signature=${signature}`
+    const signature = hex(await sign(signingKey, `AWS4-HMAC-SHA256\n${date}\n${credentialScope}\n${await hash(encoder.encode(canonical))}`))
+    headers.authorization = `AWS4-HMAC-SHA256 Credential=${access}/${credentialScope}, SignedHeaders=${names.join(';')}, Signature=${signature}`
     delete headers.host
     return fetch('https://' + HOST + path, {
       method, headers, body: bytes, redirect: 'error', signal: AbortSignal.timeout(15000),
@@ -60,10 +70,23 @@ export function createDraftMedia(env: (key: string) => string | undefined) {
       throw new AdminError(response.status === 404 ? 404 : 503, '图片无法读取。')
     }
     const bytes = new Uint8Array(await response.arrayBuffer())
-    if (bytes.length !== length || await hash(bytes) !== name.slice(0, 64)) {
+    const ext = name.split('.').at(-1) || ''
+    if (bytes.length !== length || await hash(bytes) !== name.slice(0, 64) || !imageMatches(bytes, ext) ||
+        response.headers.get('content-type')?.split(';')[0] !== MIME[ext as keyof typeof MIME]) {
       throw new AdminError(503, '图片字节未通过校验。')
     }
-    return { bytes, type: MIME[name.split('.').at(-1) as keyof typeof MIME] }
+    return { bytes, type: MIME[name.split('.').at(-1) as keyof typeof MIME], etag: response.headers.get('etag') }
+  }
+
+  async function head(name: string) {
+    const response = await request('HEAD', name)
+    const size = Number(response.headers.get('content-length'))
+    const type = response.headers.get('content-type')?.split(';')[0]
+    const etag = response.headers.get('etag')
+    await response.body?.cancel()
+    if (!response.ok || !Number.isSafeInteger(size) || size < 1 || size > MAX_IMAGE ||
+        type !== MIME[name.split('.').at(-1) as keyof typeof MIME] || !etag) throw new AdminError(409, '当前媒体身份无法确认。')
+    return { size, type, etag }
   }
 
   async function upload(req: Request) {
@@ -88,6 +111,8 @@ export function createDraftMedia(env: (key: string) => string | undefined) {
       headers: { 'Content-Type': req.headers.get('content-type') || '' },
     }).formData()
     const file = form.get('files') ?? form.get('file')
+    const rightsEvidence = form.get('rightsEvidence')
+    if (scope.requireRightsEvidence && (typeof rightsEvidence !== 'string' || !rightsEvidence.trim() || rightsEvidence.length > 500)) throw new AdminError(400, '请确认图片为自有或已获准用于本站，并填写来源。')
     if (!(file instanceof File) || !file.size || file.size > MAX_IMAGE) throw new AdminError(400, '请提供有效图片文件。')
     const ext = Object.entries(MIME).find(([, mime]) => mime === file.type)?.[0]
     const bytes = new Uint8Array(await file.arrayBuffer())
@@ -96,8 +121,9 @@ export function createDraftMedia(env: (key: string) => string | undefined) {
     const result = await request('PUT', name, bytes)
     await result.body?.cancel()
     if (!result.ok) throw new AdminError(503, '隔离 R2 上传失败。')
-    await get(name)
-    return { url: MEDIA_PREFIX + name, key: '_admin-drafts/' + name, size: file.size }
+    const verified = await get(name)
+    return { url: scope.mediaPrefix + name, key: scope.prefix + '/' + name, size: file.size,
+      ...(scope.requireRightsEvidence ? { rightsEvidence: (rightsEvidence as string).trim(), etag: verified.etag } : {}) }
   }
 
   async function verifyReferences(record: unknown) {
@@ -109,5 +135,5 @@ export function createDraftMedia(env: (key: string) => string | undefined) {
       if (!response.ok || !length || length > MAX_IMAGE) throw new AdminError(409, '关联图片缺失，请重新上传。')
     }
   }
-  return { get, upload, verifyReferences }
+  return { get, head, upload, verifyReferences }
 }

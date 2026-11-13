@@ -1,5 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import ts from 'typescript'
+import { readFile } from 'node:fs/promises'
 import { freezeFormalEditor } from '../scripts/cloudflare/formal-readonly-markup.mjs'
 import { planFormalSpotMutation, assertFormalAuthorityVersion } from '../cloudflare/admin-preview/formal-write-plan.mjs'
 import { safeReadonlyFailure, requireUnexpiredReplayWindow } from '../cloudflare/admin-preview/formal-readonly-result.mjs'
@@ -64,4 +66,18 @@ test('expired-during-logout or delayed replay responses never count as logout pr
   assert.throws(() => requireUnexpiredReplayWindow(2000, 2000))
   assert.throws(() => requireUnexpiredReplayWindow(2000, 3000))
   assert.throws(() => requireUnexpiredReplayWindow(NaN, 1000))
+})
+
+test('managed capabilities preserve busy guards and bare drag attributes without breaking original editors', async () => {
+  const source=`'use client'\nexport function Form(){return <><Button disabled={busy} onClick={save}>Save</Button><input type="file"/><div draggable /></>}`
+  const result=freezeFormalEditor(source,'synthetic.tsx',true)
+  assert.match(result,/!formalCanWrite\(\) \|\| \(busy\)/)
+  assert.match(result,/!formalCanUpload\(\)/)
+  assert.match(result,/formalCanWrite\(\) && \(true\)/)
+  assert.equal(ts.createSourceFile('synthetic.tsx',result,99,true,4).parseDiagnostics.length,0)
+  for (const file of ['components/AdminLocationForm.tsx','app/admin/guides/page.tsx','app/admin/notes/page.tsx']) {
+    const transformed=freezeFormalEditor(await readFile(file,'utf8'),file,true)
+    assert.match(transformed,/import \{ formalCanWrite, formalCanUpload \}/)
+    assert.equal(ts.createSourceFile(file,transformed,99,true,4).parseDiagnostics.length,0,file)
+  }
 })

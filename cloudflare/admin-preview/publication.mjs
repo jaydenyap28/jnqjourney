@@ -19,8 +19,10 @@ export async function sha256(value) {
   return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), n => n.toString(16).padStart(2, '0')).join('')
 }
 
-export function publicationStore(db) {
-  const bucket = db.storage.from(PRIVATE_BUCKET)
+export function publicationStore(db, bucketName = PRIVATE_BUCKET, maxBytes = 4 * 1024 * 1024) {
+  if (!/^[a-z0-9][a-z0-9-]{2,62}$/.test(bucketName) || bucketName === 'location-images' ||
+      !Number.isSafeInteger(maxBytes) || maxBytes < 1 || maxBytes > 16 * 1024 * 1024) throw new PublicationError(503, '私有发布存储范围无效。')
+  const bucket = db.storage.from(bucketName)
   const unwrap = result => {
     if (result.error) throw new PublicationError(503, '隔离发布存储暂不可用。')
     return result.data
@@ -37,7 +39,7 @@ export function publicationStore(db) {
       if (!listed.error && Array.isArray(listed.data) && listed.data.length < 20 && !listed.data.some(row => row.name === file)) return null
       throw new PublicationError(503, '隔离发布存储读取失败。')
     }
-    if (!result.data || result.data.size > 4 * 1024 * 1024) throw new PublicationError(503, '隔离发布文件无效。')
+    if (!result.data || result.data.size > maxBytes) throw new PublicationError(503, '隔离发布文件无效。')
     return JSON.parse(await result.data.text())
   }
   const write = async (name, value, upsert = true) =>

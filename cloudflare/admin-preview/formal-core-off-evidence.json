@@ -1,0 +1,92 @@
+{
+  "result": "FORMAL_CORE_OFF_PREPARED",
+  "date": "2026-11-13",
+  "formalProject": "vrufunuomioczocdsoer",
+  "readonlyAcceptance": {
+    "result": "PASS",
+    "source": "USER_REPORTED_REAL_CHROME_ACCEPTANCE_2026_11_13",
+    "retested": false,
+    "spots": 586,
+    "notes": 6,
+    "guides": 7,
+    "serverRefusals405": 7,
+    "unchangedBeforeAfter": true,
+    "loggedOutSessionReplayStatus": 401
+  },
+  "localValidation": {
+    "syntheticTestsPassed": 36,
+    "syntheticTestsFailed": 0,
+    "strictEdgeTypes": "PASS",
+    "actualAdminComponentBuild": "PASS",
+    "adminStaticRoutes": 12,
+    "adminFiles": 306,
+    "adminFunctions": 0,
+    "adminCandidateDeployed": false,
+    "offEdgeModules": 28,
+    "offEdgeBundleBytes": 97474,
+    "offEdgeBundleSha256": "1afef48ee60d4ffb09cd90b628170189bb6459a9a58adfa553cd34bb2e8698ef"
+  },
+  "newSqlBoundary": {
+    "remoteApplied": false,
+    "environment": "LOCAL_SYNTHETIC_POSTGRES_ONLY",
+    "postgresVersion": "17.11",
+    "image": "sha256:ff87138949ad9a46f32ff23bd6852b52ce024a13dffe9b4087be98292cdd3b4f",
+    "network": "none",
+    "publishedPorts": 0,
+    "tmpfsDatabase": true,
+    "anonAndAuthenticatedLocationSelect": "42501",
+    "privateStorageSelectRows": 0,
+    "privateStorageInsert": "42501",
+    "privateStorageUpdateRows": 0,
+    "privateStorageDeleteRows": 0,
+    "serviceRolePreserved": true,
+    "originalStoragePublicFlagUnchanged": true,
+    "inheritedGrantAbortsWholeDdl": true,
+    "temporaryContainerRemoved": true
+  },
+  "formalTask": {
+    "name": "JnQ Journey Production Publisher",
+    "actionPrepared": true,
+    "state": "Disabled",
+    "startedThisRound": false,
+    "enabled": false,
+    "formalWritesEnabled": false,
+    "formalUploadsEnabled": false,
+    "formalPublishingEnabled": false
+  },
+  "boundaries": {
+    "compiledWrites": false,
+    "compiledUploads": false,
+    "compiledPublication": false,
+    "edgeDeploymentThisRound": false,
+    "pagesDeploymentThisRound": false,
+    "privateResourcesProvisioned": false,
+    "formalBusinessWritesThisRound": 0,
+    "formalMediaUploadsThisRound": 0,
+    "formalQueueJobsSubmittedThisRound": 0,
+    "productionBaselineId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "productionTouchedThisRound": false,
+    "productionHttpRetestedThisRound": false,
+    "formalRlsChanged": false,
+    "formalStorageChanged": false,
+    "oldR2PublicAccessChanged": false,
+    "dnsChanged": false,
+    "newDatabaseDump": false,
+    "historicalMediaScan": false,
+    "publicSiteRebuilt": false,
+    "newNativeCpuEvidence": false,
+    "accountFreeRemainingQuota": "UNKNOWN"
+  },
+  "backup": {
+    "existingLocalBackupAndOfflineRestore": "RETAINED_PREVIOUS_PASS",
+    "nasAndSmbWork": "PAUSED_BY_USER",
+    "offsiteEncryptedBackup": "INCOMPLETE_INDEPENDENT_TODO",
+    "offsiteBackupIsAdminDevelopmentGate": false
+  },
+  "actualFormalMutationAcceptance": "NOT_RUN_NOT_AUTHORIZED",
+  "activationApprovalRequired": [
+    "private authority bootstrap and minimal anonymous-read boundary; text save release",
+    "private formal R2 scope and upload release",
+    "formal queue, runner credentials, Windows task start and full-site Production publication"
+  ]
+}

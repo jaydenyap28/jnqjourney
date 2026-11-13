@@ -115,6 +115,8 @@ export interface GuideItinerarySegment {
 
 export interface TravelGuide {
   slug: string
+  /** Legacy absence means already published; new formal drafts set false. */
+  published?: boolean
   aliases?: string[]
   sortDate?: string
   /** ISO travel dates drive public guide ordering; management dates are a fallback only. */

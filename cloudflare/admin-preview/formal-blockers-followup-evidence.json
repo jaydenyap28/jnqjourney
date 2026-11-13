@@ -1,5 +1,5 @@
 {
-  "result": "WAITING_FOR_MANUAL_ACCEPTANCE_AND_APPROVED_PRIVATE_NAS_TARGET",
+  "result": "FORMAL_READONLY_ACCEPTANCE_PASS_USER_CONFIRMED_2026_11_13",
   "readonlyCheck": {
     "url": "https://read-only.jnqjourney-admin-formal.pages.dev/readonly-check",
     "deploymentId": "f21ad2ee-b1ef-4e58-9776-a36b74a5a667",
@@ -9,11 +9,21 @@
     "pagesFunctions": 0,
     "unknownErrorsSanitized": true,
     "tokenExpiryCheckedBeforeAndAfterReplay": true,
-    "realManualResultReceived": false,
-    "realSessionAcceptance": "PENDING",
+    "realManualResultReceived": true,
+    "realSessionAcceptance": "PASS",
+    "evidenceSource": "USER_REPORTED_REAL_CHROME_ACCEPTANCE_2026_11_13",
+    "authenticatedStatus": 200,
+    "spots": 586,
+    "notes": 6,
+    "guides": 7,
+    "spotDetail": "PASS",
+    "serverMutationRefusals405": 7,
+    "beforeAfterDataUnchanged": true,
+    "oldSessionReplayAfterLogout": 401,
     "computerControlAttempted": false
   },
   "nas": {
+    "workStatus": "PAUSED_BY_USER_2026_11_13_INDEPENDENT_BACKUP_TODO_NOT_AN_ADMIN_DEVELOPMENT_GATE",
     "effectivePrivateAccess": "UNKNOWN_PENDING_USER_CONFIRMATION_AND_ACCESS_TESTS",
     "sidMappingRequiredForNas": false,
     "nasPermissionChanged": false,

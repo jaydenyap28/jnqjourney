@@ -29,7 +29,7 @@ export function validateFormalKey(key) {
   assert.ok(claims?.ref === FORMAL_REF && claims.role === 'service_role', 'FORMAL_PROJECT_SERVICE_CREDENTIAL_REQUIRED')
 }
 
-async function getFormalKey() {
+export async function getFormalKey() {
   const cli = process.env.JNQ_SUPABASE_CLI
   assert.ok(cli, 'EXISTING_SUPABASE_CLI_REQUIRED')
   let result

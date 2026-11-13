@@ -76,6 +76,7 @@ export function normalizeGuidePayload(value: any, options: { enforceBudgetTotal?
   }
   return {
     slug: String(value?.slug || '').trim(),
+    ...(Object.hasOwn(value || {}, 'published') ? { published: value.published === true } : {}),
     ...(value?.itineraryMode === 'unassigned' ? normalizeUnassignedVisits(value) : {}),
     aliases: normalizeStringArray(value?.aliases),
     sortDate: String(value?.sortDate || '').trim() || undefined,

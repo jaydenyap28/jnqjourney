@@ -689,6 +689,7 @@ export default function AdminGuidesPage() {
   function createNewGuide() {
     setForm({
       ...EMPTY_GUIDE,
+      published: false,
       coverAccent: DEFAULT_GUIDE_COVER_ACCENT,
       travelStyle: 'Free & Easy',
     })
@@ -1215,6 +1216,10 @@ function moveDayLinkedSpotToEdge(dayIndex: number, itemIndex: number, edge: 'sta
                 <CardTitle>Guide basics</CardTitle>
               </CardHeader>
               <CardContent className="grid gap-4 md:grid-cols-2">
+                <label className="flex items-center gap-2 md:col-span-2">
+                  <input type="checkbox" checked={form.published !== false} onChange={event => updateField('published', event.target.checked)} />
+                  已准备公开（保存不会触发网站发布）
+                </label>
                 <div className="space-y-2 md:col-span-2">
                   <Label>Title</Label>
                   <Input value={form.title} onChange={(e) => updateField('title', e.target.value)} />

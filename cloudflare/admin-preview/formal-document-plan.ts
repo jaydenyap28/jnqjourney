@@ -34,6 +34,7 @@ export function prepareFormalDocumentSave(kind: Kind, records: Row[], raw: Recor
     next = old ? before.map(row => row.slug === old.slug ? saved : row) : [saved, ...before]
   }
   const saved = next.find(row => row.slug === payload.slug)!
+  if (kind === 'guides' && !old && !Object.hasOwn(raw, 'published')) saved.published = false
   // Keep old Note aliases when renaming, just as the Guide version protocol.
   if (kind === 'notes' && old) saved.aliases = [...new Set([...(old.aliases || []), ...(saved.aliases || []), old.slug])].filter(slug => slug !== saved.slug)
   return { collection: kind, expectedPointer: pointer, records: next, saved,

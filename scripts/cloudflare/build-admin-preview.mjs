@@ -7,13 +7,14 @@ import { FUNCTION as ISOLATED_FUNCTION, SUPABASE_ORIGIN as ISOLATED_ORIGIN, PROJ
 import { FORMAL_ADMIN_API, FORMAL_PROJECT } from '../../cloudflare/admin-preview/formal-admin-read.mjs'
 
 const workspace = process.cwd()
-const formal = process.argv[2] === '--formal-read-only'
-assert.deepEqual(process.argv.slice(2), formal ? ['--formal-read-only', FORMAL_PROJECT] : [])
+const managed = process.argv[2] === '--formal-managed-off'
+const formal = managed || process.argv[2] === '--formal-read-only'
+assert.deepEqual(process.argv.slice(2), formal ? [managed ? '--formal-managed-off' : '--formal-read-only', FORMAL_PROJECT] : [])
 const projectRef = formal ? FORMAL_PROJECT : ISOLATED_REF
 const FUNCTION = formal ? FORMAL_ADMIN_API : ISOLATED_FUNCTION
 const SUPABASE_ORIGIN = formal ? `https://${projectRef}.supabase.co` : ISOLATED_ORIGIN
 const privateWorkspace = path.resolve(process.env.JNQ_RECOVERY_WORKSPACE || '.')
-const root = formal ? path.join(privateWorkspace, 'production-publisher', 'frontend-review') :
+const root = formal ? path.join(privateWorkspace, 'production-publisher', managed ? 'frontend-managed-off' : 'frontend-review') :
   path.resolve('artifacts/cloudflare-admin-isolated')
 if (formal) {
   assert.ok(process.env.JNQ_RECOVERY_WORKSPACE && await realpath(privateWorkspace) === privateWorkspace)
@@ -57,16 +58,24 @@ await copy(adapter + 'browser-fetch.ts', 'lib/admin-fetch.ts')
 await copy(adapter + 'browser-image.ts', 'lib/admin-preview-image.ts')
 await copy(adapter + 'publication-panel.tsx', 'components/PublicationPanel.tsx')
 if (formal) {
-  await write('components/PublicationPanel.tsx', `export default function PublicationPanel() {
+  if (!managed) await write('components/PublicationPanel.tsx', `export default function PublicationPanel() {
     return <aside role="status" className="mx-auto my-4 max-w-7xl rounded border border-amber-500/40 bg-amber-500/10 p-4 text-amber-100">
       <strong>正式后台 · 只读模式</strong>
       <p>可查看真实资料。新增、编辑、删除、上传和发布均未启用。</p>
       <a className="underline" href="/readonly-check">运行只读安全验收</a>
     </aside>
   }`)
+  else {
+    await copy(adapter + 'publication-panel.tsx', 'components/PublicationPanelCore.tsx')
+    await write('components/PublicationPanel.tsx', `'use client'
+import Core from './PublicationPanelCore'
+export default function PublicationPanel() { return <><p role="status" className="mx-auto max-w-7xl p-3">正式后台 · 功能按服务器授权开放。保存草稿不会发布网站。</p><Core formal /></> }`)
+    await copy(adapter + 'formal-browser-fetch.ts', 'lib/admin-fetch.ts')
+    await copy(adapter + 'formal-browser-capabilities.ts', 'lib/formal-browser-capabilities.ts')
+  }
   await copy(adapter + 'formal-readonly-check.tsx', 'app/readonly-check/page.tsx')
   await copy(adapter + 'formal-readonly-result.mjs', 'lib/formal-readonly-result.mjs')
-  await replace('lib/admin-fetch.ts', '  const { data } = await supabase.auth.getSession()', `  if (init.method && init.method.toUpperCase() !== 'GET') {
+  if (!managed) await replace('lib/admin-fetch.ts', '  const { data } = await supabase.auth.getSession()', `  if (init.method && init.method.toUpperCase() !== 'GET') {
     return Response.json({ error: '正式资料只读验收，写入尚未启用。' }, { status: 405 })
   }
   const { data } = await supabase.auth.getSession()`)
@@ -162,6 +171,7 @@ await replace('app/admin/notes/page.tsx', /<Link href=\{`\/notes\/\$\{form.slug\
 
 await replace('app/admin/guides/page.tsx', 'previousSlug?: string }', 'previousSlug?: string; expectedUpdatedAt?: string }')
 await replace('app/admin/guides/page.tsx', 'previousSlug: originalSlug || undefined,', "previousSlug: originalSlug || undefined,\n        expectedUpdatedAt: (form as TravelGuide & { updatedAt?: string }).updatedAt,")
+if (managed) await replace('app/admin/guides/page.tsx', 'expectedUpdatedAt: (form as TravelGuide & { updatedAt?: string }).updatedAt,', "expectedUpdatedAt: (form as TravelGuide & { updatedAt?: string }).updatedAt ?? '',")
 await replace('app/admin/guides/page.tsx', '/api/admin/guides?slug=${encodeURIComponent(form.slug)}', '/api/admin/guides?slug=${encodeURIComponent(form.slug)}&expectedUpdatedAt=${encodeURIComponent((form as TravelGuide & { updatedAt?: string }).updatedAt || "")}')
 await replace('app/admin/guides/page.tsx', '`/guide/${form.slug}`', '`/admin/guide-preview?slug=${encodeURIComponent(form.slug)}`')
 await replace('app/admin/guides/page.tsx', 'Save the guide to publish this binding.', 'Save the guide to keep this draft image.')
@@ -180,10 +190,12 @@ if (formal) {
     'components/AdminLocationForm.tsx', 'components/SpotEnglishEditor.tsx', 'components/SpotContentEditor.tsx',
     'components/SpotDescriptionEditor.tsx', 'components/AdminGuideActualSpendPanel.tsx',
     'components/AdminAffiliateLinksPanel.tsx', 'components/OrderedRelationPicker.tsx']) {
-    await write(file, freezeFormalEditor(await readFile(path.join(stage, file), 'utf8'), file))
+    await write(file, freezeFormalEditor(await readFile(path.join(stage, file), 'utf8'), file, managed))
   }
-  await replace('app/admin/page.tsx', '  Edit,', '  Eye,')
-  await replace('app/admin/page.tsx', '<Edit ', '<Eye ')
+  if (!managed) {
+    await replace('app/admin/page.tsx', '  Edit,', '  Eye,')
+    await replace('app/admin/page.tsx', '<Edit ', '<Eye ')
+  }
 }
 await write('next.config.mjs', "export default { output: 'export', images: { unoptimized: true }, experimental: { cpus: 2 }, eslint: { ignoreDuringBuilds: true } }\n")
 await write('tsconfig.json', JSON.stringify({
@@ -221,5 +233,5 @@ for (const file of entries.filter(file => /\.(?:html|json|js|txt)$/.test(file)))
   assert.doesNotMatch(text.replaceAll(anon.key, 'PUBLIC_ANON_KEY'), unexpected, 'Unexpected credentials or cross-environment target in ' + file)
 }
 await writeFile(path.join(root, 'package.json'), JSON.stringify({ out, zeroFunctions: true, files: entries.length,
-  ...(formal ? { projectRef, readOnly: true, deployed: false } : {}) }))
-console.log(JSON.stringify({ built: true, out, entries: entries.length, ...(formal ? { projectRef, readOnly: true, deployed: false } : {}) }))
+  ...(formal ? { projectRef, readOnly: !managed, preparedOff: managed, deployed: false } : {}) }))
+console.log(JSON.stringify({ built: true, out, entries: entries.length, ...(formal ? { projectRef, readOnly: !managed, preparedOff: managed, deployed: false } : {}) }))
