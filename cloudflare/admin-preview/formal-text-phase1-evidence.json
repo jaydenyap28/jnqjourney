@@ -1,0 +1,72 @@
+{
+  "result": "FORMAL_TEXT_PHASE1_BLOCKED",
+  "checkedOn": "2026-11-13",
+  "baseline": "64b3a4f8",
+  "projectRef": "vrufunuomioczocdsoer",
+  "officialConnection": "JNQ Media; explicit project_id",
+  "serverVersion": "17.6",
+  "locations": 586,
+  "publicLocations": 582,
+  "privateTargetBucketExists": false,
+  "oldStoragePublic": true,
+  "dependentViews": 0,
+  "publicDefinerLocationReaders": 0,
+  "serviceRoleDataAndSequencePrivileges": true,
+  "legacyDependency": {
+    "trigger": "locations_queue_publication_sync",
+    "event": "AFTER INSERT OR UPDATE ON public.locations",
+    "function": "public.queue_spot_publication_sync",
+    "functionDefiner": true,
+    "enqueueUnconditionally": true,
+    "queue": "public.spot_publication_sync",
+    "rows": 586,
+    "pending": 4,
+    "processing": 0,
+    "cron": "jnq-spot-publication-sync",
+    "cronActive": true,
+    "cronSchedule": "* * * * *",
+    "cronHandler": "net.http_get",
+    "cronTargetHost": "jnqjourney.vercel.app",
+    "credentialsExported": false
+  },
+  "recentLocationRequestLogs": {
+    "source": "OFFICIAL_SUPABASE_QUERY_LOGS",
+    "window": "DEFAULT_LAST_24_HOURS",
+    "explicitServiceRoleGets": 60,
+    "denoSdkGetsWithNoJwtRoleInLog": 34,
+    "missingRoleAttributedAsAnon": false
+  },
+  "backup": {
+    "existingFileHashesVerified": 5,
+    "existingRestoreReceiptMatched": true,
+    "newDump": false,
+    "newRestore": false,
+    "nasWork": false
+  },
+  "publicWebsite": {
+    "deploymentId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "usesFunctions": false,
+    "receiptStatus": 200,
+    "receiptShaMatchesBackup": true
+  },
+  "operations": {
+    "privateBucketCreated": false,
+    "bootstrapExecuted": false,
+    "permissionSqlExecuted": false,
+    "formalBusinessWrites": 0,
+    "formalTestDraftsCreated": 0,
+    "edgeDeployed": false,
+    "adminDeployed": false,
+    "productionDeployed": false,
+    "cronOrTriggerChanged": false,
+    "oldQueueChanged": false,
+    "writesEnabled": false,
+    "uploadsEnabled": false,
+    "publicationEnabled": false,
+    "publisherSettingsEnabled": false,
+    "publisherStarted": false
+  },
+  "formalSaveAcceptance": "NOT_RUN_STOPPED_BEFORE_WRITES",
+  "formal409AndDuplicateAcceptance": "NOT_RUN",
+  "nextStageImageUploadReady": false
+}
