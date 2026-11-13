@@ -2,6 +2,7 @@ import { FORMAL_PROJECT } from './formal-admin-read.mjs'
 
 // This release cannot be activated just by changing remote environment values.
 // Each capability needs its own approved release + explicit server setting.
+/** @type {Readonly<{ writes: boolean, uploads: boolean, publication: boolean }>} */
 export const FORMAL_RELEASE_GATES = Object.freeze({ writes: false, uploads: false, publication: false })
 export const FORMAL_PRIVATE_SCOPE = Object.freeze({
   projectRef: FORMAL_PROJECT, storageBucket: 'jnq-admin-formal-publication',

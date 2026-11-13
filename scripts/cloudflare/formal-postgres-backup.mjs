@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import { lstat, mkdir, readFile, realpath, writeFile } from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { isDeepStrictEqual, promisify } from 'node:util'
 import { FORMAL_REF } from './formal-read-source.mjs'
 
@@ -327,7 +328,25 @@ RESTORE`
   return { ...result, directory: output }
 }
 
-try {
+// Reuse the reviewed DPAPI/TLS/read-only transport for a narrow private
+// configuration snapshot; no password/cron command is returned to stdout.
+export async function formalPrivateReadSnapshot({ directory, filename, sql }) {
+  assert.ok(process.env.JNQ_RECOVERY_WORKSPACE && await realpath(root) === root)
+  assert.ok(path.isAbsolute(directory) && directory.startsWith(root + path.sep))
+  assert.match(filename, /^[a-z0-9-]+\.json$/)
+  await mkdir(directory, { recursive: true }); await assertPrivate(directory)
+  const cfg = await loadConnection()
+  const result = path.join(directory, filename)
+  try { await lstat(result); throw Error('PRIVATE_SNAPSHOT_ALREADY_EXISTS') } catch (error) { if (error.code !== 'ENOENT') throw error }
+  await remoteClient(cfg, mount(directory, '/backup', false),
+    `psql -X -w -Aqt -v ON_ERROR_STOP=1 <<'SQL' > /backup/${filename}\nbegin isolation level repeatable read read only;\n${sql}\nrollback;\nSQL`, 'FORMAL_PRIVATE_READ_SNAPSHOT')
+  const value = await json(result)
+  assert.equal(value.identity.database, cfg.database)
+  assert.equal(value.identity.role, cfg.role)
+  return { path: result, ...(await sha(result)) }
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) try {
   assert.equal(process.argv.length, 4)
   assert.ok(['--probe', '--backup', '--restore'].includes(mode) && ref === FORMAL_REF)
   if (mode !== '--restore') assert.ok(process.env.JNQ_FORMAL_PG_DPAPI_DIR || process.env.JNQ_FORMAL_PG_CONNECTION_FILE, 'CONNECT_FILE_REQUIRED')

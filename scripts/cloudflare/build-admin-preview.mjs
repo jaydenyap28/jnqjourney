@@ -88,12 +88,12 @@ await cp('public/fonts', path.join(stage, 'public/fonts'), { recursive: true })
 await copyFile('public/placeholder-image.jpg', path.join(stage, 'public/placeholder-image.jpg'))
 
 await write('app/layout.tsx', `import './globals.css'
-export const metadata = { title: '${formal ? 'JnQ Journey 正式后台只读验收' : 'JnQ Journey Admin Preview'}', robots: { index: false, follow: false } }
+export const metadata = { title: '${managed ? 'JnQ Journey 正式后台文字编辑' : formal ? 'JnQ Journey 正式后台只读验收' : 'JnQ Journey Admin Preview'}', robots: { index: false, follow: false } }
 export default function Layout({ children }: { children: React.ReactNode }) {
   return <html lang="zh"><body>{children}</body></html>
 }`)
 await write('app/page.tsx', `import Link from 'next/link'
-export default function Page() { return <main className="p-8"><Link href="/admin">${formal ? '打开 JnQ Journey 正式后台只读验收' : '打开 JnQ Journey 隔离后台'}</Link></main> }`)
+export default function Page() { return <main className="p-8"><Link href="/admin">${managed ? '打开 JnQ Journey 正式后台文字编辑' : formal ? '打开 JnQ Journey 正式后台只读验收' : '打开 JnQ Journey 隔离后台'}</Link></main> }`)
 await replace('app/admin/layout.tsx', "import AdminAuthShell", "import { Suspense } from 'react'\nimport AdminAuthShell")
 await replace('app/admin/layout.tsx', '<AdminAuthShell>{children}</AdminAuthShell>', '<Suspense><AdminAuthShell>{children}</AdminAuthShell></Suspense>')
 await replace('app/admin/login/page.tsx', "searchParams.get('next') || '/admin'",
@@ -196,6 +196,10 @@ if (formal) {
     await replace('app/admin/page.tsx', '  Edit,', '  Eye,')
     await replace('app/admin/page.tsx', '<Edit ', '<Eye ')
   }
+}
+if (managed) for (const file of ['components/AdminLocationForm.tsx','app/admin/notes/page.tsx','app/admin/guides/page.tsx']) {
+  const text=await readFile(path.join(stage,file),'utf8')
+  await write(file,text.replaceAll('隔离后台','正式后台（保存不会发布）'))
 }
 await write('next.config.mjs', "export default { output: 'export', images: { unoptimized: true }, experimental: { cpus: 2 }, eslint: { ignoreDuringBuilds: true } }\n")
 await write('tsconfig.json', JSON.stringify({

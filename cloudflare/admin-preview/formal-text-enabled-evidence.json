@@ -1,0 +1,80 @@
+{
+  "result": "FORMAL_TEXT_STAGE1_PASS",
+  "date": "2026-11-13",
+  "projectRef": "vrufunuomioczocdsoer",
+  "legacy": {
+    "cronName": "jnq-spot-publication-sync",
+    "jobId": 1,
+    "active": false,
+    "lastRunStart": "2026-11-13T02:45:00.030806Z",
+    "trigger": "locations_queue_publication_sync",
+    "triggerState": "D",
+    "originalDefinitionsSavedPrivately": true,
+    "queueRows": 586,
+    "pending": 4,
+    "processing": 0,
+    "beforeAndAfterQueueDigest": "98de9b1575bd544533acd732ac5bf7de",
+    "unrelatedObjectsUnchanged": true,
+    "original586BusinessRowsUnchanged": true
+  },
+  "privateAuthority": {
+    "bucket": "jnq-admin-formal-publication",
+    "public": false,
+    "initialObjects": 8,
+    "createOnlyByteVerification": "PASS",
+    "originalSourcePointersChanged": false,
+    "minimalBoundaryApplied": true,
+    "anonymousDirectRead": "42501",
+    "serviceRolePathPreserved": true,
+    "oldStoragePublicUnchanged": true
+  },
+  "admin": {
+    "url": "https://read-only.jnqjourney-admin-formal.pages.dev/admin",
+    "deploymentId": "edbb7b42-c9c0-4008-b7d1-42269ed3fe12",
+    "functions": 0,
+    "noindex": true,
+    "edgeVersion": 8,
+    "verifyJwt": true,
+    "sourceSha256": "fc14b50b5afec201c6ef850ea72aeb640d3599efc9f90363799254b0d2bfe7ae",
+    "remoteSourceExactlyMatched": true,
+    "strictTypes": "PASS",
+    "writes": true,
+    "uploads": false,
+    "publication": false
+  },
+  "actualAcceptance": {
+    "source": "REAL_AUTH_EDGE_DATABASE_STORAGE_HTTP",
+    "assertionsPassed": 29,
+    "testSpotId": 853,
+    "testSpotFinalState": "hidden",
+    "newNoteAndGuideDrafts": 2,
+    "spotSaveReadback": "PASS",
+    "noteSaveReadback": "PASS",
+    "guideSaveReadback": "PASS",
+    "threeModule409": "PASS",
+    "threeModuleSameMutationConfirmation": "PASS",
+    "testSessionRevokedLocally": true,
+    "publicSpots": 582,
+    "newPublicationJobs": 0,
+    "firstInvalidFixtureFailureRetained": "422 / 23502 missing required coordinates; zero inserted rows",
+    "deploymentVersionObservationFailureRetained": "writes disabled until official remote source reconciliation"
+  },
+  "publicSite": {
+    "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "receiptStatus": 200,
+    "receiptShaUnchanged": true,
+    "productionDeployedThisRound": false,
+    "functions": 0
+  },
+  "publisher": {
+    "windowsTask": "Disabled",
+    "enabled": false,
+    "started": false
+  },
+  "historicalFullTestsRepeated": false,
+  "oldPhotosScanned": false,
+  "nasWork": false,
+  "dnsChanged": false,
+  "oldR2PublicChanged": false,
+  "readyForNextStageApproval": "PRIVATE_MEDIA_UPLOAD_NOT_YET_ENABLED"
+}
