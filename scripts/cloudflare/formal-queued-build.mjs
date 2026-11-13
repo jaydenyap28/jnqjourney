@@ -65,5 +65,6 @@ export async function buildFormalQueuedSite({ job, baseline, workspace, attempt,
   return { directory, output, receipt, receiptSha256: sha(JSON.stringify(receipt)),
     routes: bundle.pages.map(page => page.route), redirects: bundle.redirects, mediaPaths,
     source: { revision: await formalDigest(rewriteApprovedAdditionValues(feeds, additions)),
-      feeds: rewriteApprovedAdditionValues(feeds, additions), manifest } }
+      feeds: rewriteApprovedAdditionValues(feeds, additions), manifest,
+      media: Object.fromEntries(images.map(image => [image.name, { bytes: image.bytes, rightsEvidence: image.rightsEvidence }])) } }
 }

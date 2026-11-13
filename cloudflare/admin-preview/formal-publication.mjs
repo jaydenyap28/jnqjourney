@@ -17,6 +17,27 @@ const eligible = (kind, row) => !!row && (kind === 'spot' ? row.id !== 450 && pu
 
 const publicFields = SPOT_FIELDS.filter(key => !['review_jayden', 'review_qing', 'is_visited', 'created_at'].includes(key))
 const publicSpot = row => Object.fromEntries(publicFields.filter(key => Object.hasOwn(row, key)).map(key => [key, row[key]]))
+export async function formalPublicationCatalog(authority, baseline, projectDocument) {
+  const items = []
+  const counts = { added: 0, modified: 0, hidden: 0 }
+  for (const [kind, list] of Object.entries(lists)) {
+    const old = new Map(list(baseline.feeds).map(row => [identity(kind, row), row]))
+    for (const row of list(authority)) {
+      const key = identity(kind, row), prior = old.get(key), visible = eligible(kind, row)
+      const project = value => JSON.parse(JSON.stringify(kind === 'spot' ? publicSpot(value) : projectDocument(kind, value))
+        .replace(/\/admin-draft-media\/([a-f0-9]{64}\.(?:png|jpg|webp|gif))/g,(reference,name)=>baseline.media?.[name] ? '/media/static/'+name : reference))
+      let change = !visible ? prior ? 'hidden' : 'draft' : !prior ? 'added' :
+        await formalDigest(project(row)) === await formalDigest(project(prior)) ? 'unchanged' : 'modified'
+      if (Object.hasOwn(counts, change)) counts[change]++
+      items.push({ kind, key, title: row.name_cn || row.name || row.title, version: version(kind,row),
+        eligible: visible || !!prior, change, status: !visible ? prior ? '待撤下' : '草稿' : change === 'unchanged' ? '已公开' : '待批准', action: visible ? 'publish' : 'withdraw' })
+      old.delete(key)
+    }
+    // Missing authoritative records must never be silently retained.
+    for (const [key, row] of old) { counts.hidden++; items.push({kind,key,title:row.title || row.name_cn || row.name, version:null,eligible:false,change:'hidden',status:'来源缺失，需人工处理'}) }
+  }
+  return { items, counts }
+}
 export async function makeFormalPublication({ authority, baseline, selection, approvedRemovalDigest, requestedBy, projectDocument }) {
   if (!Array.isArray(selection) || selection.length > 2000 || !selection.length) throw new FormalError(400, 'FORMAL_SELECTION_REQUIRED')
   if (authority?.['database.json']?.projectRef !== FORMAL_PROJECT || baseline?.feeds?.['database.json']?.projectRef !== FORMAL_PROJECT ||
@@ -77,10 +98,17 @@ export async function makeFormalPublication({ authority, baseline, selection, ap
   feeds['database.json'].inventory = structuredClone(authority['database.json'].inventory).map(row =>
     !approvedSpotIds.has(row.id) && eligible('spot', row) ? { ...row, publication_status: 'draft' } : row)
   const names = new Set()
-  for (const reference of mediaReferences(feeds)) if (reference.startsWith('/admin-draft-media/')) {
-    const name = reference.slice('/admin-draft-media/'.length)
+  // Rich-text HTML can carry a previously published static reference outside
+  // structured image fields. Only trusted baseline media identities qualify.
+  const embedded = [...JSON.stringify(feeds).matchAll(/\/media\/static\/[a-f0-9]{64}\.(?:png|jpg|webp|gif)/g)].map(match=>match[0])
+  for (const raw of [...mediaReferences(feeds), ...embedded]) {
+    const reference = raw.split('#')[0]
+    if (reference.startsWith('/admin-draft-media/') ||
+      reference.startsWith('/media/static/') && baseline.media?.[reference.slice('/media/static/'.length)]) {
+    const name = reference.slice(reference.startsWith('/admin-draft-media/') ? '/admin-draft-media/'.length : '/media/static/'.length)
     if (!/^[a-f0-9]{64}\.(?:png|jpg|webp|gif)$/.test(name)) throw new FormalError(422, 'FORMAL_MEDIA_NAME_INVALID')
     names.add(name)
+    }
   }
   if (names.size > 200) throw new FormalError(413, 'FORMAL_INCREMENTAL_MEDIA_BATCH_LIMIT')
   const oldMedia = new Set(mediaReferences(baseline.feeds))

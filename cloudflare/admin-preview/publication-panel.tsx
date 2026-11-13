@@ -3,16 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { adminFetch } from '@/lib/admin-fetch'
 
-type Choice = { kind: string, key: string, title: string, version: string | null, status: string, eligible: boolean, action?: 'publish' | 'withdraw' }
+type Choice = { kind: string, key: string, title: string, version: string | null, status: string, eligible: boolean, change?: string, action?: 'publish' | 'withdraw' }
 type Selection = Pick<Choice, 'kind' | 'key' | 'version'>
-type Release = { deploymentId: string, url: string, id: string }
-type Status = { state: string, online: boolean, live?: Release, job?: {
-  id: string, attempt: number, approvals: Selection[], retryable?: boolean, reason?: string, deploymentId?: string, url?: string,
+type Release = { deploymentId: string, url: string, id: string, revision?: string, at?: string }
+type Status = { state: string, online: boolean, releaseHeld?: boolean, live?: Release, job?: {
+  id: string, attempt: number, approvals: Selection[], retryable?: boolean, reason?: string, deploymentId?: string, url?: string, updatedAt?: string,
 } }
 const stateLabel: Record<string, string> = {
   draft: '保存草稿', waiting: '等待执行器', queued: '排队中', building: '构建中',
   verifying: '部署验证中', published: '发布成功', failed: '发布失败',
   succeeded: '发布成功', disabled: '正式发布未启用',
+  held: 'Production HOLD · 等待首次发布批准',
   unavailable: '发布状态暂不可读',
 }
 const kindLabel: Record<string, string> = { spot: 'Spot', note: 'Note', guide: 'Guide' }
@@ -30,6 +31,7 @@ async function load<T>(route: string, payload?: unknown): Promise<T> {
 export default function PublicationPanel({ formal = false }: { formal?: boolean }) {
   const [status, setStatus] = useState<Status>()
   const [items, setItems] = useState<Choice[]>()
+  const [counts, setCounts] = useState<{added:number,modified:number,hidden:number}>()
   const [selected, setSelected] = useState<string[]>([])
   const [notice, setNotice] = useState('')
   const [busy, setBusy] = useState(false)
@@ -52,11 +54,12 @@ export default function PublicationPanel({ formal = false }: { formal?: boolean 
     setNotice('')
     try {
       const [next, current] = await Promise.all([
-        load<{ items: Choice[] }>('/publication/catalog'), load<Status>('/publication'),
+        load<{ items: Choice[], counts?: {added:number,modified:number,hidden:number} }>('/publication/catalog'), load<Status>('/publication'),
       ])
       setStatus(current)
       const approvals = current.job?.approvals ?? []
       setItems(next.items)
+      setCounts(next.counts)
       setSelected(next.items.filter(item => item.eligible &&
         approvals.some(row => itemKey(row) === itemKey(item) && row.version === item.version)).map(itemKey))
     } catch (error) { setNotice((error as Error).message) }
@@ -90,9 +93,14 @@ export default function PublicationPanel({ formal = false }: { formal?: boolean 
         {stateLabel[status?.state || ''] || '读取状态中'}{status?.online ? ' · 执行器在线' : ' · 执行器未连接'}
       </p>
       {status?.job && <p className="break-all">任务 {status.job.id} · 第 {status.job.attempt} 次 · {status.job.reason || ''}</p>}
+      {status?.releaseHeld && <p role="note">可以提交发布申请；执行器保持停用。取得首次 Production 批准并解除服务端 HOLD 后才会构建和发布。保存草稿不会入队。</p>}
+      {counts && <p>待审批：新增 {counts.added} · 修改 {counts.modified} · 隐藏 {counts.hidden}</p>}
+      {status?.job?.deploymentId && <p className="break-all">发布回执：{status.job.deploymentId} · {status.job.updatedAt || '完成时间未确认'}</p>}
       {status?.live && <p className="break-all">
-        <a className="text-sky-200 underline" href={status.live.url} target="_blank" rel="noreferrer">打开已验证的公开 Preview</a>
+        <a className="text-sky-200 underline" href={status.live.url} target="_blank" rel="noreferrer">{formal ? '打开当前正式网站' : '打开已验证的公开 Preview'}</a>
         {' · Deployment '}{status.live.deploymentId}
+        {status.live.at && <> · 发布完成 {status.live.at}</>}
+        {status.live.revision && <><br />公开版本 {status.live.revision}</>}
       </p>}
       <button type="button" disabled={busy || ['disabled', 'unavailable'].includes(status?.state || '')} className="rounded border px-3 py-1" onClick={prepare}>准备发布</button>
       {items && <fieldset className="space-y-2">
@@ -104,7 +112,7 @@ export default function PublicationPanel({ formal = false }: { formal?: boolean 
             <span>{kindLabel[item.kind]} · {item.title} · {item.status === 'approval-required' ? '需明确批准' : item.status}</span>
           </label>)}
         </div>
-        <button type="button" disabled={busy} onClick={() => void submit()} className="rounded bg-emerald-700 px-3 py-1 text-white">发布网站</button>
+        <button type="button" disabled={busy || !selected.length} onClick={() => void submit()} className="rounded bg-emerald-700 px-3 py-1 text-white">发布网站</button>
       </fieldset>}
       {status?.state === 'failed' && status.job?.retryable &&
         <button type="button" disabled={busy} className="rounded border px-3 py-1" onClick={() => void submit(true)}>重试发布</button>}

@@ -1,0 +1,127 @@
+{
+  "at": "2026-11-13T05:11:36.938Z",
+  "state": "PRODUCTION_RELEASE_READY",
+  "execution": "HOLD",
+  "productionId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+  "productionBranch": "main",
+  "publicFunctions": 0,
+  "queueJobs": 0,
+  "queueClaims": 0,
+  "fullBuilds": 0,
+  "productionDeployments": 0,
+  "pendingChanges": {
+    "added": 0,
+    "modified": 0,
+    "hidden": 0
+  },
+  "runnerActualHold": 423,
+  "usage": {
+    "at": "2026-11-13T05:11:30.888Z",
+    "complete": true,
+    "peakBytes": 7506031449,
+    "operations": 64878,
+    "invoice": "UNKNOWN",
+    "pagesAccountRemaining": "UNKNOWN"
+  },
+  "budget": {
+    "limits": {
+      "daily": 8,
+      "monthly": 240,
+      "minimumMinutes": 10
+    },
+    "blockedUntil": null,
+    "recordedAttempts": 10
+  },
+  "edge": {
+    "version": 25,
+    "verifyJwt": true,
+    "ezbrSha256": "765bfd1895dced4fd1f13a1709d70a8596c60c2a380cbd7f5d3f076ee9d308ba",
+    "sourceSha256": "04a2c20b79d22dfed7ad2ca0516ae774414637ec6e2c42b98b188aa80e8735ea",
+    "queueAdmission": true,
+    "runnerExecution": false,
+    "productionReleaseApproved": false,
+    "localEnabled": false,
+    "baselineRoutes": 1349,
+    "baselineMedia": 4515,
+    "freshRunnerCredential": true,
+    "runnerSecretValuePrinted": false,
+    "queueJobsCreated": 0,
+    "publicDeploymentSubmitted": false
+  },
+  "admin": {
+    "deploymentId": "6f00b4e2-9819-43be-9872-12208ee90acb",
+    "url": "https://read-only.jnqjourney-admin-formal.pages.dev/admin",
+    "fixedUrl": "https://6f00b4e2.jnqjourney-admin-formal.pages.dev",
+    "environment": "preview",
+    "functions": 0,
+    "publicProductionUnchanged": true
+  },
+  "api": {
+    "checks": [
+      "text_upload_and_explicit_queue_capabilities_enabled",
+      "queue_status_hard_hold_no_job_no_runner",
+      "current_production_receipt_unchanged",
+      "real_publication_catalog_authorized",
+      "full_582_public_spot_catalog_retained",
+      "original_6_notes_7_guides_retained",
+      "hidden_853_not_publishable",
+      "test_drafts_not_publishable",
+      "anonymous_queue_read_denied",
+      "invalid_runner_key_denied",
+      "real_runner_key_still_production_held",
+      "read_checks_created_no_jobs",
+      "actual_production_still_original_zero_functions"
+    ],
+    "result": "FORMAL_PUBLICATION_PREPARATION_PASS",
+    "postPublicationRequests": 0,
+    "queueClaims": 0,
+    "builds": 0,
+    "publicDeployments": 0,
+    "pendingChanges": {
+      "added": 0,
+      "modified": 0,
+      "hidden": 0
+    },
+    "items": 602,
+    "testSessionRevoked": true
+  },
+  "browser": {
+    "result": "FORMAL_PUBLICATION_HELD_UI_PASS",
+    "publicationPosts": 0,
+    "blockedMutations": 0,
+    "pageErrors": 0,
+    "desktop": true,
+    "mobile": true,
+    "publishClick": "NOT_EXECUTED_APPROVAL_REVIEW_REJECTED",
+    "testSessionRevoked": true
+  },
+  "localTests": {
+    "passed": 7,
+    "edgeTypes": "PASS",
+    "adminStaticBuild": "PASS"
+  },
+  "windows": {
+    "state": "Disabled",
+    "started": false,
+    "wrapperVerified": true,
+    "interactiveLogon": true,
+    "multipleInstances": "IgnoreNew"
+  },
+  "firstAttempt": {
+    "result": "FAIL_PRESERVED",
+    "reason": "FORMAL_RUNNER_ANON_KEY_MISMATCH",
+    "fixedBy": "Explicit public JWT digest pin plus independent private runner proof"
+  },
+  "approvalReview": {
+    "publishClick": "REJECTED_NOT_EXECUTED",
+    "safeAlternative": "Read-only Chrome panel and catalog passed"
+  },
+  "constraints": {
+    "publicProductionModified": false,
+    "dnsModified": false,
+    "oldR2Modified": false,
+    "firecrawlUsed": false,
+    "formalBusinessContentModified": false,
+    "privatePublicationMetadataWritten": true
+  }
+}

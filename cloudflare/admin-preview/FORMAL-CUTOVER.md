@@ -1,5 +1,7 @@
 # 正式后台与完整静态发布准备
 
+**第三阶段发布准备完成，执行 HOLD（2026-11-13）**：正式发布申请、服务器 runner 验证及 Admin 状态面板已接通；正确 runner key 实测 423 HOLD，Windows 任务 Disabled。当前新增/修改/隐藏均为 0，本轮创建/领取任务、公开站构建及 Production 部署均为 0。见 [正式发布准备回执](FORMAL-PUBLICATION-READY-2026-11-13.md)。首次正式发布仍需独立批准。
+
 **第二阶段当前已启用并验收 PASS（2026-11-13）**：私有 R2 Presigned PUT、三模块私有引用和拒绝保护通过，正式 Upload ON；文字编辑 ON，发布 OFF，Windows Publisher Disabled，公开站未变。当前结果见 [正式私有图片交付](FORMAL-MEDIA-ENABLED-2026-11-13.md)。下方 403 阻塞是人工配置前的历史记录。
 
 第二阶段私有图片当前停在 Cloudflare 凭据权限预检：Token 权限组 403/9109、订阅 403/10000；Upload 仍 OFF，文字编辑保留。未建桶或上传，见 [第二阶段断点](FORMAL-MEDIA-PHASE2-2026-11-13.md)。

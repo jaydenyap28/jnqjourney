@@ -1,7 +1,8 @@
 import { createScopedAdminStore } from './store'
 import { createFormalMediaChecks } from './formal-media.mjs'
 import { publicationStore, jobState, sha256 } from './publication.mjs'
-import { makeFormalPublication, verifyFormalJob, formalDigest } from './formal-publication.mjs'
+import { makeFormalPublication, verifyFormalJob, formalDigest, formalPublicationCatalog } from './formal-publication.mjs'
+import { enqueueFormalJob, reserveFormalRetry } from './formal-release-control.mjs'
 import { createFormalMutations } from './formal-mutations'
 import { formalMutationOnce, formalMutationStatus } from './formal-idempotency.mjs'
 import { FormalError, assertFormalScope } from './formal-runtime.mjs'
@@ -119,29 +120,24 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
     await verifyPrivate()
     const baseline = (await queue.read('_publication/live.json'))?.source
     if (!baseline?.revision || !baseline.feeds) throw new FormalError(503, 'FORMAL_FULL_BASELINE_NOT_SEEDED')
+    const inventory = await queue.read('_publication/baseline-inventory/' + baseline.revision + '.json')
+    const liveRecord = await queue.read('_publication/live.json')
+    if (!(liveRecord.routes?.length && liveRecord.mediaPaths?.length) &&
+        !(inventory?.revision === baseline.revision && inventory.deploymentId === liveRecord.deploymentId && inventory.routes?.length && inventory.mediaPaths?.length)) {
+      throw new FormalError(503, 'FORMAL_BASELINE_WITHDRAWAL_INVENTORY_REQUIRED')
+    }
     const url = new URL(request.url)
     if (request.method === 'GET' && url.pathname.endsWith('/catalog')) {
       const current = await authority(baseline)
-      const items: any[] = []
-      for (const [kind, rows, old] of [['spot', current['database.json'].locations, baseline.feeds['database.json'].locations],
-        ['note', current['notes.json'].notes, baseline.feeds['notes.json'].notes], ['guide', current['guides.json'].guides, baseline.feeds['guides.json'].guides]] as any[]) {
-        for (const row of rows) {
-          const key = kind === 'spot' ? String(row.id) : row.slug
-          const exists = old.some((item: any) => (kind === 'spot' ? String(item.id) : item.slug) === key)
-          const visible = kind === 'spot' ? row.id !== 450 && row.status === 'active' && [null, 'published'].includes(row.publication_status) :
-            kind === 'note' ? row.published === true : row.published !== false && [null, undefined, 'published'].includes(row.publication_status)
-          items.push({ kind, key, title: row.name_cn || row.name || row.title, version: kind === 'spot' ? row.updated_at : row.updatedAt || '',
-            eligible: visible || exists, status: visible ? '准备公开' : exists ? '待撤下' : '草稿', action: visible ? 'publish' : 'withdraw' })
-        }
-      }
-      return { items }
+      return formalPublicationCatalog(current, baseline, (kind: string,row:any) => kind === 'note' ? normalizeNotePayload(row) : normalizeGuidePayload(row,{enforceBudgetTotal:true}))
     }
     if (request.method === 'GET') {
       const job = await queue.latest()
       const progress = await jobState(queue, job)
       const heartbeat = await queue.read('_publication/heartbeat.json')
       const online = !!heartbeat?.at && Date.now() - Date.parse(heartbeat.at) < 150000
-      return { state: !job ? 'draft' : (progress?.state || 'queued') === 'queued' && !online ? 'waiting' : progress?.state || 'queued', online,
+      const releaseHeld = env('JNQ_FORMAL_EXECUTION_ENABLED') !== 'true'
+      return { state: releaseHeld ? 'held' : !job ? 'draft' : (progress?.state || 'queued') === 'queued' && !online ? 'waiting' : progress?.state || 'queued', online, releaseHeld,
         job: job && { id: job.id, requestedAt: job.requestedAt, approvals: job.payload.approvals, ...progress },
         live: { ...(await queue.read('_publication/live.json')), source: undefined, routes: undefined, mediaPaths: undefined, revision: baseline.revision, url: 'https://www.jnqjourney.com' } }
     }
@@ -157,7 +153,7 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
       const progress = latest && await queue.progress(latest.id)
       if (!latest || body.id !== latest.id || progress?.state !== 'failed' || progress.retryable !== true) throw new FormalError(409, 'FORMAL_RETRY_NOT_ALLOWED')
       await verifyFormalJob(latest, current, baseline.revision)
-      await queue.createOnce(`_publication/retry/${latest.id}/${(progress.attempt || 1) + 1}.json`, { at: new Date().toISOString(), actor })
+      await reserveFormalRetry(queue, latest, progress, actor)
       return { id: latest.id, state: 'queued' }
     }
     let job
@@ -172,14 +168,20 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
       throw error
     }
     for (const name of job.payload.media) await media.verifyIdentity(name)
-    const saved = await queue.createOnce('_publication/jobs/' + job.id + '.json', job)
+    const { job: saved, duplicate } = await enqueueFormalJob(queue, job, baseline.revision)
     await verifyFormalJob(saved, current, baseline.revision)
-    return { id: saved.id, state: 'queued' }
+    return { id: saved.id, duplicate, state: 'queued', releaseHeld: env('JNQ_FORMAL_EXECUTION_ENABLED') !== 'true' }
   }
   async function runner(request: Request) {
     const proof = request.headers.get('x-jnq-runner-key') || ''
-    if (request.headers.get('origin') || request.headers.get('authorization') !== 'Bearer ' + anonKey ||
-        !/^[a-f0-9]{64}$/.test(proof) || await sha256(proof) !== env('FORMAL_RUNNER_KEY_SHA256')) throw new FormalError(403, 'FORMAL_RUNNER_PROOF_INVALID')
+    if (request.headers.get('origin')) throw new FormalError(403, 'FORMAL_RUNNER_ORIGIN_DENIED')
+    // The public bootstrap JWT used by Windows is pinned independently of
+    // Supabase's injected legacy key. It is NOT the runner authentication:
+    // the separate 256-bit server-only proof below is always required too.
+    const bearer = request.headers.get('authorization')?.match(/^Bearer (.+)$/i)?.[1] || ''
+    if (!bearer || await sha256(bearer) !== env('FORMAL_RUNNER_ANON_SHA256')) throw new FormalError(403, 'FORMAL_RUNNER_ANON_KEY_MISMATCH')
+    if (!/^[a-f0-9]{64}$/.test(proof) || await sha256(proof) !== env('FORMAL_RUNNER_KEY_SHA256')) throw new FormalError(403, 'FORMAL_RUNNER_PROOF_INVALID')
+    if (env('JNQ_FORMAL_EXECUTION_ENABLED') !== 'true') throw new FormalError(423, 'FORMAL_PRODUCTION_RELEASE_HELD')
     await verifyPrivate()
     const path = new URL(request.url).pathname.match(/\/publication\/runner\/(verify|media)\/([a-f0-9]{64})(?:\/([a-f0-9]{64}\.(?:png|jpg|webp|gif)))?$/)
     if (!path || request.method !== 'GET') throw new FormalError(404, 'FORMAL_RUNNER_ROUTE_INVALID')

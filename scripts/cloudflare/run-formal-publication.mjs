@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { mkdir, open, readFile, realpath, rename, unlink, writeFile } from 'node:fs/promises'
+import { mkdir, open, readFile, realpath, rename, unlink, writeFile, lstat } from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import { setTimeout as delay } from 'node:timers/promises'
@@ -14,16 +14,27 @@ import { getFormalKey } from './formal-read-source.mjs'
 import { formalPublisherTick } from './formal-publisher-core.mjs'
 import { buildFormalQueuedSite } from './formal-queued-build.mjs'
 import { buildLocationSlug } from '../../lib/location-routing.ts'
+import { requireFormalExecution } from '../../cloudflare/admin-preview/formal-release-control.mjs'
+import { readFormalFreeHeadroom } from './formal-publication-cost.mjs'
 
 const [mode, ref] = process.argv.slice(2)
-assert.ok(['--prepare-off', '--watch'].includes(mode) && ref === FORMAL_PRIVATE_SCOPE.projectRef)
-if (mode === '--prepare-off') {
+assert.ok(['--prepare-off', '--check-held', '--watch'].includes(mode) && ref === FORMAL_PRIVATE_SCOPE.projectRef)
+if (mode === '--check-held') {
+  assert.ok(process.env.JNQ_RECOVERY_WORKSPACE)
+  const root=path.join(path.resolve(process.env.JNQ_RECOVERY_WORKSPACE),'production-publisher')
+  const s=JSON.parse((await readFile(path.join(root,'settings.json'),'utf8')).replace(/^\uFEFF/,''))
+  assert.equal(s.projectRef,ref);assert.equal(s.publicPagesProject,'jnqjourney-static-recovery-candidate')
+  assert.ok(s.enabled===false&&s.productionReleaseApproved===false&&s.formalPublishingEnabled===true&&s.supportedReleaseEnvironment==='production')
+  const pre=JSON.parse(await readFile(path.join(root,'publication-phase3-20261113/preflight.json'),'utf8'))
+  assert.ok(pre.productionBranch);assert.equal(s.expectedProductionBranch,pre.productionBranch)
+  assert.ok(path.isAbsolute(s.nodeExe)&&path.isAbsolute(s.supabaseCli)&&path.isAbsolute(s.wranglerCli))
+  console.log(JSON.stringify({state:'held',entryValidated:true,queueRead:false,credentialsRead:false,heartbeatWritten:false,taskStarted:false}))
+} else if (mode === '--prepare-off') {
   assert.ok(Object.values(FORMAL_RELEASE_GATES).every(value => value === false))
   console.log(JSON.stringify({ prepared: true, writes: false, uploads: false, publication: false,
     builder: 'full-static-package', productionSubmitted: false, credentialsRead: false }))
 } else {
   // Stop before reading credentials, touching a queue or starting a heartbeat.
-  assert.equal(FORMAL_RELEASE_GATES.publication, true, 'FORMAL_PUBLISHER_COMPILED_OFF')
   await watch()
 }
 
@@ -33,7 +44,7 @@ async function watch() {
   const root = path.join(workspace, 'production-publisher')
   const json = async file => JSON.parse((await readFile(file, 'utf8')).replace(/^\uFEFF/, ''))
   const settings = await json(path.join(root, 'settings.json'))
-  assert.ok(settings.enabled === true && settings.formalPublishingEnabled === true && settings.supportedReleaseEnvironment === 'production')
+  requireFormalExecution(settings)
   assert.equal(settings.projectRef, ref)
   assert.equal(settings.formalQueueBucket, FORMAL_PRIVATE_SCOPE.storageBucket)
   for (const [key, value] of [['JNQ_SUPABASE_CLI', settings.supabaseCli], ['JNQ_WRANGLER_CLI', settings.wranglerCli]]) {
@@ -58,6 +69,10 @@ async function watch() {
   const ledgerFile = path.join(shared, 'publication-attempts.json')
   const live = () => queue.read('_publication/live.json')
   const cloudToken = await privateWranglerToken()
+  async function checkCosts() {
+    const measured = await readFormalFreeHeadroom(cloudToken, ACCOUNT)
+    await writeFile(path.join(root, 'cost-headroom.json'), JSON.stringify(measured))
+  }
   const cloudBase = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/pages/projects/jnqjourney-static-recovery-candidate`
   const cloud = async suffix => {
     const response = await fetch(cloudBase + suffix, { headers: { Authorization: 'Bearer ' + cloudToken }, redirect: 'error', signal: AbortSignal.timeout(20000) })
@@ -65,6 +80,7 @@ async function watch() {
   }
   const configDigest = project => sha(JSON.stringify({ domains: project.domains, branch: project.production_branch, config: project.deployment_configs }))
   async function verifyAuthority(record) {
+    requireFormalExecution(await json(path.join(root, 'settings.json')))
     const response = await fetch(api + '/verify/' + record.id, { headers, redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(120000) })
     assert.ok(response.ok && (await response.json()).revision === record.id, 'FORMAL_QUEUED_VERSION_CHANGED')
   }
@@ -92,17 +108,35 @@ async function watch() {
     progress: (job, value) => queue.write('_publication/progress/' + job.id + '.json', { ...value, attempt: value.attempt || job.attempt || 1, updatedAt: new Date().toISOString() }),
     verifyAuthority,
     async build(job) {
+      await checkCosts()
       const baseline = (await live()).source
       const state = await jobState(queue, job)
       return buildFormalQueuedSite({ job, baseline, workspace, attempt: state.attempt || 1,
         async readMedia(id, name) {
+          const meta = await queue.read('_media/' + name + '.json')
+          assert.ok(meta && !meta.revoked && meta.rightsEvidence?.trim(), 'FORMAL_MEDIA_NO_LONGER_APPROVED')
+          const cache = path.join(root, 'verified-incremental-media', name)
+          try {
+            const info = await lstat(cache)
+            assert.ok(info.isFile() && !info.isSymbolicLink() && info.size <= 10 * 1024 ** 2)
+            const bytes = await readFile(cache)
+            assert.equal(sha(bytes), name.split('.')[0])
+            // verifyAuthority() checks the current server receipt and R2 HEAD;
+            // the cache only avoids transferring identical verified bytes.
+            return { bytes, rightsEvidence: meta.rightsEvidence }
+          } catch (error) { if (error.code !== 'ENOENT') throw error }
           const response = await fetch(api + '/media/' + id + '/' + name, { headers, redirect: 'error', signal: AbortSignal.timeout(120000) })
           assert.ok(response.ok && /^image\//.test(response.headers.get('content-type')), 'FORMAL_PRIVATE_MEDIA_READ_FAILED')
-          const meta = await queue.read('_media/' + name + '.json')
-          return { bytes: Buffer.from(await response.arrayBuffer()), rightsEvidence: meta?.rightsEvidence }
+          const bytes = Buffer.from(await response.arrayBuffer())
+          assert.ok(bytes.length <= 10 * 1024 ** 2 && sha(bytes) === name.split('.')[0])
+          await mkdir(path.dirname(cache), { recursive: true })
+          await writeFile(cache, bytes, { flag: 'wx' })
+          return { bytes, rightsEvidence: meta.rightsEvidence }
         } })
     },
     async prepareSubmission(job, built, attempt) {
+      requireFormalExecution(await json(path.join(root, 'settings.json')))
+      await checkCosts()
       const project = await cloud(''), current = await live()
       assert.ok(!project.source && project.production_branch && project.production_branch === settings.expectedProductionBranch)
       assert.equal(project.canonical_deployment?.id, current.deploymentId || settings.expectedCurrentProductionId, 'FORMAL_PRODUCTION_CHANGED')
@@ -148,7 +182,12 @@ async function watch() {
         await get(base, '/')
       }
       const previous = await live()
-      for (const route of [...(previous.routes || []), ...(previous.mediaPaths || [])].filter(route => !record.built.routes.includes(route) && !record.built.mediaPaths.includes(route) && !record.built.redirects.some(item => item.from === route))) await get(fixed.origin, route, 404)
+      const inventory = previous.routes?.length ? previous : await queue.read('_publication/baseline-inventory/' + previous.source.revision + '.json')
+      assert.ok(inventory?.routes?.length && inventory.mediaPaths?.length, 'FORMAL_WITHDRAWAL_INVENTORY_MISSING')
+      for (const route of [...inventory.routes, ...inventory.mediaPaths].filter(route => !record.built.routes.includes(route) && !record.built.mediaPaths.includes(route) && !record.built.redirects.some(item => item.from === route))) {
+        await get(fixed.origin, route, 404)
+        await get('https://www.jnqjourney.com', route, 404)
+      }
       for (const selected of record.payload.approvals.filter(item => item.action === 'publish')) {
         let route = selected.kind === 'spot' ? '/spot/' + buildLocationSlug(record.payload.feeds['database.json'].locations.find(row => String(row.id) === selected.key).name, selected.key) :
           (selected.kind === 'note' ? '/notes/' : '/guide/') + selected.key
@@ -169,6 +208,7 @@ async function watch() {
   await mkdir(root, { recursive: true })
   for (;;) {
     try {
+      requireFormalExecution(await json(path.join(root, 'settings.json')))
       await queue.write('_publication/heartbeat.json', { at: new Date().toISOString() })
       const result = await formalPublisherTick({ enabled: true, ports })
       await writeFile(path.join(root, 'health.json'), JSON.stringify({ at: new Date().toISOString(), state: result.state }))
