@@ -1,0 +1,82 @@
+{
+  "result": "FORMAL_MEDIA_PHASE2_BLOCKED",
+  "date": "2026-11-13",
+  "baseline": "e857a44c",
+  "accountConfirmed": true,
+  "targetBucket": "jnqjourney-admin-private-media",
+  "targetExists": false,
+  "bucketCreated": false,
+  "tokenPermissionGroups": {
+    "status": 403,
+    "success": false,
+    "errorCodes": [
+      9109
+    ]
+  },
+  "subscriptions": {
+    "status": 403,
+    "success": false,
+    "errorCodes": [
+      10000
+    ]
+  },
+  "officialAnalytics": {
+    "status": 200,
+    "window": {
+      "start": "2026-11-12T03:33:06.095Z",
+      "end": "2026-11-13T03:33:06.094Z",
+      "month": "2026-11-01T00:00:00Z"
+    },
+    "latestStorage": [
+      {
+        "dimensions": {
+          "bucketName": "jnqjourney-img",
+          "datetime": "2026-11-13T03:10:00Z"
+        },
+        "max": {
+          "metadataSize": 466504,
+          "objectCount": 5974,
+          "payloadSize": 7438053455
+        }
+      },
+      {
+        "dimensions": {
+          "bucketName": "jnqjourney-spot-loop-isolated-media",
+          "datetime": "2026-11-13T03:00:00Z"
+        },
+        "max": {
+          "metadataSize": 10518,
+          "objectCount": 317,
+          "payloadSize": 67498040
+        }
+      }
+    ],
+    "payloadBytes": 7505551495,
+    "observedOperationRequests": 64816,
+    "billingBalance": "UNKNOWN"
+  },
+  "credentialCreated": false,
+  "secretConfigured": false,
+  "uploadEnabled": false,
+  "uploadTest": "NOT_RUN",
+  "references": "NOT_RUN",
+  "privateAnonymousReadTest": "NOT_RUN",
+  "textEditingChanged": false,
+  "productionChanged": false,
+  "thirdStageReady": false,
+  "mediaScanned": false,
+  "otherCredentialsUsed": false,
+  "publicWebsite": {
+    "deploymentId": "333e51aa-506e-4a66-a7c6-4f28e3e890a1",
+    "functions": false,
+    "receiptStatus": 200,
+    "receiptShaMatchesBackup": true
+  },
+  "publisherState": "Disabled",
+  "localSettings": {
+    "textWrites": true,
+    "upload": false,
+    "publication": false,
+    "publisherEnabled": false
+  }
+}
