@@ -2,7 +2,7 @@ import { budgetBlockedUntil } from './publication-budget.mjs'
 
 // Same bounded publication states and budget as the isolated runner. All I/O
 // is explicit; the installed entry supplies the real guarded ports.
-export async function formalPublisherTick({ enabled = false, ports, now = Date.now() }) {
+export async function formalPublisherTick({ enabled = false, ports, now = Date.now(), singleRelease = false }) {
   if (!enabled) return { state: 'disabled' }
   const lock = await ports.lock()
   if (!lock) return { state: 'busy' }
@@ -30,6 +30,10 @@ export async function formalPublisherTick({ enabled = false, ports, now = Date.n
     if (!job) return { state: 'idle' }
     const state = await ports.state(job)
     if (state.state === 'building') {
+      if (singleRelease) {
+        await ports.progress(job, { state: 'failed', retryable: false, reason: 'INTERRUPTED_SINGLE_RELEASE_REQUIRES_NEW_APPROVAL' })
+        return { state: 'failed' }
+      }
       // No submission journal exists, so upload could not have started. Keep
       // partial output, reserve a new budgeted attempt after a process crash.
       await ports.progress(job, { state: 'queued', attempt: (state.attempt || 1) + 1, reason: 'RECOVERED_INTERRUPTED_BUILD' })
@@ -43,6 +47,7 @@ export async function formalPublisherTick({ enabled = false, ports, now = Date.n
       await ports.progress(job, { state: 'failed', retryable: false, reason: 'FORMAL_APPROVAL_STALE_OR_UNAVAILABLE_RESELECT' })
       return { state: 'failed' }
     }
+    if (singleRelease) await ports.claimSingleAttempt(job, state.attempt || 1)
     await ports.recordAttempt(job, now)
     await ports.progress(job, { state: 'building', attempt: state.attempt || 1 })
     let record

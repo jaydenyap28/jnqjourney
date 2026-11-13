@@ -22,7 +22,7 @@ export function createFormalPreparedApi({ scope, settings, editors, publishers, 
     if (origin !== scope.origin) return json({ error: 'FORMAL_ORIGIN_DENIED' }, 403)
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers,
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, DELETE, OPTIONS', 'Access-Control-Allow-Headers': 'Authorization, Content-Type, X-JnQ-Mutation-Id' } })
-    if (request.method === 'GET' && !route.startsWith('/admin/mutations/') && !['/session', '/publication', '/publication/catalog', '/admin/media'].includes(route)) return readOnly(request)
+    if (request.method === 'GET' && !route.startsWith('/admin/mutations/') && !['/session', '/publication', '/publication/catalog', '/publication/review', '/admin/media'].includes(route)) return readOnly(request)
     try {
       const token = request.headers.get('authorization')?.match(/^Bearer ([\w.-]+)$/i)?.[1]
       const id = token && token.length <= 8192 ? await getIdentity(token) : null

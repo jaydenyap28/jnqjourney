@@ -1,5 +1,7 @@
 # 正式后台与完整静态发布准备
 
+**首次发布控制已收紧（2026-11-13）**：首次只能执行用户明确批准的 Job ID、指纹与 attempt；本地及服务器各自验证一次性授权，终态恢复 HOLD，不跟随下一任务。当前队列为空，未生成或执行授权。见 [首次发布审批摘要](FIRST-RELEASE-CONTROL-2026-11-13.md)。此前全局启用步骤不能替代该单任务批准。
+
 **第三阶段发布准备完成，执行 HOLD（2026-11-13）**：正式发布申请、服务器 runner 验证及 Admin 状态面板已接通；正确 runner key 实测 423 HOLD，Windows 任务 Disabled。当前新增/修改/隐藏均为 0，本轮创建/领取任务、公开站构建及 Production 部署均为 0。见 [正式发布准备回执](FORMAL-PUBLICATION-READY-2026-11-13.md)。首次正式发布仍需独立批准。
 
 **第二阶段当前已启用并验收 PASS（2026-11-13）**：私有 R2 Presigned PUT、三模块私有引用和拒绝保护通过，正式 Upload ON；文字编辑 ON，发布 OFF，Windows Publisher Disabled，公开站未变。当前结果见 [正式私有图片交付](FORMAL-MEDIA-ENABLED-2026-11-13.md)。下方 403 阻塞是人工配置前的历史记录。

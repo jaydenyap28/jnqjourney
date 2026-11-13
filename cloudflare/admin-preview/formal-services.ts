@@ -3,6 +3,8 @@ import { createFormalMediaChecks } from './formal-media.mjs'
 import { publicationStore, jobState, sha256 } from './publication.mjs'
 import { makeFormalPublication, verifyFormalJob, formalDigest, formalPublicationCatalog } from './formal-publication.mjs'
 import { enqueueFormalJob, reserveFormalRetry } from './formal-release-control.mjs'
+import { requireSingleJobApproval } from './formal-single-release.mjs'
+import { assertFormalFixtureExclusion, formalReleaseReview } from './formal-release-review.mjs'
 import { createFormalMutations } from './formal-mutations'
 import { formalMutationOnce, formalMutationStatus } from './formal-idempotency.mjs'
 import { FormalError, assertFormalScope } from './formal-runtime.mjs'
@@ -16,6 +18,7 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
   assertFormalScope(scope)
   const origin = `https://${scope.projectRef}.supabase.co`
   const queue = publicationStore(db, scope.storageBucket, 16 * 1024 * 1024)
+  const fixtureTargets = () => { try { return JSON.parse(env('JNQ_FORMAL_MEDIA_TEST_TARGETS')) } catch { throw new FormalError(503, 'FORMAL_PRIVATE_FIXTURE_BOUNDARY_UNKNOWN') } }
   async function verifyPrivate() {
     if (!settings.privateAuthorityReady || !settings.anonymousBoundaryReady) throw new FormalError(503, 'FORMAL_PRIVATE_RESOURCES_NOT_APPROVED')
     const checked = await db.storage.getBucket(scope.storageBucket)
@@ -127,6 +130,21 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
       throw new FormalError(503, 'FORMAL_BASELINE_WITHDRAWAL_INVENTORY_REQUIRED')
     }
     const url = new URL(request.url)
+    if (request.method === 'GET' && url.pathname.endsWith('/review')) {
+      const id = url.searchParams.get('job')
+      if (!/^[a-f0-9]{64}$/.test(id || '')) throw new FormalError(400, 'FORMAL_REVIEW_JOB_REQUIRED')
+      const job = await queue.job(id!)
+      if (!job) throw new FormalError(404, 'FORMAL_REVIEW_JOB_NOT_FOUND')
+      const review = await formalReleaseReview({job,current:await authority(baseline),baseline,targets:fixtureTargets()})
+      for (const name of job.payload.media) await media.verifyIdentity(name)
+      const rollbackMedia: string[] = []
+      for (const name of Object.keys(baseline.media || {}).filter(name=>!job.payload.media.includes(name))) {
+        try { await media.verifyIdentity(name) } catch { rollbackMedia.push(name) }
+      }
+      if (rollbackMedia.length) review.rollback.baselineEligible = false
+      return {...review,rollback:{...review.rollback,unverifiedOrRevokedMedia:rollbackMedia},currentProductionDeploymentId:liveRecord.deploymentId,
+        mediaCurrentIdentity:'PASS',execution:env('JNQ_FORMAL_EXECUTION_ENABLED')==='true'?'SINGLE_JOB_GATE':'HOLD'}
+    }
     if (request.method === 'GET' && url.pathname.endsWith('/catalog')) {
       const current = await authority(baseline)
       return formalPublicationCatalog(current, baseline, (kind: string,row:any) => kind === 'note' ? normalizeNotePayload(row) : normalizeGuidePayload(row,{enforceBudgetTotal:true}))
@@ -168,6 +186,7 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
       throw error
     }
     for (const name of job.payload.media) await media.verifyIdentity(name)
+    assertFormalFixtureExclusion(job.payload,fixtureTargets())
     const { job: saved, duplicate } = await enqueueFormalJob(queue, job, baseline.revision)
     await verifyFormalJob(saved, current, baseline.revision)
     return { id: saved.id, duplicate, state: 'queued', releaseHeld: env('JNQ_FORMAL_EXECUTION_ENABLED') !== 'true' }
@@ -186,7 +205,12 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
     const path = new URL(request.url).pathname.match(/\/publication\/runner\/(verify|media)\/([a-f0-9]{64})(?:\/([a-f0-9]{64}\.(?:png|jpg|webp|gif)))?$/)
     if (!path || request.method !== 'GET') throw new FormalError(404, 'FORMAL_RUNNER_ROUTE_INVALID')
     const [, action, id, name] = path
-    const [job, live] = await Promise.all([queue.latest(), queue.read('_publication/live.json')])
+    const attempt = Number(request.headers.get('x-jnq-release-attempt'))
+    if (!Number.isSafeInteger(attempt) || attempt < 1) throw new FormalError(423, 'FORMAL_SINGLE_JOB_APPROVAL_REQUIRED')
+    const [job, live, approval, spent] = await Promise.all([queue.job(id), queue.read('_publication/live.json'),
+      queue.read(`_publication/execution-approvals/${id}/${attempt}.json`), queue.read(`_publication/execution-results/${id}/${attempt}.json`)])
+    await requireSingleJobApproval({approval,job,attempt,live,spent})
+    assertFormalFixtureExclusion(job.payload,fixtureTargets())
     const baseline = live?.source
     if (!job || job.id !== id) throw new FormalError(409, 'FORMAL_QUEUED_VERSION_CHANGED')
     if (action === 'verify' && !name) {

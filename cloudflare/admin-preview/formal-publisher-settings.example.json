@@ -1,6 +1,7 @@
 {
   "enabled": false,
   "productionReleaseApproved": false,
+  "approvedRelease": null,
   "formalWritesEnabled": false,
   "formalUploadsEnabled": false,
   "formalPublishingEnabled": false,

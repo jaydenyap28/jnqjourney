@@ -5,7 +5,7 @@ $ErrorActionPreference='Stop'
 $repo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
 $root=Join-Path (Resolve-Path -LiteralPath $Workspace).Path 'production-publisher'
 $settings=Get-Content -LiteralPath (Join-Path $root 'settings.json') -Raw | ConvertFrom-Json
-if ($settings.projectRef -ne 'vrufunuomioczocdsoer' -or $settings.enabled -ne $true -or $settings.formalPublishingEnabled -ne $true -or $settings.productionReleaseApproved -ne $true) { throw 'FORMAL_PRODUCTION_RELEASE_HELD' }
+if ($settings.projectRef -ne 'vrufunuomioczocdsoer' -or $settings.enabled -ne $true -or $settings.formalPublishingEnabled -ne $true -or $settings.productionReleaseApproved -ne $true -or $settings.approvedRelease.mode -ne 'single-job') { throw 'FORMAL_PRODUCTION_RELEASE_HELD' }
 $mutex=[Threading.Mutex]::new($false,'Local\JNQ.Journey.Formal.Publisher')
 $owned=$false
 try {

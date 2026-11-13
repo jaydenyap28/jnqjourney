@@ -16,7 +16,8 @@ const eligible = (kind, row) => !!row && (kind === 'spot' ? row.id !== 450 && pu
   kind === 'note' ? row.published === true : row.published !== false && [null, undefined, 'published'].includes(row.publication_status))
 
 const publicFields = SPOT_FIELDS.filter(key => !['review_jayden', 'review_qing', 'is_visited', 'created_at'].includes(key))
-const publicSpot = row => Object.fromEntries(publicFields.filter(key => Object.hasOwn(row, key)).map(key => [key, row[key]]))
+export const projectFormalPublicSpot = row => Object.fromEntries(publicFields.filter(key => Object.hasOwn(row, key)).map(key => [key, row[key]]))
+const publicSpot = projectFormalPublicSpot
 export async function formalPublicationCatalog(authority, baseline, projectDocument) {
   const items = []
   const counts = { added: 0, modified: 0, hidden: 0 }

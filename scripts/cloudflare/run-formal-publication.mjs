@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFile } from 'node:child_process'
-import { createHash } from 'node:crypto'
+import { createHash, randomUUID } from 'node:crypto'
 import { mkdir, open, readFile, realpath, rename, unlink, writeFile, lstat } from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
@@ -14,8 +14,8 @@ import { getFormalKey } from './formal-read-source.mjs'
 import { formalPublisherTick } from './formal-publisher-core.mjs'
 import { buildFormalQueuedSite } from './formal-queued-build.mjs'
 import { buildLocationSlug } from '../../lib/location-routing.ts'
-import { requireFormalExecution } from '../../cloudflare/admin-preview/formal-release-control.mjs'
 import { readFormalFreeHeadroom } from './formal-publication-cost.mjs'
+import { requireSingleReleaseSettings, requireSingleJobApproval, restoreSingleReleaseHold } from '../../cloudflare/admin-preview/formal-single-release.mjs'
 
 const [mode, ref] = process.argv.slice(2)
 assert.ok(['--prepare-off', '--check-held', '--watch'].includes(mode) && ref === FORMAL_PRIVATE_SCOPE.projectRef)
@@ -25,6 +25,7 @@ if (mode === '--check-held') {
   const s=JSON.parse((await readFile(path.join(root,'settings.json'),'utf8')).replace(/^\uFEFF/,''))
   assert.equal(s.projectRef,ref);assert.equal(s.publicPagesProject,'jnqjourney-static-recovery-candidate')
   assert.ok(s.enabled===false&&s.productionReleaseApproved===false&&s.formalPublishingEnabled===true&&s.supportedReleaseEnvironment==='production')
+  assert.ok(s.approvedRelease == null, 'UNEXPECTED_SINGLE_JOB_APPROVAL')
   const pre=JSON.parse(await readFile(path.join(root,'publication-phase3-20261113/preflight.json'),'utf8'))
   assert.ok(pre.productionBranch);assert.equal(s.expectedProductionBranch,pre.productionBranch)
   assert.ok(path.isAbsolute(s.nodeExe)&&path.isAbsolute(s.supabaseCli)&&path.isAbsolute(s.wranglerCli))
@@ -34,19 +35,63 @@ if (mode === '--check-held') {
   console.log(JSON.stringify({ prepared: true, writes: false, uploads: false, publication: false,
     builder: 'full-static-package', productionSubmitted: false, credentialsRead: false }))
 } else {
-  // Stop before reading credentials, touching a queue or starting a heartbeat.
-  await watch()
-}
-
-async function watch() {
   const workspace = path.resolve(process.env.JNQ_RECOVERY_WORKSPACE || '.')
   assert.ok(process.env.JNQ_RECOVERY_WORKSPACE && await realpath(workspace) === workspace)
   const root = path.join(workspace, 'production-publisher')
-  const json = async file => JSON.parse((await readFile(file, 'utf8')).replace(/^\uFEFF/, ''))
-  const settings = await json(path.join(root, 'settings.json'))
-  requireFormalExecution(settings)
+  const settings = await readSettings(root)
+  // Refuse a held startup before credentials, queue access or cleanup writes.
+  const approval = requireSingleReleaseSettings(settings)
   assert.equal(settings.projectRef, ref)
   assert.equal(settings.formalQueueBucket, FORMAL_PRIVATE_SCOPE.storageBucket)
+  assert.ok(path.isAbsolute(settings.supabaseCli) && settings.supabaseCli.endsWith('.js'))
+  try { await watch(workspace, root, settings, approval) }
+  catch { await closeUnexpectedStartup(root, settings, approval); process.exitCode = 1 }
+}
+
+async function readSettings(root) {
+  return JSON.parse((await readFile(path.join(root, 'settings.json'), 'utf8')).replace(/^\uFEFF/, ''))
+}
+
+function holdPorts(root, settings, approval, consumeApproval) {
+  const run = promisify(execFile)
+  return {
+    consumeApproval,
+    async holdLocal() {
+      const current = await readSettings(root)
+      assert.ok(current.approvedRelease == null || await formalDigest(current.approvedRelease) === await formalDigest(approval), 'FORMAL_SINGLE_APPROVAL_CHANGED')
+      const file = path.join(root, 'settings.json'), next = path.join(root, `settings-hold-${process.pid}-${Date.now()}.json`)
+      Object.assign(current, { enabled: false, productionReleaseApproved: false, approvedRelease: null })
+      await writeFile(next, JSON.stringify(current, null, 2), { flag: 'wx' })
+      await rename(next, file)
+    },
+    async holdServer() {
+      const file = path.join(root, `execution-hold-${process.pid}-${Date.now()}.env`)
+      await writeFile(file, 'JNQ_FORMAL_EXECUTION_ENABLED=false\n', { flag: 'wx' })
+      try { await run(process.execPath, [settings.supabaseCli, 'secrets', 'set', '--env-file', file, '--project-ref', ref],
+        { windowsHide: true, timeout: 60000, maxBuffer: 65536 }) } finally { await unlink(file) }
+    },
+    async disableTask() {
+      await run('pwsh.exe', ['-NoProfile', '-NonInteractive', '-Command', "Disable-ScheduledTask -TaskName 'JnQ Journey Production Publisher' | Out-Null"],
+        { windowsHide: true, timeout: 15000, maxBuffer: 65536 })
+    },
+  }
+}
+
+async function closeUnexpectedStartup(root, settings, approval) {
+  const status = await restoreSingleReleaseHold(holdPorts(root, settings, approval,
+    async () => {
+      process.env.JNQ_SUPABASE_CLI = settings.supabaseCli
+      const db = createClient(`https://${ref}.supabase.co`, await getFormalKey(), { auth: { persistSession: false } })
+      await publicationStore(db, settings.formalQueueBucket, 16 * 1024 ** 2).createOnce(
+        `_publication/execution-results/${approval.jobId}/${approval.attempt}.json`,
+        { jobId: approval.jobId, contentFingerprint: approval.contentFingerprint, attempt: approval.attempt,
+          state: 'initialization-failed', at: new Date().toISOString() })
+    }), { state: 'initialization-failed' })
+  await writeFile(path.join(root, 'health.json'), JSON.stringify({ at: new Date().toISOString(), ...status, reason: 'SINGLE_RELEASE_INITIALIZATION_STOPPED' }))
+}
+
+async function watch(workspace, root, settings, approvedRelease) {
+  const json = async file => JSON.parse((await readFile(file, 'utf8')).replace(/^\uFEFF/, ''))
   for (const [key, value] of [['JNQ_SUPABASE_CLI', settings.supabaseCli], ['JNQ_WRANGLER_CLI', settings.wranglerCli]]) {
     assert.ok(path.isAbsolute(value) && value.endsWith('.js')); process.env[key] = value
   }
@@ -59,7 +104,8 @@ async function watch() {
   assert.match(runnerKey, /^[a-f0-9]{64}$/)
   const publicKey = await json('artifacts/cloudflare-static-recovery/.public-read-key.json')
   assert.equal(publicKey.projectRef, ref)
-  const headers = { Authorization: 'Bearer ' + publicKey.apiKey, 'X-JnQ-Runner-Key': runnerKey }
+  const headers = { Authorization: 'Bearer ' + publicKey.apiKey, 'X-JnQ-Runner-Key': runnerKey,
+    'X-JnQ-Release-Attempt': String(approvedRelease.attempt) }
   const api = `https://${ref}.supabase.co/functions/v1/jnq-admin-formal/publication/runner`
   const run = promisify(execFile)
   const sha = value => createHash('sha256').update(value).digest('hex')
@@ -79,8 +125,19 @@ async function watch() {
     const result = await response.json(); assert.ok(response.ok && result.success, 'FORMAL_PAGES_READ_FAILED'); return result.result
   }
   const configDigest = project => sha(JSON.stringify({ domains: project.domains, branch: project.production_branch, config: project.deployment_configs }))
+  async function checkSelectedJob(record) {
+    const current = requireSingleReleaseSettings(await json(path.join(root, 'settings.json')))
+    assert.equal(await formalDigest(current), await formalDigest(approvedRelease), 'FORMAL_SINGLE_APPROVAL_CHANGED')
+    assert.ok(record?.id === approvedRelease.jobId && await formalDigest(record.payload) === approvedRelease.contentFingerprint &&
+      record.payload.authorityRevision === approvedRelease.authorityFingerprint && record.payload.baselineRevision === approvedRelease.baselineRevision &&
+      (!record.attempt || record.attempt === approvedRelease.attempt), 'FORMAL_SINGLE_JOB_MISMATCH')
+    const remote = await queue.read(`_publication/execution-approvals/${record.id}/${approvedRelease.attempt}.json`)
+    assert.equal(await formalDigest(remote), await formalDigest(approvedRelease), 'FORMAL_SERVER_SINGLE_APPROVAL_MISMATCH')
+    assert.equal(await queue.read(`_publication/execution-results/${record.id}/${approvedRelease.attempt}.json`), null, 'FORMAL_SINGLE_APPROVAL_CONSUMED')
+  }
   async function verifyAuthority(record) {
-    requireFormalExecution(await json(path.join(root, 'settings.json')))
+    await checkSelectedJob(record)
+    await requireSingleJobApproval({ approval: approvedRelease, job: record, attempt: approvedRelease.attempt, live: await live(), spent: null })
     const response = await fetch(api + '/verify/' + record.id, { headers, redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(120000) })
     assert.ok(response.ok && (await response.json()).revision === record.id, 'FORMAL_QUEUED_VERSION_CHANGED')
   }
@@ -101,11 +158,18 @@ async function watch() {
         return null
       }
     },
-    pending: () => readLocal(pendingFile),
-    latest: () => queue.latest(), state: job => jobState(queue, job),
+    async pending() { const record = await readLocal(pendingFile); if (record) await checkSelectedJob(record); return record },
+    async latest() { const job = await queue.job(approvedRelease.jobId); await checkSelectedJob(job); return job },
+    async state(job) { const state = await jobState(queue, job); assert.equal(state.attempt || 1, approvedRelease.attempt, 'FORMAL_APPROVED_ATTEMPT_CHANGED'); return state },
+    async claimSingleAttempt(job, attempt) {
+      await checkSelectedJob({ ...job, attempt })
+      const claim = { nonce: randomUUID(), at: new Date().toISOString() }
+      const saved = await queue.createOnce(`_publication/execution-claims/${job.id}/${attempt}.json`, claim)
+      assert.equal(saved.nonce, claim.nonce, 'FORMAL_SINGLE_ATTEMPT_ALREADY_CLAIMED')
+    },
     ledger: async () => await readLocal(ledgerFile) || [],
     async recordAttempt(job, now) { const ledger = await ports.ledger(); ledger.push({ id: job.id, startedAt: new Date(now).toISOString(), mode: 'formal-admin' }); await writeFile(ledgerFile, JSON.stringify(ledger)) },
-    progress: (job, value) => queue.write('_publication/progress/' + job.id + '.json', { ...value, attempt: value.attempt || job.attempt || 1, updatedAt: new Date().toISOString() }),
+    progress: (job, value) => queue.write('_publication/progress/' + job.id + '.json', { ...value, attempt: value.attempt || approvedRelease.attempt, updatedAt: new Date().toISOString() }),
     verifyAuthority,
     async build(job) {
       await checkCosts()
@@ -135,10 +199,12 @@ async function watch() {
         } })
     },
     async prepareSubmission(job, built, attempt) {
-      requireFormalExecution(await json(path.join(root, 'settings.json')))
+      await checkSelectedJob({ ...job, attempt })
       await checkCosts()
       const project = await cloud(''), current = await live()
       assert.ok(!project.source && project.production_branch && project.production_branch === settings.expectedProductionBranch)
+      assert.equal(project.production_branch, approvedRelease.expectedProductionBranch)
+      assert.equal(project.canonical_deployment?.id, approvedRelease.expectedProductionId, 'FORMAL_APPROVED_PRODUCTION_CHANGED')
       assert.equal(project.canonical_deployment?.id, current.deploymentId || settings.expectedCurrentProductionId, 'FORMAL_PRODUCTION_CHANGED')
       assert.deepEqual([...project.domains].sort(), ['jnqjourney-static-recovery-candidate.pages.dev', 'www.jnqjourney.com', 'jnqjourney.com'].sort())
       for (const cfg of Object.values(project.deployment_configs)) for (const type of ['env_vars','r2_buckets','kv_namespaces','d1_databases','services','durable_object_namespaces']) assert.equal(Object.keys(cfg[type] || {}).length, 0)
@@ -148,6 +214,9 @@ async function watch() {
     savePending: record => writeFile(pendingFile, JSON.stringify(record), { flag: 'wx' }),
     async submit(record) {
       await verifyAuthority(record)
+      const project = await cloud('')
+      assert.equal(project.canonical_deployment?.id, approvedRelease.expectedProductionId, 'FORMAL_APPROVED_PRODUCTION_CHANGED')
+      assert.equal(configDigest(project), record.beforeConfig, 'FORMAL_PAGES_CONFIGURATION_CHANGED')
       await writeFile(path.join(root, 'wrangler.jsonc'), JSON.stringify({ name: 'jnqjourney-static-recovery-candidate', pages_build_output_dir: record.built.output }))
       // Wrangler reuses content-addressed assets in this same Pages project.
       await run(process.execPath, [settings.wranglerCli, 'pages', 'deploy', record.built.output, '--project-name',
@@ -156,6 +225,7 @@ async function watch() {
         env: { ...process.env, CLOUDFLARE_ACCOUNT_ID: ACCOUNT, WRANGLER_SEND_METRICS: 'false' } })
     },
     async findDeployment(record) {
+      await checkSelectedJob(record)
       const matches = []
       for (let page = 1; page <= 10; page++) {
         const deployments = await cloud('/deployments?per_page=100&page=' + page)
@@ -205,14 +275,33 @@ async function watch() {
     },
     clearPending: () => unlink(pendingFile),
   }
+  const approvalPath = `${approvedRelease.jobId}/${approvedRelease.attempt}.json`
+  async function finish(result) {
+    if (['queued','idle'].includes(result.state)) {
+      result = {...result,state:'failed',reason:'SINGLE_RELEASE_NOT_STARTED_REQUIRES_NEW_APPROVAL'}
+      await ports.progress({id:approvedRelease.jobId},{state:'failed',retryable:true,reason:result.reason})
+    }
+    const status = await restoreSingleReleaseHold(holdPorts(root, settings, approvedRelease,
+      async () => {
+        await queue.createOnce('_publication/execution-results/' + approvalPath, {
+          jobId: approvedRelease.jobId, contentFingerprint: approvedRelease.contentFingerprint,
+          authorityFingerprint: approvedRelease.authorityFingerprint, attempt: approvedRelease.attempt,
+          state: result.state, deploymentId: result.deploymentId || null, at: new Date().toISOString() })
+      }), result)
+    await writeFile(path.join(root, 'health.json'), JSON.stringify({ at: new Date().toISOString(), ...status, jobId: approvedRelease.jobId }))
+  }
   await mkdir(root, { recursive: true })
-  for (;;) {
+  // This entry never follows the next queued job. Reconciliation of this one
+  // submission is bounded; uncertainty consumes approval and retains journal.
+  for (let poll = 0; poll < 20; poll++) {
     try {
-      requireFormalExecution(await json(path.join(root, 'settings.json')))
+      requireSingleReleaseSettings(await json(path.join(root, 'settings.json')))
       await queue.write('_publication/heartbeat.json', { at: new Date().toISOString() })
-      const result = await formalPublisherTick({ enabled: true, ports })
+      const result = await formalPublisherTick({ enabled: true, ports, singleRelease: true })
       await writeFile(path.join(root, 'health.json'), JSON.stringify({ at: new Date().toISOString(), state: result.state }))
-    } catch { await writeFile(path.join(root, 'health.json'), JSON.stringify({ at: new Date().toISOString(), state: 'held', reason: 'FORMAL_PUBLISHER_RECONCILIATION_REQUIRED' })) }
+      if (!['verifying', 'busy'].includes(result.state)) { await finish(result); return }
+    } catch { await finish({state:'uncertain',reason:'FORMAL_PUBLISHER_RECONCILIATION_REQUIRED'}); return }
     await delay(30000)
   }
+  await finish({state:'uncertain',reason:'BOUNDED_RECONCILIATION_TIMEOUT_NO_RESUBMISSION'})
 }
