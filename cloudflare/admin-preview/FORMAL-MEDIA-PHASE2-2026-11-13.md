@@ -1,5 +1,7 @@
 # 正式私有图片第二阶段：权限预检停止
 
+历史断点已由用户完成人工配置后解除；当前 Upload 已通过有限真实验收并开启，见 [后续交付](FORMAL-MEDIA-ENABLED-2026-11-13.md)。本文件及原始 403 证据保持不变，不代表当前仍阻塞。
+
 状态 `FORMAL_MEDIA_PHASE2_BLOCKED`。沿用 `e857a44c` 的文字编辑，Upload capability 保持 OFF；没有建桶、创建/扩大凭据、上传、部署或更改旧资源。[脱敏预检](formal-media-phase2-evidence.json)
 
 ## 实际检查

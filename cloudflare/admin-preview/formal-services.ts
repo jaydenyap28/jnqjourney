@@ -1,5 +1,4 @@
 import { createScopedAdminStore } from './store'
-import { createScopedDraftMedia } from './media'
 import { createFormalMediaChecks } from './formal-media.mjs'
 import { publicationStore, jobState, sha256 } from './publication.mjs'
 import { makeFormalPublication, verifyFormalJob, formalDigest } from './formal-publication.mjs'
@@ -10,6 +9,7 @@ import { SPOT_FIELDS } from '../spot-loop/spot-contract.mjs'
 import { normalizeNotePayload } from '../../lib/note-payload'
 import { normalizeGuidePayload } from '../../lib/guide-payload'
 import { prepareFormalSlugEdit, projectFormalSlugs } from './formal-slugs.mjs'
+import { createFormalDirectMedia } from './formal-direct-media.mjs'
 
 export function createFormalServices({ db, anonKey, scope, settings, env }: any) {
   assertFormalScope(scope)
@@ -29,51 +29,36 @@ export function createFormalServices({ db, anonKey, scope, settings, env }: any)
     if (![401, 403].includes(response.status) || denied?.code !== '42501') throw new FormalError(503, 'FORMAL_ANONYMOUS_BOUNDARY_NOT_CLOSED')
   }
   const store = createScopedAdminStore(db, scope.storageBucket, verifyPrivate)
-  const rawMedia = createScopedDraftMedia(env, { bucket: scope.mediaBucket, prefix: scope.mediaPrefix,
-    mediaPrefix: '/admin-draft-media/', accessName: 'FORMAL_R2_ACCESS_KEY_ID', secretName: 'FORMAL_R2_SECRET_ACCESS_KEY', requireRightsEvidence: true })
-  const normalizedEtag=(value:unknown)=>typeof value==='string'&&/^"?[a-f0-9]{32}"?$/i.test(value)?value.replaceAll('"','').toLowerCase():null
-  async function mediaReceipt(name:string) {
-      if (!settings.privateMediaReady) throw new FormalError(503, 'FORMAL_PRIVATE_MEDIA_SCOPE_NOT_APPROVED')
-      if (!/^[a-f0-9]{64}\.(?:png|jpg|webp|gif)$/.test(name)) throw new FormalError(400, 'FORMAL_MEDIA_NAME_INVALID')
-      const receipt = await queue.read('_media/' + name + '.json')
-      if (!receipt || receipt.revoked !== false || receipt.bucket !== scope.mediaBucket ||
-          receipt.key !== scope.mediaPrefix + '/' + name || receipt.sha256 !== name.split('.')[0] || !receipt.rightsEvidence || !normalizedEtag(receipt.etag)) throw new FormalError(404, 'FORMAL_MEDIA_NOT_VERIFIED')
-      return receipt
+  async function verifyBinding(raw:any){
+    if(!raw||!['spot','note','guide'].includes(raw.kind))throw new FormalError(400,'FORMAL_UPLOAD_CONTENT_BINDING_INVALID')
+    if(raw.target==='new'){
+      if(raw.expectedVersion!==null)throw new FormalError(409,'FORMAL_UPLOAD_NEW_CONTENT_VERSION')
+      return {kind:raw.kind,target:'new',expectedVersion:null}
+    }
+    let version
+    if(raw.kind==='spot'){
+      if(!Number.isSafeInteger(raw.target)||raw.target<1)throw new FormalError(400,'FORMAL_UPLOAD_TARGET_INVALID')
+      const r=await db.from('locations').select('id,updated_at').eq('id',raw.target).maybeSingle()
+      if(r.error||!r.data)throw new FormalError(404,'FORMAL_UPLOAD_TARGET_NOT_FOUND');version=r.data.updated_at
+    }else{
+      if(typeof raw.target!=='string'||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(raw.target))throw new FormalError(400,'FORMAL_UPLOAD_TARGET_INVALID')
+      const rows:any[]=await store.read(raw.kind==='note'?'notes':'guides'),row=rows.find(v=>v.slug===raw.target)
+      if(!row)throw new FormalError(404,'FORMAL_UPLOAD_TARGET_NOT_FOUND');version=row.updatedAt||''
+    }
+    if(raw.expectedVersion!==version)throw new FormalError(409,'FORMAL_UPLOAD_CONTENT_VERSION_CONFLICT')
+    return {kind:raw.kind,target:raw.target,expectedVersion:version}
   }
-  const media = createFormalMediaChecks({
-    async get(name: string) {
-      const receipt=await mediaReceipt(name)
-      const result = await rawMedia.get(name)
-      if (result.bytes.length !== receipt.size || normalizedEtag(result.etag)!==normalizedEtag(receipt.etag)) throw new FormalError(503, 'FORMAL_MEDIA_IDENTITY_CHANGED')
-      return { ...result, rightsEvidence: receipt.rightsEvidence }
-    },
-    async verifyIdentity(name:string){
-      const receipt=await mediaReceipt(name),actual=await rawMedia.head(name)
-      if(actual.size!==receipt.size||normalizedEtag(actual.etag)!==normalizedEtag(receipt.etag))throw new FormalError(409,'FORMAL_MEDIA_IDENTITY_CHANGED')
-    },
-    async upload(request: Request, actor: string) {
-      await verifyPrivate()
-      if (!settings.privateMediaReady) throw new FormalError(503, 'FORMAL_PRIVATE_MEDIA_SCOPE_NOT_APPROVED')
-      const result = await rawMedia.upload(request)
-      const name = result.url.slice('/admin-draft-media/'.length)
-      if(!normalizedEtag(result.etag))throw new FormalError(503,'FORMAL_MEDIA_ETAG_UNAVAILABLE')
-      const receipt = { bucket: scope.mediaBucket, key: result.key, sha256: name.split('.')[0], size: result.size,etag:result.etag,
-        rightsEvidence: result.rightsEvidence, actor, verifiedAt: new Date().toISOString(), revoked: false }
-      const saved = await queue.createOnce('_media/' + name + '.json', receipt)
-      if (saved.revoked !== false || saved.sha256 !== receipt.sha256 || saved.key !== receipt.key || saved.size !== receipt.size || normalizedEtag(saved.etag)!==normalizedEtag(receipt.etag)) throw new FormalError(409, 'FORMAL_MEDIA_RECEIPT_CONFLICT')
-      // Uncertain receipt saves never trigger object deletion.
-      await media.verifyIdentity(name)
-      return result
-    },
-  })
+  const media=createFormalMediaChecks(createFormalDirectMedia({queue,env,verifyBinding,
+    async verifyPrivate(){await verifyPrivate();if(!settings.privateMediaReady)throw new FormalError(503,'FORMAL_PRIVATE_MEDIA_SCOPE_NOT_APPROVED')},
+  }))
   // All exposed mutation wrappers validate private scope before reserving an
   // intent. The store separately rechecks immediately before its own writes.
   const core = createFormalMutations({ db, store, media, verifyPrivate: async () => {} })
   const mutations = {
     async spot(method: string, body: any, context: any) { await verifyPrivate(); return formalMutationOnce(queue,
-      { ...context, operation: method + ':spot', body }, () => core.spot(method, body)) },
+      { ...context, operation: method + ':spot', body }, () => core.spot(method, body, context)) },
     async document(kind: 'notes' | 'guides', body: any, context: any) { await verifyPrivate(); return formalMutationOnce(queue,
-      { ...context, operation: 'save:' + kind, body }, () => core.document(kind, body)) },
+      { ...context, operation: 'save:' + kind, body }, () => core.document(kind, body, context)) },
     async slug(body: any, context: any) {
       await verifyPrivate()
       return formalMutationOnce(queue,{...context,operation:'save:slug',body},async()=>{

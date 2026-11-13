@@ -1,5 +1,7 @@
 # 正式后台与完整静态发布准备
 
+**第二阶段当前已启用并验收 PASS（2026-11-13）**：私有 R2 Presigned PUT、三模块私有引用和拒绝保护通过，正式 Upload ON；文字编辑 ON，发布 OFF，Windows Publisher Disabled，公开站未变。当前结果见 [正式私有图片交付](FORMAL-MEDIA-ENABLED-2026-11-13.md)。下方 403 阻塞是人工配置前的历史记录。
+
 第二阶段私有图片当前停在 Cloudflare 凭据权限预检：Token 权限组 403/9109、订阅 403/10000；Upload 仍 OFF，文字编辑保留。未建桶或上传，见 [第二阶段断点](FORMAL-MEDIA-PHASE2-2026-11-13.md)。
 
 **当前状态（2026-11-13）：正式文字编辑第一阶段已启用并通过真实保存。** 指定旧 Cron/Trigger 已停用，队列 586/4 及摘要保留；私有权威与最小匿名边界已生效。图片上传、发布 OFF，Windows Publisher Disabled，公开站原 Deployment 未变。见 [本轮实际回执](FORMAL-TEXT-ENABLED-2026-11-13.md)。以下记录均保留为历史检查点。

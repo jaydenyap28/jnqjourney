@@ -44,14 +44,20 @@ export function createFormalPreparedApi({ scope, settings, editors, publishers, 
       }
       if (route === '/admin/media' && request.method === 'GET') {
         requireCapability('uploads', gates, settings)
-        const asset = await media.get(new URL(request.url).searchParams.get('name') || '')
+        const asset = await media.get(new URL(request.url).searchParams.get('name') || '', id)
         return new Response(asset.bytes, { headers: { ...headers, 'Content-Type': asset.type, 'X-Content-Type-Options': 'nosniff' } })
       }
       if (!editors.includes(id)) throw new FormalError(403, 'FORMAL_EDITOR_REQUIRED')
-      if (route === '/upload/r2' && request.method === 'POST') {
+      if (route.startsWith('/upload/r2') && request.method === 'POST') {
         requireCapability('uploads', gates, settings)
-        const uploaded = await media.upload(request, id)
-        return json({ items: [uploaded], files: [uploaded], ...uploaded }, 201)
+        if(!['/upload/r2/presign','/upload/r2/complete','/upload/r2/cancel'].includes(route))throw new FormalError(405,'FORMAL_USE_PRESIGNED_UPLOAD')
+        if(!request.headers.get('content-type')?.startsWith('application/json'))throw new FormalError(415,'FORMAL_UPLOAD_JSON_REQUIRED')
+        const reader=request.body?.getReader();if(!reader)throw new FormalError(400,'FORMAL_BODY_REQUIRED')
+        const parts=[];let bytes=0;for(;;){const {done,value}=await reader.read();if(done)break;bytes+=value.byteLength;if(bytes>8192){await reader.cancel();throw new FormalError(413,'FORMAL_UPLOAD_GRANT_BODY_LIMIT')};parts.push(value)}
+        let body;try{body=JSON.parse(await new Blob(parts).text())}catch{throw new FormalError(400,'FORMAL_JSON_INVALID')}
+        if(route.endsWith('/presign'))return json(await media.start(body,id),201)
+        const uploaded=await media.finish(body,id,route.endsWith('/cancel'))
+        return json({items:[uploaded],files:[uploaded],...uploaded},201)
       }
       requireCapability('writes', gates, settings)
       if (!request.headers.get('content-type')?.startsWith('application/json')) throw new FormalError(415, 'FORMAL_JSON_REQUIRED')

@@ -33,10 +33,15 @@ test('changed new-Spot payload cannot bypass an unresolved earlier create intent
 }))
 test('upload requires explicit rights evidence, no client-side deployment credential is added',()=>fixture(async()=>{
   enabled=true;promptValue='';responder=async()=>Response.json({saved:true})
-  const empty=new FormData();empty.set('file',new File(['synthetic'],'photo.png',{type:'image/png'}))
+  const empty=new FormData();empty.set('file',new File([new Uint8Array(32)],'photo.png',{type:'image/png'}));empty.set('binding',JSON.stringify({kind:'spot',target:'new',expectedVersion:null}))
   assert.equal((await adminFetch('/api/upload/r2',{method:'POST',body:empty})).status,400);assert.equal(calls.length,0)
   promptValue='Synthetic owner-authorized test photo'
-  assert.equal((await adminFetch('/api/upload/r2',{method:'POST',body:empty})).status,200)
-  assert.equal(calls[0].init.body.get('rightsEvidence'),promptValue)
-  assert.deepEqual([...calls[0].init.headers.keys()],['authorization'])
+  const name='a'.repeat(64)+'.png',r2origin='https://41feff7cd62964f2eb33bb82508509a1.r2.cloudflarestorage.com'
+  responder=async(url)=>url.endsWith('/presign')?Response.json({ticket:'11111111-1111-4111-8111-111111111111',revision:'a'.repeat(64),putUrl:r2origin+'/jnqjourney-admin-private-media/_admin-formal-drafts/_staging/11111111-1111-4111-8111-111111111111.png',headers:{'Content-Type':'image/png','If-None-Match':'*'}}):Response.json({url:'/admin-draft-media/'+name,proof:{ticket:'11111111-1111-4111-8111-111111111111',revision:'a'.repeat(64)}})
+  const apiFetch=global.fetch;let direct
+  global.fetch=async(url,init)=>{if(String(url).startsWith(r2origin)){direct=init;return new Response(null,{status:200})}return apiFetch(url,init)}
+  assert.equal((await adminFetch('/api/upload/r2',{method:'POST',body:empty})).status,201)
+  assert.equal(JSON.parse(calls[0].init.body).rightsEvidence,promptValue)
+  assert.equal(direct.headers.Authorization,undefined);assert.equal(direct.headers['If-None-Match'],'*')
+  assert.ok(memory.has('jnq:formal-media-proofs:synthetic-owner'))
 }))

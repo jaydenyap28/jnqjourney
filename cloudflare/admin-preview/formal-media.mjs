@@ -24,16 +24,16 @@ export function mediaReferences(value) {
 export function createFormalMediaChecks(media) {
   return {
     ...media,
-    async verifyChanges(record, previous) {
-      const old = new Set(mediaReferences(previous))
+    async verifyChanges(record, previous, context) {
+      const old = new Set(mediaReferences(previous).map(value=>value.split('#')[0]))
       const current = mediaReferences(record)
       const pending = new Set()
       for (const reference of current) {
         if (reference.startsWith(prefix)) {
-          const name = reference.slice(prefix.length)
+          const name = reference.slice(prefix.length).split('#')[0]
           if (!namePattern.test(name)) throw new FormalError(400, 'FORMAL_MEDIA_NAME_INVALID')
           pending.add(name)
-        } else if (!old.has(reference) && reference !== '/placeholder-image.jpg') {
+        } else if (!old.has(reference.split('#')[0]) && reference !== '/placeholder-image.jpg') {
           throw new FormalError(422, 'FORMAL_NEW_MEDIA_MUST_USE_PRIVATE_UPLOAD')
         }
       }
@@ -41,7 +41,8 @@ export function createFormalMediaChecks(media) {
       // Only a server receipt established by full byte/signature/SHA checking
       // can authorize a live HEAD identity check. Build/preview always use get
       // and re-hash actual bytes. A browser flag or HEAD alone never suffices.
-      for (const name of pending) await (media.verifyIdentity ? media.verifyIdentity(name) : media.get(name))
+      for (const name of pending) await (media.verifyIdentity ? media.verifyIdentity(name, context, !old.has(prefix+name)) : media.get(name))
+      return [...pending]
     },
   }
 }

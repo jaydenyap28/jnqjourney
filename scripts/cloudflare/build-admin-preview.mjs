@@ -201,6 +201,14 @@ if (managed) for (const file of ['components/AdminLocationForm.tsx','app/admin/n
   const text=await readFile(path.join(stage,file),'utf8')
   await write(file,text.replaceAll('隔离后台','正式后台（保存不会发布）'))
 }
+if(managed){
+ await replace('components/AdminLocationForm.tsx',"payload.append('files', file)","payload.append('files', file)\n      payload.append('binding', JSON.stringify({ kind: 'spot', target: initialData?.id || 'new', expectedVersion: initialData?.id ? lastUpdatedAt : null }))")
+ await replace('app/admin/notes/page.tsx',/payload\.append\('files', file\)/g,"payload.append('files', file)\n        payload.append('binding', JSON.stringify({ kind: 'note', target: selectedSlug || 'new', expectedVersion: selectedSlug ? (form.updatedAt || '') : null }))")
+ await replace('app/admin/notes/page.tsx',"if (inFlight.current || saveState === 'Newer cloud version detected') return","if (uploadingCoverImage || uploadingStandaloneImage || inFlight.current || saveState === 'Newer cloud version detected') return")
+ await replace('app/admin/notes/page.tsx',"loading || saving || !form.title.trim()", "loading || saving || uploadingCoverImage || uploadingStandaloneImage || !form.title.trim()")
+ await replace('app/admin/notes/page.tsx',"[editorKey, dirty, loading, saving, saveState, form.title]", "[editorKey, dirty, loading, saving, saveState, form.title, uploadingCoverImage, uploadingStandaloneImage]")
+ await replace('app/admin/guides/page.tsx',"body.append('file', file)","body.append('file', file)\n      body.append('binding', JSON.stringify({ kind: 'guide', target: originalSlug || 'new', expectedVersion: originalSlug ? ((form as TravelGuide & { updatedAt?: string }).updatedAt || '') : null }))")
+}
 await write('next.config.mjs', "export default { output: 'export', images: { unoptimized: true }, experimental: { cpus: 2 }, eslint: { ignoreDuringBuilds: true } }\n")
 await write('tsconfig.json', JSON.stringify({
   compilerOptions: { target: 'ES2017', lib: ['dom', 'dom.iterable', 'esnext'], allowJs: true, allowImportingTsExtensions: true, skipLibCheck: true, strict: true,
@@ -215,7 +223,7 @@ await write('public/_headers', `/*
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
   Cache-Control: no-store
-  Content-Security-Policy: frame-ancestors 'none'; base-uri 'none'; object-src 'none'; connect-src 'self' ${SUPABASE_ORIGIN}; form-action 'self'
+  Content-Security-Policy: frame-ancestors 'none'; base-uri 'none'; object-src 'none'; connect-src 'self' ${SUPABASE_ORIGIN}${managed ? ' https://41feff7cd62964f2eb33bb82508509a1.r2.cloudflarestorage.com' : ''}; form-action 'self'
 `)
 await write('public/robots.txt', 'User-agent: *\nDisallow: /\n')
 

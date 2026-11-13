@@ -8,19 +8,43 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
   const route = typeof input === 'string' ? input : ''
   const target = new URL(route, 'https://editor.invalid')
   if (target.origin !== 'https://editor.invalid' || !route.startsWith('/') ||
-      !/^\/(?:api\/(?:admin\/|upload\/r2$)|session$|publication(?:\/(?:catalog|retry))?$)/.test(target.pathname)) throw Error('后台请求路径不受支持。')
+      !/^\/(?:api\/(?:admin\/|upload\/r2(?:\/(?:presign|complete|cancel))?$)|session$|publication(?:\/(?:catalog|retry))?$)/.test(target.pathname)) throw Error('后台请求路径不受支持。')
   const method = (init.method || 'GET').toUpperCase()
   if (method !== 'GET') {
-    const allowed = route.startsWith('/publication') ? formalCanPublish() : route === '/api/upload/r2' ? formalCanUpload() : formalCanWrite()
+    const allowed = route.startsWith('/publication') ? formalCanPublish() : route.startsWith('/api/upload/r2') ? formalCanUpload() : formalCanWrite()
     if (!allowed) return denied('正式功能尚未启用。')
   }
   const { data } = await supabase.auth.getSession()
   if (!data.session) { setFormalCapabilities({}); return denied('请重新登录。', 401) }
   const headers = new Headers(init.headers)
   headers.set('Authorization', 'Bearer ' + data.session.access_token)
+  let body=init.body
+  const proofKey='jnq:formal-media-proofs:'+data.session.user.id
+  if(method==='POST'&&route==='/api/upload/r2'&&body instanceof FormData){
+    const file=body.get('files')??body.get('file')
+    if(!(file instanceof File)||file.size<12||file.size>10*1024*1024||!['image/png','image/jpeg','image/webp','image/gif'].includes(file.type))return denied('请选择不超过 10 MiB 的真实图片。',400)
+    const rights=typeof body.get('rightsEvidence')==='string'?String(body.get('rightsEvidence')):window.prompt('请输入图片来源，并确认拥有本站使用权。草稿图片保持私有。')
+    if(!rights?.trim())return denied('未确认图片来源，本次未上传。',400)
+    let binding;try{binding=JSON.parse(String(body.get('binding')))}catch{return denied('缺少图片所属内容版本，请刷新编辑器。',400)}
+    const sha=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',await file.arrayBuffer())),v=>v.toString(16).padStart(2,'0')).join('')
+    const start=await adminFetch('/api/upload/r2/presign',{method:'POST',body:JSON.stringify({size:file.size,type:file.type,sha256:sha,rightsEvidence:rights.trim(),binding}),headers:{'Content-Type':'application/json'}})
+    const ticket=await start.json();if(!start.ok)return denied(ticket.error||'上传授权未确认。',start.status)
+    const url=new URL(ticket.putUrl)
+    if(url.origin!=='https://41feff7cd62964f2eb33bb82508509a1.r2.cloudflarestorage.com'||!url.pathname.startsWith('/jnqjourney-admin-private-media/_admin-formal-drafts/_staging/'))throw Error('上传授权范围异常。')
+    let uploaded=false
+    try{const put=await fetch(ticket.putUrl,{method:'PUT',headers:ticket.headers,body:file,credentials:'omit',redirect:'error',referrerPolicy:'no-referrer'});uploaded=put.ok||put.status===412;if(!uploaded)return denied('R2 拒绝本次上传；未登记或保存引用。',put.status)}catch{/* Only completion may confirm an ambiguous PUT; never re-PUT automatically. */}
+    const completed=await adminFetch('/api/upload/r2/complete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticket:ticket.ticket,revision:ticket.revision})})
+    const result=await completed.json();if(!completed.ok)return denied(result.error||'上传结果待核对，尚未加入内容。',completed.status)
+    const name=String(result.url).split('/').at(-1)!
+    try{const proofs=JSON.parse(localStorage.getItem(proofKey)||'{}');proofs[name]=result.proof;localStorage.setItem(proofKey,JSON.stringify(proofs))}catch{return denied('图片已私有验证，但浏览器未能保留回执；尚未加入内容。',503)}
+    return Response.json({...result,success:true,items:[{...result,fileName:file.name}],files:[{...result,fileName:file.name}]},{status:201})
+  }
+  if(method!=='GET'&&typeof body==='string'&&/^\/api\/admin\/(locations|notes|guides)$/.test(target.pathname)){
+    try{const payload=JSON.parse(body),stored=JSON.parse(localStorage.getItem(proofKey)||'{}'),proofs:Record<string,unknown>={};for(const name of body.match(/[a-f0-9]{64}\.(?:png|jpg|webp|gif)/g)||[])if(stored[name])proofs[name]=stored[name];if(Object.keys(proofs).length)payload.mediaProofs=proofs;body=JSON.stringify(payload)}catch{return denied('无法核对媒体回执，本次未保存。',503)}
+  }
   let intentKey = '', createKey = ''
-  if (method !== 'GET' && typeof init.body === 'string' && route.startsWith('/api/admin/')) {
-    const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(method + route + init.body))
+  if (method !== 'GET' && typeof body === 'string' && route.startsWith('/api/admin/')) {
+    const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(method + route + body))
     const hash = Array.from(new Uint8Array(bytes), value => value.toString(16).padStart(2, '0')).join('')
     intentKey = 'jnq:formal-intent:' + data.session.user.id + ':' + hash
     createKey = method === 'POST' && target.pathname === '/api/admin/locations' ? 'jnq:formal-newspot:' + data.session.user.id : ''
@@ -44,12 +68,6 @@ export async function adminFetch(input: RequestInfo | URL, init: RequestInit = {
       if (createKey) localStorage.setItem(createKey, intentKey)
       headers.set('X-JnQ-Mutation-Id', id)
     } catch { return denied('浏览器无法保留保存回执，本次未发送。', 503) }
-  }
-  let body = init.body
-  if (route === '/api/upload/r2' && body instanceof FormData && !body.has('rightsEvidence')) {
-    const rights = window.prompt('请输入图片来源，并确认你拥有用于 JnQ Journey 的公开使用权。未发布草稿图片仍保持私有。')
-    if (!rights?.trim()) return denied('未确认图片来源，本次未上传。', 400)
-    body.set('rightsEvidence', rights.trim())
   }
   const response = await fetch(ADMIN_API + target.pathname.replace(/^\/api(?=\/)/, '') + target.search, {
     ...init, body, headers, cache: 'no-store', redirect: 'error', credentials: 'omit',

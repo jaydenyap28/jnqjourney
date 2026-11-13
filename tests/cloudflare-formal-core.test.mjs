@@ -151,16 +151,17 @@ test('PostgREST network uncertainty stays 503; definite SQL rejection does not m
 test('server media receipt plus current HEAD identity gates references; previews still re-hash bytes and revoked objects stop before R2',async()=>{
   const bytes=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jf1kAAAAASUVORK5CYII=','base64')
   const hash=Buffer.from(await crypto.subtle.digest('SHA-256',bytes)).toString('hex'),name=hash+'.png',etag='"'+'a'.repeat(32)+'"'
-  const receipt={bucket:scope.mediaBucket,key:scope.mediaPrefix+'/'+name,sha256:hash,size:bytes.length,etag,rightsEvidence:'Synthetic test owner',revoked:false}
+  const receipt={bucket:scope.mediaBucket,key:scope.mediaPrefix+'/'+name,sha256:hash,size:bytes.length,type:'image/png',etag,rightsEvidence:'Synthetic test owner',revoked:false}
   const bucket={download:async()=>({data:new Blob([JSON.stringify(receipt)])})}
-  const service=createFormalServices({db:{storage:{from:()=>bucket}},anonKey:'synthetic',scope,settings:{privateMediaReady:true},env:()=> 'synthetic'})
+  const makeService=()=>createFormalServices({db:{storage:{from:()=>bucket}},anonKey:'synthetic',scope,settings:{privateMediaReady:true},env:()=> 'synthetic'})
   const previous=global.fetch;let changed=false,calls=0
   global.fetch=async(_url,init)=>{calls++;return new Response(init.method==='HEAD'?null:bytes,{headers:{'content-length':String(bytes.length),'content-type':'image/png',etag:changed?'"'+'b'.repeat(32)+'"':etag}})}
   try{
-    await service.media.verifyChanges({image_url:'/admin-draft-media/'+name},null)
+    const service=makeService()
+    await service.media.verifyChanges({image_url:'/admin-draft-media/'+name},{image_url:'/admin-draft-media/'+name})
     assert.equal(calls,1)
     assert.deepEqual(Buffer.from((await service.media.get(name)).bytes),bytes)
-    changed=true;await assert.rejects(service.media.verifyChanges({image_url:'/admin-draft-media/'+name},null),/IDENTITY_CHANGED/)
+    changed=true;await assert.rejects(service.media.verifyChanges({image_url:'/admin-draft-media/'+name},{image_url:'/admin-draft-media/'+name}),/IDENTITY_CHANGED/)
     const before=calls;receipt.revoked=true;await assert.rejects(service.media.get(name),/NOT_VERIFIED/);assert.equal(calls,before)
   }finally{global.fetch=previous}
 })
